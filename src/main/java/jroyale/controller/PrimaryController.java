@@ -26,7 +26,8 @@ public class PrimaryController implements Initializable{
         try {
             Image arenaImage = new Image(getClass().getResourceAsStream("/jroyale/images/arena.png"));
             arenaImageView.setImage(arenaImage);
-            arenaImageView.setFitWidth(arenaImage.getWidth()*0.6);
+            arenaImageView.setFitWidth(arenaImage.getWidth()*0.9);
+            arenaImageView.setTranslateY(-80);
             //arenaImageView.setFitHeight(arenaImage.getHeight()*0.6);
             arenaImageView.setPreserveRatio(true); // Adatta esattamente alle dimensioni
         } catch (Exception e) {
