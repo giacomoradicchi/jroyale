@@ -16,7 +16,7 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
-    private static int nuova_variabile=0;
+    private static int nuova_variabile=-10;
     private static int nuova_modifica=1;
 
     @Override
