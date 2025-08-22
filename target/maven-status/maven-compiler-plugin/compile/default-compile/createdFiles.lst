@@ -1,4 +1,4 @@
-jroyale/SecondaryController.class
+jroyale/controller/PrimaryController.class
 module-info.class
-jroyale/PrimaryController.class
 jroyale/App.class
+jroyale/controller/SecondaryController.class

@@ -1,7 +1,8 @@
-package jroyale;
+package jroyale.controller;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
+import jroyale.App;
 
 public class PrimaryController {
 
