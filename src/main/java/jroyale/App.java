@@ -17,6 +17,7 @@ public class App extends Application {
 
     private static Scene scene;
     private static int nuova_variabile;
+    private static int nuova_modifica=1;
 
     @Override
     public void start(Stage stage) throws IOException {
