@@ -11,6 +11,8 @@ public class View implements IView {
     private double width, height;
 
     private final static String ARENA_RELATIVE_PATH = "arena.png";
+    
+    // Coordinates determined empirically through testing
     private final static double ARENA_IMG_SCALE = 0.72;
     private final static int ARENA_Y_OFFSET = -72;
 
