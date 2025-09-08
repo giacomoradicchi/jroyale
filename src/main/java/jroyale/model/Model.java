@@ -1,6 +1,6 @@
 package jroyale.model;
 
-class Model implements IModel{
+public class Model implements IModel{
     // 18x30 it's the map size, each Tile 
     // has its own List where character are inserted based on
     // their position (so the collision algoritm will be much
@@ -8,7 +8,7 @@ class Model implements IModel{
     
     private Tile[][] map = new Tile[30][18];
 
-    Model() {
+    public Model() {
         // TODO: popolare la mappa
     }
 
@@ -16,7 +16,12 @@ class Model implements IModel{
     @Override
     public int[] getPlayerTowerPosition() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPlayerTowerPosition'");
+        return new int[]{};
+    }
+
+    @Override
+    public void update() {
+        // TODO Auto-generated method stub
     }
     
 }
