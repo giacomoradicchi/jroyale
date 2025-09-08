@@ -8,10 +8,12 @@ public class Controller implements IController {
 
     private IModel model;
     private IView view;
+    private long t0;
 
     public Controller(IModel model, IView view) {
         this.model = model;
         this.view = view;
+        this.t0 = System.currentTimeMillis();
     }
     
     @Override
@@ -20,7 +22,7 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update();
-                view.render();
+                view.render(System.currentTimeMillis() - t0);
             }
         };
         loop.start();
