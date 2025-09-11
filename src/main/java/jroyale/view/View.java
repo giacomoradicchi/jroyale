@@ -18,7 +18,7 @@ public class View implements IView {
 
     private final static int MARGIN_X = 32; 
     private final static int TOP_MARGIN_Y = 135 + ARENA_Y_OFFSET;
-    private final static int BOTTOM_MARGIN_Y = 685 + ARENA_Y_OFFSET;
+    private final static int BOTTOM_MARGIN_Y = 687 + ARENA_Y_OFFSET;
 
     public View(Canvas canvas) {
         this.gc = canvas.getGraphicsContext2D();
@@ -27,6 +27,40 @@ public class View implements IView {
 
         this.img_arena = new Image(getClass().getResourceAsStream("/jroyale/images/" + ARENA_RELATIVE_PATH));
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference.jpg"));
+    }
+
+    public void renderCells(boolean[][] cells) {
+        int num_cols = cells[0].length;
+        int num_rows = cells.length;
+        double dx = (double) Math.abs(width - 2*MARGIN_X)/num_cols;
+        double dy = (double) Math.abs(BOTTOM_MARGIN_Y - TOP_MARGIN_Y)/num_rows;
+
+        renderGrid(num_rows, num_cols, dx, dy);
+
+        // drawing only reachable tiles:
+        gc.setFill(Color.GREEN);
+        gc.setGlobalAlpha(0.25);
+        for (int i = 0; i < num_rows; i++) {
+            for (int j = 0; j < num_cols; j++) {
+                if (cells[i][j]) {
+                    gc.fillRect(MARGIN_X + j*dx, TOP_MARGIN_Y + i*dy, dx, dy);
+                }
+            }
+        }
+    }
+
+    private void renderGrid(int num_rows, int num_cols, double dx, double dy) {
+        gc.setGlobalAlpha(1);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+
+        for (int j = 0; j <= num_cols; j++) {
+            gc.strokeLine(MARGIN_X + j*dx, TOP_MARGIN_Y, MARGIN_X + j*dx, BOTTOM_MARGIN_Y);
+        }
+
+        for (int i = 0; i <= num_rows; i++) {
+            gc.strokeLine(MARGIN_X, TOP_MARGIN_Y + i*dy, width - MARGIN_X, TOP_MARGIN_Y + i*dy);
+        }
     }
 
     public void render(long millisecs) {
@@ -45,22 +79,17 @@ public class View implements IView {
             alpha = 2 - alpha; 
         }
 
-        gc.setGlobalAlpha(alpha);
+        gc.setGlobalAlpha(alpha*0);
 
         // draws the reference arena
         double referenceScale = width / reference.getWidth();
+        
         gc.drawImage(reference, 0, 0, reference.getWidth() * referenceScale, reference.getHeight() * referenceScale);
         gc.setGlobalAlpha(1);
-
-        // for debug: draws poligon
-        // gc.fillPolygon(new double[]{0, 40, 40, 0}, new double[]{0, 0, 40, 40}, 4);
-
-        gc.setGlobalAlpha(0.25);
-        gc.setFill(Color.RED);
-        gc.fillPolygon(new double[]{MARGIN_X, width - MARGIN_X, width - MARGIN_X, MARGIN_X}, new double[]{TOP_MARGIN_Y, TOP_MARGIN_Y, BOTTOM_MARGIN_Y, BOTTOM_MARGIN_Y}, 4);
     }
 
     private void drawArena() {
+        gc.setGlobalAlpha(1);
         gc.drawImage(
             img_arena, 
             (width - img_arena.getWidth() * ARENA_IMG_SCALE)/2, 
