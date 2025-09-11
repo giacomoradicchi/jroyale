@@ -23,6 +23,7 @@ public class Controller implements IController {
             public void handle(long now) {
                 model.update();
                 view.render(System.currentTimeMillis() - t0);
+                view.renderCells(model.getReachableTiles());
             }
         };
         loop.start();
