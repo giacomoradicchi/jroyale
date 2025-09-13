@@ -22,8 +22,15 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update();
-                view.render(System.currentTimeMillis() - t0);
+                view.initializeRendering();
+                //view.render(System.currentTimeMillis() - t0);
                 view.renderCells(model.getReachableTiles());
+
+                // rendering towers
+                view.renderPlayerKingTower(
+                    model.getPlayerKingTowerCentreX(), 
+                    model.getPlayerKingTowerCentreY()
+                );
             }
         };
         loop.start();

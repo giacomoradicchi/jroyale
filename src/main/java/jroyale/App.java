@@ -34,7 +34,7 @@ public class App extends Application {
 
         // Creation of instances
         IModel model = new Model();
-        IView view = new View(canvas);
+        IView view = new View(canvas, model.getRowCount(), model.getColsCount());
         IController controller = new Controller(model, view);
         
         
