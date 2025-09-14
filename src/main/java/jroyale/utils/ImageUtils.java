@@ -14,6 +14,17 @@ public class ImageUtils {
      * @return bounding box of the image
      */
     public static Rectangle2D getAlphaBoundingBox(Image img) {
+        // default opacityTolerance is 0 
+        return getAlphaBoundingBox(img, 0); 
+    }
+
+    /**
+     * Computes bounding box of pixels whose opacity levels are higher than a certain value
+     * @param img original image (RGBA)
+     * @param opacityTolerance value between 0.0 - 1.0, pixels whose alpha level is <= opacityTolerance will be skipped.
+     * @return bounding box of the image
+     */
+    public static Rectangle2D getAlphaBoundingBox(Image img, double opacityTolerance) {
         PixelReader reader = img.getPixelReader();
         int width = (int) img.getWidth();
         int height = (int) img.getHeight();
@@ -27,17 +38,19 @@ public class ImageUtils {
             for (int x = 0; x < width; x++) {
                 double opacity = reader.getColor(x, y).getOpacity();
 
-                // if it's transparent we continue;
-                if (opacity == 0) continue;
+                // if it's transparent we continue
+                if (opacity <= opacityTolerance) continue;
 
                 if (x < minX) {
                     minX = x;
-                } else if (x > maxX) {
+                } 
+                if (x > maxX) {
                     maxX = x;
                 }
                 if (y < minY) {
                     minY = y;
-                } else if (y > maxY) {
+                } 
+                if (y > maxY) {
                     maxY = y;
                 }
             }
@@ -96,7 +109,27 @@ public class ImageUtils {
     }
 
     public static Image clipToBoundingBox(Image img) {
-        // TODO
-        return null;
+        return clipToBoundingBox(img, 0);
+    }
+
+    public static Image clipToBoundingBox(Image img, double opacityTolerance) {
+        Rectangle2D boundingBox = getAlphaBoundingBox(img, opacityTolerance);
+        int width = (int) boundingBox.getWidth();
+        int height = (int) boundingBox.getHeight();
+        WritableImage croppedImage = new WritableImage(width, height);
+        
+        PixelReader reader = img.getPixelReader();
+        PixelWriter writer = croppedImage.getPixelWriter();
+
+        int x0 = (int) boundingBox.getMinX();
+        int y0 = (int) boundingBox.getMinY();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color c = reader.getColor(x0 + x, y0 + y);
+                writer.setColor(x, y, c);
+            }
+        }
+        return croppedImage;
     }
 }

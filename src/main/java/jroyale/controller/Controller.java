@@ -22,8 +22,8 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update();
-                view.initializeRendering();
-                //view.render(System.currentTimeMillis() - t0);
+                view.initializeRendering(System.currentTimeMillis() - t0);
+                view.render(System.currentTimeMillis() - t0);
                 view.renderCells(model.getReachableTiles());
 
                 // rendering towers

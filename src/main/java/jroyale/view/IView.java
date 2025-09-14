@@ -2,7 +2,7 @@ package jroyale.view;
 
 public interface IView {
     
-    public void initializeRendering();
+    public void initializeRendering(long millisecs);
     
     public void render(long millisecs);
 
