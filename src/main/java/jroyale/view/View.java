@@ -23,6 +23,11 @@ public class View implements IView {
 
     // images path
     private final static String PLAYER_KING_TOWER_RELATIVE_PATH = "towers/player/king_tower.png";
+    private final static String ARENA_TEXTURE_0_RELATIVE_PATH = "arena_texture/0.png";
+    private final static String ARENA_TEXTURE_1_RELATIVE_PATH = "arena_texture/1.png";
+
+    // Texture attribs
+    private TextureAtlas arena0, arena1; 
     
     private Rectangle2D mapBoundingBox;
 
@@ -39,8 +44,16 @@ public class View implements IView {
         this.rowsCount = rowCount;
         this.colsCount = colsCount;
         
-        this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference.jpg"));
+        this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
+
+        this.arena0 = new TextureAtlas(new Image(getClass().getResourceAsStream("/jroyale/images/" + ARENA_TEXTURE_0_RELATIVE_PATH)));
+        arena0.addSubTexture(0, 0, 800, 520);
+        arena0.addSubTexture(0, 520, 800, 507);
+
+        this.arena1 = new TextureAtlas(new Image(getClass().getResourceAsStream("/jroyale/images/" + ARENA_TEXTURE_1_RELATIVE_PATH)));
+        arena1.addSubTexture(0, 0, 800, 60);
+        arena1.addSubTexture(0, 60, 800, 60);
 
         this.tImgArena = new TransformedImage(
             new Image(getClass().getResourceAsStream(ArenaConfig.ARENA_RELATIVE_PATH)),
@@ -73,14 +86,22 @@ public class View implements IView {
         // update scale for debug;
 
         // TODO capire come aggiustare bounding box quando la visuale viene zoomata
-        scale = 1 + millisec/50000.0;
-        double abs_width = width - 2*MapConfig.MARGIN_X;
+        //scale = 1 + millisec/50000.0;
+
+        /* double abs_width = width - 2*MapConfig.MARGIN_X;
         double abs_height = MapConfig.BOTTOM_MARGIN_Y - MapConfig.TOP_MARGIN_Y;
         mapBoundingBox.setRect(
             width/2 - abs_width/2 * scale,
             height/2 - abs_height/2 * scale + MapConfig.Y_OFFSET*scale, 
             abs_width*scale,
             abs_height*scale
+        ); */
+
+        mapBoundingBox.setRect(
+            MapConfig.MARGIN_X,
+            MapConfig.TOP_MARGIN_Y, 
+            width - 2*MapConfig.MARGIN_X,
+            MapConfig.BOTTOM_MARGIN_Y - MapConfig.TOP_MARGIN_Y 
         );
 
         // update dx and dy factor
@@ -162,7 +183,7 @@ public class View implements IView {
 
     public void render(long millisecs) {
         // Draws arena
-        drawArena(millisecs);
+        //drawArena(millisecs);
 
         // temporary: sets the alpha value (opacity) based on how many millisecs have passed
         double durata = 8000; // millisec 
@@ -173,13 +194,55 @@ public class View implements IView {
             alpha = 2 - alpha; 
         }
 
-        gc.setGlobalAlpha(alpha*0);
+        gc.setGlobalAlpha(alpha);
 
         // draws the reference arena
         double referenceScale = width / reference.getWidth();
         
         gc.drawImage(reference, 0, 0, reference.getWidth() * referenceScale, reference.getHeight() * referenceScale);
+
         gc.setGlobalAlpha(1);
+
+                
+    }
+
+    @Override
+    public void renderTexture() {
+        //
+        // draws subtexture that fits inside the map rect
+        // 
+
+        // upper part
+        drawSubTextureInsideMapBounds(arena1, 1, 0);
+        drawSubTextureInsideMapBounds(arena0, 0, 1);
+        // bottom part
+        drawSubTextureInsideMapBounds(arena0, 1, 17);
+        drawSubTextureInsideMapBounds(arena1, 0, 31);
+
+        
+    }
+
+    private void drawSubTextureInsideMapBounds(TextureAtlas texAtl, int index, int j) {
+        double scale = mapBoundingBox.getWidth()/texAtl.getWidth(index);
+
+        drawSubTexture(texAtl, index, 
+            width/2 - mapBoundingBox.getWidth()/2, // to make sure the x-coord of the centre is 0
+            mapBoundingBox.getY() + j * dy, // setting yposition based on row j
+            mapBoundingBox.getWidth(), // fixing width to mapWidth
+            texAtl.getHeight(index) * scale // just to mantain proportion
+        );
+    }
+
+    private void drawSubTexture(TextureAtlas texAtl, int index, double x, double y, double w, double h) {
+        double[] bounds = texAtl.getSubTexture(index);
+        gc.drawImage(
+            texAtl.getFullImage(), 
+            bounds[0],
+            bounds[1],
+            bounds[2],
+            bounds[3],
+            x, y, w, h
+        );
     }
 
     @Override

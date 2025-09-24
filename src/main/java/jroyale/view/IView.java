@@ -6,6 +6,8 @@ public interface IView {
     
     public void render(long millisecs);
 
+    public void renderTexture();
+
     public void renderPlayerKingTower(float centreLogicX, float centreLogicY);
 
     // just for debug
