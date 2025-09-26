@@ -29,7 +29,7 @@ public class Controller implements IController {
 
                 //view.renderCells(model.getReachableTiles());
 
-                view.render(System.currentTimeMillis() - t0);
+                //view.render(System.currentTimeMillis() - t0);
 
                 /* view.renderCells(model.getReachableTiles());
 
