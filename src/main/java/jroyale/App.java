@@ -22,7 +22,7 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
-    private static double ORIGINAL_RATIO = 607.0 / 1080;
+    private static final double ORIGINAL_RATIO = 607.0 / 1080;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -35,12 +35,15 @@ public class App extends Application {
         // Creation of instances
         IModel model = new Model();
         IView view = new View(canvas, model.getRowCount(), model.getColsCount());
-        IController controller = new Controller(model, view);
+        IController controller = new Controller(model, view, scene);
         
         
         stage.setScene(scene);
         stage.setTitle("JRoyale");
         stage.show();
+        stage.setResizable(true);
+
+        
 
         controller.start();
     } 

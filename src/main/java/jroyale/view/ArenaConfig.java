@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 class ArenaConfig {
     final static String ARENA_RELATIVE_PATH = "/jroyale/images/arena.png";
@@ -40,8 +39,6 @@ class ArenaConfig {
             MapConfig.NORMALIZED_HEIGHT * height
         );
 
-
-
         // Texture atlas attribs (they contain all the texture to be drawn)
         TextureAtlas arena0 = new TextureAtlas(new Image(ArenaConfig.class.getResourceAsStream("/jroyale/images/" + ARENA_TEXTURE_0_RELATIVE_PATH)));
         TextureAtlas arena1 = new TextureAtlas(new Image(ArenaConfig.class.getResourceAsStream("/jroyale/images/" + ARENA_TEXTURE_1_RELATIVE_PATH)));
@@ -63,7 +60,7 @@ class ArenaConfig {
         // to adjust each subTexture position (due to misaligned images), is it possible
         // to work on marginX value (remove a lateral margin from the drawing of the texture)
         // and offsetY value (shift the texture up or down based on offset)
-        // BEST ADJUSTMENT:
+        // BEST ADJUSTMENT :
         final double NORMALIZED_MARGIN_X = 5.0 / (800 * 607.0 / 1080);
         final double NORMALIZED_OFFSET_Y_0 = -7.0 / 800;
         final double NORMALIZED_OFFSET_Y_1 = 2.0 / 800;
@@ -71,13 +68,13 @@ class ArenaConfig {
 
         // upper part
         
-        int margin = (int)(NORMALIZED_MARGIN_X * width);
+        double margin = NORMALIZED_MARGIN_X * width;
         drawSubTextureInsideMapBounds(
             canvas, arena1, mapBoundingBox, 
             1, 
             0, 
             margin, 
-            (int) (NORMALIZED_OFFSET_Y_0 * height), 
+            NORMALIZED_OFFSET_Y_0 * height, 
             rowsCount, colsCount
         );
         drawSubTextureInsideMapBounds(
@@ -85,7 +82,7 @@ class ArenaConfig {
             0, 
             1, 
             margin, 
-            (int) (NORMALIZED_OFFSET_Y_1 * height),
+            NORMALIZED_OFFSET_Y_1 * height,
             rowsCount, colsCount);
         
         // bottom part
@@ -103,7 +100,7 @@ class ArenaConfig {
             0, 
             31, 
             margin, 
-            (int) (NORMALIZED_OFFSET_Y_2 * height), 
+            NORMALIZED_OFFSET_Y_2 * height, 
             rowsCount, colsCount);
 
         //drawSubTextureInsideMapBounds(canvas, arena0, mapBoundingBox, 2, 15, rowsCount, colsCount);
@@ -143,7 +140,7 @@ class ArenaConfig {
         } 
     }
 
-    private static void drawSubTextureInsideMapBounds(Canvas canvas, TextureAtlas texAtl, Rectangle2D mapBoundingBox, int subTextureIndex, int j, int marginX, int offsetY, int rowsCount, int colsCount) {
+    private static void drawSubTextureInsideMapBounds(Canvas canvas, TextureAtlas texAtl, Rectangle2D mapBoundingBox, int subTextureIndex, int j, double marginX, double offsetY, int rowsCount, int colsCount) {
         double totalWidth = mapBoundingBox.getWidth() - 2*marginX;
         double scale = totalWidth / texAtl.getWidth(subTextureIndex);
         double dy = mapBoundingBox.getHeight() / rowsCount; 
