@@ -27,7 +27,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         double height = 800;
-        double width = height * ORIGINAL_RATIO;
+        double width = height * ORIGINAL_RATIO; 
         Canvas canvas = new Canvas(width, height);
         Pane root = new Pane(canvas);
         scene = new Scene(root);
