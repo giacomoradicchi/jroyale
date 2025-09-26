@@ -186,9 +186,7 @@ public class View implements IView {
 
     @Override
     public void renderTexture() {
-        gc.drawImage(arenaImage, 0, 0);
- 
-        
+        gc.drawImage(arenaImage, 0, 0, width, height);
     }
 
 
@@ -240,5 +238,22 @@ public class View implements IView {
 
     private float logic2GraphicY(float logicCoordY) {
         return (float) mapBoundingBox.getMinY() + logicCoordY*dy;
+    }
+
+    @Override
+    public double getCanvasWidth() {
+        return width;
+    }
+
+    @Override
+    public double getCanvasHeight() {
+        return height;
+    }
+
+    @Override
+    public void resizeCanvas(double newHeight) {
+        double aspectRatio = width/height;
+        width = aspectRatio * newHeight;
+        height = newHeight;
     }
 }

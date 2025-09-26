@@ -10,6 +10,12 @@ public interface IView {
 
     public void renderPlayerKingTower(float centreLogicX, float centreLogicY);
 
+    public double getCanvasWidth();
+
+    public double getCanvasHeight();
+
+    public void resizeCanvas(double newHeight);
+
     // just for debug
     public void renderCells(boolean[][] cells);
 }
