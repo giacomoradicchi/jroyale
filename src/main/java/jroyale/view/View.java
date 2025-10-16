@@ -8,23 +8,23 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 public class View implements IView {
+
+    private final static boolean DEBUG_MODE = true;
+
     private GraphicsContext gc;
     private double width, height;
-    private int rowsCount, colsCount;
-    private float dx, dy;
+    private double dx, dy;
 
     // images attribs
     private Image reference;
     private Image imgPlayerKingTower;
-    private TransformedImage tImgArena;
 
     // images path
     private final static String PLAYER_KING_TOWER_RELATIVE_PATH = "towers/player/king_tower.png";
 
-    private Image arenaImage;
+    private Arena arena;
     
     private Rectangle2D mapBoundingBox;
 
@@ -38,52 +38,44 @@ public class View implements IView {
         this.gc = canvas.getGraphicsContext2D();
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
-        this.rowsCount = rowsCount;
-        this.colsCount = colsCount;
-        this.mapBoundingBox = new Rectangle2D.Double();
-
-        this.arenaImage = ArenaConfig.createArenaImage(width, height, rowsCount, colsCount);
+        
+        this.arena = new Arena(width, height, scale, rowsCount, colsCount);
+        this.mapBoundingBox = arena.getMapBounds();
+        updateDxDy();
         
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
         
 
-        this.tImgArena = new TransformedImage(
-            new Image(getClass().getResourceAsStream(ArenaConfig.ARENA_RELATIVE_PATH)),
-            ArenaConfig.ARENA_IMG_SCALE,
-            ArenaConfig.ARENA_X_OFFSET,
-            ArenaConfig.ARENA_Y_OFFSET
-        );
-
-        
-
-        calculateDxDy();
-        calculateMapBoundingBox();
-
         // adjusting tower image
         this.imgPlayerKingTower = ImageUtils.enhanceOpacity(imgPlayerKingTower);
     }
 
-    private void calculateMapBoundingBox() {
-        mapBoundingBox.setRect(
-            ArenaConfig.MapConfig.NORMALIZED_TOPLEFT_CORNER_X * width,
-            ArenaConfig.MapConfig.NORMALIZED_TOPLEFT_CORNER_Y * height,
-            ArenaConfig.MapConfig.NORMALIZED_WIDTH * width,
-            ArenaConfig.MapConfig.NORMALIZED_HEIGHT * height
-        );
-    }
+    
 
     @Override
-    public void initializeRendering(long millisec) {
+    public void initializeRendering(long millisec, double newWidth, double newHeight) {
         // clears canvas
         gc.clearRect(0, 0, width, height);  
 
         // set opacity to 100%
         gc.setGlobalAlpha(1);
-        
-        // update dx and dy factor
-        calculateDxDy();
-        calculateMapBoundingBox();
+
+        // update width and height:
+        width = newWidth;
+        height = newHeight;
+
+        //scale = 1 + millisec/100000.0;
+
+        // update arena and dx dy
+        arena.update(width, height, scale);
+        updateDxDy();
+        mapBoundingBox = arena.getMapBounds();
+    }
+
+    private void updateDxDy() {
+        dx = arena.getDx();
+        dy = arena.getDy();
     }
 
     // draws a TransformedImage (image with proper scale attribs) from its centre
@@ -97,66 +89,13 @@ public class View implements IView {
         );
     }
 
-    private void drawArena(long millisec) {
-        /* gc.drawImage(
-            imgArena, 
-            (width - imgArena.getWidth() * ARENA_IMG_SCALE)/2, 
-            (height - imgArena.getHeight() * ARENA_IMG_SCALE)/2 + ARENA_Y_OFFSET, 
-            imgArena.getWidth() * ARENA_IMG_SCALE, 
-            imgArena.getHeight() * ARENA_IMG_SCALE
-        );  */ 
-        drawTransformedImage(tImgArena, width/2, height/2, scale);
-    }
-
-    private void calculateDxDy() {
-        this.dx = (float) mapBoundingBox.getWidth()/colsCount;
-        this.dy = (float) mapBoundingBox.getHeight()/rowsCount;
+    @Override
+    public void renderArena() {
+        arena.renderArena(gc, width, height, scale, DEBUG_MODE);
     }
 
     public void renderCells(boolean[][] cells) {
-
-        renderGrid(rowsCount, colsCount, dx, dy);
-
-        // drawing only reachable tiles:
-        gc.setFill(Color.GREEN);
-        gc.setGlobalAlpha(0.25);
-        for (int i = 0; i < rowsCount; i++) {
-            for (int j = 0; j < colsCount; j++) {
-                if (cells[i][j]) {
-                    gc.fillRect(
-                        mapBoundingBox.getMinX() + j*dx, 
-                        mapBoundingBox.getMinY() + i*dy, 
-                        dx, 
-                        dy
-                    );
-                }
-            }
-        }
-        gc.setGlobalAlpha(1);
-    }
-
-    private void renderGrid(int num_rows, int num_cols, double dx, double dy) {
-        gc.setGlobalAlpha(1);
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(2);
-
-        for (int j = 0; j <= num_cols; j++) {
-            gc.strokeLine(
-                mapBoundingBox.getMinX() + j*dx, 
-                mapBoundingBox.getMinY(), 
-                mapBoundingBox.getMinX() + j*dx, 
-                mapBoundingBox.getMaxY()
-            );
-        }
-
-        for (int i = 0; i <= num_rows; i++) {
-            gc.strokeLine(
-                mapBoundingBox.getMinX(), 
-                mapBoundingBox.getMinY() + i*dy, 
-                mapBoundingBox.getMaxX(), 
-                mapBoundingBox.getMinY() + i*dy
-            );
-        }
+        arena.renderCells(gc, cells);
     }
 
     public void render(long millisecs) {
@@ -184,14 +123,9 @@ public class View implements IView {
                 
     }
 
-    @Override
-    public void renderTexture() {
-        gc.drawImage(arenaImage, 0, 0, width, height);
-    }
-
 
     @Override
-    public void renderPlayerKingTower(float centreLogicX, float centreLogicY) {
+    public void renderPlayerKingTower(double centreLogicX, double centreLogicY) {
         
         fillPoint(
             logic2GraphicX(centreLogicX), 
@@ -208,14 +142,13 @@ public class View implements IView {
         );
     }
 
-    private void fillPoint(float centreX, float centreY) {
+    private void fillPoint(double centreX, double centreY) {
         int defaultSize = 10;
         fillPoint(centreX, centreY, defaultSize);
     }
 
-    private void fillPoint(float centreX, float centreY, int size) {
-        Paint previousColor = gc.getFill();
-        double previousAlpha = gc.getGlobalAlpha();
+    private void fillPoint(double centreX, double centreY, int size) {
+        gc.save();
 
         gc.setFill(Color.BLACK);
         gc.setGlobalAlpha(1);
@@ -228,16 +161,15 @@ public class View implements IView {
         );
 
         // restoring previous settings
-        gc.setFill(previousColor);
-        gc.setGlobalAlpha(previousAlpha);
+        gc.restore();
     }
 
-    private float logic2GraphicX(float logicCoordX) {
-        return (float) mapBoundingBox.getMinX() + logicCoordX*dx;
+    private double logic2GraphicX(double logicCoordX) {
+        return mapBoundingBox.getMinX() + logicCoordX*dx;
     }
 
-    private float logic2GraphicY(float logicCoordY) {
-        return (float) mapBoundingBox.getMinY() + logicCoordY*dy;
+    private double logic2GraphicY(double logicCoordY) {
+        return mapBoundingBox.getMinY() + logicCoordY*dy;
     }
 
     @Override
@@ -251,9 +183,16 @@ public class View implements IView {
     }
 
     @Override
-    public void resizeCanvas(double newHeight) {
-        double aspectRatio = width/height;
-        width = aspectRatio * newHeight;
+    public void setCanvasWidth(double newWidth) {
+        /* double aspectRatio = width/height;
+        width = aspectRatio * newHeight; */
+        width = newWidth;
+    }
+
+    @Override
+    public void setCanvasHeight(double newHeight) {
+        /* double aspectRatio = width/height;
+        width = aspectRatio * newHeight; */
         height = newHeight;
     }
 }

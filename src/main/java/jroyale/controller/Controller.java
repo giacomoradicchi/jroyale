@@ -28,10 +28,10 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update();
-                view.initializeRendering(System.currentTimeMillis() - t0);
+                view.initializeRendering(System.currentTimeMillis() - t0, scene.getWidth(), scene.getHeight());
                 
-
-                view.renderTexture();
+            
+                view.renderArena();
 
                 //view.renderCells(model.getReachableTiles());
 
@@ -44,24 +44,22 @@ public class Controller implements IController {
                     model.getPlayerKingTowerCentreX(), 
                     model.getPlayerKingTowerCentreY()
                 ); */
+                view.renderPlayerKingTower(
+                    model.getPlayerKingTowerCentreX(), 
+                    model.getPlayerKingTowerCentreY()
+                );
             }
         };
         loop.start();
     }
 
     private void setupResizeListener() {
-        scene.heightProperty().addListener(new javafx.beans.value.ChangeListener<Number>() {
-            @Override
-            public void changed(javafx.beans.value.ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
-                double newHeight = newVal.doubleValue();
-                double aspectRatio = view.getCanvasWidth() / view.getCanvasHeight(); // original aspect Ratio
-                double newWidth = newHeight * aspectRatio;
-
-                view.resizeCanvas(newHeight);
-
-                Stage stage = (Stage) scene.getWindow();
-                stage.setWidth(newWidth);
-            }
+        /* scene.widthProperty().addListener((o, oldW, newW) -> {
+            view.setCanvasWidth(newW.doubleValue());
         });
+
+        scene.heightProperty().addListener((o, oldH, newH) -> {
+            view.setCanvasHeight(newH.doubleValue());
+        }); */
     }
 }
