@@ -19,10 +19,14 @@ public class Controller implements IController {
         this.t0 = System.currentTimeMillis();
         this.scene = scene;
     }
-    
+
+    int count = 0;
+
     @Override
     public void start() {
         setupResizeListener();
+
+        
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -33,7 +37,7 @@ public class Controller implements IController {
             
                 view.renderArena();
 
-                //view.renderCells(model.getReachableTiles());
+                view.renderCells(model.getReachableTiles());
 
                 //view.render(System.currentTimeMillis() - t0);
 

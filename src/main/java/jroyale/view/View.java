@@ -24,12 +24,11 @@ public class View implements IView {
     // images path
     private final static String PLAYER_KING_TOWER_RELATIVE_PATH = "towers/player/king_tower.png";
 
+    // Entities attribs
     private Arena arena;
+    private KingTower kingTowerPlayer;
     
     private Rectangle2D mapBoundingBox;
-
-    // bounding box of tower
-    private Rectangle2D bbKingTower;
 
     // scale of the entire scene
     private double scale = 1.0;
@@ -42,6 +41,8 @@ public class View implements IView {
         this.arena = new Arena(width, height, scale, rowsCount, colsCount);
         this.mapBoundingBox = arena.getMapBounds();
         updateDxDy();
+
+        this.kingTowerPlayer = new KingTower(KingTower.PLAYER);
         
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
@@ -65,7 +66,7 @@ public class View implements IView {
         width = newWidth;
         height = newHeight;
 
-        //scale = 1 + millisec/100000.0;
+        //scale = 1 - millisec/100000.0;
 
         // update arena and dx dy
         arena.update(width, height, scale);
@@ -132,14 +133,7 @@ public class View implements IView {
             logic2GraphicY(centreLogicY)
         );
 
-        double scale = 0.35;
-        gc.drawImage(
-            imgPlayerKingTower, 
-            logic2GraphicX(centreLogicX) - imgPlayerKingTower.getWidth()*scale/2, 
-            logic2GraphicY(centreLogicY) - imgPlayerKingTower.getHeight()*scale/2,
-            imgPlayerKingTower.getWidth()*scale,
-            imgPlayerKingTower.getHeight()*scale
-        );
+        //kingTowerPlayer.drawKingTower(gc, logic2GraphicX(centreLogicX), logic2GraphicY(centreLogicY), scale);
     }
 
     private void fillPoint(double centreX, double centreY) {
