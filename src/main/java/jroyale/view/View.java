@@ -1,5 +1,7 @@
 package jroyale.view;
 
+import jroyale.shared.Side;
+import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
 
 import java.awt.geom.Rectangle2D;
@@ -11,7 +13,7 @@ import javafx.scene.paint.Color;
 
 public class View implements IView {
 
-    private final static boolean DEBUG_MODE = true;
+    private final static boolean DEBUG_MODE = false;
 
     private GraphicsContext gc;
     private double width, height;
@@ -26,7 +28,8 @@ public class View implements IView {
 
     // Entities attribs
     private Arena arena;
-    private KingTower kingTowerPlayer;
+    private static final int NUM_TOWERS = 6;
+    private Tower[] towers = new Tower[NUM_TOWERS];
     
     private Rectangle2D mapBoundingBox;
 
@@ -42,7 +45,14 @@ public class View implements IView {
         this.mapBoundingBox = arena.getMapBounds();
         updateDxDy();
 
-        this.kingTowerPlayer = new KingTower(KingTower.PLAYER);
+        // initializing towers
+        towers[TowerIndex.PLAYER_KING_TOWER] = new KingTower(Side.PLAYER);
+        towers[TowerIndex.PLAYER_LEFT_TOWER] = new ArcherTower(Side.PLAYER);
+        towers[TowerIndex.PLAYER_RIGHT_TOWER] = new ArcherTower(Side.PLAYER);
+
+        towers[TowerIndex.OPPONENT_KING_TOWER] = new KingTower(Side.OPPONENT);
+        towers[TowerIndex.OPPONENT_LEFT_TOWER] = new ArcherTower(Side.OPPONENT);
+        towers[TowerIndex.OPPONENT_RIGHT_TOWER] = new ArcherTower(Side.OPPONENT);
         
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
@@ -126,14 +136,15 @@ public class View implements IView {
 
 
     @Override
-    public void renderPlayerKingTower(double centreLogicX, double centreLogicY) {
-        
+    public void renderTower(int towerType, double centreLogicX, double centreLogicY) {
+        if (towerType < 0 || towerType >= NUM_TOWERS) {
+            throw new IllegalArgumentException("Invalid towerType: " + towerType);
+        }
+        towers[towerType].drawTower(gc, logic2GraphicX(centreLogicX), logic2GraphicY(centreLogicY), scale);
         fillPoint(
             logic2GraphicX(centreLogicX), 
             logic2GraphicY(centreLogicY)
         );
-
-        //kingTowerPlayer.drawKingTower(gc, logic2GraphicX(centreLogicX), logic2GraphicY(centreLogicY), scale);
     }
 
     private void fillPoint(double centreX, double centreY) {

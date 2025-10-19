@@ -2,7 +2,9 @@ package jroyale.model;
 
 import java.awt.geom.Point2D;
 
-public class Model implements IModel{
+import jroyale.shared.TowerIndex;
+
+public class Model implements IModel {
     // 32x18 it's the map size, each Tile 
     // has its own List where character are inserted based on
     // their position (so the collision algoritm will be much
@@ -19,8 +21,28 @@ public class Model implements IModel{
     // be continue, so it has to be double.
 
     // logic coords for Towers:
-    // (9, 29)
-    private final static Point2D.Float PLAYER_KING_TOWER_CENTRE = new Point2D.Float(9f, 29f);
+    private final static Point2D.Double PLAYER_KING_TOWER_CENTRE = new Point2D.Double(9, 29);
+    private final static Point2D.Double PLAYER_LEFT_TOWER_CENTRE = new Point2D.Double(3.5, 25.5);
+    private final static Point2D.Double PLAYER_RIGHT_TOWER_CENTRE = new Point2D.Double(14.5, 25.5);
+
+    private final static Point2D.Double OPPONENT_KING_TOWER_CENTRE = new Point2D.Double(9, 3);
+    private final static Point2D.Double OPPONENT_LEFT_TOWER_CENTRE = new Point2D.Double(3.5, 6.5);
+    private final static Point2D.Double OPPONENT_RIGHT_TOWER_CENTRE = new Point2D.Double(14.5, 6.5);
+    private final static Point2D.Double[] TOWERS_CENTRE = getTowersCentre();
+    
+
+    private static Point2D.Double[] getTowersCentre() {
+        Point2D.Double[] centres = new Point2D.Double[TowerIndex.NUM_TOWERS];
+
+        centres[TowerIndex.PLAYER_KING_TOWER] = PLAYER_KING_TOWER_CENTRE;
+        centres[TowerIndex.PLAYER_LEFT_TOWER] = PLAYER_LEFT_TOWER_CENTRE;
+        centres[TowerIndex.PLAYER_RIGHT_TOWER] = PLAYER_RIGHT_TOWER_CENTRE;
+
+        centres[TowerIndex.OPPONENT_KING_TOWER] =  OPPONENT_KING_TOWER_CENTRE;
+        centres[TowerIndex.OPPONENT_LEFT_TOWER] =  OPPONENT_LEFT_TOWER_CENTRE;
+        centres[TowerIndex.OPPONENT_RIGHT_TOWER] = OPPONENT_RIGHT_TOWER_CENTRE;
+        return centres;
+    }
 
     public Model() {
         for (int i = 0; i < MAP_ROWS; i++) {
@@ -60,20 +82,28 @@ public class Model implements IModel{
         this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - 3] = true;
         this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - 3] = true;
     }
+
     @Override
     public boolean[][] getReachableTiles() {
         return reachableTiles;
     }
 
-    // location tower: (8.5, 26.5)
+    // location tower X
     @Override
-    public float getPlayerKingTowerCentreX() {
-        return (float) PLAYER_KING_TOWER_CENTRE.getX();
+    public double getTowerCentreX(int towerType) {
+        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
+            throw new IllegalArgumentException("Invalid tower type: " + towerType);
+        }
+        return TOWERS_CENTRE[towerType].getX();
     }
 
+    // location tower Y
     @Override
-    public float getPlayerKingTowerCentreY() {
-        return (float) PLAYER_KING_TOWER_CENTRE.getY();
+    public double getTowerCentreY(int towerType) {
+        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
+            throw new IllegalArgumentException("Invalid tower type: " + towerType);
+        }
+        return TOWERS_CENTRE[towerType].getY();
     }
 
     @Override
