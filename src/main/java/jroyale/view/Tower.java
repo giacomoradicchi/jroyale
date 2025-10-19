@@ -30,4 +30,8 @@ public abstract class Tower {
         );
     }
 
+    int getSide() {
+        return side;
+    }
+
 }
