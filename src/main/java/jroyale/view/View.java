@@ -76,7 +76,7 @@ public class View implements IView {
         width = newWidth;
         height = newHeight;
 
-        //scale = 1 - millisec/100000.0;
+        scale = 1 - millisec/10000.0;
 
         // update arena and dx dy
         arena.update(width, height, scale);
@@ -87,17 +87,6 @@ public class View implements IView {
     private void updateDxDy() {
         dx = arena.getDx();
         dy = arena.getDy();
-    }
-
-    // draws a TransformedImage (image with proper scale attribs) from its centre
-    private void drawTransformedImage(TransformedImage transfImg, double centreX, double centreY, double scale) {
-        gc.drawImage(
-            transfImg.getImage(), 
-            centreX - transfImg.getWidth()/2 * scale + transfImg.getShiftX()* scale, 
-            centreY - transfImg.getHeight()/2 * scale + transfImg.getShiftY() * scale, 
-            transfImg.getWidth() * scale, 
-            transfImg.getHeight() * scale
-        );
     }
 
     @Override
@@ -141,6 +130,8 @@ public class View implements IView {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
         towers[towerType].drawTower(gc, logic2GraphicX(centreLogicX), logic2GraphicY(centreLogicY), scale);
+        if (!DEBUG_MODE) return;
+        // debug mode
         fillPoint(
             logic2GraphicX(centreLogicX), 
             logic2GraphicY(centreLogicY)

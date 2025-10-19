@@ -2,7 +2,6 @@ package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import jroyale.model.IModel;
 import jroyale.shared.TowerIndex;
 import jroyale.view.IView;
@@ -25,9 +24,6 @@ public class Controller implements IController {
 
     @Override
     public void start() {
-        setupResizeListener();
-
-        
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -53,15 +49,5 @@ public class Controller implements IController {
             }
         };
         loop.start();
-    }
-
-    private void setupResizeListener() {
-        /* scene.widthProperty().addListener((o, oldW, newW) -> {
-            view.setCanvasWidth(newW.doubleValue());
-        });
-
-        scene.heightProperty().addListener((o, oldH, newH) -> {
-            view.setCanvasHeight(newH.doubleValue());
-        }); */
     }
 }
