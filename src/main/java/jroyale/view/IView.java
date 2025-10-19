@@ -8,7 +8,7 @@ public interface IView {
 
     public void renderArena();
 
-    public void renderPlayerKingTower(double centreLogicX, double centreLogicY);
+    public void renderTower(int towerType, double centreLogicX, double centreLogicY);
 
     public double getCanvasWidth();
 

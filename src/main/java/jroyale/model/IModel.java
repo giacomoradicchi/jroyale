@@ -4,8 +4,9 @@ public interface IModel {
 
     public void update();
 
-    public float getPlayerKingTowerCentreX();
-    public float getPlayerKingTowerCentreY();
+    // towers logic location
+    public double getTowerCentreX(int towerType);
+    public double getTowerCentreY(int towerType);
 
     public int getRowCount();
     public int getColsCount();

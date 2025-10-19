@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jroyale.model.IModel;
+import jroyale.shared.TowerIndex;
 import jroyale.view.IView;
 
 public class Controller implements IController {
@@ -37,21 +38,18 @@ public class Controller implements IController {
             
                 view.renderArena();
 
-                view.renderCells(model.getReachableTiles());
+                //view.renderCells(model.getReachableTiles());
 
                 //view.render(System.currentTimeMillis() - t0);
 
-                /* view.renderCells(model.getReachableTiles());
-
-                // rendering towers
-                view.renderPlayerKingTower(
-                    model.getPlayerKingTowerCentreX(), 
-                    model.getPlayerKingTowerCentreY()
-                ); */
-                view.renderPlayerKingTower(
-                    model.getPlayerKingTowerCentreX(), 
-                    model.getPlayerKingTowerCentreY()
-                );
+                // rendering all the towers
+                for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
+                    view.renderTower(
+                        towerType, 
+                        model.getTowerCentreX(towerType),
+                        model.getTowerCentreY(towerType)
+                    );
+                }
             }
         };
         loop.start();
