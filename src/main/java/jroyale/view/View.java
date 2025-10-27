@@ -76,7 +76,7 @@ public class View implements IView {
         width = newWidth;
         height = newHeight;
 
-        scale = 1 - millisec/10000.0;
+        //scale = 1 - millisec/10000.0;
 
         // update arena and dx dy
         arena.update(width, height, scale);
@@ -190,5 +190,11 @@ public class View implements IView {
         /* double aspectRatio = width/height;
         width = aspectRatio * newHeight; */
         height = newHeight;
+    }
+
+    @Override
+    public void renderPoint(double graphicX, double graphicY) {
+        double size = 16;
+        gc.fillOval(graphicX - size/2, graphicY - size/2, size, size);
     }
 }

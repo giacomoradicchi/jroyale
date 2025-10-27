@@ -20,4 +20,6 @@ public interface IView {
 
     // just for debug
     public void renderCells(boolean[][] cells);
+
+    public void renderPoint(double graphicX, double graphicY);
 }
