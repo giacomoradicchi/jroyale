@@ -1,6 +1,7 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import jroyale.model.IModel;
 import jroyale.shared.TowerIndex;
@@ -12,6 +13,9 @@ public class Controller implements IController {
     private IView view;
     private long t0;
     private Scene scene;
+    private boolean mousePressed = false;
+    private Point2D initialMousePosition;
+    private Point2D lastMousePosition;
 
     public Controller(IModel model, IView view, Scene scene) {
         this.model = model;
@@ -24,6 +28,7 @@ public class Controller implements IController {
 
     @Override
     public void start() {
+        enableMouseInput();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -34,9 +39,7 @@ public class Controller implements IController {
             
                 view.renderArena();
 
-                //view.renderCells(model.getReachableTiles());
-
-                //view.render(System.currentTimeMillis() - t0);
+                view.renderCells(model.getReachableTiles());
 
                 // rendering all the towers
                 for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
@@ -46,8 +49,36 @@ public class Controller implements IController {
                         model.getTowerCentreY(towerType)
                     );
                 }
+
+                if (mousePressed) {
+                    view.renderPoint(lastMousePosition.getX(), lastMousePosition.getY());
+                }
             }
         };
         loop.start();
+    }
+
+    private void enableMouseInput() {
+        scene.setOnMousePressed(event -> {
+            mousePressed = true;
+            double x = event.getSceneX();
+            double y = event.getSceneY();
+            this.initialMousePosition = new Point2D(x, y);
+            this.lastMousePosition = new Point2D(x, y);
+            System.out.println("Initial mouse position. " + initialMousePosition.toString());
+            System.out.println("Last mouse position. " + lastMousePosition.toString());
+        });
+
+        scene.setOnMouseDragged(event -> {
+            double x = event.getSceneX(); // coordinata rispetto alla scena
+            double y = event.getSceneY();
+            this.lastMousePosition = new Point2D(x, y);
+            System.out.println("Last mouse position. " + lastMousePosition.toString());
+        });
+
+        scene.setOnMouseReleased(event -> {
+            mousePressed = false;
+            System.out.println("Last mouse position. " + lastMousePosition.toString());
+        });
     }
 }
