@@ -139,15 +139,33 @@ public class View implements IView {
         );
     }
 
-    private void fillPoint(double centreX, double centreY) {
-        int defaultSize = 10;
-        fillPoint(centreX, centreY, defaultSize);
+    @Override
+    public void renderTroop(double centreX, double centreY, int side) {
+        Color color = Color.BLUE;
+        if (side == Side.OPPONENT) {
+            color = Color.RED;
+        }
+        fillPoint(
+            centreX, 
+            centreY,
+            color
+        );
     }
 
-    private void fillPoint(double centreX, double centreY, int size) {
+    private void fillPoint(double centreX, double centreY) {
+        int defaultSize = 10;
+        fillPoint(centreX, centreY, defaultSize, Color.BLACK);
+    }
+
+    private void fillPoint(double centreX, double centreY, Color color) {
+        int defaultSize = 10;
+        fillPoint(centreX, centreY, defaultSize, color);
+    }
+
+    private void fillPoint(double centreX, double centreY, int size, Color color) {
         gc.save();
 
-        gc.setFill(Color.BLACK);
+        gc.setFill(color);
         gc.setGlobalAlpha(1);
 
         gc.fillOval(
