@@ -1,6 +1,8 @@
 package jroyale.model;
 
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
+import java.util.List;
 
 import jroyale.shared.TowerIndex;
 
@@ -14,6 +16,8 @@ public class Model implements IModel {
     private static final int MAP_COLS = 18;
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
+    private List<Troop> playerTroops = new LinkedList<>();
+    private List<Troop> opponentTroops = new LinkedList<>();
 
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 
@@ -108,7 +112,10 @@ public class Model implements IModel {
 
     @Override
     public void update() {
-        // TODO
+        for (Troop playerTroop : playerTroops) {
+            playerTroop.shiftPosY(-0.01);
+        }
+
     }
 
     @Override
@@ -122,13 +129,27 @@ public class Model implements IModel {
     }
 
     @Override
-    public double fromGraphicToLogicX(double graphicX) {
-        return 0;
+    public void addPlayerTroop(Troop troop) {
+        playerTroops.add(troop);
     }
-    
 
     @Override
-    public double fromGraphicToLogicY(double graphicY) {
-        return 0;
+    public Troop getPlayerTroop(int index) {
+        return playerTroops.get(index);
+    }
+
+    @Override
+    public Troop getOpponentTroop(int index) {
+        return opponentTroops.get(index);
+    }
+
+    @Override
+    public int getNumberOfPlayerTroops() {
+        return playerTroops.size();
+    }
+
+    @Override
+    public int getNumberOfOpponentTroops() {
+        return playerTroops.size();
     }
 }

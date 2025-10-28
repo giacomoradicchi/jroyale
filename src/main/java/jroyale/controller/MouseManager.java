@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 class MouseManager {
     
     private static boolean mousePressed = false, mouseReleased = false;
-    private static Point2D initialMousePosition;
-    private static Point2D lastMousePosition;
+    private static Point2D initialMousePosition; // mouse position when mouse is first pressed
+    private static Point2D lastMousePosition; // last mouse position when mouse is dragged 
 
     static void enableInput(Scene scene) {
         scene.setOnMousePressed(event -> {

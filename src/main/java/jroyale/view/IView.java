@@ -10,6 +10,8 @@ public interface IView {
 
     public void renderTower(int towerType, double centreX, double centreY);
 
+    public void renderTroop(double centreX, double centreY, int side);
+
     public double getCanvasWidth();
 
     public double getCanvasHeight();
