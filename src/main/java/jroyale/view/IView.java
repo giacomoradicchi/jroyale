@@ -8,7 +8,7 @@ public interface IView {
 
     public void renderArena();
 
-    public void renderTower(int towerType, double centreLogicX, double centreLogicY);
+    public void renderTower(int towerType, double centreX, double centreY);
 
     public double getCanvasWidth();
 
@@ -17,6 +17,14 @@ public interface IView {
     public void setCanvasWidth(double newWidth);
 
     public void setCanvasHeight(double newHeight);
+
+    public double getMapTopLeftCornerX();
+
+    public double getMapTopLeftCornerY();
+
+    public double getMapWidth();
+
+    public double getMapHeight();
 
     // just for debug
     public void renderCells(boolean[][] cells);

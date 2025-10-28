@@ -20,11 +20,11 @@ public abstract class Tower {
         this.Y_OFFSET = Y_OFFSET;
     }
 
-    void drawTower(GraphicsContext gc, double centreGraphicX, double centreGraphicY, double globalScale) {
+    void drawTower(GraphicsContext gc, double centreX, double centreY, double globalScale) {
         gc.drawImage(
             towerImage, 
-            centreGraphicX - towerImage.getWidth() * SCALE * globalScale / 2 + X_OFFSET * globalScale, 
-            centreGraphicY - towerImage.getHeight() * SCALE * globalScale / 2 + Y_OFFSET * globalScale,
+            centreX - towerImage.getWidth() * SCALE * globalScale / 2 + X_OFFSET * globalScale, 
+            centreY - towerImage.getHeight() * SCALE * globalScale / 2 + Y_OFFSET * globalScale,
             towerImage.getWidth() * SCALE * globalScale,
             towerImage.getHeight() * SCALE * globalScale
         );

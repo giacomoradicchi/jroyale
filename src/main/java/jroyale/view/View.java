@@ -125,16 +125,17 @@ public class View implements IView {
 
 
     @Override
-    public void renderTower(int towerType, double centreLogicX, double centreLogicY) {
+    public void renderTower(int towerType, double centreX, double centreY) {
         if (towerType < 0 || towerType >= NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
-        towers[towerType].drawTower(gc, logic2GraphicX(centreLogicX), logic2GraphicY(centreLogicY), scale);
+        towers[towerType].drawTower(gc, centreX, centreY, scale);
         if (!DEBUG_MODE) return;
+
         // debug mode
         fillPoint(
-            logic2GraphicX(centreLogicX), 
-            logic2GraphicY(centreLogicY)
+            centreX, 
+            centreY
         );
     }
 
@@ -160,12 +161,24 @@ public class View implements IView {
         gc.restore();
     }
 
-    private double logic2GraphicX(double logicCoordX) {
-        return mapBoundingBox.getMinX() + logicCoordX*dx;
+    @Override
+    public double getMapTopLeftCornerX() {
+        return mapBoundingBox.getMinX();
     }
 
-    private double logic2GraphicY(double logicCoordY) {
-        return mapBoundingBox.getMinY() + logicCoordY*dy;
+    @Override
+    public double getMapTopLeftCornerY() {
+        return mapBoundingBox.getMinY();
+    }
+
+    @Override
+    public double getMapWidth() {
+        return mapBoundingBox.getWidth();
+    }
+
+    @Override
+    public double getMapHeight() {
+        return mapBoundingBox.getHeight();
     }
 
     @Override
