@@ -14,6 +14,8 @@ public interface IView {
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 
+    public void resetDragPlacementPreviewAnimation();
+
     public double getCanvasWidth();
 
     public double getCanvasHeight();

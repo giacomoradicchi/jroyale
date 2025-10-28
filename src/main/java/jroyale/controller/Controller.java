@@ -35,7 +35,7 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update();
-                view.initializeRendering(System.currentTimeMillis() - t0, scene.getWidth(), scene.getHeight());
+                view.initializeRendering(now, scene.getWidth(), scene.getHeight());
                 
                 view.renderArena();
 
@@ -59,6 +59,7 @@ public class Controller implements IController {
                     );
                     
                     resetLastLogicMousePos();
+                    view.resetDragPlacementPreviewAnimation();
                 }
 
                 // rendering player troops

@@ -3,9 +3,6 @@ package jroyale.view;
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
-
-import java.awt.geom.Rectangle2D;
-
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -28,13 +25,13 @@ public class View implements IView {
 
     // Entities attribs
     private Arena arena;
-    private static final int NUM_TOWERS = 6;
-    private Tower[] towers = new Tower[NUM_TOWERS];
-    
-    private Rectangle2D mapBoundingBox;
+    private Tower[] towers = new Tower[TowerIndex.NUM_TOWERS];
 
     // scale of the entire scene
     private double scale = 1.0;
+
+    // The timestamp of the current frame given in nanoseconds
+    private long now;
 
     public View(Canvas canvas, int rowsCount, int colsCount) {
         this.gc = canvas.getGraphicsContext2D();
@@ -42,7 +39,6 @@ public class View implements IView {
         this.height = canvas.getHeight();
         
         this.arena = new Arena(width, height, scale, rowsCount, colsCount);
-        this.mapBoundingBox = arena.getMapBounds();
         updateDxDy();
 
         // initializing towers
@@ -65,7 +61,7 @@ public class View implements IView {
     
 
     @Override
-    public void initializeRendering(long millisec, double newWidth, double newHeight) {
+    public void initializeRendering(long now, double newWidth, double newHeight) {
         // clears canvas
         gc.clearRect(0, 0, width, height);  
 
@@ -75,13 +71,13 @@ public class View implements IView {
         // update width and height:
         width = newWidth;
         height = newHeight;
+        this.now = now;
 
-        //scale = 1 - millisec/10000.0;
+        //scale -= 0.001;
 
         // update arena and dx dy
         arena.update(width, height, scale);
         updateDxDy();
-        mapBoundingBox = arena.getMapBounds();
     }
 
     private void updateDxDy() {
@@ -126,7 +122,7 @@ public class View implements IView {
 
     @Override
     public void renderTower(int towerType, double centreX, double centreY) {
-        if (towerType < 0 || towerType >= NUM_TOWERS) {
+        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
         towers[towerType].drawTower(gc, centreX, centreY, scale);
@@ -154,21 +150,12 @@ public class View implements IView {
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        gc.save();
+        DragPlacementPreview.render(gc, centreX, centreY, dx, dy, scale, now);
+    }
 
-        // fill
-        double alpha = 0.5;
-        gc.setGlobalAlpha(alpha);
-        gc.setFill(Color.TEAL);
-        gc.fillRoundRect(centreX - dx/2, centreY - dy/2, dx, dy, dx/2, dy/2);
-
-        // outline
-        gc.setStroke(Color.WHITE);
-        gc.setLineWidth(5);
-        gc.setGlobalAlpha(1);
-        gc.strokeRoundRect(centreX - dx/2, centreY - dy/2, dx, dy, dx/2, dy/2);
-
-        gc.restore();
+    @Override
+    public void resetDragPlacementPreviewAnimation() {
+        DragPlacementPreview.resetAnimation();
     }
 
     private void fillPoint(double centreX, double centreY) {
@@ -200,22 +187,22 @@ public class View implements IView {
 
     @Override
     public double getMapTopLeftCornerX() {
-        return mapBoundingBox.getMinX();
+        return arena.getMapBounds().getMinX();
     }
 
     @Override
     public double getMapTopLeftCornerY() {
-        return mapBoundingBox.getMinY();
+        return arena.getMapBounds().getMinY();
     }
 
     @Override
     public double getMapWidth() {
-        return mapBoundingBox.getWidth();
+        return arena.getMapBounds().getWidth();
     }
 
     @Override
     public double getMapHeight() {
-        return mapBoundingBox.getHeight();
+        return arena.getMapBounds().getHeight();
     }
 
     @Override
