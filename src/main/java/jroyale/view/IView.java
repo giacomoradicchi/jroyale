@@ -12,6 +12,8 @@ public interface IView {
 
     public void renderTroop(double centreX, double centreY, int side);
 
+    public void renderDragPlacementPreview(double centreX, double centreY);
+
     public double getCanvasWidth();
 
     public double getCanvasHeight();
@@ -31,5 +33,5 @@ public interface IView {
     // just for debug
     public void renderCells(boolean[][] cells);
 
-    public void renderPoint(double graphicX, double graphicY);
+    public void renderPoint(double centreX, double centreY);
 }

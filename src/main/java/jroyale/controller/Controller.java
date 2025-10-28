@@ -39,13 +39,13 @@ public class Controller implements IController {
                 
                 view.renderArena();
 
-                view.renderCells(model.getReachableTiles());
+                //view.renderCells(model.getReachableTiles());
 
                 // handling mouse events
 
                 if (MouseManager.isMousePressed()) {
                     updateLogicMousePos();
-                    renderMousePoint();
+                    renderDragPlacementPreview();
                 } 
 
                 if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
@@ -88,9 +88,9 @@ public class Controller implements IController {
         lastMouseRowIndex = -1;
     }
 
-    private void renderMousePoint() {
+    private void renderDragPlacementPreview() {
         if (isLastLogicMousePosValid()) {
-            view.renderPoint(index2GraphicCentreX(lastMouseColumnIndex), index2GraphicCentreY(lastMouseRowIndex));
+            view.renderDragPlacementPreview(index2GraphicCentreX(lastMouseColumnIndex), index2GraphicCentreY(lastMouseRowIndex));
         }
     }
 
