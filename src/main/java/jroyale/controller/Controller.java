@@ -13,9 +13,6 @@ public class Controller implements IController {
     private IView view;
     private long t0;
     private Scene scene;
-    private boolean mousePressed = false, mouseReleased = false;
-    private Point2D initialMousePosition;
-    private Point2D lastMousePosition;
     private int lastLogicMousePositionX = -1;
     private int lastLogicMousePositionY = -1;
 
@@ -30,7 +27,7 @@ public class Controller implements IController {
 
     @Override
     public void start() {
-        enableMouseInput();
+        MouseManager.enableInput(scene);
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -41,7 +38,7 @@ public class Controller implements IController {
             
                 view.renderArena();
 
-                //view.renderCells(model.getReachableTiles());
+                view.renderCells(model.getReachableTiles());
 
                 // rendering all the towers
                 for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
@@ -52,16 +49,16 @@ public class Controller implements IController {
                     );
                 }
 
-                if (mousePressed) {
-                    int logicX = (int) Math.floor(graphic2LogicX(lastMousePosition.getX()));
-                    int logicY = (int) Math.floor(graphic2LogicY(lastMousePosition.getY()));
+                if (MouseManager.isMousePressed()) {
+                    int logicX = (int) Math.floor(graphic2LogicX(MouseManager.getLastMousePositionX()));
+                    int logicY = (int) Math.floor(graphic2LogicY(MouseManager.getLastMousePositionY()));
 
                     if (0 <= logicX && logicX < model.getColsCount()
                     &&  0 <= logicY && logicY < model.getRowsCount()
                     &&  model.getReachableTiles()[logicY][logicX] == true) {
                         lastLogicMousePositionX = logicX;
                         lastLogicMousePositionY = logicY;
-                    } else if (lastLogicMousePositionX != -1 && lastLogicMousePositionY != -1){
+                    } /* else if (lastLogicMousePositionX != -1 && lastLogicMousePositionY != -1){
                         if (0 <= logicX && logicX < model.getColsCount() 
                         &&  model.getReachableTiles()[Math.max(0, Math.min(logicY, model.getRowsCount()-1))][logicX] == true) {
                             lastLogicMousePositionX = logicX;
@@ -72,7 +69,7 @@ public class Controller implements IController {
                             lastLogicMousePositionX = Math.max(0, Math.min(logicX, model.getColsCount()-1));
                             lastLogicMousePositionY = logicY;
                         } 
-                    }
+                    } */
 
                     
 
@@ -84,37 +81,15 @@ public class Controller implements IController {
                     
                 } 
 
-                if (mouseReleased) {
+                if (MouseManager.isMouseReleased()) {
                     // TODO: drop a new Troop
 
                     lastLogicMousePositionX = -1;
                     lastLogicMousePositionY = -1;
-                    mouseReleased = false;
                 }
             }
         };
         loop.start();
-    }
-
-    private void enableMouseInput() {
-        scene.setOnMousePressed(event -> {
-            mousePressed = true;
-            double x = event.getSceneX();
-            double y = event.getSceneY();
-            this.initialMousePosition = new Point2D(x, y);
-            this.lastMousePosition = new Point2D(x, y);
-        });
-
-        scene.setOnMouseDragged(event -> {
-            double x = event.getSceneX(); // coordinata rispetto alla scena
-            double y = event.getSceneY();
-            this.lastMousePosition = new Point2D(x, y);
-        });
-
-        scene.setOnMouseReleased(event -> {
-            mousePressed = false;
-            mouseReleased = true;
-        });
     }
 
     // Coords Transformation:
