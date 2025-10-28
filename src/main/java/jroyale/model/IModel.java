@@ -8,8 +8,11 @@ public interface IModel {
     public double getTowerCentreX(int towerType);
     public double getTowerCentreY(int towerType);
 
-    public int getRowCount();
+    public int getRowsCount();
     public int getColsCount();
+
+    public double fromGraphicToLogicX(double graphicX);
+    public double fromGraphicToLogicY(double graphicY);
 
     // just for debugging:
     public boolean[][] getReachableTiles();

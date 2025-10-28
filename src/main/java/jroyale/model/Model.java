@@ -112,7 +112,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public int getRowCount() {
+    public int getRowsCount() {
         return MAP_ROWS;
     }
 
@@ -120,5 +120,15 @@ public class Model implements IModel {
     public int getColsCount() {
         return MAP_COLS;    
     }
+
+    @Override
+    public double fromGraphicToLogicX(double graphicX) {
+        return 0;
+    }
     
+
+    @Override
+    public double fromGraphicToLogicY(double graphicY) {
+        return 0;
+    }
 }
