@@ -152,6 +152,25 @@ public class View implements IView {
         );
     }
 
+    @Override
+    public void renderDragPlacementPreview(double centreX, double centreY) {
+        gc.save();
+
+        // fill
+        double alpha = 0.5;
+        gc.setGlobalAlpha(alpha);
+        gc.setFill(Color.TEAL);
+        gc.fillRoundRect(centreX - dx/2, centreY - dy/2, dx, dy, dx/2, dy/2);
+
+        // outline
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(5);
+        gc.setGlobalAlpha(1);
+        gc.strokeRoundRect(centreX - dx/2, centreY - dy/2, dx, dy, dx/2, dy/2);
+
+        gc.restore();
+    }
+
     private void fillPoint(double centreX, double centreY) {
         int defaultSize = 10;
         fillPoint(centreX, centreY, defaultSize, Color.BLACK);
@@ -224,8 +243,8 @@ public class View implements IView {
     }
 
     @Override
-    public void renderPoint(double graphicX, double graphicY) {
+    public void renderPoint(double centreX, double centreY) {
         double size = 16;
-        gc.fillOval(graphicX - size/2, graphicY - size/2, size, size);
+        gc.fillOval(centreX - size/2, centreY - size/2, size, size);
     }
 }
