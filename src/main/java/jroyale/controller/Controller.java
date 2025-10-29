@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import jroyale.model.IModel;
+import jroyale.model.PlayerTroop;
 import jroyale.model.Troop;
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
@@ -50,7 +51,7 @@ public class Controller implements IController {
 
                 if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
                     model.addPlayerTroop(
-                        new Troop(
+                        new PlayerTroop(
                             null, 
                             null, 
                             lastMouseRowIndex,
@@ -63,20 +64,19 @@ public class Controller implements IController {
                 }
 
                 // rendering player troops
-                for (int i = 0; i < model.getNumberOfPlayerTroops(); i++) {
-                    Troop troop = model.getPlayerTroop(i);
+                for (Troop troop : model.getTroopsOrderedByPosY()) {
                     view.renderTroop(logic2GraphicX(troop.getPosX()), logic2GraphicY(troop.getPosY()), Side.PLAYER);
                 }
                 
 
                 // rendering all the towers
-                for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
+                /* for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
                     view.renderTower(
                         towerType, 
                         logic2GraphicX(model.getTowerCentreX(towerType)),
                         logic2GraphicY(model.getTowerCentreY(towerType))
                     );
-                }
+                } */
             }
         };
         loop.start();

@@ -4,9 +4,19 @@ import java.util.List;
 import java.util.ArrayList;
 
 class Tile {
-    private List<Entity> entities;
+    private List<Troop> playerTroops;
+    private List<Troop> opponentTroops;
 
     Tile() {
-        entities = new ArrayList<>();
+        playerTroops = new ArrayList<>();
+        opponentTroops = new ArrayList<>();
+    }
+
+    void addPlayerTroop(Troop playerTroop) {
+        playerTroops.add(playerTroop);
+    }
+
+    void addOpponentTroop(Troop opponentTroop) {
+        opponentTroops.add(opponentTroop);
     }
 }
