@@ -1,18 +1,46 @@
 package jroyale.model; 
 
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Troop { // TODO: farlo abstract
     private String name;
     private Image pic;
-    private static final double DEFAULT_SPEED = 1; //TODO: determinare la default speed
-    private double posX, posY;
+
+    private static Map<String, Integer> SPEEDS = new HashMap<>() {
+        {   // category - associated speed [tiles/minutes]
+            // based on: https://clashroyale.fandom.com/wiki/Cards
+            put("Very Slow", 30);
+            put("Slow", 45);
+            put("Medium", 60);
+            put("Fast", 90);
+            put("Very Fast", 120);
+        }
+    };
+
+    private static final Point2D LEFT_BRIDGE_POS = new Point2D(3.5,17);
+    private static final Point2D RIGHT_BRIDGE_POS = new Point2D(14.5,17);
+
+
+    private Point2D position;
+    private Point2D target; // TODO: necessary to calculate speed vector
+    private Point2D speed;
 
     public Troop(String name, Image pic, double x, double y) {
         this.name = name;
         this.pic = pic;
-        this.posX = x;
-        this.posY = y;
+        this.position = new Point2D(x, y);
+        this.speed = new Point2D(0, 0);
+        if (x < Model.MAP_COLS / 2) { // if is on the left side
+            this.target = LEFT_BRIDGE_POS;
+        } else { // if is on the right side
+            this.target = RIGHT_BRIDGE_POS; 
+        }
+        updateSpeed();
     }
 
     public Troop(String name, Image pic, int n, int m) {
@@ -25,18 +53,26 @@ public class Troop { // TODO: farlo abstract
     }
 
     public double getPosX() {
-        return posX;
+        return position.getX();
     }
 
     public double getPosY() {
-        return posY;
+        return position.getY();
     }
 
-    public void shiftPosX(double shiftX) {
-        posX += shiftX;
+    public void moove() {
+        updateSpeed();
+        shiftPosition(speed);
     }
 
-    public void shiftPosY(double shiftY) {
-        posY += shiftY;
+    // private methods
+
+    private void shiftPosition(Point2D shift) {
+        position = position.add(shift);
     }
+
+    private void updateSpeed() {
+        // TODO
+    }
+    
 }

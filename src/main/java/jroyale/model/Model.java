@@ -12,8 +12,8 @@ public class Model implements IModel {
     // their position (so the collision algoritm will be much
     // more efficient)
     
-    private static final int MAP_ROWS = 32;
-    private static final int MAP_COLS = 18;
+    static final int MAP_ROWS = 32;
+    static final int MAP_COLS = 18;
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
     private List<Troop> playerTroops = new LinkedList<>();
@@ -113,7 +113,7 @@ public class Model implements IModel {
     @Override
     public void update() {
         for (Troop playerTroop : playerTroops) {
-            playerTroop.shiftPosY(-0.01);
+            playerTroop.moove();
         }
 
     }
