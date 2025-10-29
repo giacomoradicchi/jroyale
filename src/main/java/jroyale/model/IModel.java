@@ -1,5 +1,7 @@
 package jroyale.model;
 
+import java.util.List;
+
 public interface IModel {
 
     public void update();
@@ -12,15 +14,9 @@ public interface IModel {
 
     public int getColsCount();
 
-    public void addPlayerTroop(Troop troop);
+    public void addPlayerTroop(PlayerTroop troop);
 
-    public Troop getPlayerTroop(int index);
-
-    public Troop getOpponentTroop(int index);
-
-    public int getNumberOfPlayerTroops(); 
-
-    public int getNumberOfOpponentTroops();
+    public List<Troop> getTroopsOrderedByPosY(); // necessary to enable depth in rendering
 
     // just for debugging:
     public boolean[][] getReachableTiles();

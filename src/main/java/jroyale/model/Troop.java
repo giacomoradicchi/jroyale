@@ -2,12 +2,14 @@ package jroyale.model;
 
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
-public class Troop { // TODO: farlo abstract
+public abstract class Troop implements Comparable<Troop> {
     private String name;
     private Image pic;
 
@@ -22,24 +24,19 @@ public class Troop { // TODO: farlo abstract
         }
     };
 
-    private static final Point2D LEFT_BRIDGE_POS = new Point2D(3.5,17);
-    private static final Point2D RIGHT_BRIDGE_POS = new Point2D(14.5,17);
-
-
-    private Point2D position;
-    private Point2D target; // TODO: necessary to calculate speed vector
-    private Point2D speed;
+    protected Point2D position;
+    protected Point2D target;
+    protected Point2D speed;
+    protected List<Point2D> defaultRoute;
 
     public Troop(String name, Image pic, double x, double y) {
         this.name = name;
         this.pic = pic;
         this.position = new Point2D(x, y);
         this.speed = new Point2D(0, 0);
-        if (x < Model.MAP_COLS / 2) { // if is on the left side
-            this.target = LEFT_BRIDGE_POS;
-        } else { // if is on the right side
-            this.target = RIGHT_BRIDGE_POS; 
-        }
+        
+        initTargetList();
+        setFirstTarget();
         updateSpeed();
     }
 
@@ -50,6 +47,13 @@ public class Troop { // TODO: farlo abstract
         // instead, it will be in the cell's centre.
 
         this(name, pic, m + 0.5, n + 0.5);
+    }
+
+    @Override
+    public int compareTo(Troop troop) {
+        // this method is crucial to achieve depth rendering.
+        // order will be based on Y position
+        return Double.compare(getPosY(), troop.getPosY()); // ascendent order
     }
 
     public double getPosX() {
@@ -72,7 +76,46 @@ public class Troop { // TODO: farlo abstract
     }
 
     private void updateSpeed() {
-        // TODO
+        if (hasReachedTarget()) { 
+            goToNextTarget();
+            
+            return;
+        }
+
+        double module = 0.1; // TODO
+
+        // new vector speed will be the smooth aim unit vector (a vector that aims to the next target
+        // based on troop position and his last direction) times his absolute speed [tiles/delta_time].
+        speed = getSmoothAimUnitVector().multiply(module);
     }
-    
+
+    private boolean hasReachedTarget() {
+        return position.distance(target) < speed.magnitude();
+    }
+
+    private Point2D getAimUnitVector() {
+        return new Point2D(target.getX() - getPosX(), target.getY() - getPosY()).normalize();
+    }
+
+    private Point2D getLastDirectionUnitVector() {
+        if (speed.magnitude() == 0) return getAimUnitVector(); // to avoid division by 0
+        return speed.normalize(); 
+    }
+
+    private Point2D getSmoothAimUnitVector() {
+        // calculating mean between direction and last direction (for smooth turning)
+        //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
+
+        return getLastDirectionUnitVector().interpolate(getAimUnitVector(), 0.9).normalize();
+    }
+
+    // abstract methods
+
+    protected abstract int getSide();
+
+    protected abstract void goToNextTarget();
+
+    protected abstract void initTargetList();
+
+    protected abstract void setFirstTarget();
 }
