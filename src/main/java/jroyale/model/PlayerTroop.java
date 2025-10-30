@@ -3,13 +3,14 @@ package jroyale.model;
 
 import java.util.LinkedList;
 import java.util.Iterator;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import jroyale.shared.Side;
 
+import jroyale.utils.Point;
+
 public class PlayerTroop extends Troop {
 
-    private Iterator<Point2D> itTargets;
+    private Iterator<Point> itTargets;
     
 
     public PlayerTroop(String name, Image pic, double x, double y) {
@@ -35,8 +36,8 @@ public class PlayerTroop extends Troop {
             target = itTargets.next();
         } else {
             // has reached the end.
-            position = new Point2D(target.getX(), target.getY());
-            speed = new Point2D(0, 0);
+            position = new Point(target.getX(), target.getY());
+            speed = new Point(0, 0);
         }
     }
 

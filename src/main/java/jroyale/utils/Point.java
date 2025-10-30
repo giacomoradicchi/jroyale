@@ -66,4 +66,9 @@ public class Point {
         double newY = this.y + (p.y - this.y) * t;
         return new Point(newX, newY);
     }
+
+    public double magnitude(){
+        return Math.sqrt(x * x + y * y);
+    }
+
 }

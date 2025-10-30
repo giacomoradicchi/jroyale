@@ -1,6 +1,5 @@
 package jroyale.model;
 
-import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jroyale.shared.TowerIndex;
+import jroyale.utils.Point;
 
 public class Model implements IModel {
     // 32x18 is the map size, each Tile 
@@ -27,7 +27,7 @@ public class Model implements IModel {
 
     // logic coords for Towers:
     
-    private final static Point2D[] TOWERS_CENTRE = getTowersCentre();
+    private final static Point[] TOWERS_CENTRE = getTowersCentre();
     
     private final List<Troop> renderOrderTroops = new ArrayList<>();
     private List<Troop> troops = new LinkedList<>();
@@ -113,8 +113,8 @@ public class Model implements IModel {
     // PRIVATE METHODS
     //
 
-    private static Point2D[] getTowersCentre() {
-        Point2D[] centres = new Point2D[TowerIndex.NUM_TOWERS];
+    private static Point[] getTowersCentre() {
+        Point[] centres = new Point[TowerIndex.NUM_TOWERS];
 
         centres[TowerIndex.PLAYER_KING_TOWER] = Entity.PLAYER_KING_TOWER_CENTRE;
         centres[TowerIndex.PLAYER_LEFT_TOWER] = Entity.PLAYER_LEFT_TOWER_CENTRE;
