@@ -1,6 +1,6 @@
 package jroyale.model;
 
-import java.awt.geom.Point2D;
+import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,17 +26,12 @@ public class Model implements IModel {
     // be continue, so it has to be double.
 
     // logic coords for Towers:
-    private final static Point2D.Double PLAYER_KING_TOWER_CENTRE = new Point2D.Double(9, 29);
-    private final static Point2D.Double PLAYER_LEFT_TOWER_CENTRE = new Point2D.Double(3.5, 25.5);
-    private final static Point2D.Double PLAYER_RIGHT_TOWER_CENTRE = new Point2D.Double(14.5, 25.5);
-
-    private final static Point2D.Double OPPONENT_KING_TOWER_CENTRE = new Point2D.Double(9, 3);
-    private final static Point2D.Double OPPONENT_LEFT_TOWER_CENTRE = new Point2D.Double(3.5, 6.5);
-    private final static Point2D.Double OPPONENT_RIGHT_TOWER_CENTRE = new Point2D.Double(14.5, 6.5);
-    private final static Point2D.Double[] TOWERS_CENTRE = getTowersCentre();
+    
+    private final static Point2D[] TOWERS_CENTRE = getTowersCentre();
     
     private final List<Troop> renderOrderTroops = new ArrayList<>();
     private List<Troop> troops = new LinkedList<>();
+    private long lastTimeStamp;
 
 
     public Model() {
@@ -74,9 +69,14 @@ public class Model implements IModel {
     }
 
     @Override
-    public void update() {
+    public void update(long now) {
+        long elapsed = 0;
+        if (lastTimeStamp != 0) {
+            elapsed = now - lastTimeStamp;
+        } 
+        lastTimeStamp = now;
         for (Troop troop : troops) {
-            troop.moove();
+            troop.moove(elapsed);
         }
 
     }
@@ -113,16 +113,16 @@ public class Model implements IModel {
     // PRIVATE METHODS
     //
 
-    private static Point2D.Double[] getTowersCentre() {
-        Point2D.Double[] centres = new Point2D.Double[TowerIndex.NUM_TOWERS];
+    private static Point2D[] getTowersCentre() {
+        Point2D[] centres = new Point2D[TowerIndex.NUM_TOWERS];
 
-        centres[TowerIndex.PLAYER_KING_TOWER] = PLAYER_KING_TOWER_CENTRE;
-        centres[TowerIndex.PLAYER_LEFT_TOWER] = PLAYER_LEFT_TOWER_CENTRE;
-        centres[TowerIndex.PLAYER_RIGHT_TOWER] = PLAYER_RIGHT_TOWER_CENTRE;
+        centres[TowerIndex.PLAYER_KING_TOWER] = Entity.PLAYER_KING_TOWER_CENTRE;
+        centres[TowerIndex.PLAYER_LEFT_TOWER] = Entity.PLAYER_LEFT_TOWER_CENTRE;
+        centres[TowerIndex.PLAYER_RIGHT_TOWER] = Entity.PLAYER_RIGHT_TOWER_CENTRE;
 
-        centres[TowerIndex.OPPONENT_KING_TOWER] =  OPPONENT_KING_TOWER_CENTRE;
-        centres[TowerIndex.OPPONENT_LEFT_TOWER] =  OPPONENT_LEFT_TOWER_CENTRE;
-        centres[TowerIndex.OPPONENT_RIGHT_TOWER] = OPPONENT_RIGHT_TOWER_CENTRE;
+        centres[TowerIndex.OPPONENT_KING_TOWER] =  Entity.OPPONENT_KING_TOWER_CENTRE;
+        centres[TowerIndex.OPPONENT_LEFT_TOWER] =  Entity.OPPONENT_LEFT_TOWER_CENTRE;
+        centres[TowerIndex.OPPONENT_RIGHT_TOWER] = Entity.OPPONENT_RIGHT_TOWER_CENTRE;
         return centres;
     }
 

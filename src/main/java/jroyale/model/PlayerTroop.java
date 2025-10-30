@@ -9,18 +9,16 @@ import jroyale.shared.Side;
 
 public class PlayerTroop extends Troop {
 
-    private static final Point2D LEFT_BRIDGE_POS = new Point2D(3.5,17);
-    private static final Point2D RIGHT_BRIDGE_POS = new Point2D(14.5,17);
     private Iterator<Point2D> itTargets;
     
 
     public PlayerTroop(String name, Image pic, double x, double y) {
-        super(name, pic, x, y);
+        super(name, pic, x, y, Troop.MEDIUM);
         itTargets = defaultRoute.iterator();
     }
 
     public PlayerTroop(String name, Image pic, int n, int m) {
-        super(name, pic, n, m);
+        super(name, pic, n, m, Troop.MEDIUM);
         itTargets = defaultRoute.iterator();
     }
 
@@ -48,13 +46,16 @@ public class PlayerTroop extends Troop {
 
         if (getPosX() < Model.MAP_COLS / 2) { 
             // if is on the left side
-            this.defaultRoute.add(LEFT_BRIDGE_POS);
-            this.defaultRoute.add(new Point2D(3.5, 6.5));
+            this.defaultRoute.add(Entity.LEFT_BRIDGE_START_POS);
+            this.defaultRoute.add(Entity.LEFT_BRIDGE_END_POS);
+            this.defaultRoute.add(Entity.OPPONENT_LEFT_TOWER_CENTRE);
         } else { 
             // if is on the right side
-            this.defaultRoute.add(RIGHT_BRIDGE_POS); 
-            this.defaultRoute.add(new Point2D(14.5, 6.5));
+            this.defaultRoute.add(Entity.RIGHT_BRIDGE_START_POS);
+            this.defaultRoute.add(Entity.RIGHT_BRIDGE_END_POS); 
+            this.defaultRoute.add(Entity.OPPONENT_RIGHT_TOWER_CENTRE);
         }
+        this.defaultRoute.add(Entity.OPPONENT_KING_TOWER_CENTRE);
     }
 
     @Override

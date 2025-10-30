@@ -12,15 +12,22 @@ import javafx.scene.image.Image;
 public abstract class Troop implements Comparable<Troop> {
     private String name;
     private Image pic;
+    private final byte SPEED_TYPE;
 
-    private static Map<String, Integer> SPEEDS = new HashMap<>() {
+    static final byte VERY_SLOW = 0;
+    static final byte SLOW = 1;
+    static final byte MEDIUM = 2;
+    static final byte FAST = 3;
+    static final byte VERY_FAST = 4;
+
+    private static Map<Byte, Integer> SPEEDS = new HashMap<>() {
         {   // category - associated speed [tiles/minutes]
             // based on: https://clashroyale.fandom.com/wiki/Cards
-            put("Very Slow", 30);
-            put("Slow", 45);
-            put("Medium", 60);
-            put("Fast", 90);
-            put("Very Fast", 120);
+            put(VERY_SLOW, 30);
+            put(SLOW, 45);
+            put(MEDIUM, 60);
+            put(FAST, 90);
+            put(VERY_FAST, 120);
         }
     };
 
@@ -29,24 +36,28 @@ public abstract class Troop implements Comparable<Troop> {
     protected Point2D speed;
     protected List<Point2D> defaultRoute;
 
-    public Troop(String name, Image pic, double x, double y) {
+    public Troop(String name, Image pic, double x, double y, byte speedType) {
         this.name = name;
         this.pic = pic;
         this.position = new Point2D(x, y);
         this.speed = new Point2D(0, 0);
         
+        if (speedType < VERY_SLOW || speedType > VERY_FAST) {
+            this.SPEED_TYPE = MEDIUM;
+        } else {
+            this.SPEED_TYPE = speedType;
+        }
         initTargetList();
         setFirstTarget();
-        updateSpeed();
     }
 
-    public Troop(String name, Image pic, int n, int m) {
+    public Troop(String name, Image pic, int n, int m, byte speedType) {
         // The constructor puts the troop in the centre of the cell (n, m).
         // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
         // which is half a cell. In this way, the placing won't be in the top left corner; 
         // instead, it will be in the cell's centre.
 
-        this(name, pic, m + 0.5, n + 0.5);
+        this(name, pic, m + 0.5, n + 0.5, speedType);
     }
 
     @Override
@@ -64,8 +75,8 @@ public abstract class Troop implements Comparable<Troop> {
         return position.getY();
     }
 
-    public void moove() {
-        updateSpeed();
+    public void moove(long elapsed) {
+        updateSpeed(elapsed);
         shiftPosition(speed);
     }
 
@@ -75,18 +86,21 @@ public abstract class Troop implements Comparable<Troop> {
         position = position.add(shift);
     }
 
-    private void updateSpeed() {
+    private void updateSpeed(long elapsed) {
         if (hasReachedTarget()) { 
             goToNextTarget();
             
             return;
         }
 
-        double module = 0.1; // TODO
-
         // new vector speed will be the smooth aim unit vector (a vector that aims to the next target
         // based on troop position and his last direction) times his absolute speed [tiles/delta_time].
-        speed = getSmoothAimUnitVector().multiply(module);
+        speed = getSmoothAimUnitVector().multiply(getAbsoluteSpeed(elapsed));
+    }
+
+    private double getAbsoluteSpeed(long elapsed) {
+        // elapsed is in nanosec (10^(-9) sec) and speed is in tiles/minutes, so the speed in tiles/ns will be:
+        return elapsed / 1_000_000_000.0 * SPEEDS.get(SPEED_TYPE) / 60.0 ;
     }
 
     private boolean hasReachedTarget() {
