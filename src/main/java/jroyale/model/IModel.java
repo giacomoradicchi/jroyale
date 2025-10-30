@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IModel {
 
-    public void update();
+    public void update(long now);
 
     public double getTowerCentreX(int towerType); // logic location
 

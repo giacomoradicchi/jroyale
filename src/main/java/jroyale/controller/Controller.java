@@ -2,7 +2,6 @@ package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import jroyale.model.IModel;
 import jroyale.model.PlayerTroop;
 import jroyale.model.Troop;
@@ -14,7 +13,6 @@ public class Controller implements IController {
 
     private IModel model;
     private IView view;
-    private long t0;
     private Scene scene;
     private int lastMouseColumnIndex = -1;
     private int lastMouseRowIndex = -1;
@@ -22,7 +20,6 @@ public class Controller implements IController {
     public Controller(IModel model, IView view, Scene scene) {
         this.model = model;
         this.view = view;
-        this.t0 = System.currentTimeMillis();
         this.scene = scene;
     }
 
@@ -35,7 +32,7 @@ public class Controller implements IController {
         AnimationTimer loop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                model.update();
+                model.update(now);
                 view.initializeRendering(now, scene.getWidth(), scene.getHeight());
                 
                 view.renderArena();
@@ -62,7 +59,8 @@ public class Controller implements IController {
                     resetLastLogicMousePos();
                     view.resetDragPlacementPreviewAnimation();
                 }
-
+                
+                // TODO: check depth 
                 // rendering player troops
                 for (Troop troop : model.getTroopsOrderedByPosY()) {
                     view.renderTroop(logic2GraphicX(troop.getPosX()), logic2GraphicY(troop.getPosY()), Side.PLAYER);
@@ -70,13 +68,13 @@ public class Controller implements IController {
                 
 
                 // rendering all the towers
-                /* for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
+                for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
                     view.renderTower(
                         towerType, 
                         logic2GraphicX(model.getTowerCentreX(towerType)),
                         logic2GraphicY(model.getTowerCentreY(towerType))
                     );
-                } */
+                } 
             }
         };
         loop.start();
