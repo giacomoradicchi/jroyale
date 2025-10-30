@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+
+import jroyale.utils.Point;
 
 public abstract class Troop implements Comparable<Troop> {
     private String name;
@@ -31,16 +31,16 @@ public abstract class Troop implements Comparable<Troop> {
         }
     };
 
-    protected Point2D position;
-    protected Point2D target;
-    protected Point2D speed;
-    protected List<Point2D> defaultRoute;
+    protected Point position;
+    protected Point target;
+    protected Point speed;
+    protected List<Point> defaultRoute;
 
     public Troop(String name, Image pic, double x, double y, byte speedType) {
         this.name = name;
         this.pic = pic;
-        this.position = new Point2D(x, y);
-        this.speed = new Point2D(0, 0);
+        this.position = new Point(x, y);
+        this.speed = new Point(0, 0);
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
             this.SPEED_TYPE = MEDIUM;
@@ -82,7 +82,7 @@ public abstract class Troop implements Comparable<Troop> {
 
     // private methods
 
-    private void shiftPosition(Point2D shift) {
+    private void shiftPosition(Point shift) {
         position = position.add(shift);
     }
 
@@ -107,16 +107,16 @@ public abstract class Troop implements Comparable<Troop> {
         return position.distance(target) < speed.magnitude();
     }
 
-    private Point2D getAimUnitVector() {
-        return new Point2D(target.getX() - getPosX(), target.getY() - getPosY()).normalize();
+    private Point getAimUnitVector() {
+        return new Point(target.getX() - getPosX(), target.getY() - getPosY()).normalize();
     }
 
-    private Point2D getLastDirectionUnitVector() {
+    private Point getLastDirectionUnitVector() {
         if (speed.magnitude() == 0) return getAimUnitVector(); // to avoid division by 0
         return speed.normalize(); 
     }
 
-    private Point2D getSmoothAimUnitVector() {
+    private Point getSmoothAimUnitVector() {
         // calculating mean between direction and last direction (for smooth turning)
         //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
 
