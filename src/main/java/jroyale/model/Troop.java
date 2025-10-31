@@ -2,16 +2,13 @@ package jroyale.model;
 
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.image.Image;
 
 import jroyale.utils.Point;
 
-public abstract class Troop implements Comparable<Troop> {
+public abstract class Troop extends Entity {
     private String name;
-    private Image pic;
     private final byte SPEED_TYPE;
 
     static final byte VERY_SLOW = 0;
@@ -31,15 +28,13 @@ public abstract class Troop implements Comparable<Troop> {
         }
     };
 
-    protected Point position;
     protected Point target;
     protected Point speed;
     protected List<Point> defaultRoute;
 
-    public Troop(String name, Image pic, double x, double y, byte speedType) {
+    public Troop(String name, double x, double y, byte speedType, byte side) {
+        super(x, y, side);
         this.name = name;
-        this.pic = pic;
-        this.position = new Point(x, y);
         this.speed = new Point(0, 0);
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
@@ -51,31 +46,25 @@ public abstract class Troop implements Comparable<Troop> {
         setFirstTarget();
     }
 
-    public Troop(String name, Image pic, int n, int m, byte speedType) {
+    public Troop(String name, int n, int m, byte speedType, byte side) {
         // The constructor puts the troop in the centre of the cell (n, m).
         // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
         // which is half a cell. In this way, the placing won't be in the top left corner; 
         // instead, it will be in the cell's centre.
 
-        this(name, pic, m + 0.5, n + 0.5, speedType);
+        this(name, m + 0.5, n + 0.5, speedType, side);
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
-    public int compareTo(Troop troop) {
-        // this method is crucial to achieve depth rendering.
-        // order will be based on Y position
-        return Double.compare(getPosY(), troop.getPosY()); // ascendent order
+    public void update(long elapsed) {
+        moove(elapsed);
     }
 
-    public double getPosX() {
-        return position.getX();
-    }
-
-    public double getPosY() {
-        return position.getY();
-    }
-
-    public void moove(long elapsed) {
+    private void moove(long elapsed) {
         updateSpeed(elapsed);
         shiftPosition(speed);
     }
@@ -108,7 +97,7 @@ public abstract class Troop implements Comparable<Troop> {
     }
 
     private Point getAimUnitVector() {
-        return new Point(target.getX() - getPosX(), target.getY() - getPosY()).normalize();
+        return new Point(target.getX() - getX(), target.getY() - getY()).normalize();
     }
 
     private Point getLastDirectionUnitVector() {
@@ -124,8 +113,6 @@ public abstract class Troop implements Comparable<Troop> {
     }
 
     // abstract methods
-
-    protected abstract int getSide();
 
     protected abstract void goToNextTarget();
 

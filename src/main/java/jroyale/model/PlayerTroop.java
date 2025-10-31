@@ -3,7 +3,6 @@ package jroyale.model;
 
 import java.util.LinkedList;
 import java.util.Iterator;
-import javafx.scene.image.Image;
 import jroyale.shared.Side;
 
 import jroyale.utils.Point;
@@ -13,19 +12,14 @@ public class PlayerTroop extends Troop {
     private Iterator<Point> itTargets;
     
 
-    public PlayerTroop(String name, Image pic, double x, double y) {
-        super(name, pic, x, y, Troop.MEDIUM);
+    public PlayerTroop(String name, double x, double y) {
+        super(name, x, y, Troop.FAST, Side.PLAYER);
         itTargets = defaultRoute.iterator();
     }
 
-    public PlayerTroop(String name, Image pic, int n, int m) {
-        super(name, pic, n, m, Troop.MEDIUM);
+    public PlayerTroop(String name, int n, int m) {
+        super(name, n, m, Troop.FAST, Side.PLAYER);
         itTargets = defaultRoute.iterator();
-    }
-
-    @Override
-    public int getSide() {
-        return Side.PLAYER;
     }
 
     @Override
@@ -45,7 +39,7 @@ public class PlayerTroop extends Troop {
     protected void initTargetList() {
         this.defaultRoute = new LinkedList<>();
 
-        if (getPosX() < Model.MAP_COLS / 2) { 
+        if (getX() < Model.MAP_COLS / 2) { 
             // if is on the left side
             this.defaultRoute.add(Entity.LEFT_BRIDGE_START_POS);
             this.defaultRoute.add(Entity.LEFT_BRIDGE_END_POS);
@@ -63,5 +57,6 @@ public class PlayerTroop extends Troop {
     protected void setFirstTarget() {
         target = defaultRoute.get(0);
     }
+
     
 }

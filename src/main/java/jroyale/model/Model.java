@@ -1,13 +1,12 @@
 package jroyale.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import jroyale.shared.TowerIndex;
-import jroyale.utils.Point;
+import jroyale.model.towers.ArcerTower;
+import jroyale.model.towers.KingTower;
+import jroyale.shared.Side;
 
 public class Model implements IModel {
     // 32x18 is the map size, each Tile 
@@ -24,13 +23,11 @@ public class Model implements IModel {
     // for the X coords: since there are 18 cols, we will use a 
     // coord-system whose origin is 0 and his head is 18-. X-coords will 
     // be continue, so it has to be double.
+    
+    
+    private final List<Entity> renderOrderEntities = new ArrayList<>();
+    private List<Entity> entities = new ArrayList<>();
 
-    // logic coords for Towers:
-    
-    private final static Point[] TOWERS_CENTRE = getTowersCentre();
-    
-    private final List<Troop> renderOrderTroops = new ArrayList<>();
-    private List<Troop> troops = new LinkedList<>();
     private long lastTimeStamp;
 
 
@@ -39,33 +36,17 @@ public class Model implements IModel {
 
         for (int i = 0; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
-                if (reachableTiles[i][j])
+                if (/* true ||  */reachableTiles[i][j])
                     this.map[i][j] = new Tile();
             }
         }
+
+        initTowers();
     }
 
     @Override
     public boolean[][] getReachableTiles() {
         return reachableTiles;
-    }
-
-    // location tower X
-    @Override
-    public double getTowerCentreX(int towerType) {
-        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
-            throw new IllegalArgumentException("Invalid tower type: " + towerType);
-        }
-        return TOWERS_CENTRE[towerType].getX();
-    }
-
-    // location tower Y
-    @Override
-    public double getTowerCentreY(int towerType) {
-        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
-            throw new IllegalArgumentException("Invalid tower type: " + towerType);
-        }
-        return TOWERS_CENTRE[towerType].getY();
     }
 
     @Override
@@ -75,8 +56,9 @@ public class Model implements IModel {
             elapsed = now - lastTimeStamp;
         } 
         lastTimeStamp = now;
-        for (Troop troop : troops) {
-            troop.moove(elapsed);
+
+        for (Entity e : entities) {
+            e.update(elapsed);
         }
 
     }
@@ -93,18 +75,23 @@ public class Model implements IModel {
 
     @Override
     public void addPlayerTroop(PlayerTroop troop) {
-        troops.add(troop);
+        addEntity(troop);
     }
 
     @Override
-    public List<Troop> getTroopsOrderedByPosY() {
+    public List<Entity> getEntitiesOrderedByPosY() {
         // this method has to be called for each frame, because order might change fast
 
         // clears renderOrderTroops buffer and puts every troop entry
-        renderOrderTroops.clear(); 
-        renderOrderTroops.addAll(troops);
-        Collections.sort(renderOrderTroops); // sorting based on Y pos
-        return renderOrderTroops;
+        renderOrderEntities.clear();
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (reachableTiles[i][j])
+                    renderOrderEntities.addAll(map[i][j].getEntities());
+            }
+        } 
+        Collections.sort(renderOrderEntities); // sorting based on Y pos
+        return renderOrderEntities;
     }
 
     
@@ -113,17 +100,19 @@ public class Model implements IModel {
     // PRIVATE METHODS
     //
 
-    private static Point[] getTowersCentre() {
-        Point[] centres = new Point[TowerIndex.NUM_TOWERS];
+    private void addEntity(Entity e) {
+        map[(int) e.getY()][(int) e.getX()].addEntity(e);
+        entities.add(e);
+    }
 
-        centres[TowerIndex.PLAYER_KING_TOWER] = Entity.PLAYER_KING_TOWER_CENTRE;
-        centres[TowerIndex.PLAYER_LEFT_TOWER] = Entity.PLAYER_LEFT_TOWER_CENTRE;
-        centres[TowerIndex.PLAYER_RIGHT_TOWER] = Entity.PLAYER_RIGHT_TOWER_CENTRE;
+    private void initTowers() {
+        addEntity(new KingTower(Side.PLAYER));
+        addEntity(new ArcerTower(Side.PLAYER, ArcerTower.LEFT));
+        addEntity(new ArcerTower(Side.PLAYER, ArcerTower.RIGHT));
 
-        centres[TowerIndex.OPPONENT_KING_TOWER] =  Entity.OPPONENT_KING_TOWER_CENTRE;
-        centres[TowerIndex.OPPONENT_LEFT_TOWER] =  Entity.OPPONENT_LEFT_TOWER_CENTRE;
-        centres[TowerIndex.OPPONENT_RIGHT_TOWER] = Entity.OPPONENT_RIGHT_TOWER_CENTRE;
-        return centres;
+        addEntity(new KingTower(Side.OPPONENT));
+        addEntity(new ArcerTower(Side.OPPONENT, ArcerTower.LEFT));
+        addEntity(new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT));   
     }
 
     private void initReachableTiles() {
