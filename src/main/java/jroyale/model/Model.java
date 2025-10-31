@@ -101,7 +101,13 @@ public class Model implements IModel {
     //
 
     private void addEntity(Entity e) {
-        map[(int) e.getY()][(int) e.getX()].addEntity(e);
+        int i = (int) e.getY();
+        int j = (int) e.getX();
+
+        if (!reachableTiles[i][j]) 
+            throw new IllegalArgumentException("Unable to drop " + e.getClass().getSimpleName() + " in [" +  i + ", " + j + "]: this part of the map is unreachable.");
+        
+        map[i][j].addEntity(e);
         entities.add(e);
     }
 
