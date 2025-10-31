@@ -2,11 +2,12 @@ package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import jroyale.model.Entity;
 import jroyale.model.IModel;
 import jroyale.model.PlayerTroop;
 import jroyale.model.Troop;
+import jroyale.model.towers.Tower;
 import jroyale.shared.Side;
-import jroyale.shared.TowerIndex;
 import jroyale.view.IView;
 
 public class Controller implements IController {
@@ -50,7 +51,6 @@ public class Controller implements IController {
                     model.addPlayerTroop(
                         new PlayerTroop(
                             null, 
-                            null, 
                             lastMouseRowIndex,
                             lastMouseColumnIndex
                         )
@@ -61,9 +61,9 @@ public class Controller implements IController {
                 }
                 
                 // TODO: check depth 
-                // rendering player troops
+                /* // rendering player troops
                 for (Troop troop : model.getTroopsOrderedByPosY()) {
-                    view.renderTroop(logic2GraphicX(troop.getPosX()), logic2GraphicY(troop.getPosY()), Side.PLAYER);
+                    view.renderTroop(logic2GraphicX(troop.getX()), logic2GraphicY(troop.getY()), Side.PLAYER);
                 }
                 
 
@@ -74,11 +74,30 @@ public class Controller implements IController {
                         logic2GraphicX(model.getTowerCentreX(towerType)),
                         logic2GraphicY(model.getTowerCentreY(towerType))
                     );
-                } 
+                }  */
+
+                for (Entity entity : model.getEntitiesOrderedByPosY()) {
+                    renderEntity(entity);
+                }
             }
         };
         loop.start();
     }
+
+    // render methods:
+    private void renderEntity(Entity e) {
+        if (e instanceof Troop) {
+            view.renderTroop(logic2GraphicX(e.getX()), logic2GraphicY(e.getY()), Side.PLAYER);
+        } else if (e instanceof Tower) {
+            Tower tower = (Tower) e;
+            view.renderTower(
+                tower.getTowerType(), 
+                logic2GraphicX(tower.getX()),
+                logic2GraphicY(tower.getY())
+            );
+        }
+    }
+
 
     // Mouse pressed methods:
 
