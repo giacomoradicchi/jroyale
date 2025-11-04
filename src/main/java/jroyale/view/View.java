@@ -59,7 +59,7 @@ public class View implements IView {
     }
 
     
-
+    
     @Override
     public void initializeRendering(long now, double newWidth, double newHeight) {
         // clears canvas
@@ -141,11 +141,14 @@ public class View implements IView {
         if (side == Side.OPPONENT) {
             color = Color.RED;
         }
-        fillPoint(
+
+        Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/goomba.png"));
+        gc.drawImage(image, centreX - image.getWidth()/2, centreY - image.getHeight()/2);
+        /* fillPoint(
             centreX, 
             centreY,
             color
-        );
+        ); */
     }
 
     @Override
