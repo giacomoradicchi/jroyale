@@ -147,13 +147,13 @@ public class View implements IView {
             color = Color.RED;
         }
 
-        Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/goomba.png"));
-        gc.drawImage(image, centreX - image.getWidth()/2, centreY - image.getHeight()/2);
-        /* fillPoint(
+        //Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/goomba.png"));
+        //gc.drawImage(image, centreX - image.getWidth()/2, centreY - image.getHeight()/2);
+        fillPoint(
             centreX, 
             centreY,
             color
-        ); */
+        ); 
     }
 
     @Override

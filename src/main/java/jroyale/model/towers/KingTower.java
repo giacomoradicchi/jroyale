@@ -8,6 +8,8 @@ public class KingTower extends Tower {
 
     private final byte TOWER_TYPE;
 
+    private static final int FOOTPRINT_SIZE = 4;
+
     public KingTower(byte side) {
         super(
             (side == Side.PLAYER) ? 
@@ -24,6 +26,11 @@ public class KingTower extends Tower {
     @Override
     public byte getTowerType() {
         return TOWER_TYPE;
+    }
+
+    @Override
+    public int getFootPrintSize() {
+       return FOOTPRINT_SIZE;
     }
     
 }

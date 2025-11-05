@@ -10,6 +10,8 @@ public class ArcerTower extends Tower {
     public static final byte LEFT = 0;
     public static final byte RIGHT = 1;
 
+    private static final int FOOTPRINT_SIZE = 3;
+
     private final byte TOWER_TYPE;
 
     public ArcerTower(byte side, byte location) {
@@ -50,6 +52,11 @@ public class ArcerTower extends Tower {
     @Override
     public byte getTowerType() {
         return TOWER_TYPE;
+    }
+
+    @Override
+    public int getFootPrintSize() {
+        return FOOTPRINT_SIZE;
     }
     
 }

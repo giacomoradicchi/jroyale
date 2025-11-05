@@ -23,5 +23,6 @@ public abstract class Tower extends Entity {
     }
 
     // abstract methods
+
     public abstract byte getTowerType();
 }

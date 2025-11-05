@@ -25,6 +25,7 @@ public abstract class Entity implements Comparable<Entity>{
     protected byte side;
 
     private int currentI, currentJ; // current location in map[i][j] tile
+    private static final int DEFAULT_FOOTPRINT_SIZE = 1; // just one cell occupied
 
     public Entity(double x, double y, byte side) {
         position = new Point(x, y);
@@ -83,6 +84,12 @@ public abstract class Entity implements Comparable<Entity>{
         return Double.compare(position.getY(), entity.getY()); // ascendent order
     }
 
+    public int getFootPrintSize() { // number of cells occupied by the tower
+        return DEFAULT_FOOTPRINT_SIZE;
+    } 
+
     // abstract methods
     public abstract void update(long elapsed);
+
+    
 }
