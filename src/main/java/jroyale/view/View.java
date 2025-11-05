@@ -10,6 +10,11 @@ import javafx.scene.paint.Color;
 
 public class View implements IView {
 
+    // public attribs for controller class
+    public enum TroopType {
+        MINI_PEKKA,
+    };
+
     private final static boolean DEBUG_MODE = false;
 
     private GraphicsContext gc;
