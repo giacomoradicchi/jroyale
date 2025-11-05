@@ -25,8 +25,8 @@ public class Model implements IModel {
     // be continue, so it has to be double.
     
     
-    private final List<Entity> renderOrderEntities = new ArrayList<>();
-    private List<Entity> entities = new ArrayList<>();
+    private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
+    private List<Entity> entities = new ArrayList<>(); // insert order entities
 
     private long lastTimeStamp;
 
@@ -56,9 +56,23 @@ public class Model implements IModel {
             elapsed = now - lastTimeStamp;
         } 
         lastTimeStamp = now;
+        updateMap();
 
         for (Entity e : entities) {
             e.update(elapsed);
+        }
+
+        // for debugging:
+        for (int i = 0; i < MAP_ROWS; i++) {
+            for (int j = 0; j < MAP_COLS; j++) {
+                System.out.print("| ");
+                if (reachableTiles[i][j])
+                    System.out.print(map[i][j].getEntities().size());
+                else 
+                    System.out.print("-");
+                System.out.print(" |");
+            }
+            System.out.println();
         }
 
     }
@@ -90,7 +104,9 @@ public class Model implements IModel {
                     renderOrderEntities.addAll(map[i][j].getEntities());
             }
         } 
-        Collections.sort(renderOrderEntities); // sorting based on Y pos
+        Collections.sort(renderOrderEntities); // sorting based on Y pos (sorting is 
+        // based on double Y coords, not on column; otherwise a simple for loop 
+        // scan for j = 0..COLS-1 would have been sufficient)
         return renderOrderEntities;
     }
 
@@ -100,14 +116,28 @@ public class Model implements IModel {
     // PRIVATE METHODS
     //
 
+    private void updateMap() {
+        
+        for (Entity e : entities) {
+            if (e.isOutsideTile()) { // when an entity is moving, his position change, so it might go outside his tile:
+                // in that case, it has to be displaced from the previous tile to the newest.
+                map[e.getCurrentI()][e.getCurrentJ()].removeEntity(e);
+                e.updateCurrentTile();
+                map[e.getCurrentI()][e.getCurrentJ()].addEntity(e);
+            }
+
+        }
+    }
+
     private void addEntity(Entity e) {
-        int i = (int) e.getY();
-        int j = (int) e.getX();
+        int i = (int) Math.floor(e.getY());
+        int j = (int) Math.floor(e.getX());
 
         if (!reachableTiles[i][j]) 
             throw new IllegalArgumentException("Unable to drop " + e.getClass().getSimpleName() + " in [" +  i + ", " + j + "]: this part of the map is unreachable.");
         
         map[i][j].addEntity(e);
+        e.updateCurrentTile();
         entities.add(e);
     }
 

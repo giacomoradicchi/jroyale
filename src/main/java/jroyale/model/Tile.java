@@ -3,18 +3,22 @@ package jroyale.model;
 import java.util.List;
 import java.util.ArrayList;
 
-class Tile {
+public class Tile {
     private List<Entity> entities;
 
-    Tile() {
+    public Tile() {
         entities = new ArrayList<>();
     }
 
-    void addEntity(Entity e) {
+    public void addEntity(Entity e) {
         entities.add(e);
     }
 
-    List<Entity> getEntities() {
-        return entities;
+    public boolean removeEntity(Entity e) {
+        return entities.remove(e);
     }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }    
 }
