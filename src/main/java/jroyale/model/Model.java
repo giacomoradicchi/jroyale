@@ -51,11 +51,8 @@ public class Model implements IModel {
 
     @Override
     public void update(long now) {
-        long elapsed = 0;
-        if (lastTimeStamp != 0) {
-            elapsed = now - lastTimeStamp;
-        } 
-        lastTimeStamp = now;
+        long elapsed = getElapsed(now);
+
         updateMap();
 
         for (Entity e : entities) {
@@ -66,8 +63,15 @@ public class Model implements IModel {
         for (int i = 0; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 System.out.print("| ");
-                if (reachableTiles[i][j])
-                    System.out.print(map[i][j].getEntities().size());
+                if (reachableTiles[i][j]) {
+                    if (map[i][j].getEntities().size() > 0) {
+                        System.out.print(map[i][j].getEntities().size());
+                    } else {
+                        System.out.print(" ");
+                    }
+                    
+                }
+                    
                 else 
                     System.out.print("-");
                 System.out.print(" |");
@@ -98,12 +102,7 @@ public class Model implements IModel {
 
         // clears renderOrderTroops buffer and puts every troop entry
         renderOrderEntities.clear();
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if (reachableTiles[i][j])
-                    renderOrderEntities.addAll(map[i][j].getEntities());
-            }
-        } 
+        renderOrderEntities.addAll(entities);
         Collections.sort(renderOrderEntities); // sorting based on Y pos (sorting is 
         // based on double Y coords, not on column; otherwise a simple for loop 
         // scan for j = 0..COLS-1 would have been sufficient)
@@ -121,6 +120,9 @@ public class Model implements IModel {
         for (Entity e : entities) {
             if (e.isOutsideTile()) { // when an entity is moving, his position change, so it might go outside his tile:
                 // in that case, it has to be displaced from the previous tile to the newest.
+
+                // TODO: in the future, if it will exist a troop whose footprintSize is > 1, it is necessary also to 
+                // remove entity from the sorrounding cells.
                 map[e.getCurrentI()][e.getCurrentJ()].removeEntity(e);
                 e.updateCurrentTile();
                 map[e.getCurrentI()][e.getCurrentJ()].addEntity(e);
@@ -136,9 +138,35 @@ public class Model implements IModel {
         if (!reachableTiles[i][j]) 
             throw new IllegalArgumentException("Unable to drop " + e.getClass().getSimpleName() + " in [" +  i + ", " + j + "]: this part of the map is unreachable.");
         
-        map[i][j].addEntity(e);
+        
+        addEntityToMap(e, i, j, e.getFootPrintSize());
         e.updateCurrentTile();
         entities.add(e);
+    }
+
+    private void addEntityToMap(Entity e, int centreI, int centreJ, int footprintSize) {
+        int offsetI = centreI - footprintSize/2;
+        int offsetJ = centreJ - footprintSize/2;
+
+        // this method works also for entities whose footprint is grather than 1 (e.g. Towers).
+        // it adds entity also on the sorrounding cells that are close to (centreI, centreJ) based on
+        // footprintSize
+        for (int i = 0; i < footprintSize; i++) {
+            for (int j = 0; j < footprintSize; j++) {
+                if (0 <= i && i < MAP_ROWS && 0 <= j && j < MAP_COLS
+                 && reachableTiles[offsetI + i][offsetJ + j]) 
+                    map[offsetI + i][offsetJ + j].addEntity(e);
+            }
+        }
+    }
+
+    private long getElapsed(long now) {
+        long elapsed = 0;
+        if (lastTimeStamp != 0) {
+            elapsed = now - lastTimeStamp;
+        } 
+        lastTimeStamp = now;
+        return elapsed;
     }
 
     private void initTowers() {

@@ -60,21 +60,7 @@ public class Controller implements IController {
                     view.resetDragPlacementPreviewAnimation();
                 }
                 
-                // TODO: check depth 
-                /* // rendering player troops
-                for (Troop troop : model.getTroopsOrderedByPosY()) {
-                    view.renderTroop(logic2GraphicX(troop.getX()), logic2GraphicY(troop.getY()), Side.PLAYER);
-                }
-                
-
-                // rendering all the towers
-                for (int towerType = 0; towerType < TowerIndex.NUM_TOWERS; towerType++) {
-                    view.renderTower(
-                        towerType, 
-                        logic2GraphicX(model.getTowerCentreX(towerType)),
-                        logic2GraphicY(model.getTowerCentreY(towerType))
-                    );
-                }  */
+                // depth rendering based on Y pos
 
                 for (Entity entity : model.getEntitiesOrderedByPosY()) {
                     renderEntity(entity);
