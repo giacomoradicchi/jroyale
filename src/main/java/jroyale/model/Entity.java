@@ -24,6 +24,8 @@ public abstract class Entity implements Comparable<Entity>{
     protected Point position;
     protected byte side;
 
+    private int currentI, currentJ; // current location in map[i][j] tile
+
     public Entity(double x, double y, byte side) {
         position = new Point(x, y);
         if (side != Side.PLAYER && side != Side.OPPONENT) {
@@ -48,8 +50,30 @@ public abstract class Entity implements Comparable<Entity>{
         return position.getY();
     }
 
+    public int getCurrentI() {
+        return currentI;
+    }
+
+    public int getCurrentJ() {
+        return currentJ;
+    }
+
     public byte getSide() {
         return side;
+    }
+
+    // checks if an entity is outside his current Tile
+    public boolean isOutsideTile() {
+        return currentI != (int) Math.floor(position.getY())
+        || currentJ != (int) Math.floor(position.getX());
+    }
+
+    // if entity is outside his current Tile (currentI, currentJ), 
+    // the model has to update the new currentTile and displace entity from
+    // previous tile to new tile.
+    public void updateCurrentTile() {
+        currentI = (int) Math.floor(position.getY());
+        currentJ = (int) Math.floor(position.getX());
     }
 
     @Override
