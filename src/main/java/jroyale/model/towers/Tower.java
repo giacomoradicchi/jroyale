@@ -1,16 +1,14 @@
 package jroyale.model.towers;
 
-
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import jroyale.model.Entity;
 import jroyale.utils.Point;
 
 public abstract class Tower extends Entity {
 
+    private static final double TOWER_COLLISION_RADIUS_FACTOR = 1.2;
+
     public Tower(double x, double y, byte side) {
         super(x, y, side);
-        hitbox = new Rectangle();
     }
 
     public Tower(Point position, byte side) {
@@ -22,16 +20,9 @@ public abstract class Tower extends Entity {
         // TODO
     }
 
-    @Override 
-    public Shape getHitbox() {
-        // for towers, hitbox is rectangular
-
-        double side = getFootPrintSize();
-        ((Rectangle) hitbox).setX(getX() - side * 0.5);
-        ((Rectangle) hitbox).setY(getY() - side * 0.5);
-        ((Rectangle) hitbox).setWidth(side);
-        ((Rectangle) hitbox).setHeight(side);
-        return hitbox;
+    @Override
+    public double getCollisionRadius() {
+        return getFootPrintSize() * 0.5 * TOWER_COLLISION_RADIUS_FACTOR;
     }
 
     // abstract methods
