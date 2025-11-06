@@ -10,10 +10,11 @@ public abstract class Tower extends Entity {
 
     public Tower(double x, double y, byte side) {
         super(x, y, side);
+        hitbox = new Rectangle();
     }
 
     public Tower(Point position, byte side) {
-        super(position, side);
+        this(position.getX(), position.getY(), side);
     }
 
     @Override
