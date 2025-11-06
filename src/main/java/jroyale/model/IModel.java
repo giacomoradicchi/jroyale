@@ -14,6 +14,8 @@ public interface IModel {
 
     public List<Entity> getEntitiesOrderedByPosY(); // necessary to enable depth in rendering
 
+    public List<Entity> getEntitiesOnTile(int i, int j);
+
     // just for debugging:
     public boolean[][] getReachableTiles();
 }

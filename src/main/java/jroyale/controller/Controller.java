@@ -2,6 +2,7 @@ package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
 import jroyale.model.PlayerTroop;
@@ -29,6 +30,7 @@ public class Controller implements IController {
     @Override
     public void start() {
         MouseManager.enableInput(scene);
+        CollisionManager.setModel(model);
 
         AnimationTimer loop = new AnimationTimer() {
             @Override

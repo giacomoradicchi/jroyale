@@ -62,6 +62,9 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         move(elapsed);
+        for (Entity e : CollisionManager.checkCollisions(this)) {
+            System.out.println("TROVATO");
+        }
     }
 
     // private methods

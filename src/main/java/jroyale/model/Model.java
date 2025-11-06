@@ -60,7 +60,7 @@ public class Model implements IModel {
         }
 
         // for debugging:
-        for (int i = 0; i < MAP_ROWS; i++) {
+        /* for (int i = 0; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 System.out.print("| ");
                 if (reachableTiles[i][j]) {
@@ -77,7 +77,7 @@ public class Model implements IModel {
                 System.out.print(" |");
             }
             System.out.println();
-        }
+        } */
 
     }
 
@@ -109,7 +109,13 @@ public class Model implements IModel {
         return renderOrderEntities;
     }
 
-    
+    @Override
+    public List<Entity> getEntitiesOnTile(int i, int j) {
+        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS || !reachableTiles[i][j])
+            return new ArrayList<>();
+        
+        return map[i][j].getEntities();
+    }
 
     // 
     // PRIVATE METHODS
