@@ -17,7 +17,7 @@ public class Model implements IModel {
     static final int MAP_ROWS = 32;
     static final int MAP_COLS = 18;
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
-    private boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
+    private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 

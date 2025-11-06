@@ -3,11 +3,14 @@ package jroyale.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javafx.scene.shape.Shape;
+import jroyale.utils.Circle;
 
 public class CollisionManager {
 
     private static IModel model;
+
+    private static Circle collisionCircle1 = new Circle();
+    private static Circle collisionCircle2 = new Circle();
 
     // using Set instead of List to avoid duplicates
     public static Set<Entity> checkCollisions(Entity e) {
@@ -52,7 +55,18 @@ public class CollisionManager {
 
     private static boolean checkCollision(Entity a, Entity b) {
         // if the intersection of the two shapes is not empty, than they intersect
-        return !Shape.intersect(a.getHitbox(), b.getHitbox()).getBoundsInLocal().isEmpty();
+
+        // initializing first circle
+        collisionCircle1.setCenterX(a.getX());
+        collisionCircle1.setCenterY(a.getY());
+        collisionCircle1.setRadius(a.getCollisionRadius());
+
+        // initializing second circle
+        collisionCircle2.setCenterX(b.getX());
+        collisionCircle2.setCenterY(b.getY());
+        collisionCircle2.setRadius(b.getCollisionRadius());
+
+        return collisionCircle1.collides(collisionCircle2);
     }
 
     public static void setModel(IModel model) {
