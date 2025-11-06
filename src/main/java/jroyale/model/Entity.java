@@ -1,5 +1,7 @@
 package jroyale.model;
 
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import jroyale.shared.Side;
 import jroyale.utils.Point;
 
@@ -23,24 +25,23 @@ public abstract class Entity implements Comparable<Entity>{
 
     protected Point position;
     protected byte side;
+    protected Shape hitbox = new Circle(); // default shape 
 
     private int currentI, currentJ; // current location in map[i][j] tile
     private static final int DEFAULT_FOOTPRINT_SIZE = 1; // just one cell occupied
 
     public Entity(double x, double y, byte side) {
-        position = new Point(x, y);
+        
         if (side != Side.PLAYER && side != Side.OPPONENT) {
             throw new IllegalArgumentException("Invalid argument side");
         }
+        
+        this.position = new Point(x, y);
         this.side = side;
     }
 
     public Entity(Point position, byte side) {
-        this.position = new Point(position.getX(), position.getY());
-        if (side != Side.PLAYER && side != Side.OPPONENT) {
-            throw new IllegalArgumentException("Invalid argument side");
-        }
-        this.side = side;
+        this(position.getX(), position.getY(), side);
     }
 
     public double getX() {
@@ -84,9 +85,16 @@ public abstract class Entity implements Comparable<Entity>{
         return Double.compare(position.getY(), entity.getY()); // ascendent order
     }
 
-    public int getFootPrintSize() { // number of cells occupied by the tower
+    public int getFootPrintSize() { // number of cells occupied by the entity
         return DEFAULT_FOOTPRINT_SIZE;
     } 
+
+    public Shape getHitbox() {
+        ((Circle) hitbox).setCenterX(getX());
+        ((Circle) hitbox).setCenterY(getY());
+        ((Circle) hitbox).setRadius(this.getFootPrintSize() * 0.5);
+        return hitbox;
+    }
 
     // abstract methods
     public abstract void update(long elapsed);

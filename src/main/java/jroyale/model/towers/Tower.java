@@ -1,13 +1,12 @@
 package jroyale.model.towers;
 
 
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import jroyale.model.Entity;
 import jroyale.utils.Point;
 
 public abstract class Tower extends Entity {
-    
-    static double WIDTH; // in map-unit
-    static double HEIGHT; // in map-unit
 
     public Tower(double x, double y, byte side) {
         super(x, y, side);
@@ -20,6 +19,18 @@ public abstract class Tower extends Entity {
     @Override
     public void update(long elapsed) {
         // TODO
+    }
+
+    @Override 
+    public Shape getHitbox() {
+        // for towers, hitbox is rectangular
+
+        double side = getFootPrintSize();
+        ((Rectangle) hitbox).setX(getX() - side * 0.5);
+        ((Rectangle) hitbox).setY(getY() - side * 0.5);
+        ((Rectangle) hitbox).setWidth(side);
+        ((Rectangle) hitbox).setHeight(side);
+        return hitbox;
     }
 
     // abstract methods
