@@ -76,8 +76,27 @@ public class Controller implements IController {
     private void renderEntity(Entity e) {
         if (e instanceof Troop) {
             view.renderTroop(logic2GraphicX(e.getX()), logic2GraphicY(e.getY()), Side.PLAYER);
+
+            view.renderOval(
+                logic2GraphicX(e.getX()), 
+                logic2GraphicY(e.getY()), 
+                getDx() * (e.getCollisionRadius() * 2),
+                getDy() * (e.getCollisionRadius() * 2),
+                0.5
+            ); 
+
         } else if (e instanceof Tower) {
             Tower tower = (Tower) e;
+
+            
+            view.renderOval(
+                logic2GraphicX(tower.getX()), 
+                logic2GraphicY(tower.getY()), 
+                getDx() * (tower.getCollisionRadius() * 2),
+                getDy() * (tower.getCollisionRadius() * 2),
+                0.5
+            ); 
+
             view.renderTower(
                 tower.getTowerType(), 
                 logic2GraphicX(tower.getX()),

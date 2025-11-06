@@ -17,7 +17,10 @@ public class CollisionManager {
         // getting list of sorrounding entities that might collide with entity e
         Set<Entity> possibleEntities = getPossibleCollidingEntities(e);
 
+        //System.out.println(possibleEntities.size());
+
         if (possibleEntities.size() == 0) { // no entities found
+            
             return possibleEntities;
         }
 
@@ -38,17 +41,35 @@ public class CollisionManager {
         // set instead of list, there won't be any duplicate.
 
         int side = e.getFootPrintSize();
-        int iStart = e.getCurrentI() - side / 2;
-        int jStart = e.getCurrentJ() - side / 2;
 
-        for (int i = 0; i < side; i++) {
-            for (int j = 0; j < side; j++) {
+        // checking also nearby tiles:
+        /* 
+         * -----------------
+         * | n | n | n | n |        n = nearby cells
+         * -----------------
+         * | n | e | e | n |        e = tiles occupied by entity
+         * -----------------
+         * | n | e | e | n |
+         * -----------------
+         * | n | n | n | n |
+         * -----------------
+         * 
+         * this new matrix will have two more rows and two more cols:
+         */
+        int iStart = e.getCurrentI() - side / 2 - 1;
+        int jStart = e.getCurrentJ() - side / 2 - 1;
+        int limit = side + 2; 
+
+        for (int i = 0; i <= limit; i++) {
+            for (int j = 0; j <= limit; j++) {
                 foundEntities.addAll(model.getEntitiesOnTile(iStart + i, jStart + j));
             }
         }
 
+
         foundEntities.remove(e); // removing entity e from the list of the 
         // possible entities that might collide with e
+
 
         return foundEntities;
     }

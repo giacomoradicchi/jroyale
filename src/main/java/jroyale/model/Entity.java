@@ -90,6 +90,22 @@ public abstract class Entity implements Comparable<Entity>{
         return getFootPrintSize() * 0.5; // default radius
     }
 
+    // 
+    // protected methods used by derived classes
+    // 
+
+    protected void slideAlong(Entity other) {
+        // getting direction of the line passing through both center points
+        double angle = Math.atan2(position.getY() - other.getY(), position.getX() - other.getX());
+
+        // fixing distance between entities
+        double distance = getCollisionRadius() + other.getCollisionRadius();
+        double shiftX = distance * Math.cos(angle);
+        double shiftY = distance * Math.sin(angle);
+        position.setX(other.getX() + shiftX);
+        position.setY(other.getY() + shiftY);
+    }
+
     // abstract methods
     public abstract void update(long elapsed);
 
