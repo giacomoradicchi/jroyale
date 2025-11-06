@@ -242,4 +242,13 @@ public class View implements IView {
         double size = 16;
         gc.fillOval(centreX - size/2, centreY - size/2, size, size);
     }
+
+    @Override
+    public void renderOval(double centreX, double centreY, double width, double height, double opacity) {
+        gc.save();
+        gc.setGlobalAlpha(opacity);
+        gc.setFill(Color.RED);
+        gc.fillOval(centreX - width/2, centreY - height/2, width, height);
+        gc.restore();
+    }
 }

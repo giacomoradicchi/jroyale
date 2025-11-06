@@ -13,7 +13,7 @@ public class Circle {
     }
 
     public boolean collides(Circle c) {
-        return this.center.distance(c.center) < (this.radius + c.radius);
+        return this.center.distance(c.center) <  (this.radius + c.radius);
     }
 
     // getters

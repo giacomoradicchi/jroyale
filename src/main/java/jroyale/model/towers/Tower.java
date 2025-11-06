@@ -5,7 +5,7 @@ import jroyale.utils.Point;
 
 public abstract class Tower extends Entity {
 
-    private static final double TOWER_COLLISION_RADIUS_FACTOR = 1.2;
+    private static final double TOWER_COLLISION_RADIUS_FACTOR = 1.0; // just to make the collision radius slightly bigger
 
     public Tower(double x, double y, byte side) {
         super(x, y, side);

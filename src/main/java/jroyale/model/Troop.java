@@ -4,6 +4,7 @@ package jroyale.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jroyale.utils.Point;
 
@@ -62,9 +63,17 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         move(elapsed);
-        for (Entity e : CollisionManager.checkCollisions(this)) {
-            System.out.println("TROVATO");
+        Set<Entity> collidingEntities = CollisionManager.checkCollisions(this);
+
+        if (collidingEntities.isEmpty()) {
+            //System.out.println();
         }
+        for (Entity e : collidingEntities) {
+            //System.out.println(e.position);
+            slideAlong(e);
+        }
+
+        
     }
 
     // private methods
