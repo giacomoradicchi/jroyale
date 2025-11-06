@@ -61,15 +61,15 @@ public abstract class Troop extends Entity {
 
     @Override
     public void update(long elapsed) {
-        moove(elapsed);
-    }
-
-    private void moove(long elapsed) {
-        updateSpeed(elapsed);
-        shiftPosition(speed);
+        move(elapsed);
     }
 
     // private methods
+
+    private void move(long elapsed) {
+        updateSpeed(elapsed);
+        shiftPosition(speed);
+    }
 
     private void shiftPosition(Point shift) {
         position = position.add(shift);
