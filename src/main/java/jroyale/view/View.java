@@ -251,4 +251,21 @@ public class View implements IView {
         gc.fillOval(centreX - width/2, centreY - height/2, width, height);
         gc.restore();
     }
+
+    @Override
+    public void renderVector(double startX, double startY, double angle) {
+        final double LINE_LENGTH = dx;
+        final double LINE_WIDTH = 2;
+        gc.save();
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(LINE_WIDTH * scale);
+        
+        gc.strokeLine(
+            startX, 
+            startY, 
+            startX + LINE_LENGTH * scale * Math.cos(angle), 
+            startY + LINE_LENGTH * scale * Math.sin(angle)
+        );
+        gc.restore();
+    }
 }

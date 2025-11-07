@@ -38,4 +38,6 @@ public interface IView {
     public void renderPoint(double centreX, double centreY);
 
     public void renderOval(double centreX, double centreY, double width, double height, double opacity);
+
+    public void renderVector(double startX, double startY, double angle);
 }

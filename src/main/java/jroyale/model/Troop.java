@@ -4,7 +4,6 @@ package jroyale.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jroyale.utils.Point;
 
@@ -33,10 +32,11 @@ public abstract class Troop extends Entity {
     protected Point speed;
     protected List<Point> defaultRoute;
 
+    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
+
     public Troop(String name, double x, double y, byte speedType, byte side) {
         super(x, y, side);
         this.name = name;
-        this.speed = new Point(0, 0);
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
             this.SPEED_TYPE = MEDIUM;
@@ -45,6 +45,7 @@ public abstract class Troop extends Entity {
         }
         initTargetList();
         setFirstTarget();
+        initSpeed();
     }
 
     public Troop(String name, int n, int m, byte speedType, byte side) {
@@ -60,26 +61,74 @@ public abstract class Troop extends Entity {
         return name;
     }
 
+    public Point getSpeed() {
+        return new Point(speed);
+    }
+
     @Override
     public void update(long elapsed) {
         move(elapsed);
-        Set<Entity> collidingEntities = CollisionManager.checkCollisions(this);
-
-        if (collidingEntities.isEmpty()) {
-            //System.out.println();
-        }
-        for (Entity e : collidingEntities) {
-            //System.out.println(e.position);
-            slideAlong(e);
-        }
-
-        
     }
 
+    // 
+    // protected methods
+    // 
+
+    protected void slideAlong(Entity other) {
+        fixDistance(other);
+
+        if (!target.equals(other.position)) {
+            setTangentSpeed(other);
+        } 
+    
+    }
+
+    //
     // private methods
+    //
+
+    private void fixDistance(Entity other) { // distance will be the sum of both collision radius
+        // getting direction of the line passing through both center points
+        double dy = position.getY() - other.getY();
+        double dx = position.getX() - other.getX();
+        if (dx == 0 && dy == 0) {
+            return;
+        }
+        double angle = Math.atan2(dy, dx);
+
+        // fixing distance between entities. 
+        double distance = getCollisionRadius() + other.getCollisionRadius();
+        double shiftX = distance * Math.cos(angle);
+        double shiftY = distance * Math.sin(angle);
+        
+        position.setX(other.getX() + shiftX);
+        position.setY(other.getY() + shiftY);
+    }
+
+    private void setTangentSpeed(Entity other) {
+        // getting the two vectors that are tangent to the entities (they are opposite)
+        double dx = position.getX() - other.getX();
+        double dy = position.getY() - other.getY();
+        Point tangentVector1 = new Point(dx, dy).normalize().multiply(speed.magnitude()).rotate(90);
+        Point tangentVector2 = new Point(tangentVector1).multiply(-1);
+        // these 2 vectors have the same magnitude as vector speed
+
+        // computing dot product to see which versor is the closest to previous direction
+        double dot1 = tangentVector1.dotProduct(speed); 
+        double dot2 = tangentVector2.dotProduct(speed); 
+
+        if (dot1 > dot2) { // the closest is tangentVector1
+            speed.interpolate(tangentVector1, TURNING_SPEED);
+        } else {
+            speed.interpolate(tangentVector2, TURNING_SPEED);
+        }
+    }
 
     private void move(long elapsed) {
         updateSpeed(elapsed);
+        for (Entity other : CollisionManager.checkCollisions(this)) {
+            slideAlong(other);
+        }
         shiftPosition(speed);
     }
 
@@ -121,10 +170,16 @@ public abstract class Troop extends Entity {
         // calculating mean between direction and last direction (for smooth turning)
         //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
 
-        return getLastDirectionUnitVector().interpolate(getAimUnitVector(), 0.9).normalize();
+        return getLastDirectionUnitVector().interpolate(getAimUnitVector(), TURNING_SPEED).normalize();
     }
 
+    private void initSpeed() {
+        this.speed = getAimUnitVector();
+    }
+
+    //
     // abstract methods
+    //
 
     protected abstract void goToNextTarget();
 
