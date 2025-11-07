@@ -1,7 +1,9 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.effect.Light.Point;
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
@@ -83,7 +85,13 @@ public class Controller implements IController {
                 getDx() * (e.getCollisionRadius() * 2),
                 getDy() * (e.getCollisionRadius() * 2),
                 0.5
-            ); 
+            );  
+
+            view.renderVector(
+                logic2GraphicX(e.getX()), 
+                logic2GraphicY(e.getY()), 
+                ((Troop) e).getSpeed().angle()
+            );
 
         } else if (e instanceof Tower) {
             Tower tower = (Tower) e;
@@ -95,13 +103,14 @@ public class Controller implements IController {
                 getDx() * (tower.getCollisionRadius() * 2),
                 getDy() * (tower.getCollisionRadius() * 2),
                 0.5
-            ); 
+            );  
+            
 
             view.renderTower(
                 tower.getTowerType(), 
                 logic2GraphicX(tower.getX()),
                 logic2GraphicY(tower.getY())
-            );
+            ); 
         }
     }
 

@@ -211,10 +211,12 @@ public class Model implements IModel {
             this.reachableTiles[MAP_ROWS/2][j] = false;
         }
 
-        this.reachableTiles[MAP_ROWS/2 - 1][3] = true;
-        this.reachableTiles[MAP_ROWS/2][3] = true;
+        for (int j = 2; j <= 4; j++) {
+            this.reachableTiles[MAP_ROWS/2 - 1][j] = true;
+            this.reachableTiles[MAP_ROWS/2][j] = true;
 
-        this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - 3] = true;
-        this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - 3] = true;
+            this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - j] = true;
+            this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - j] = true;
+        }
     }
 }

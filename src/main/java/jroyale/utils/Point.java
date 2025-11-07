@@ -11,6 +11,10 @@ public class Point {
         this.y=y;
     }
 
+    public Point(Point p){
+        this(p.getX(), p.getY());
+    }
+
     public double getX() {
         return x;
     }
@@ -38,16 +42,22 @@ public class Point {
     }
 
     public Point add(Point p){
-        return new Point(this.x + p.x, this.y + p.y);
+        x += p.getX();
+        y += p.getY();
+        return this;
     }
 
     public Point subtract(Point p){
-        return new Point(this.x - p.x, this.y - p.y);
+        x -= p.getX();
+        y -= p.getY();
+        return this;
+    }
+    public Point multiply(double scalar){
+        x *= scalar;
+        y *= scalar;
+        return this;
     }
 
-    public Point multiply(double scalar){
-        return new Point(this.x * scalar, this.y * scalar);
-    }
 
     public double distance(Point p){
         double dx = this.x - p.x;
@@ -60,17 +70,46 @@ public class Point {
         if (magnitude == 0) {
             return new Point(0, 0);
         }
-        return new Point(x / magnitude, y / magnitude);
+        x /= magnitude;
+        y /= magnitude;
+        return this;
     }
 
     public Point interpolate(Point p, double t){
-        double newX = this.x + (p.x - this.x) * t;
-        double newY = this.y + (p.y - this.y) * t;
-        return new Point(newX, newY);
+        this.x = getX() + (p.getX() - getX()) * t;
+        this.y = getY() + (p.getY() - getY()) * t;
+        return this;
     }
 
     public double magnitude(){
         return Math.sqrt(x * x + y * y);
+    }
+
+    public double angle() {
+        return Math.atan2(y, x);
+    }
+
+    // rotate through point (0,0)
+    public Point rotate(double degrees) {
+        double magnitude = magnitude();
+        double angle = Math.atan2(getY(), getX());
+        angle += degrees * Math.PI / 180.0;
+
+        x = magnitude * Math.cos(angle);
+        y = magnitude * Math.sin(angle);
+        return this;
+    } 
+
+    public double dotProduct(Point vector) {
+        return dotProduct(vector.getX(), vector.getY());
+    }
+
+    public double dotProduct(double x, double y) {
+        return getX() * x + getY() * y;
+    }
+
+    public boolean equals(Point p) {
+        return (getX() == p.getX()) && (getY() == p.getY());
     }
 
     public String toString() {
