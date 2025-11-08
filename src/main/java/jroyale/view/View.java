@@ -156,6 +156,7 @@ public class View implements IView {
         ); 
     }
 
+
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
         DragPlacementPreview.render(gc, centreX, centreY, dx, dy, scale, now);

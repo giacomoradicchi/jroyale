@@ -18,48 +18,71 @@ public class CollisionManager {
     }
 
     public static Point pushOutOfUnreachableTiles(Entity e) {
-        Point impactVector = fixInsideMap(e); 
+        //Point impactVector = fixInsideMap(e); 
+        Point impactVector = new Point(0, 0);
 
         double radius = e.getCollisionRadius();
         int iTopLeftCorner = (int) Math.floor(e.getY() - radius);
         int jTopLeftCorner = (int) Math.floor(e.getX() - radius);
         int limit = e.getFootPrintSize() + 1;
 
+        // getting impact vector value
+
         // case 1: unreachable tile is over entity (WORKS!!)
         for (int j = 0; j < limit; j++) {
             if (!model.isTileReachable(iTopLeftCorner, jTopLeftCorner + j)) {
-                e.setY(iTopLeftCorner + 1 + radius); // fixes below tile
-                impactVector.setX(1);
-                return impactVector;
+                impactVector.addY(1);
+                break;
             }
         }
         
         // case 2: unreachable tile is below entity (WORKS!!)
         for (int j = 0; j < limit; j++) {
             if (!model.isTileReachable(iTopLeftCorner + limit - 1, jTopLeftCorner + j)) {
-                e.setY(iTopLeftCorner + limit - 1 - radius); // fixes over tile
-                impactVector.setX(1);
-                return impactVector;
+                impactVector.addY(-1);
+                break;
             } 
         }
 
         // case 3: unreachable tile is on entity's left (WORKS!!)
         for (int i = 0; i < limit; i++) { 
             if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner)) {
-                e.setX(jTopLeftCorner + 1 + radius); // fixes on tile's right
-                impactVector.setY(1);
-                return impactVector;
+                impactVector.addX(+1);
+                break;
             }
         }
 
         // case 4: unreachable tile is on entity's right (WORKS!!)
         for (int i = 0; i < limit; i++) { 
             if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner + limit - 1)) {
-                e.setX(jTopLeftCorner + limit - 1 - radius); // fixes on tile's left
-                impactVector.setY(1);
-                return impactVector;
+                impactVector.addX(-1);
+                break;
             }
         } 
+
+        if (impactVector.getX() != 0 || impactVector.getY() != 0) {
+            System.out.println(impactVector);
+        }
+        
+
+        // setting entity position based on impact vector
+        double x = impactVector.getX();
+        if (x != 0) {
+            double boundX = jTopLeftCorner + x;
+            if (x == -1) {
+                boundX += limit;
+            }
+            e.setX(boundX + Math.signum(x) * radius);
+        }
+
+        double y = impactVector.getY();
+        if (y != 0) {
+            double boundY = iTopLeftCorner + y;
+            if (y == -1) {
+                boundY += limit;
+            }
+            e.setY(boundY + Math.signum(y) * radius);
+        }
 
         return impactVector;
 
