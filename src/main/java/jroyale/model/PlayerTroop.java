@@ -13,12 +13,12 @@ public class PlayerTroop extends Troop {
     
 
     public PlayerTroop(String name, double x, double y) {
-        super(name, x, y, Troop.SLOW, Side.PLAYER);
+        super(name, x, y, Troop.MEDIUM, Side.PLAYER);
         itTargets = defaultRoute.iterator();
     }
 
     public PlayerTroop(String name, int n, int m) {
-        super(name, n, m, Troop.SLOW, Side.PLAYER);
+        super(name, n, m, Troop.MEDIUM, Side.PLAYER);
         itTargets = defaultRoute.iterator();
     }
 
@@ -38,6 +38,8 @@ public class PlayerTroop extends Troop {
     @Override
     protected void initTargetList() {
         this.defaultRoute = new LinkedList<>();
+
+        //this.defaultRoute.add(new Point(9, 7));
 
         if (getX() < Model.MAP_COLS / 2) { 
             // if is on the left side

@@ -50,6 +50,14 @@ public class Model implements IModel {
     }
 
     @Override
+    public boolean isTileReachable(int i, int j) {
+        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+            return false;
+        
+        return reachableTiles[i][j];
+    }
+
+    @Override
     public void update(long now) {
         long elapsed = getElapsed(now);
 
@@ -218,5 +226,9 @@ public class Model implements IModel {
             this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - j] = true;
             this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - j] = true;
         }
+
+
+        this.reachableTiles[7][MAP_COLS/2 - 3] = false;
+        this.reachableTiles[8][MAP_COLS/2 - 3] = false;
     }
 }

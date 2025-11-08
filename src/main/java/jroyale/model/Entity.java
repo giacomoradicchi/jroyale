@@ -61,6 +61,20 @@ public abstract class Entity implements Comparable<Entity>{
         return side;
     }
 
+    // setters
+
+    public void setPosition(Point pos) {
+        position.setPoint(pos);
+    }
+
+    public void setX(double x) {
+        position.setX(x);
+    }
+
+    public void setY(double y) {
+        position.setY(y);
+    }
+
     // checks if an entity is outside his current Tile
     public boolean isOutsideTile() {
         return currentI != (int) Math.floor(position.getY())
@@ -89,8 +103,6 @@ public abstract class Entity implements Comparable<Entity>{
     public double getCollisionRadius() {
         return getFootPrintSize() * 0.5; // default radius
     }
-
-    
 
     // abstract methods
     public abstract void update(long elapsed);
