@@ -1,5 +1,7 @@
 package jroyale.utils;
 
+import javafx.scene.shape.Rectangle;
+
 public class Circle {
     private Point center;
     private double radius;
@@ -13,9 +15,10 @@ public class Circle {
     }
 
     public boolean collides(Circle c) {
-        return this.center.distance(c.center) <  (this.radius + c.radius);
+        return this.center.distance(c.center) < (this.radius + c.radius);
     }
 
+    
     // getters
 
     public double getCenterX() {
@@ -29,6 +32,27 @@ public class Circle {
     public double getRadius() {
         return radius;
     }
+
+    public double getDiameter() {
+        return radius * 2;
+    }
+
+    public double getMinXBounds() {
+        return center.getX() - radius;
+    }
+
+    public double getMinYBounds() {
+        return center.getY() - radius;
+    }
+
+    public double getWidthBounds() {
+        return getDiameter();
+    }
+
+    public double getHeightBounds() {
+        return getDiameter();
+    }
+
 
     // setters
 

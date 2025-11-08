@@ -16,6 +16,8 @@ public interface IModel {
 
     public List<Entity> getEntitiesOnTile(int i, int j);
 
+    public boolean isTileReachable(int i, int j);
+
     // just for debugging:
     public boolean[][] getReachableTiles();
 }

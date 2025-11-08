@@ -47,6 +47,16 @@ public class Point {
         return this;
     }
 
+    public Point addX(double shiftX) {
+        x += shiftX;
+        return this;
+    }
+
+    public Point addY(double shiftY) {
+        y += shiftY;
+        return this;
+    }
+
     public Point subtract(Point p){
         x -= p.getX();
         y -= p.getY();

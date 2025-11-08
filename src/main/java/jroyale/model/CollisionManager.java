@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jroyale.utils.Circle;
+import jroyale.utils.Point;
 
 public class CollisionManager {
 
@@ -11,6 +12,95 @@ public class CollisionManager {
 
     private static Circle collisionCircle1 = new Circle();
     private static Circle collisionCircle2 = new Circle();
+
+    public static void setModel(IModel model) {
+        CollisionManager.model = model;
+    }
+
+    public static Point pushOutOfUnreachableTiles(Entity e) {
+        Point impactVector = fixInsideMap(e); 
+
+        double radius = e.getCollisionRadius();
+        int iTopLeftCorner = (int) Math.floor(e.getY() - radius);
+        int jTopLeftCorner = (int) Math.floor(e.getX() - radius);
+        int limit = e.getFootPrintSize() + 1;
+
+        // case 1: unreachable tile is over entity (WORKS!!)
+        for (int j = 0; j < limit; j++) {
+            if (!model.isTileReachable(iTopLeftCorner, jTopLeftCorner + j)) {
+                e.setY(iTopLeftCorner + 1 + radius); // fixes below tile
+                impactVector.setX(1);
+                return impactVector;
+            }
+        }
+        
+        // case 2: unreachable tile is below entity (WORKS!!)
+        for (int j = 0; j < limit; j++) {
+            if (!model.isTileReachable(iTopLeftCorner + limit - 1, jTopLeftCorner + j)) {
+                e.setY(iTopLeftCorner + limit - 1 - radius); // fixes over tile
+                impactVector.setX(1);
+                return impactVector;
+            } 
+        }
+
+        // case 3: unreachable tile is on entity's left (WORKS!!)
+        for (int i = 0; i < limit; i++) { 
+            if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner)) {
+                e.setX(jTopLeftCorner + 1 + radius); // fixes on tile's right
+                impactVector.setY(1);
+                return impactVector;
+            }
+        }
+
+        // case 4: unreachable tile is on entity's right (WORKS!!)
+        for (int i = 0; i < limit; i++) { 
+            if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner + limit - 1)) {
+                e.setX(jTopLeftCorner + limit - 1 - radius); // fixes on tile's left
+                impactVector.setY(1);
+                return impactVector;
+            }
+        } 
+
+        return impactVector;
+
+    }
+
+    // fix entity inside map by modifying its position if it's outside.
+    // returns impact vector: indicates which axes the entity hit the map boundaries.
+    // For example, (1,0) means it hit vertically, (0,1) horizontally, (1,1) both axes (corner)
+    // The entity can use impactVector to adjust its movement along blocked axes.
+    public static Point fixInsideMap(Entity e) {
+
+        double centerX = e.getX();
+        double centerY = e.getY();
+        double radius = e.getCollisionRadius();
+        double limitX = model.getColsCount();
+        double limitY = model.getRowsCount();
+        
+        Point impactVector = new Point(0, 0);   
+
+        if (centerX - radius < 0) {
+            e.setX(radius);
+            impactVector.addY(1);
+        } else if (centerX + radius > limitX) {
+            e.setX(limitX - radius);
+            impactVector.addY(1);
+        }
+
+        if (centerY - radius < 0) {
+            e.setY(radius);
+            impactVector.addX(1);
+        } else if (centerY + radius > limitY) {
+            e.setY(limitY - radius);
+            impactVector.addX(1);
+        }
+
+        return impactVector;
+    }
+
+    public static boolean isTileReachable(int i, int j) {
+        return model.isTileReachable(i, j);
+    }
 
     // using Set instead of List to avoid duplicates
     public static Set<Entity> checkCollisions(Entity e) {
@@ -34,6 +124,10 @@ public class CollisionManager {
 
         return collidingEntities;
     }
+
+    //
+    // private methods
+    //  
 
     private static Set<Entity> getPossibleCollidingEntities(Entity e) {
         Set<Entity> foundEntities = new HashSet<>();
@@ -71,6 +165,7 @@ public class CollisionManager {
         // possible entities that might collide with e
 
 
+
         return foundEntities;
     }
 
@@ -78,19 +173,23 @@ public class CollisionManager {
         // if the intersection of the two shapes is not empty, than they intersect
 
         // initializing first circle
-        collisionCircle1.setCenterX(a.getX());
-        collisionCircle1.setCenterY(a.getY());
-        collisionCircle1.setRadius(a.getCollisionRadius());
+        setCollisionCircle1(a.getX(), a.getY(), a.getCollisionRadius());
 
         // initializing second circle
-        collisionCircle2.setCenterX(b.getX());
-        collisionCircle2.setCenterY(b.getY());
-        collisionCircle2.setRadius(b.getCollisionRadius());
+        setCollisionCircle2(b.getX(), b.getY(), b.getCollisionRadius());
 
         return collisionCircle1.collides(collisionCircle2);
     }
 
-    public static void setModel(IModel model) {
-        CollisionManager.model = model;
+    private static void setCollisionCircle1(double x, double y, double radius) {
+        collisionCircle1.setCenterX(x);
+        collisionCircle1.setCenterY(y);
+        collisionCircle1.setRadius(radius);
+    }
+
+    private static void setCollisionCircle2(double x, double y, double radius) {
+        collisionCircle2.setCenterX(x);
+        collisionCircle2.setCenterY(y);
+        collisionCircle2.setRadius(radius);
     }
 }

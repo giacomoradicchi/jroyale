@@ -87,6 +87,41 @@ public abstract class Troop extends Entity {
     // private methods
     //
 
+    private void move(long elapsed) {
+        updateSpeed(elapsed);
+        for (Entity other : CollisionManager.checkCollisions(this)) {
+            slideAlong(other);
+        }
+
+        /* int nextI = (int) Math.floor(position.getY() + speed.getY() - getCollisionRadius() );
+        int nextJ = (int) Math.floor(position.getX() + speed.getX() - getCollisionRadius() );
+
+        if (!CollisionManager.isTileReachable(nextI, nextJ)) {
+            int dI = nextI - getCurrentI();
+            int dJ = nextJ - getCurrentJ();
+            Point normalVector = new Point(dJ, dI).normalize().multiply(speed.magnitude());
+            Point tangentVector1 = new Point(normalVector).rotate(-90);
+            Point tangentVector2 = new Point(normalVector).rotate(90);
+
+            double dot1 = tangentVector1.dotProduct(speed); 
+            double dot2 = tangentVector2.dotProduct(speed); 
+
+            if (dot1 > dot2) { // the closest is tangentVector1
+                speed.interpolate(tangentVector1, 1);
+            } else {
+                speed.interpolate(tangentVector2, 1);
+            }
+
+            
+        } */
+
+        shiftPosition(speed);
+
+        // final fixing inside map and outside unreachable tiles:
+        CollisionManager.pushOutOfUnreachableTiles(this);
+
+    }
+
     private void fixDistance(Entity other) { // distance will be the sum of both collision radius
         // getting direction of the line passing through both center points
         double dy = position.getY() - other.getY();
@@ -122,14 +157,6 @@ public abstract class Troop extends Entity {
         } else {
             speed.interpolate(tangentVector2, TURNING_SPEED);
         }
-    }
-
-    private void move(long elapsed) {
-        updateSpeed(elapsed);
-        for (Entity other : CollisionManager.checkCollisions(this)) {
-            slideAlong(other);
-        }
-        shiftPosition(speed);
     }
 
     private void shiftPosition(Point shift) {
