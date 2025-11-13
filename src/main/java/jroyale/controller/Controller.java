@@ -42,7 +42,7 @@ public class Controller implements IController {
                 
                 view.renderArena();
 
-                view.renderCells(model.getReachableTiles());
+                //view.renderCells(model.getReachableTiles());
 
                 // handling mouse events
 
@@ -79,13 +79,13 @@ public class Controller implements IController {
         if (e instanceof Troop) {
             view.renderTroop(logic2GraphicX(e.getX()), logic2GraphicY(e.getY()), Side.PLAYER);
 
-            view.renderOval(
+            /* view.renderOval(
                 logic2GraphicX(e.getX()), 
                 logic2GraphicY(e.getY()), 
                 getDx() * (e.getCollisionRadius() * 2),
                 getDy() * (e.getCollisionRadius() * 2),
                 0.5
-            );   
+            );    */
 
             view.renderVector(
                 logic2GraphicX(e.getX()), 
@@ -97,13 +97,13 @@ public class Controller implements IController {
             Tower tower = (Tower) e;
 
             
-            view.renderOval(
+            /* view.renderOval(
                 logic2GraphicX(tower.getX()), 
                 logic2GraphicY(tower.getY()), 
                 getDx() * (tower.getCollisionRadius() * 2),
                 getDy() * (tower.getCollisionRadius() * 2),
                 0.5
-            );   
+            );    */
             
 
             view.renderTower(

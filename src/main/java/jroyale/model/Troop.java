@@ -110,7 +110,10 @@ public abstract class Troop extends Entity {
 
         // final fixing inside map and outside unreachable tiles:
         Point impactVector = CollisionManager.pushOutOfUnreachableTiles(this);
-        setTangentSpeed(impactVector.getX(), impactVector.getY());
+        if (!impactVector.isZeroVector()) {
+            setTangentSpeed(impactVector.getX(), impactVector.getY());  
+        }
+        
 
     }
 
