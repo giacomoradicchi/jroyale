@@ -21,6 +21,11 @@ public abstract class Tower extends Entity {
     }
 
     @Override
+    public Point getDirection() {
+        return null; // tower entity has not a direction since it doesn't move
+    }
+
+    @Override
     public double getCollisionRadius() {
         return getFootPrintSize() * 0.5 * TOWER_COLLISION_RADIUS_FACTOR;
     }
