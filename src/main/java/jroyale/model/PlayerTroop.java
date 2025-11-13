@@ -39,7 +39,7 @@ public class PlayerTroop extends Troop {
     protected void initTargetList() {
         this.defaultRoute = new LinkedList<>();
 
-        this.defaultRoute.add(new Point(-9, 2));
+        //this.defaultRoute.add(new Point(-9, 2));
 
         if (getX() < Model.MAP_COLS / 2) { 
             // if is on the left side
@@ -51,7 +51,7 @@ public class PlayerTroop extends Troop {
             this.defaultRoute.add(Entity.RIGHT_BRIDGE_START_POS);
             this.defaultRoute.add(Entity.RIGHT_BRIDGE_END_POS); 
             this.defaultRoute.add(Entity.OPPONENT_RIGHT_TOWER_CENTRE);
-        }
+        } 
         this.defaultRoute.add(Entity.OPPONENT_KING_TOWER_CENTRE);
     }
 

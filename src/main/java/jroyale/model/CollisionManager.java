@@ -10,19 +10,22 @@ public class CollisionManager {
 
     private static IModel model;
 
+    // buffer variables to avoid "new" constructor each time
     private static Circle collisionCircle1 = new Circle();
     private static Circle collisionCircle2 = new Circle();
+    private static Point impactVector = new Point();
 
     public static void setModel(IModel model) {
         CollisionManager.model = model;
     }
 
     public static Point pushOutOfUnreachableTiles(Entity e) {
+        impactVector.setPoint(0, 0);
+
         // getting entity direction:
         Point direction = e.getDirection();
-        if (direction == null || direction.isZeroVector()) { // that means that entity doesn't move, so 
-            // this method won't be effective.
-            return null;
+        if (direction == null || direction.isZeroVector()) { // that means that entity doesn't move (exit)
+            return impactVector;
         }
 
         // getting direction regarding each axes. value wil be in {-1, 0, 1} 
@@ -30,30 +33,20 @@ public class CollisionManager {
         int directionOnY = (int) Math.signum(direction.getY());
 
         /* 
-         * in this way, it will be easier to check unreachable tiles based on direction.
-         * for example, if (directionOnX, directionOnY) = (+1, +1), that means the entity 
-         * is moving towards south-east. 
+         * 
          *                                      x
          * based on our reference system: ------> 
          *                                |
          *                                |
          *                              y v 
          * 
+         * 
+         * for example, if (directionOnX, directionOnY) = (+1, +1), that means the entity 
+         * is moving towards south-east, so this method has to check both tiles on his right 
+         * and below him.
          *
-         * if directionX != 0 and directionY != 0, we will have to check both vertical and
-         * horizontal tiles. for example, if (directionOnX, directionOnY) = (+1, +1), this method
-         * has to check both tiles on his right and tiles below him. 
-         *
-         *
-         *
-         * however, to avoid 
-         * problems with the corner tile that is common to both bound tiles
          *
          */
-
-        
-
-        Point impactVector = new Point(0, 0);
 
         double radius = e.getCollisionRadius();
         int iTopLeftCorner = (int) Math.floor(e.getY() - radius);
@@ -63,64 +56,45 @@ public class CollisionManager {
 
         /* 
             
-         * 1) find unreachable non-corner edges
+         * 1) find unreachable edges (excluding common corner if present)
 
-         * -----------------
-         * |   | x | x |   |
-         * -----------------
-         * | x |   |   | x |
-         * -----------------
-         * | x |   |   | x |    only arays with size > 2 have non-corner edges
-         * -----------------
-         * |   | x | x |   |
-         * -----------------
+         *          -----------------        -----------------
+         *          | c | x | x | x |        | x | x | x | x |
+         *          -----------------        -----------------  
+         *          | x |   |   |   |        |   |   |   |   |
+         *          -----------------        -----------------
+         *          | x |   |   |   |        |   |   |   |   |
+         *          -----------------        -----------------
+         *          | x |   |   |   |        |   |   |   |   |
+         *          -----------------        -----------------
+         * direction:    (-1,-1)                  (-1, 0)
+         *               up-left                     up
+         *                  
+         * 
+         * c: common corner (only if both direction on X and Y are != 0)
+         * x: corner to check
+         * 
+         * 
+         * common corners has to be checked after non-common ones because they can cause wrong collision detection
          */
 
+        // collision with unreachable edges excluding common one (it will be excluded by the method)
         impactVector.setX(getOppositeDirectionX(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size));
         impactVector.setY(getOppositeDirectionY(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size));
 
-        if (impactVector.isZeroVector() && hasCommonCorner(directionOnX, directionOnY)) { 
-            int commonCornerI = getCommonCornerI(directionOnY, iTopLeftCorner, size);
-            int commonCornerJ = getCommonCornerJ(directionOnX, jTopLeftCorner, size);
-
-            System.out.println(commonCornerI);
-
-            if (!model.isTileReachable(commonCornerI, commonCornerJ)) {
-                impactVector.setY(-directionOnY);
-            }
+        // in this case, there might be a collision with a common corner that wasn't checked before.
+        if (impactVector.isZeroVector() && hasCommonCorner(directionOnX, directionOnY)) {
+            boolean moveOnX = Math.abs(direction.getX()) < Math.abs(direction.getY()); 
+            // if X direction < Y position, entity will be moved on Y axis, otherwise entity will be moved on X axis
+            handleCommonCorner(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size, moveOnX); 
         } 
 
+        // at this point, every check is done.
 
-        if (!impactVector.isZeroVector()) { // if an unreachable non-corner edges is found, 
-            // entity position is adjusted
+        if (!impactVector.isZeroVector()) { 
+            // entity position is adjusted only if impact vector is != (0, 0)
             applyImpactCorrection(e, impactVector, iTopLeftCorner, jTopLeftCorner, size);
         }
-
-        // no unreachable non-corner edges found or bound size too small
-
-        /* 
-         * 2) find unreachable corner edges
-         * -----------------
-         * | x |   |   | x |
-         * -----------------
-         * |   |   |   |   |
-         * -----------------
-         * |   |   |   |   |    
-         * -----------------
-         * | x |   |   | x |
-         * -----------------
-         * 
-         * ---------
-         * | x | x | 
-         * ---------
-         * | x | x |   
-         * ---------
-         * 
-         */
-        // 
-
-        
-        
 
         return impactVector;
 
@@ -442,6 +416,20 @@ public class CollisionManager {
 
         return false;
 
+    }
+
+    private static void handleCommonCorner(int directionOnX, int directionOnY, int iTopLeftCorner, int jTopLeftCorner, int size, boolean moveOnX) {
+        int commonCornerI = getCommonCornerI(directionOnY, iTopLeftCorner, size);
+        int commonCornerJ = getCommonCornerJ(directionOnX, jTopLeftCorner, size);
+
+
+        if (!model.isTileReachable(commonCornerI, commonCornerJ)) {
+            if (moveOnX) {
+                impactVector.setX(-directionOnX);
+            } else {
+                impactVector.setY(-directionOnY);
+            }
+        }
     }
 
 }
