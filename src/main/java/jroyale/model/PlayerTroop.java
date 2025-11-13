@@ -59,4 +59,5 @@ public class PlayerTroop extends Troop {
     protected void setFirstTarget() {
         target = defaultRoute.get(0);
     }
+    
 }

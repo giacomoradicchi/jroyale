@@ -18,71 +18,109 @@ public class CollisionManager {
     }
 
     public static Point pushOutOfUnreachableTiles(Entity e) {
-        //Point impactVector = fixInsideMap(e); 
+        // getting entity direction:
+        Point direction = e.getDirection();
+        if (direction == null || direction.isZeroVector()) { // that means that entity doesn't move, so 
+            // this method won't be effective.
+            return null;
+        }
+
+        // getting direction regarding each axes. value wil be in {-1, 0, 1} 
+        int directionOnX = (int) Math.signum(direction.getX());
+        int directionOnY = (int) Math.signum(direction.getY());
+
+        /* 
+         * in this way, it will be easier to check unreachable tiles based on direction.
+         * for example, if (directionOnX, directionOnY) = (+1, +1), that means the entity 
+         * is moving towards south-east. 
+         *                                      x
+         * based on our reference system: ------> 
+         *                                |
+         *                                |
+         *                              y v 
+         * 
+         *
+         * if directionX != 0 and directionY != 0, we will have to check both vertical and
+         * horizontal tiles. for example, if (directionOnX, directionOnY) = (+1, +1), this method
+         * has to check both tiles on his right and tiles below him. 
+         *
+         *
+         *
+         * however, to avoid 
+         * problems with the corner tile that is common to both bound tiles
+         *
+         */
+
+        
+
         Point impactVector = new Point(0, 0);
 
         double radius = e.getCollisionRadius();
         int iTopLeftCorner = (int) Math.floor(e.getY() - radius);
         int jTopLeftCorner = (int) Math.floor(e.getX() - radius);
-        int limit = e.getFootPrintSize() + 1;
+        int size = e.getFootPrintSize() + 1;
 
-        // getting impact vector value
 
-        // case 1: unreachable tile is over entity (WORKS!!)
-        for (int j = 0; j < limit; j++) {
-            if (!model.isTileReachable(iTopLeftCorner, jTopLeftCorner + j)) {
-                impactVector.addY(1);
-                break;
-            }
-        }
-        
-        // case 2: unreachable tile is below entity (WORKS!!)
-        for (int j = 0; j < limit; j++) {
-            if (!model.isTileReachable(iTopLeftCorner + limit - 1, jTopLeftCorner + j)) {
-                impactVector.addY(-1);
-                break;
-            } 
-        }
+        /* 
+            
+         * 1) find unreachable non-corner edges
 
-        // case 3: unreachable tile is on entity's left (WORKS!!)
-        for (int i = 0; i < limit; i++) { 
-            if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner)) {
-                impactVector.addX(+1);
-                break;
-            }
-        }
+         * -----------------
+         * |   | x | x |   |
+         * -----------------
+         * | x |   |   | x |
+         * -----------------
+         * | x |   |   | x |    only arays with size > 2 have non-corner edges
+         * -----------------
+         * |   | x | x |   |
+         * -----------------
+         */
 
-        // case 4: unreachable tile is on entity's right (WORKS!!)
-        for (int i = 0; i < limit; i++) { 
-            if (!model.isTileReachable(iTopLeftCorner + i, jTopLeftCorner + limit - 1)) {
-                impactVector.addX(-1);
-                break;
+        impactVector.setX(getOppositeDirectionX(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size));
+        impactVector.setY(getOppositeDirectionY(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size));
+
+        if (impactVector.isZeroVector() && hasCommonCorner(directionOnX, directionOnY)) { 
+            int commonCornerI = getCommonCornerI(directionOnY, iTopLeftCorner, size);
+            int commonCornerJ = getCommonCornerJ(directionOnX, jTopLeftCorner, size);
+
+            System.out.println(commonCornerI);
+
+            if (!model.isTileReachable(commonCornerI, commonCornerJ)) {
+                impactVector.setY(-directionOnY);
             }
         } 
 
-        if (impactVector.getX() != 0 || impactVector.getY() != 0) {
-            System.out.println(impactVector);
+
+        if (!impactVector.isZeroVector()) { // if an unreachable non-corner edges is found, 
+            // entity position is adjusted
+            applyImpactCorrection(e, impactVector, iTopLeftCorner, jTopLeftCorner, size);
         }
+
+        // no unreachable non-corner edges found or bound size too small
+
+        /* 
+         * 2) find unreachable corner edges
+         * -----------------
+         * | x |   |   | x |
+         * -----------------
+         * |   |   |   |   |
+         * -----------------
+         * |   |   |   |   |    
+         * -----------------
+         * | x |   |   | x |
+         * -----------------
+         * 
+         * ---------
+         * | x | x | 
+         * ---------
+         * | x | x |   
+         * ---------
+         * 
+         */
+        // 
+
         
-
-        // setting entity position based on impact vector
-        double x = impactVector.getX();
-        if (x != 0) {
-            double boundX = jTopLeftCorner + x;
-            if (x == -1) {
-                boundX += limit;
-            }
-            e.setX(boundX + Math.signum(x) * radius);
-        }
-
-        double y = impactVector.getY();
-        if (y != 0) {
-            double boundY = iTopLeftCorner + y;
-            if (y == -1) {
-                boundY += limit;
-            }
-            e.setY(boundY + Math.signum(y) * radius);
-        }
+        
 
         return impactVector;
 
@@ -215,4 +253,195 @@ public class CollisionManager {
         collisionCircle2.setCenterY(y);
         collisionCircle2.setRadius(radius);
     }
+
+    //
+    // for collision with unreachable tiles
+    //
+
+    private static void applyImpactCorrection(Entity e, Point impactVector, int iTopLeftCorner, int jTopLeftCorner, int size) {
+        // setting entity position based on impact vector
+        double x = impactVector.getX();
+        double y = impactVector.getY();
+        double radius = e.getCollisionRadius();
+
+        if (x != 0) {
+            double boundX = jTopLeftCorner + x;
+            if (x == -1) {
+                boundX += size;
+            }
+            e.setX(boundX + Math.signum(x) * radius);
+        }
+
+        
+        if (y != 0) {
+            double boundY = iTopLeftCorner + y;
+            if (y == -1) {
+                boundY += size;
+            }
+            e.setY(boundY + Math.signum(y) * radius);
+        } 
+    }
+
+    private static int getOppositeDirectionX(int directionOnX, int directionOnY, int iTopLeftCorner, int jTopLeftCorner, int size) {
+        if (unreachableTileRightEntity(iTopLeftCorner, jTopLeftCorner, size, directionOnX, directionOnY)) { // moving right
+            return -1;
+        }  
+
+        if (unreachableTileLeftEntity(iTopLeftCorner, jTopLeftCorner, size, directionOnX, directionOnY)) { // moving left
+            return +1;
+        }
+        
+        return 0; 
+    }
+
+    private static int getOppositeDirectionY(int directionOnX, int directionOnY, int iTopLeftCorner, int jTopLeftCorner, int size) {
+        if (unreachableTileBelowEntity(iTopLeftCorner, jTopLeftCorner, size, directionOnX, directionOnY)) // moving down
+        {
+            return -1;
+        }
+        if (unreachableTileOverEntity(iTopLeftCorner, jTopLeftCorner, size, directionOnX, directionOnY)) { // moving up
+            return +1;
+
+        } 
+
+        return 0;
+    }
+
+    private static boolean hasCommonCorner(int directionOnX, int directionOnY) {
+        return directionOnX != 0 && directionOnY != 0;
+    }
+
+    private static int getCommonCornerJ(int directionOnX, int jTopLeftCorner, int size) {
+        // supposing this method is only called when hasCommonCorner = true
+
+        if (directionOnX == +1) {
+            return jTopLeftCorner + size - 1;
+        }
+        return jTopLeftCorner;
+
+    }
+
+    private static int getCommonCornerI(int directionOnY, int iTopLeftCorner, int size) {
+        // supposing this method is only called when hasCommonCorner = true
+
+        if (directionOnY == +1) {
+            return iTopLeftCorner + size - 1;
+        }
+        return iTopLeftCorner;
+
+    }
+
+    // returns true if there's an unreachable tile over entity e, false otherwise. 
+    // it doesn't check corners
+    private static boolean unreachableTileOverEntity(int iTopLeftCorner, int jTopLeftCorner, int size, int directionOnX, int directionOnY) {
+        if (directionOnY != -1) return false; // that means is not moving up
+
+        int row = iTopLeftCorner;
+        int col = jTopLeftCorner;
+
+        int start = 0;
+        if (directionOnX == -1) {
+            // common corner is on bottom-left position
+            start++;
+        } 
+        int end =  size;
+        if (directionOnX == +1) {
+            // common corner is on bottom-right position
+            end--;
+        }
+
+        for (int j = start; j < end; j++) { 
+            
+            if (!model.isTileReachable(row, col + j)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean unreachableTileBelowEntity(int iTopLeftCorner, int jTopLeftCorner, int size, int directionOnX, int directionOnY) {
+        if (directionOnY != +1) return false; // that means is not moving down
+
+
+        int row = iTopLeftCorner + size - 1;
+        int col = jTopLeftCorner;
+
+        int start = 0;
+        if (directionOnX == -1) {
+            // common corner is on bottom-left position
+            start++;
+        } 
+        int end =  size;
+        if (directionOnX == +1) {
+            // common corner is on bottom-right position
+            end--;
+        }
+
+        for (int j = start; j < end; j++) { 
+            
+            if (!model.isTileReachable(row, col + j)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean unreachableTileLeftEntity(int iTopLeftCorner, int jTopLeftCorner, int size, int directionOnX, int directionOnY) {
+        if (directionOnX != -1) return false; // that means is not moving on X pos
+
+        int row = iTopLeftCorner;
+        int col = jTopLeftCorner;
+
+        int start = 0;
+        if (directionOnY == -1) {
+            // common corner is on top-left position
+            start++;
+        } 
+        int end =  size;
+        if (directionOnY == +1) {
+            // common corner is on bottom-left position
+            end--;
+        }
+        
+        
+        for (int i = start; i < end; i++) { 
+
+            if (!model.isTileReachable(row + i, col)) {
+                return true;
+            }
+        } 
+
+        return false;
+    }
+
+    private static boolean unreachableTileRightEntity(int iTopLeftCorner, int jTopLeftCorner, int size, int directionOnX, int directionOnY) {
+        if (directionOnX != +1) return false; // that means is not moving on X pos
+        
+        int row = iTopLeftCorner;
+        int col = jTopLeftCorner + size - 1;
+
+        int start = 0;
+        if (directionOnX == +1 && directionOnY == -1) {
+            // common corner is on top-right position
+            start++;
+        } 
+        int end =  size;
+        if (directionOnX == +1 && directionOnY == +1) {
+            // common corner is on bottom-right position
+            end--;
+        }
+
+        for (int i = start; i < end; i++) { 
+            
+            if (!model.isTileReachable(row + i, col)) {
+                return true;
+            }
+        } 
+
+        return false;
+
+    }
+
 }

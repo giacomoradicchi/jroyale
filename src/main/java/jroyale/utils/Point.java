@@ -41,6 +41,10 @@ public class Point {
         this.y=p.y;
     }
 
+    public boolean isZeroVector() {
+        return x == 0 && y == 0;
+    }
+
     public Point add(Point p){
         x += p.getX();
         y += p.getY();
@@ -62,6 +66,7 @@ public class Point {
         y -= p.getY();
         return this;
     }
+
     public Point multiply(double scalar){
         x *= scalar;
         y *= scalar;

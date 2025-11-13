@@ -107,5 +107,8 @@ public abstract class Entity implements Comparable<Entity>{
     // abstract methods
     public abstract void update(long elapsed);
 
+    public abstract Point getDirection(); // only entities that have speed attribs 
+    // (like troops) will return their direction. otherwise, they'll return null
+
     
 }

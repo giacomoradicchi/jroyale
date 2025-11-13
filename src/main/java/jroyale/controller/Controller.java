@@ -90,7 +90,7 @@ public class Controller implements IController {
             view.renderVector(
                 logic2GraphicX(e.getX()), 
                 logic2GraphicY(e.getY()), 
-                ((Troop) e).getSpeed().angle()
+                e.getDirection().angle()
             );
 
         } else if (e instanceof Tower) {

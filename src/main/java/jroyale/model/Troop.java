@@ -30,6 +30,7 @@ public abstract class Troop extends Entity {
 
     protected Point target;
     protected Point speed;
+    protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
     protected List<Point> defaultRoute;
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
@@ -68,6 +69,13 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         move(elapsed);
+    }
+
+    @Override 
+    public Point getDirection() {
+        updateDirection();
+        
+        return direction;
     }
 
     // 
@@ -175,6 +183,15 @@ public abstract class Troop extends Entity {
         speed = getSmoothAimUnitVector().multiply(getAbsoluteSpeed(elapsed));
     }
 
+    private void updateDirection() {
+        // direction is just a normalised version of speed. its value 
+        // is computed only when updateDirection() method is called insiede
+        // getDirection. 
+        direction.setX(speed.getX());
+        direction.setY(speed.getY());
+        direction.normalize();
+    }
+
     private double getAbsoluteSpeed(long elapsed) {
         // elapsed is in nanosec (10^(-9) sec) and speed is in tiles/minutes, so the speed in tiles/ns will be:
         return elapsed / 1_000_000_000.0 * SPEEDS.get(SPEED_TYPE) / 60.0 ;
@@ -202,6 +219,7 @@ public abstract class Troop extends Entity {
 
     private void initSpeed() {
         this.speed = getAimUnitVector();
+        this.direction = new Point(speed).normalize();
     }
 
     //
