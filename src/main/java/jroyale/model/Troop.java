@@ -86,7 +86,10 @@ public abstract class Troop extends Entity {
         fixDistance(other);
 
         if (!target.equals(other.position)) {
-            setTangentSpeed(other);
+            setTangentSpeed(
+                position.getX() - other.getX(), // dx
+                position.getY() - other.getY()  // dy
+            );
         } 
     
     }
@@ -101,32 +104,13 @@ public abstract class Troop extends Entity {
             slideAlong(other);
         }
 
-        /* int nextI = (int) Math.floor(position.getY() + speed.getY() - getCollisionRadius() );
-        int nextJ = (int) Math.floor(position.getX() + speed.getX() - getCollisionRadius() );
-
-        if (!CollisionManager.isTileReachable(nextI, nextJ)) {
-            int dI = nextI - getCurrentI();
-            int dJ = nextJ - getCurrentJ();
-            Point normalVector = new Point(dJ, dI).normalize().multiply(speed.magnitude());
-            Point tangentVector1 = new Point(normalVector).rotate(-90);
-            Point tangentVector2 = new Point(normalVector).rotate(90);
-
-            double dot1 = tangentVector1.dotProduct(speed); 
-            double dot2 = tangentVector2.dotProduct(speed); 
-
-            if (dot1 > dot2) { // the closest is tangentVector1
-                speed.interpolate(tangentVector1, 1);
-            } else {
-                speed.interpolate(tangentVector2, 1);
-            }
-
-            
-        } */
+        
 
         shiftPosition(speed);
 
         // final fixing inside map and outside unreachable tiles:
-        CollisionManager.pushOutOfUnreachableTiles(this);
+        Point impactVector = CollisionManager.pushOutOfUnreachableTiles(this);
+        setTangentSpeed(impactVector.getX(), impactVector.getY());
 
     }
 
@@ -148,10 +132,8 @@ public abstract class Troop extends Entity {
         position.setY(other.getY() + shiftY);
     }
 
-    private void setTangentSpeed(Entity other) {
+    private void setTangentSpeed(double dx, double dy) {
         // getting the two vectors that are tangent to the entities (they are opposite)
-        double dx = position.getX() - other.getX();
-        double dy = position.getY() - other.getY();
         Point tangentVector1 = new Point(dx, dy).normalize().multiply(speed.magnitude()).rotate(90);
         Point tangentVector2 = new Point(tangentVector1).multiply(-1);
         // these 2 vectors have the same magnitude as vector speed
