@@ -1,5 +1,7 @@
 package jroyale.view;
 
+import jroyale.view.View.TroopType;
+
 public interface IView {
     
     public void initializeRendering(long millisecs, double newWidth, double newHeight);
@@ -10,7 +12,7 @@ public interface IView {
 
     public void renderTower(int towerType, double centreX, double centreY);
 
-    public void renderTroop(double centreX, double centreY, int side);
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int side);
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 

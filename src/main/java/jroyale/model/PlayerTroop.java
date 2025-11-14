@@ -13,12 +13,12 @@ public class PlayerTroop extends Troop {
     
 
     public PlayerTroop(String name, double x, double y) {
-        super(name, x, y, Troop.MEDIUM, Side.PLAYER);
+        super(name, x, y, Troop.FAST, Side.PLAYER);
         itTargets = defaultRoute.iterator();
     }
 
     public PlayerTroop(String name, int n, int m) {
-        super(name, n, m, Troop.MEDIUM, Side.PLAYER);
+        super(name, n, m, Troop.FAST, Side.PLAYER);
         itTargets = defaultRoute.iterator();
     }
 
