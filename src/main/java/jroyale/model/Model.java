@@ -19,6 +19,9 @@ public class Model implements IModel {
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
+    private boolean[][] playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
+    private boolean[][] opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
+
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 
     // coord-system whose origin is 0 and his head is 18-. X-coords will 
@@ -36,12 +39,14 @@ public class Model implements IModel {
 
         for (int i = 0; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
-                if (/* true ||  */reachableTiles[i][j])
+                if (reachableTiles[i][j])
                     this.map[i][j] = new Tile();
             }
         }
 
         initTowers();
+        initDroppableTiles();
+        
     }
 
     @Override
@@ -50,11 +55,24 @@ public class Model implements IModel {
     }
 
     @Override
+    public boolean[][] getPlayerDroppableTiles() {
+        return playerDroppableTiles;
+    }
+
+    @Override
     public boolean isTileReachable(int i, int j) {
         if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
             return false;
         
         return reachableTiles[i][j];
+    }
+
+    @Override
+    public boolean isPlayerTroopDroppableOnTile(int i, int j) {
+        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+            return false;
+        
+        return playerDroppableTiles[i][j];
     }
 
     @Override
@@ -72,7 +90,7 @@ public class Model implements IModel {
             for (int j = 0; j < MAP_COLS; j++) {
                 System.out.print("| ");
                 if (reachableTiles[i][j]) {
-                    if (map[i][j].getEntities().size() > 0) {
+                    if (isTileOccupied(i, j)) {
                         System.out.print(map[i][j].getEntities().size());
                     } else {
                         System.out.print(" ");
@@ -85,7 +103,7 @@ public class Model implements IModel {
                 System.out.print(" |");
             }
             System.out.println();
-        } */
+        }  */
 
     }
 
@@ -174,6 +192,13 @@ public class Model implements IModel {
         }
     }
 
+    private boolean isTileOccupied(int i, int j) {
+        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS || !reachableTiles[i][j])
+            throw new IllegalArgumentException("Tile [" + i + ", " + j + "] is unreachable.");
+            
+        return map[i][j].isOccupied();
+    }
+
     private long getElapsed(long now) {
         long elapsed = 0;
         if (lastTimeStamp != 0) {
@@ -226,9 +251,16 @@ public class Model implements IModel {
             this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - j] = true;
             this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - j] = true;
         }
+    }
 
+    private void initDroppableTiles() {
+        // every opponent tower are not damaged
 
-        this.reachableTiles[7][MAP_COLS/2 - 3] = false;
-        this.reachableTiles[8][MAP_COLS/2 - 3] = false;
+        int start = (int) Math.floor(Entity.LEFT_BRIDGE_START_POS.getY());
+        for (int i = start; i < MAP_ROWS; i++) {
+            for (int j = 0; j < MAP_COLS; j++) {
+                playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
+            }
+        }
     }
 }

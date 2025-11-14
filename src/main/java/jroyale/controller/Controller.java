@@ -42,7 +42,7 @@ public class Controller implements IController {
                 
                 view.renderArena();
 
-                //view.renderCells(model.getReachableTiles());
+                //view.renderCells(model.getPlayerDroppableTiles());
 
                 // handling mouse events
 
@@ -110,7 +110,7 @@ public class Controller implements IController {
                 tower.getTowerType(), 
                 logic2GraphicX(tower.getX()),
                 logic2GraphicY(tower.getY())
-            ); 
+            );  
         }
     }
 
@@ -140,7 +140,7 @@ public class Controller implements IController {
 
         if (0 <= logicX && logicX < model.getColsCount()
         &&  0 <= logicY && logicY < model.getRowsCount()
-        &&  model.getReachableTiles()[logicY][logicX] == true) {
+        &&  model.isPlayerTroopDroppableOnTile(logicY, logicX)) {
             lastMouseColumnIndex = logicX;
             lastMouseRowIndex = logicY;
         } 

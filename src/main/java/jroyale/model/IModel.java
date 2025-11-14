@@ -18,6 +18,10 @@ public interface IModel {
 
     public boolean isTileReachable(int i, int j);
 
+    public boolean isPlayerTroopDroppableOnTile(int i, int j);
+
+    public boolean[][] getPlayerDroppableTiles();
+
     // just for debugging:
     public boolean[][] getReachableTiles();
 }
