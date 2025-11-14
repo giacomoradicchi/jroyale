@@ -3,6 +3,8 @@ package jroyale.view;
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
+import jroyale.view.troops.MiniPekkaView;
+import jroyale.view.troops.TroopView;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -12,7 +14,19 @@ public class View implements IView {
 
     // public attribs for controller class
     public enum TroopType {
-        MINI_PEKKA,
+        MINI_PEKKA(0, MiniPekkaView.getInstance());
+
+        private final int id;
+        private final TroopView troopView;
+
+        TroopType(int id, TroopView troopView) {
+            this.id = id;
+            this.troopView = troopView;
+        }
+
+        public int getId() {
+            return id;
+        }
     };
 
     private final static boolean DEBUG_MODE = false;
@@ -141,19 +155,23 @@ public class View implements IView {
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, int side) {
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int side) {
+
+        /* renderVector(centreX, centreY, angleDirection);
+
         Color color = Color.BLUE;
         if (side == Side.OPPONENT) {
             color = Color.RED;
         }
 
-        //Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/goomba.png"));
-        //gc.drawImage(image, centreX - image.getWidth()/2, centreY - image.getHeight()/2);
         fillPoint(
             centreX, 
             centreY,
             color
-        ); 
+        );  */
+
+        type.troopView.render(gc, centreX, centreY, angleDirection, side, dx, dy);
+        
     }
 
 

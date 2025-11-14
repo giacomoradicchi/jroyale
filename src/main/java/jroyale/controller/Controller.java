@@ -1,9 +1,7 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.effect.Light.Point;
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
@@ -12,6 +10,8 @@ import jroyale.model.Troop;
 import jroyale.model.towers.Tower;
 import jroyale.shared.Side;
 import jroyale.view.IView;
+import jroyale.view.View;
+import jroyale.view.troops.TroopView;
 
 public class Controller implements IController {
 
@@ -21,13 +21,14 @@ public class Controller implements IController {
     private int lastMouseColumnIndex = -1;
     private int lastMouseRowIndex = -1;
 
+    // binders 
+    private ModelViewBinder<Troop, TroopView> troopBinder = new ModelViewBinder<>();
+
     public Controller(IModel model, IView view, Scene scene) {
         this.model = model;
         this.view = view;
         this.scene = scene;
     }
-
-    int count = 0;
 
     @Override
     public void start() {
@@ -38,31 +39,16 @@ public class Controller implements IController {
             @Override
             public void handle(long now) {
                 model.update(now);
+
                 view.initializeRendering(now, scene.getWidth(), scene.getHeight());
                 
                 view.renderArena();
 
                 //view.renderCells(model.getPlayerDroppableTiles());
 
-                // handling mouse events
+                handleMouseEvents();
 
-                if (MouseManager.isMousePressed()) {
-                    updateLogicMousePos();
-                    renderDragPlacementPreview();
-                } 
-
-                if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
-                    model.addPlayerTroop(
-                        new PlayerTroop(
-                            null, 
-                            lastMouseRowIndex,
-                            lastMouseColumnIndex
-                        )
-                    );
-                    
-                    resetLastLogicMousePos();
-                    view.resetDragPlacementPreviewAnimation();
-                }
+                
                 
                 // depth rendering based on Y pos
 
@@ -74,46 +60,82 @@ public class Controller implements IController {
         loop.start();
     }
 
-    // render methods:
-    private void renderEntity(Entity e) {
-        if (e instanceof Troop) {
-            view.renderTroop(logic2GraphicX(e.getX()), logic2GraphicY(e.getY()), Side.PLAYER);
+    //
+    // private methods
+    //
 
-            /* view.renderOval(
-                logic2GraphicX(e.getX()), 
-                logic2GraphicY(e.getY()), 
-                getDx() * (e.getCollisionRadius() * 2),
-                getDy() * (e.getCollisionRadius() * 2),
-                0.5
-            );    */
+    private void setBindings() {
+        troopBinder.bind(null, null);
+    }
 
-            view.renderVector(
-                logic2GraphicX(e.getX()), 
-                logic2GraphicY(e.getY()), 
-                e.getDirection().angle()
+    private void handleMouseEvents() {
+        if (MouseManager.isMousePressed()) {
+            updateLogicMousePos();
+            renderDragPlacementPreview();
+        } 
+
+        if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
+            model.addPlayerTroop(
+                new PlayerTroop(
+                    null, 
+                    lastMouseRowIndex,
+                    lastMouseColumnIndex
+                )
             );
-
-        } else if (e instanceof Tower) {
-            Tower tower = (Tower) e;
-
             
-            /* view.renderOval(
-                logic2GraphicX(tower.getX()), 
-                logic2GraphicY(tower.getY()), 
-                getDx() * (tower.getCollisionRadius() * 2),
-                getDy() * (tower.getCollisionRadius() * 2),
-                0.5
-            );    */
-            
-
-            view.renderTower(
-                tower.getTowerType(), 
-                logic2GraphicX(tower.getX()),
-                logic2GraphicY(tower.getY())
-            );  
+            resetLastLogicMousePos();
+            view.resetDragPlacementPreviewAnimation();
         }
     }
 
+    // render methods:
+    private void renderEntity(Entity e) {
+        if (e instanceof Troop) {
+
+            renderTroop(e);
+
+        } else if (e instanceof Tower) {
+            
+            renderTower(e);
+        }
+    }
+
+    private void renderTroop(Entity e) {
+        
+        view.renderTroop(
+            logic2GraphicX(e.getX()),           // graphic X 
+            logic2GraphicY(e.getY()),           // graphic Y
+            e.getDirection().angle(),           // angle direction
+            View.TroopType.MINI_PEKKA,          // troop type
+            Side.PLAYER                         // side
+        );
+
+        /* view.renderOval(
+            logic2GraphicX(e.getX()), 
+            logic2GraphicY(e.getY()), 
+            getDx() * (e.getCollisionRadius() * 2),
+            getDy() * (e.getCollisionRadius() * 2),
+            0.5
+        );    */
+    }
+
+    private void renderTower(Entity e) {
+        Tower tower = (Tower) e;
+
+        /* view.renderOval(
+            logic2GraphicX(tower.getX()), 
+            logic2GraphicY(tower.getY()), 
+            getDx() * (tower.getCollisionRadius() * 2),
+            getDy() * (tower.getCollisionRadius() * 2),
+            0.5
+        );    */
+        
+        view.renderTower(
+            tower.getTowerType(), 
+            logic2GraphicX(tower.getX()),
+            logic2GraphicY(tower.getY())
+        );  
+    }
 
     // Mouse pressed methods:
 
