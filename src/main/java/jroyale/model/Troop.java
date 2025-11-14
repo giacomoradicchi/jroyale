@@ -34,6 +34,7 @@ public abstract class Troop extends Entity {
     protected List<Point> defaultRoute;
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
+    private Point aimUnitVector; // buffer for aiming direction
 
     public Troop(String name, double x, double y, byte speedType, byte side) {
         super(x, y, side);
@@ -163,8 +164,11 @@ public abstract class Troop extends Entity {
             return;
         }
 
+        fixPathTroughBridge();
+
         // new vector speed will be the smooth aim unit vector (a vector that aims to the next target
         // based on troop position and his last direction) times his absolute speed [tiles/delta_time].
+        
         speed = getSmoothAimUnitVector().multiply(getAbsoluteSpeed(elapsed));
     }
 
@@ -186,12 +190,13 @@ public abstract class Troop extends Entity {
         return position.distance(target) < speed.magnitude();
     }
 
-    private Point getAimUnitVector() {
-        return new Point(target.getX() - getX(), target.getY() - getY()).normalize();
+    private void setAimUnitVector(double targetX, double targetY) {
+        aimUnitVector.setPoint(targetX - getX(), targetY - getY());
+        aimUnitVector.normalize();
     }
 
     private Point getLastDirectionUnitVector() {
-        if (speed.magnitude() == 0) return getAimUnitVector(); // to avoid division by 0
+        if (speed.magnitude() == 0) return aimUnitVector; // to avoid division by 0
         return speed.normalize(); 
     }
 
@@ -199,13 +204,54 @@ public abstract class Troop extends Entity {
         // calculating mean between direction and last direction (for smooth turning)
         //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
 
-        return getLastDirectionUnitVector().interpolate(getAimUnitVector(), TURNING_SPEED).normalize();
+        return getLastDirectionUnitVector().interpolate(aimUnitVector, TURNING_SPEED).normalize();
     }
 
     private void initSpeed() {
-        this.speed = getAimUnitVector();
+        this.aimUnitVector = new Point();
+        fixPathTroughBridge();
+        this.speed = new Point(aimUnitVector);
         this.direction = new Point(speed).normalize();
     }
+
+    private void fixPathTroughBridge() {
+        double targetX = target.getX();
+        double targetY = target.getY();
+
+        double troopX = getX();
+        double troopY = getY();
+
+        
+        double bridgeStartY = Entity.LEFT_BRIDGE_START_POS.getY(); 
+        double bridgeEndY = Entity.LEFT_BRIDGE_END_POS.getY(); // left and right bridge have same Y cords
+
+        double leftBridgeStartX = Entity.LEFT_BRIDGE_START_POS.getX();
+        double rightBridgeStartX = Entity.RIGHT_BRIDGE_START_POS.getX();
+        double leftBridgeEndX = Entity.LEFT_BRIDGE_END_POS.getX();
+        double rightBridgeEndX = Entity.RIGHT_BRIDGE_END_POS.getX();
+
+
+        if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetY = bridgeStartY; 
+        } else if (bridgeEndY < troopY && troopY < bridgeStartY 
+        && targetY < bridgeEndY) {
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetY = bridgeEndY; 
+        }
+
+        else if (troopY < bridgeEndY && targetY >= bridgeEndY) {
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetY = bridgeEndY; 
+        } else if (bridgeEndY < troopY && troopY < bridgeStartY 
+        && targetY > bridgeStartY) {
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetY = bridgeStartY;
+        }
+
+
+        setAimUnitVector(targetX, targetY);
+    } 
 
     //
     // abstract methods
