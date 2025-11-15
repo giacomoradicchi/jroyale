@@ -7,6 +7,6 @@ public abstract class TroopView {
     
     protected static final String TROOPS_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/troops/";
 
-    public abstract void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int side, double dx, double dy);
+    public abstract void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, int side, double dx, double dy);
     
 }

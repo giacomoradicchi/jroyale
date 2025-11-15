@@ -107,6 +107,7 @@ public class Controller implements IController {
             logic2GraphicY(e.getY()),           // graphic Y
             e.getDirection().angle(),           // angle direction
             View.TroopType.MINI_PEKKA,          // troop type
+            e.getCurrentFrame(),                // current frame
             Side.PLAYER                         // side
         );
 
