@@ -27,7 +27,7 @@ public class FrameManager {
 
     private long getElapsedBetweenFrames() {
         // assuming FPS Animation won't be 0
-        return 1_000_000_000L / (long) entity.getFPSAnimation();
+        return 1_000_000_000L / entity.getFPSAnimation();
     }
 
     private void resetAccumulator() {
