@@ -155,7 +155,7 @@ public class View implements IView {
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int side) {
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, int side) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -170,7 +170,7 @@ public class View implements IView {
             color
         );  */
 
-        type.troopView.render(gc, centreX, centreY, angleDirection, side, dx, dy);
+        type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, side, dx, dy);
         
     }
 

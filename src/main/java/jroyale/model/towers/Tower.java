@@ -17,7 +17,7 @@ public abstract class Tower extends Entity {
 
     @Override
     public void update(long elapsed) {
-        // TODO
+        // TODO: implement animations also on towers
     }
 
     @Override

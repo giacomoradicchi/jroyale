@@ -8,14 +8,16 @@ import java.util.Map;
 import jroyale.utils.Point;
 
 public abstract class Troop extends Entity {
-    private String name;
-    private final byte SPEED_TYPE;
 
     static final byte VERY_SLOW = 0;
     static final byte SLOW = 1;
     static final byte MEDIUM = 2;
     static final byte FAST = 3;
     static final byte VERY_FAST = 4;
+
+    private String name;
+    private final byte SPEED_TYPE;
+    private FrameManager frameManager;
 
     private static Map<Byte, Integer> SPEEDS = new HashMap<>() {
         {   // category - associated speed [tiles/minutes]
@@ -39,6 +41,7 @@ public abstract class Troop extends Entity {
     public Troop(String name, double x, double y, byte speedType, byte side) {
         super(x, y, side);
         this.name = name;
+        this.frameManager = new FrameManager(this);
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
             this.SPEED_TYPE = MEDIUM;
@@ -69,6 +72,7 @@ public abstract class Troop extends Entity {
 
     @Override
     public void update(long elapsed) {
+        frameManager.updateFrame(elapsed);
         move(elapsed);
     }
 
@@ -158,11 +162,15 @@ public abstract class Troop extends Entity {
     }
 
     private void updateSpeed(long elapsed) {
+        
+
         if (hasReachedTarget()) { 
             goToNextTarget();
             
             return;
         }
+
+        
 
         fixPathTroughBridge();
 
@@ -171,6 +179,8 @@ public abstract class Troop extends Entity {
         
         speed = getSmoothAimUnitVector().multiply(getAbsoluteSpeed(elapsed));
     }
+
+    
 
     private void updateDirection() {
         // direction is just a normalised version of speed. its value 
