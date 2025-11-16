@@ -5,6 +5,8 @@ import jroyale.view.View.TroopType;
 public interface IView {
     
     public void initializeRendering(long millisecs, double newWidth, double newHeight);
+
+    public void loadSprites();
     
     public void render(long millisecs);
 

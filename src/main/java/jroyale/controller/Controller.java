@@ -34,6 +34,7 @@ public class Controller implements IController {
     public void start() {
         MouseManager.enableInput(scene);
         CollisionManager.setModel(model);
+        view.loadSprites();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override

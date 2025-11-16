@@ -29,7 +29,6 @@ public abstract class Entity implements Comparable<Entity>{
 
     private static final int DEFAULT_FOOTPRINT_SIZE = 1; // just one cell occupied
     private static final int DEFAULT_FRAMES_PER_DIRECTION = 12;
-    private static final int FRAMES_ANIMATION_PER_SECOND = 20;
 
     public Entity(double x, double y, byte side) {
         
@@ -111,10 +110,6 @@ public abstract class Entity implements Comparable<Entity>{
     //
     // animation methods
     //
-    
-    public int getFPSAnimation() { // Frame Animation Per Seconds (it can be changed by redefying this method)
-        return FRAMES_ANIMATION_PER_SECOND;
-    }
 
     public int getFramesPerDirection() {
         return DEFAULT_FRAMES_PER_DIRECTION; // each entity has by default 12 frames for the animations
