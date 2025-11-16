@@ -3,8 +3,11 @@ package jroyale.view;
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
+
+import jroyale.view.troops.GiantView;
 import jroyale.view.troops.MiniPekkaView;
 import jroyale.view.troops.TroopView;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -14,7 +17,8 @@ public class View implements IView {
 
     // public attribs for controller class
     public enum TroopType {
-        MINI_PEKKA(0, MiniPekkaView.getInstance());
+        MINI_PEKKA(0, MiniPekkaView.getInstance()),
+        GIANT(1, GiantView.getInstance());
 
         private final int id;
         private final TroopView troopView;
@@ -97,6 +101,12 @@ public class View implements IView {
         // update arena and dx dy
         arena.update(width, height, scale);
         updateDxDy();
+    }
+
+    @Override
+    public void loadSprites() {
+        // forcing loading of all troop sprites
+        TroopType.values();
     }
 
     private void updateDxDy() {

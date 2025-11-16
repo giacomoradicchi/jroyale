@@ -1,5 +1,8 @@
 package jroyale.view.troops;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import jroyale.shared.Side;
@@ -9,16 +12,21 @@ public class MiniPekkaView extends TroopView {
 
     private static MiniPekkaView instance;
 
-    private static final String MINIPEKKA_RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_mini_pekka_out/";
-    private static final String NAME_FILE = "chr_mini_pekka_sprite_";
+    private static final String RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_mini_pekka_out/";
+    private static final String HEADER_NAME_FILE = "chr_mini_pekka_sprite_";
+    private static final String FORMAT = ".png";
+    private static final int NUM_FRAMES = 415;
+
+
     private MiniPekkaView() {
-        // empty constructor
+        super();
     }
 
     
     @Override
     public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, int side, double dx, double dy) {
-        Image image = new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + MINIPEKKA_RELATIVE_PATH + NAME_FILE + getStringNumber(angleDirection, currentFrame) + ".png"));
+        //Image image = new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + MINIPEKKA_RELATIVE_PATH + NAME_FILE + getStringNumber(getFrameIndex(angleDirection, currentFrame)) + FORMAT));
+        Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame));
         image = ImageUtils.enhanceOpacity(image);
         double width = 1.6 * 2 * dx; 
         double height = width * image.getWidth() / image.getHeight();
@@ -26,6 +34,17 @@ public class MiniPekkaView extends TroopView {
         centreY = 300; */
 
         gc.drawImage(image, centreX - Math.pow(-1, isFlippedOnX(angleDirection)) * width/2, centreY - height/2, Math.pow(-1, isFlippedOnX(angleDirection)) * width, height);
+    }
+
+    @Override
+    protected List<Image> getSpriteBuffer() {
+        List<Image> buffer = new ArrayList<>();
+
+        for (int i = 0; i < NUM_FRAMES; i++) {
+            buffer.add(new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH + HEADER_NAME_FILE + getStringNumber(i) + FORMAT)));
+        }
+
+        return buffer;
     }
 
     public static TroopView getInstance() {
@@ -42,10 +61,12 @@ public class MiniPekkaView extends TroopView {
         return 0;
     }
 
-    private String getStringNumber(double angleDirection, int currentFrame) {
+    private int getFrameIndex(double angleDirection, int currentFrame) {
+        return getOffsetDirection(angleDirection)*12 + currentFrame;
+    }
 
-        return String.format("%03d", getOffsetDirection(angleDirection)*12 + currentFrame);
-
+    private String getStringNumber(int number) {
+        return String.format("%03d", number);
     }
 
     private int getOffsetDirection(double angleDirection) {
