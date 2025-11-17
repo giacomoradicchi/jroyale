@@ -1,10 +1,14 @@
-package jroyale.model; 
+package jroyale.model.troops; 
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import jroyale.model.CollisionManager;
+import jroyale.model.Entity;
+import jroyale.model.FrameManager;
+import jroyale.model.Model;
+import jroyale.model.TowerTargetSelector;
 import jroyale.utils.Point;
 
 public abstract class Troop extends Entity {
@@ -30,10 +34,9 @@ public abstract class Troop extends Entity {
         }
     };
 
-    protected Point target;
+    protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
-    protected List<Point> defaultRoute;
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
@@ -48,8 +51,8 @@ public abstract class Troop extends Entity {
         } else {
             this.SPEED_TYPE = speedType;
         }
-        initTargetList();
-        setFirstTarget();
+
+        initTarget();
         initSpeed();
     }
 
@@ -73,6 +76,7 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         frameManager.updateFrame(elapsed);
+        updateTarget();
         move(elapsed);
     }
 
@@ -90,7 +94,7 @@ public abstract class Troop extends Entity {
     protected void slideAlong(Entity other) {
         fixDistance(other);
 
-        if (!target.equals(other.position)) {
+        if (other != target) {
             setTangentSpeed(
                 position.getX() - other.getX(), // dx
                 position.getY() - other.getY()  // dy
@@ -164,11 +168,11 @@ public abstract class Troop extends Entity {
     private void updateSpeed(long elapsed) {
         
 
-        if (hasReachedTarget()) { 
-            goToNextTarget();
+        /* if (hasReachedTarget()) { 
+            updateTarget();
             
             return;
-        }
+        } */
 
         
 
@@ -197,7 +201,7 @@ public abstract class Troop extends Entity {
     }
 
     private boolean hasReachedTarget() {
-        return position.distance(target) < speed.magnitude();
+        return position.distance(target.getX(), target.getY()) < speed.magnitude();
     }
 
     private void setAimUnitVector(double targetX, double targetY) {
@@ -224,11 +228,15 @@ public abstract class Troop extends Entity {
         this.direction = new Point(speed).normalize();
     }
 
+    private void initTarget() {
+        target = TowerTargetSelector.getClosestEnemyTower(this);
+    }
+
     private void fixPathTroughBridge() {
         double targetX = target.getX();
         double targetY = target.getY();
 
-        double troopX = getX();
+
         double troopY = getY();
 
         
@@ -242,20 +250,20 @@ public abstract class Troop extends Entity {
 
 
         if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
             targetY = bridgeStartY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY < bridgeEndY) {
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
             targetY = bridgeEndY; 
         }
 
         else if (troopY < bridgeEndY && targetY >= bridgeEndY) {
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
             targetY = bridgeEndY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY > bridgeStartY) {
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
             targetY = bridgeStartY;
         }
 
@@ -267,9 +275,6 @@ public abstract class Troop extends Entity {
     // abstract methods
     //
 
-    protected abstract void goToNextTarget();
+    protected abstract void updateTarget();
 
-    protected abstract void initTargetList();
-
-    protected abstract void setFirstTarget();
 }

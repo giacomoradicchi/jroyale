@@ -2,7 +2,7 @@ package jroyale.model;
 
 public class FrameManager {
 
-    public static final int FPS_ANIMATION = 18;
+    public static final int FPS_ANIMATION = 12;
     private static final long ELAPSED_BETWEEN_FRAMES = getElapsedBetweenFrames();
 
     private long accumulator; // it will increase for each frame by elapsed

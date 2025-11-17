@@ -10,13 +10,14 @@ import jroyale.utils.ImageUtils;
 
 public class GiantView extends TroopView {
 
+    public static final int NUM_FRAMES_PER_DIRECTION = 16;
+    
     private static GiantView instance;
 
     private static final String RELATIVE_PATH = "smlbiobot cr-assets-png 7099244ef1f3eb18014f6dbe5b10b222119083c9 assets-sc_chr_giant_out/";
     private static final String HEADER_NAME_FILE = "chr_giant_sprite_";
     private static final String FORMAT = ".png";
-    private static final int NUM_FRAMES = 415;
-    private static final int NUM_FRAMES_PER_DIRECTION = 16;
+    private static final int NUM_FRAMES = 461;
 
 
     private GiantView() {
@@ -29,7 +30,7 @@ public class GiantView extends TroopView {
 
         Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame));
         image = ImageUtils.enhanceOpacity(image);
-        double width = 1.6 * 2 * dx; 
+        double width = 2.5 * 2 * dx; 
         double height = width * image.getWidth() / image.getHeight();
         
 
@@ -62,7 +63,7 @@ public class GiantView extends TroopView {
     }
 
     private int getFrameIndex(double angleDirection, int currentFrame) {
-        return 160 + getOffsetDirection(angleDirection)*NUM_FRAMES_PER_DIRECTION + currentFrame;
+        return 288 + getOffsetDirection(angleDirection)*NUM_FRAMES_PER_DIRECTION + currentFrame;
     }
 
     private String getStringNumber(int number) {

@@ -10,12 +10,15 @@ import jroyale.utils.ImageUtils;
 
 public class MiniPekkaView extends TroopView {
 
+    public static final int NUM_FRAMES_PER_DIRECTION = 12;
+
     private static MiniPekkaView instance;
 
     private static final String RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_mini_pekka_out/";
     private static final String HEADER_NAME_FILE = "chr_mini_pekka_sprite_";
     private static final String FORMAT = ".png";
     private static final int NUM_FRAMES = 415;
+    
 
 
     private MiniPekkaView() {
@@ -62,7 +65,7 @@ public class MiniPekkaView extends TroopView {
     }
 
     private int getFrameIndex(double angleDirection, int currentFrame) {
-        return getOffsetDirection(angleDirection)*12 + currentFrame;
+        return getOffsetDirection(angleDirection)*NUM_FRAMES_PER_DIRECTION + currentFrame;
     }
 
     private String getStringNumber(int number) {

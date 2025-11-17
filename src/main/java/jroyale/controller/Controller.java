@@ -5,12 +5,16 @@ import javafx.scene.Scene;
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
-import jroyale.model.PlayerTroop;
-import jroyale.model.Troop;
 import jroyale.model.towers.Tower;
+import jroyale.model.troops.Giant;
+import jroyale.model.troops.MiniPekka;
+import jroyale.model.troops.Troop;
 import jroyale.shared.Side;
 import jroyale.view.IView;
 import jroyale.view.View;
+import jroyale.view.View.TroopType;
+import jroyale.view.troops.GiantView;
+import jroyale.view.troops.MiniPekkaView;
 import jroyale.view.troops.TroopView;
 
 public class Controller implements IController {
@@ -35,6 +39,7 @@ public class Controller implements IController {
         MouseManager.enableInput(scene);
         CollisionManager.setModel(model);
         view.loadSprites();
+        initModelTroopsFrames();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -65,6 +70,11 @@ public class Controller implements IController {
     // private methods
     //
 
+    private void initModelTroopsFrames() {
+        MiniPekka.setFramesPerDirection(MiniPekkaView.NUM_FRAMES_PER_DIRECTION);
+        Giant.setFramesPerDirection(GiantView.NUM_FRAMES_PER_DIRECTION);
+    }
+
     private void setBindings() {
         troopBinder.bind(null, null);
     }
@@ -76,12 +86,8 @@ public class Controller implements IController {
         } 
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
-            model.addPlayerTroop(
-                new PlayerTroop(
-                    null, 
-                    lastMouseRowIndex,
-                    lastMouseColumnIndex
-                )
+            model.addTroop(
+                new Giant(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
             );
             
             resetLastLogicMousePos();
@@ -107,18 +113,18 @@ public class Controller implements IController {
             logic2GraphicX(e.getX()),           // graphic X 
             logic2GraphicY(e.getY()),           // graphic Y
             e.getDirection().angle(),           // angle direction
-            View.TroopType.MINI_PEKKA,          // troop type
+            View.TroopType.GIANT,          // troop type
             e.getCurrentFrame(),                // current frame
             Side.PLAYER                         // side
         );
 
-        /* view.renderOval(
+        view.renderOval(
             logic2GraphicX(e.getX()), 
             logic2GraphicY(e.getY()), 
             getDx() * (e.getCollisionRadius() * 2),
             getDy() * (e.getCollisionRadius() * 2),
             0.5
-        );    */
+        );   
     }
 
     private void renderTower(Entity e) {
