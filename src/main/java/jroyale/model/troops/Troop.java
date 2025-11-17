@@ -236,6 +236,8 @@ public abstract class Troop extends Entity {
         double targetX = target.getX();
         double targetY = target.getY();
 
+        /* targetX = Model.MAP_COLS/2;
+        targetY = 35; */
 
         double troopY = getY();
 

@@ -29,7 +29,6 @@ public class GiantView extends TroopView {
     public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, int side, double dx, double dy) {
 
         Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame));
-        image = ImageUtils.enhanceOpacity(image);
         double width = 2.5 * 2 * dx; 
         double height = width * image.getWidth() / image.getHeight();
         
@@ -37,12 +36,20 @@ public class GiantView extends TroopView {
         gc.drawImage(image, centreX - Math.pow(-1, isFlippedOnX(angleDirection)) * width/2, centreY - height/2, Math.pow(-1, isFlippedOnX(angleDirection)) * width, height);
     }
 
+    // giant: 189 x 185 -> 116 x 96
+    // minipekka: 163 x 166 -> 93 x 72
+
+    // 154
+    // 
+
     @Override
     protected List<Image> getSpriteBuffer() {
         List<Image> buffer = new ArrayList<>();
 
         for (int i = 0; i < NUM_FRAMES; i++) {
-            buffer.add(new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH + HEADER_NAME_FILE + getStringNumber(i) + FORMAT)));
+            Image image = new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH + HEADER_NAME_FILE + getStringNumber(i) + FORMAT));
+            image = ImageUtils.enhanceOpacity(image);
+            buffer.add(image);
         }
 
         return buffer;

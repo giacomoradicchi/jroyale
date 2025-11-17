@@ -15,7 +15,7 @@ public abstract class Entity implements Comparable<Entity>{
 
     private int currentI, currentJ; // current location in map[i][j] tile
 
-    private static final int DEFAULT_FOOTPRINT_SIZE = 1; // just one cell occupied
+    private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
     protected static final int DEFAULT_FRAMES_PER_DIRECTION = 12;
     
     protected Point position;
@@ -93,11 +93,11 @@ public abstract class Entity implements Comparable<Entity>{
     }
 
     public int getFootPrintSize() { // number of cells occupied by the entity
-        return DEFAULT_FOOTPRINT_SIZE;
+        return (int) Math.ceil(getCollisionRadius() * 2);
     } 
 
     public double getCollisionRadius() {
-        return getFootPrintSize() * 0.5; // default radius
+        return DEFAULT_COLLISION_RADIUS; // default radius
     }
 
     //
