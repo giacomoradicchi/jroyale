@@ -1,6 +1,6 @@
 package jroyale.model.towers;
 
-import jroyale.model.Entity;
+
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
@@ -11,6 +11,12 @@ public class ArcerTower extends Tower {
     public static final byte RIGHT = 1;
 
     private static final int FOOTPRINT_SIZE = 3;
+
+    public static final Point PLAYER_LEFT_TOWER_CENTRE = new Point(3.5, 25.5);
+    public static final Point PLAYER_RIGHT_TOWER_CENTRE = new Point(14.5, 25.5);
+
+    public static final Point OPPONENT_LEFT_TOWER_CENTRE = new Point(3.5, 6.5);
+    public static final Point OPPONENT_RIGHT_TOWER_CENTRE = new Point(14.5, 6.5);
 
     private final byte TOWER_TYPE;
 
@@ -40,13 +46,13 @@ public class ArcerTower extends Tower {
 
         if (side == Side.PLAYER) {
             return (location == RIGHT) ? 
-                Entity.PLAYER_RIGHT_TOWER_CENTRE : 
-                Entity.PLAYER_LEFT_TOWER_CENTRE;
+                PLAYER_RIGHT_TOWER_CENTRE : 
+                PLAYER_LEFT_TOWER_CENTRE;
         }
 
         return (location == RIGHT) ? 
-                Entity.OPPONENT_RIGHT_TOWER_CENTRE : 
-                Entity.OPPONENT_LEFT_TOWER_CENTRE;
+                OPPONENT_RIGHT_TOWER_CENTRE : 
+                OPPONENT_LEFT_TOWER_CENTRE;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package jroyale.model.towers;
 
-import jroyale.model.Entity;
 import jroyale.shared.Side;
 import jroyale.shared.TowerIndex;
+import jroyale.utils.Point;
 
 public class KingTower extends Tower {
 
@@ -10,11 +10,14 @@ public class KingTower extends Tower {
 
     private static final int FOOTPRINT_SIZE = 4;
 
+    public static final Point PLAYER_KING_TOWER_CENTRE = new Point(9, 29);
+    public static final Point OPPONENT_KING_TOWER_CENTRE = new Point(9, 3);
+
     public KingTower(byte side) {
         super(
             (side == Side.PLAYER) ? 
-            Entity.PLAYER_KING_TOWER_CENTRE : 
-            Entity.OPPONENT_KING_TOWER_CENTRE,
+            PLAYER_KING_TOWER_CENTRE : 
+            OPPONENT_KING_TOWER_CENTRE,
         
             side 
         );

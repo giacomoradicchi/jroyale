@@ -6,6 +6,8 @@ import java.util.List;
 
 import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
+import jroyale.model.towers.Tower;
+import jroyale.model.troops.Troop;
 import jroyale.shared.Side;
 
 public class Model implements IModel {
@@ -14,8 +16,9 @@ public class Model implements IModel {
     // their position (so the collision algoritm will be much
     // more efficient)
     
-    static final int MAP_ROWS = 32;
-    static final int MAP_COLS = 18;
+    public static final int MAP_ROWS = 32;
+    public static final int MAP_COLS = 18;
+    
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
@@ -118,7 +121,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addPlayerTroop(PlayerTroop troop) {
+    public void addTroop(Troop troop) {
         addEntity(troop);
     }
 
@@ -209,13 +212,18 @@ public class Model implements IModel {
     }
 
     private void initTowers() {
-        addEntity(new KingTower(Side.PLAYER));
-        addEntity(new ArcerTower(Side.PLAYER, ArcerTower.LEFT));
-        addEntity(new ArcerTower(Side.PLAYER, ArcerTower.RIGHT));
+        addTower(new KingTower(Side.PLAYER));
+        addTower(new ArcerTower(Side.PLAYER, ArcerTower.LEFT));
+        addTower(new ArcerTower(Side.PLAYER, ArcerTower.RIGHT));
 
-        addEntity(new KingTower(Side.OPPONENT));
-        addEntity(new ArcerTower(Side.OPPONENT, ArcerTower.LEFT));
-        addEntity(new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT));   
+        addTower(new KingTower(Side.OPPONENT));
+        addTower(new ArcerTower(Side.OPPONENT, ArcerTower.LEFT));
+        addTower(new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT));   
+    }
+
+    private void addTower(Tower tower) {
+        addEntity(tower);
+        TowerTargetSelector.addTower(tower);
     }
 
     private void initReachableTiles() {
