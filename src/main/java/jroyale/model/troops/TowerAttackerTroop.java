@@ -2,7 +2,7 @@ package jroyale.model.troops;
 
 import jroyale.model.TowerTargetSelector;
 
-public class TowerAttackerTroop extends Troop {
+public abstract class TowerAttackerTroop extends Troop {
 
     public TowerAttackerTroop(String name, double x, double y, byte speedType, byte side) {
         super(name, x, y, speedType, side);

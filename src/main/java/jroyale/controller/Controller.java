@@ -124,7 +124,7 @@ public class Controller implements IController {
             getDx() * (e.getCollisionRadius() * 2),
             getDy() * (e.getCollisionRadius() * 2),
             0.5
-        );   
+        );    
     }
 
     private void renderTower(Entity e) {

@@ -19,6 +19,9 @@ public class GiantView extends TroopView {
     private static final String FORMAT = ".png";
     private static final int NUM_FRAMES = 461;
 
+    private static final double shiftX = 4;
+    private static final double shiftY = 4;
+
 
     private GiantView() {
         super();
@@ -33,7 +36,13 @@ public class GiantView extends TroopView {
         double height = width * image.getWidth() / image.getHeight();
         
 
-        gc.drawImage(image, centreX - Math.pow(-1, isFlippedOnX(angleDirection)) * width/2, centreY - height/2, Math.pow(-1, isFlippedOnX(angleDirection)) * width, height);
+        gc.drawImage(
+            image, 
+            shiftX + centreX - Math.pow(-1, isFlippedOnX(angleDirection)) * width/2, 
+            shiftY + centreY - height/2, 
+            Math.pow(-1, isFlippedOnX(angleDirection)) * width, 
+            height
+        );
     }
 
     // giant: 189 x 185 -> 116 x 96
