@@ -7,6 +7,7 @@ public class Giant extends TowerAttackerTroop {
     private static final String NAME = "Giant";
     private static final byte SPEED = Troop.SLOW;
     private static final double COLLISION_RADIUS = 0.75;
+    private static final int FPS_ANIMATION = 12;
 
     private static int numFramesPerDirection = Entity.DEFAULT_FRAMES_PER_DIRECTION;
 
@@ -30,5 +31,10 @@ public class Giant extends TowerAttackerTroop {
     @Override
     public double getCollisionRadius() {
         return COLLISION_RADIUS;
+    }
+
+    @Override
+    public int getFPSAnimation() {
+        return FPS_ANIMATION;
     }
 }

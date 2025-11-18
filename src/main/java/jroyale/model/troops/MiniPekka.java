@@ -8,6 +8,7 @@ public class MiniPekka extends MixedAttackerTroop {
     private static final byte SPEED = Troop.FAST;
     private static int numFramesPerDirection = Entity.DEFAULT_FRAMES_PER_DIRECTION;
     private static final double COLLISION_RADIUS = 0.45;
+    private static final int FPS_ANIMATION = 20;
 
     public MiniPekka(double x, double y, byte side) {
         super(NAME, x, y, SPEED, side);
@@ -29,6 +30,11 @@ public class MiniPekka extends MixedAttackerTroop {
     @Override
     public double getCollisionRadius() {
         return COLLISION_RADIUS;
+    }
+
+    @Override
+    public int getFPSAnimation() {
+        return FPS_ANIMATION;
     }
     
 }
