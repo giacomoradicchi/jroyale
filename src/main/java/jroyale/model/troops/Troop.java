@@ -34,9 +34,16 @@ public abstract class Troop extends Entity {
         }
     };
 
+    public enum State {
+        SPAWN,
+        WALK,
+        ATTACK;
+    };
+
     protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
+    protected State state; // defines wheather a troop is walking or attacking 
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
@@ -45,6 +52,7 @@ public abstract class Troop extends Entity {
         super(x, y, side);
         this.name = name;
         this.frameManager = new FrameManager(this);
+        this.state = State.WALK; // TODO: set it to SPAWN
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
             this.SPEED_TYPE = MEDIUM;
@@ -109,9 +117,11 @@ public abstract class Troop extends Entity {
 
     private void move(long elapsed) {
         updateSpeed(elapsed);
-        for (Entity other : CollisionManager.checkCollisions(this)) {
-            slideAlong(other);
+
+        if (state != State.SPAWN) {
+            handleCollisions();
         }
+        
 
         
 
@@ -124,6 +134,18 @@ public abstract class Troop extends Entity {
         }
         
 
+    }
+
+    private void handleCollisions() {
+        for (Entity other : CollisionManager.checkCollisions(this)) {
+            if (other == target && state != State.ATTACK) {
+                state = State.ATTACK;
+            }
+
+            if (state != State.ATTACK || (state == State.ATTACK && other == target)) {
+                slideAlong(other);
+            }
+        }
     }
 
     private void fixDistance(Entity other) { // distance will be the sum of both collision radius

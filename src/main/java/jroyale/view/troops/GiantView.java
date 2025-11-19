@@ -20,7 +20,7 @@ public class GiantView extends TroopView {
     private static final int NUM_FRAMES = 461;
 
     private static final double shiftX = 4;
-    private static final double shiftY = 4;
+    private static final double shiftY = -12;
 
 
     private GiantView() {
