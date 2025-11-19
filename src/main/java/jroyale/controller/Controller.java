@@ -118,13 +118,13 @@ public class Controller implements IController {
             Side.PLAYER                         // side
         );
 
-        view.renderOval(
+        /* view.renderOval(
             logic2GraphicX(e.getX()), 
             logic2GraphicY(e.getY()), 
             getDx() * (e.getCollisionRadius() * 2),
             getDy() * (e.getCollisionRadius() * 2),
             0.5
-        );    
+        ); */    
     }
 
     private void renderTower(Entity e) {
