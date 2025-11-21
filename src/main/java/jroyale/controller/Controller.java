@@ -139,12 +139,14 @@ public class Controller implements IController {
             getDy() * (tower.getCollisionRadius() * 2),
             0.5
         );    */
-        
-        view.renderTower(
-            tower.getTowerType(), 
-            logic2GraphicX(tower.getX()),
-            logic2GraphicY(tower.getY())
-        );  
+        if (tower.getHitPoints() > 0) {
+            view.renderTower(
+                tower.getTowerType(), 
+                logic2GraphicX(tower.getX()),
+                logic2GraphicY(tower.getY())
+            ); 
+        }
+         
     }
 
     // Mouse pressed methods:

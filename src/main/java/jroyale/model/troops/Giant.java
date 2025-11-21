@@ -2,8 +2,6 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
-import jroyale.model.Entity;
-
 public class Giant extends TowerAttackerTroop {
     
     private static final String NAME = "Giant";
@@ -11,14 +9,17 @@ public class Giant extends TowerAttackerTroop {
     private static Map<Byte, Integer> numFramesPerDirection;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
+    private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
+    private static final int HITPOINTS = 1598;
+    private static final int DAMAGE = 99;
 
 
     public Giant(double x, double y, byte side) {
-        super(NAME, x, y, SPEED, side);
+        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
     }
 
     public Giant(int n, int m, byte side) {
-        super(NAME, n, m, SPEED, side);
+        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
     }
 
     public static void setFramesPerDirection(Map<Byte, Integer> numFramesPerDirection) {
@@ -38,5 +39,16 @@ public class Giant extends TowerAttackerTroop {
     @Override
     public int getFPSAnimation() {
         return FPS_ANIMATION;
+    }
+
+    @Override
+    protected long getLoadTime() {
+        return LOAD_TIME;
+    }
+
+    @Override
+    protected int getHitFrame() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHitFrame'");
     }
 }
