@@ -6,11 +6,11 @@ import java.util.Map;
 public class ModelViewBinder<M, V> {
     private Map<M,V> modelViewBinder = new HashMap<>();
 
-    public void bind(M model, V view) {
-        modelViewBinder.put(model, view);
+    public void bind(M modelClass, V view) {
+        modelViewBinder.put(modelClass, view);
     }
 
-    public V getViewInstance(M model) {
-        return modelViewBinder.get(model);
+    public V getViewTroopType(M modelClass) {
+        return modelViewBinder.get(modelClass);
     }
 }

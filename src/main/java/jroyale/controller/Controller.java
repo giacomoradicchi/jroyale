@@ -15,7 +15,6 @@ import jroyale.view.View;
 import jroyale.view.View.TroopType;
 import jroyale.view.troops.GiantView;
 import jroyale.view.troops.MiniPekkaView;
-import jroyale.view.troops.TroopView;
 
 public class Controller implements IController {
 
@@ -26,7 +25,7 @@ public class Controller implements IController {
     private int lastMouseRowIndex = -1;
 
     // binders 
-    private ModelViewBinder<Troop, TroopView> troopBinder = new ModelViewBinder<>();
+    private ModelViewBinder<Class<? extends Troop>, TroopType> troopBinder = new ModelViewBinder<>();
 
     public Controller(IModel model, IView view, Scene scene) {
         this.model = model;
@@ -40,6 +39,7 @@ public class Controller implements IController {
         CollisionManager.setModel(model);
         view.loadSprites();
         initModelTroopsFrames();
+        setBindings();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -76,7 +76,8 @@ public class Controller implements IController {
     }
 
     private void setBindings() {
-        troopBinder.bind(null, null);
+        troopBinder.bind(MiniPekka.class, View.TroopType.MINI_PEKKA);
+        troopBinder.bind(Giant.class, View.TroopType.GIANT);
     }
 
     private void handleMouseEvents() {
@@ -110,12 +111,12 @@ public class Controller implements IController {
     private void renderTroop(Entity e) {
         
         view.renderTroop(
-            logic2GraphicX(e.getX()),           // graphic X 
-            logic2GraphicY(e.getY()),           // graphic Y
-            e.getDirection().angle(),           // angle direction
-            View.TroopType.GIANT,          // troop type
-            e.getCurrentFrame(),                // current frame
-            Side.PLAYER                         // side
+            logic2GraphicX(e.getX()),                                      // graphic X 
+            logic2GraphicY(e.getY()),                                      // graphic Y
+            e.getDirection().angle(),                                      // angle direction
+            troopBinder.getViewTroopType(((Troop) e).getClass()),          // troop type
+            e.getCurrentFrame(),                                           // current frame
+            Side.PLAYER                                                    // side
         );
 
         /* view.renderOval(
