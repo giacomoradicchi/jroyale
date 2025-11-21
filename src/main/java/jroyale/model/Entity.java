@@ -15,16 +15,22 @@ public abstract class Entity implements Comparable<Entity>{
     
 
     private int currentI, currentJ; // current location in map[i][j] tile
+    private boolean animationCompleted; // turns true when currentFrame goes back to start (N-1 -> 0).
+    private int hitPoints; 
+    private int damage;
+
 
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
-    private static final int DEFAULT_NUM_FRAMES_PER_DIRECTION = 1; // just 1 frame for animation = static view, no animation. 
+    private static final int DEFAULT_NUM_FRAMES_PER_DIRECTION = 1; // just 1 frame for animation = static view, no animation.
+      
     
     protected Point position;
     protected byte side;
     protected int currentFrame;
     protected byte state; // defines wheather a troop is walking, attacking, etc.
+    
 
-    public Entity(double x, double y, byte side) {
+    public Entity(double x, double y, int hitPoints, int damage, byte side) {
         
         if (side != Side.PLAYER && side != Side.OPPONENT) {
             throw new IllegalArgumentException("Invalid argument side");
@@ -33,10 +39,12 @@ public abstract class Entity implements Comparable<Entity>{
         this.position = new Point(x, y);
         this.side = side;
         this.state = State.IDLE; // default state
+        this.hitPoints = hitPoints;
+        this.damage = damage;
     }
 
-    public Entity(Point position, byte side) {
-        this(position.getX(), position.getY(), side);
+    public Entity(Point position, int hitPoints, int damage, byte side) {
+        this(position.getX(), position.getY(), hitPoints, damage, side);
     }
 
     public double getX() {
@@ -87,13 +95,6 @@ public abstract class Entity implements Comparable<Entity>{
         currentJ = (int) Math.floor(position.getX());
     }
 
-    @Override
-    public int compareTo(Entity entity) {
-        // this method is crucial to achieve depth rendering.
-        // order will be based on Y position
-        return Double.compare(position.getY(), entity.getY()); // ascendent order
-    }
-
     public int getFootPrintSize() { // number of cells occupied by the entity
         return (int) Math.ceil(getCollisionRadius() * 2);
     } 
@@ -101,6 +102,30 @@ public abstract class Entity implements Comparable<Entity>{
     public double getCollisionRadius() {
         return DEFAULT_COLLISION_RADIUS; // default radius
     }
+
+    public void setDamage(int damage) {
+        hitPoints -= damage;
+        if (hitPoints < 0) {
+            hitPoints = 0;
+        }
+    }
+
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    @Override
+    public int compareTo(Entity entity) {
+        // this method is crucial to achieve depth rendering.
+        // order will be based on Y position
+        return Double.compare(position.getY(), entity.getY()); // ascendent order
+    }
+
+    
 
     //
     // animation methods
@@ -116,11 +141,28 @@ public abstract class Entity implements Comparable<Entity>{
 
     public void goToNextFrame() {
         currentFrame = (currentFrame + 1) % getFramesPerDirection();
+        if (currentFrame == 0) {
+            animationCompleted = true;
+        }
     }
 
     //
     // end animation methods
     //
+
+    protected boolean isAnimationCompleted() { // returns true just the first time animationCompleted goes true
+        boolean completed = animationCompleted;
+        if (completed) {
+            animationCompleted = false;
+        }
+        return completed;
+    }
+
+    protected void setState(byte newState) {
+        state = newState;
+        currentFrame = 0;
+        animationCompleted = false;
+    }
 
     // abstract methods
     public abstract void update(long elapsed);

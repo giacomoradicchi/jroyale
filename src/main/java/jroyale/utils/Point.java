@@ -31,14 +31,18 @@ public class Point {
         this.y = y;
     }
 
-    public void setPoint(double x, double y){
+    public Point setPoint(double x, double y){
         this.x=x;
         this.y=y;
+
+        return this;
     }
 
-    public void setPoint(Point p){
+    public Point setPoint(Point p){
         this.x=p.x;
         this.y=p.y;
+
+        return this;
     }
 
     public boolean isZeroVector() {

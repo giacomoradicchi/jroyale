@@ -11,6 +11,7 @@ public class ArcerTower extends Tower {
     public static final byte RIGHT = 1;
 
     private static final int FOOTPRINT_SIZE = 3;
+    
 
     public static final Point PLAYER_LEFT_TOWER_CENTRE = new Point(3.5, 25.5);
     public static final Point PLAYER_RIGHT_TOWER_CENTRE = new Point(14.5, 25.5);
@@ -18,10 +19,15 @@ public class ArcerTower extends Tower {
     public static final Point OPPONENT_LEFT_TOWER_CENTRE = new Point(3.5, 6.5);
     public static final Point OPPONENT_RIGHT_TOWER_CENTRE = new Point(14.5, 6.5);
 
+    
+    private static final int HITPOINTS = 1400;
+    private static final int DAMAGE = 0; // TODO: add damage
+
     private final byte TOWER_TYPE;
+    
 
     public ArcerTower(byte side, byte location) {
-        super(getArcherPosition(side, location), side);
+        super(getArcherPosition(side, location), HITPOINTS, DAMAGE, side);
 
         if (side == Side.PLAYER) {
             TOWER_TYPE = (location == RIGHT) ? 

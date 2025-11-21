@@ -32,6 +32,12 @@ public class MiniPekkaView extends TroopView {
     @Override
     public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, int side, double globalScale) {
 
+        /* if(state == State.IDLE) {
+            return;
+        } */
+        
+
+
         Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame, state));
 
         double width = image.getWidth() * SCALE * globalScale;
@@ -67,19 +73,17 @@ public class MiniPekkaView extends TroopView {
     }
 
     private int getFrameIndex(double angleDirection, int currentFrame, byte state) {
-        return  Math.max(0, Math.min(getOffsetState(state) + getOffsetDirection(angleDirection) * NUM_FRAMES_PER_DIRECTION.get(state) + currentFrame, NUM_FRAMES - 1));
+        return Math.max(0, Math.min(getOffsetState(state) + getOffsetDirection(angleDirection) * NUM_FRAMES_PER_DIRECTION.get(state) + currentFrame, NUM_FRAMES - 1));
     }
 
     private String getStringNumber(int number) {
         return String.format("%03d", number);
     }
 
-    // 325 - 415
-
     private int getOffsetState(byte state) {
         switch (state) {
             case State.IDLE:
-                return 0;
+                return 316;
 
             case State.SPAWN:
                 return 0;
@@ -101,6 +105,7 @@ public class MiniPekkaView extends TroopView {
         // num of frames per direction change based on troop state (wheather is walking/running or attacking)
         Map<Byte, Integer> numFrames = new HashMap<>();
 
+        numFrames.put(State.IDLE, 1);
         numFrames.put(State.WALK, 12);
         numFrames.put(State.SPAWN, 12);
         numFrames.put(State.ATTACK, 10);
