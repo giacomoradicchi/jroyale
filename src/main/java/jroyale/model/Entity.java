@@ -1,6 +1,7 @@
 package jroyale.model;
 
 import jroyale.shared.Side;
+import jroyale.shared.State;
 import jroyale.utils.Point;
 
 public abstract class Entity implements Comparable<Entity>{
@@ -16,12 +17,12 @@ public abstract class Entity implements Comparable<Entity>{
     private int currentI, currentJ; // current location in map[i][j] tile
 
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
-    protected static final int DEFAULT_FRAMES_PER_DIRECTION = 12;
+    private static final int DEFAULT_NUM_FRAMES_PER_DIRECTION = 1; // just 1 frame for animation = static view, no animation. 
     
     protected Point position;
     protected byte side;
     protected int currentFrame;
-    protected int framesPerDirection = DEFAULT_FRAMES_PER_DIRECTION;
+    protected byte state; // defines wheather a troop is walking, attacking, etc.
 
     public Entity(double x, double y, byte side) {
         
@@ -31,6 +32,7 @@ public abstract class Entity implements Comparable<Entity>{
 
         this.position = new Point(x, y);
         this.side = side;
+        this.state = State.IDLE; // default state
     }
 
     public Entity(Point position, byte side) {
@@ -105,7 +107,7 @@ public abstract class Entity implements Comparable<Entity>{
     //
 
     public int getFramesPerDirection() {
-        return DEFAULT_FRAMES_PER_DIRECTION; 
+        return DEFAULT_NUM_FRAMES_PER_DIRECTION; 
     }
 
     public int getCurrentFrame() { 

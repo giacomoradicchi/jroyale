@@ -9,6 +9,7 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
+import jroyale.shared.State;
 import jroyale.utils.Point;
 
 public abstract class Troop extends Entity {
@@ -34,16 +35,9 @@ public abstract class Troop extends Entity {
         }
     };
 
-    public enum State {
-        SPAWN,
-        WALK,
-        ATTACK;
-    };
-
     protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
-    protected State state; // defines wheather a troop is walking or attacking 
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
@@ -79,6 +73,10 @@ public abstract class Troop extends Entity {
 
     public Point getSpeed() {
         return new Point(speed);
+    }
+
+    public byte getState() {
+        return state;
     }
 
     @Override
@@ -121,8 +119,6 @@ public abstract class Troop extends Entity {
         if (state != State.SPAWN) {
             handleCollisions();
         }
-        
-
         
 
         shiftPosition(speed);

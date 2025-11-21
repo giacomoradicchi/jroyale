@@ -51,7 +51,7 @@ public class View implements IView {
     private Tower[] towers = new Tower[TowerIndex.NUM_TOWERS];
 
     // scale of the entire scene
-    private double scale = 1.0;
+    private double globalScale = 1.0;
 
     // The timestamp of the current frame given in nanoseconds
     private long now;
@@ -61,7 +61,7 @@ public class View implements IView {
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         
-        this.arena = new Arena(width, height, scale, rowsCount, colsCount);
+        this.arena = new Arena(width, height, globalScale, rowsCount, colsCount);
         updateDxDy();
 
         // initializing towers
@@ -99,7 +99,7 @@ public class View implements IView {
         //scale -= 0.001;
 
         // update arena and dx dy
-        arena.update(width, height, scale);
+        arena.update(width, height, globalScale);
         updateDxDy();
     }
 
@@ -116,7 +116,7 @@ public class View implements IView {
 
     @Override
     public void renderArena() {
-        arena.renderArena(gc, width, height, scale, DEBUG_MODE);
+        arena.renderArena(gc, width, height, globalScale, DEBUG_MODE);
     }
 
     public void renderCells(boolean[][] cells) {
@@ -154,7 +154,7 @@ public class View implements IView {
         if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
-        towers[towerType].drawTower(gc, centreX, centreY, scale);
+        towers[towerType].drawTower(gc, centreX, centreY, globalScale);
         if (!DEBUG_MODE) return;
 
         // debug mode
@@ -165,7 +165,7 @@ public class View implements IView {
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, int side) {
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, int side) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -180,14 +180,14 @@ public class View implements IView {
             color
         );  */
 
-        type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, side, dx, dy);
+        type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, state, side, globalScale);
         
     }
 
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        DragPlacementPreview.render(gc, centreX, centreY, dx, dy, scale, now);
+        DragPlacementPreview.render(gc, centreX, centreY, dx, dy, globalScale, now);
     }
 
     @Override
@@ -287,13 +287,13 @@ public class View implements IView {
         final double LINE_WIDTH = 2;
         gc.save();
         gc.setFill(Color.BLACK);
-        gc.setLineWidth(LINE_WIDTH * scale);
+        gc.setLineWidth(LINE_WIDTH * globalScale);
         
         gc.strokeLine(
             startX, 
             startY, 
-            startX + LINE_LENGTH * scale * Math.cos(angle), 
-            startY + LINE_LENGTH * scale * Math.sin(angle)
+            startX + LINE_LENGTH * globalScale * Math.cos(angle), 
+            startY + LINE_LENGTH * globalScale * Math.sin(angle)
         );
         gc.restore();
     }
