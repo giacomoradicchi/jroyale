@@ -1,15 +1,17 @@
 package jroyale.model.troops;
 
+import java.util.Map;
+
 import jroyale.model.Entity;
 
 public class Giant extends TowerAttackerTroop {
     
     private static final String NAME = "Giant";
     private static final byte SPEED = Troop.SLOW;
+    private static Map<Byte, Integer> numFramesPerDirection;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
 
-    private static int numFramesPerDirection = Entity.DEFAULT_FRAMES_PER_DIRECTION;
 
     public Giant(double x, double y, byte side) {
         super(NAME, x, y, SPEED, side);
@@ -19,13 +21,13 @@ public class Giant extends TowerAttackerTroop {
         super(NAME, n, m, SPEED, side);
     }
 
-    public static void setFramesPerDirection(int numFramesPerDirection) {
+    public static void setFramesPerDirection(Map<Byte, Integer> numFramesPerDirection) {
         Giant.numFramesPerDirection = numFramesPerDirection;
     }
 
     @Override
     public int getFramesPerDirection() {
-        return numFramesPerDirection;
+        return numFramesPerDirection.get(state);
     }
 
     @Override

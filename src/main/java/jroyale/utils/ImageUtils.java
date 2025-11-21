@@ -108,6 +108,48 @@ public class ImageUtils {
         return rgbImage;
     }
 
+    public static Image removeAlpha(Image img) {
+        int width = (int) img.getWidth();
+        int height = (int) img.getHeight();
+        WritableImage rgbImage = new WritableImage(width, height);
+
+        PixelReader reader = img.getPixelReader();
+        PixelWriter writer = rgbImage.getPixelWriter();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color c = reader.getColor(x, y);
+                writer.setColor(x, y, new Color(c.getRed(), c.getGreen(), c.getBlue(), 1)); // alpha = 1
+            }
+        }
+
+        return rgbImage;
+    }
+
+    public static Image crop(Image img, int x1, int y1, int x2, int y2) {
+
+        int newWidth = Math.max(0, Math.min(x2 - x1, (int) img.getWidth()));
+        int newHeight = Math.max(0, Math.min(y2 - y1, (int) img.getHeight()));
+
+        if (newWidth == 0 || newHeight == 0) {
+            return new WritableImage(0, 0); // empty image
+        }
+
+        WritableImage rgbImage = new WritableImage(newWidth, newHeight);
+
+        PixelReader reader = img.getPixelReader();
+        PixelWriter writer = rgbImage.getPixelWriter();
+
+        for (int y = y1; y < newHeight; y++) {
+            for (int x = x1; x < newWidth; x++) {
+                Color c = reader.getColor(x, y);
+                writer.setColor(x, y, new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getOpacity())); // alpha = 1
+            }
+        }
+
+        return rgbImage;
+    }
+
     public static Image clipToBoundingBox(Image img) {
         return clipToBoundingBox(img, 0);
     }
