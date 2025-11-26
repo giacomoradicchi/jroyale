@@ -150,11 +150,18 @@ public class View implements IView {
 
 
     @Override
-    public void renderTower(int towerType, double centreX, double centreY) {
+    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, byte side) {
         if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
         towers[towerType].drawTower(gc, centreX, centreY, globalScale);
+
+        if (currentHealth < maxHealth) {
+            renderHealth(gc, centreX, centreY, currentHealth, maxHealth, side);
+        }
+        
+
+
         if (!DEBUG_MODE) return;
 
         // debug mode
@@ -162,10 +169,12 @@ public class View implements IView {
             centreX, 
             centreY
         );
+
+        
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, int side) {
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, byte side) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -182,6 +191,59 @@ public class View implements IView {
 
         type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, state, side, globalScale);
         
+    }
+
+    private void renderHealth(GraphicsContext gc, double centreX, double centreY, int currentHealth, int maxHealth, byte side) {
+        double rectWidth = 0.1 * width * globalScale;
+        double rectHeight = 0.01 * height * globalScale;
+        double shiftY = -70 * globalScale;
+
+        gc.save();
+
+        if (side == Side.PLAYER) {
+            gc.setStroke(Color.rgb(20, 20, 150));
+            gc.setFill(Color.rgb(100, 100, 255));
+        } else {
+            gc.setStroke(Color.rgb(150, 20, 20));
+            gc.setFill(Color.rgb(255, 100, 100));  
+        }
+
+        gc.setLineWidth(2);
+
+        gc.fillRect(
+            centreX - rectWidth / 2, 
+            centreY - rectHeight / 2 + shiftY, 
+            rectWidth,
+            rectHeight
+        );
+
+        if (side == Side.PLAYER) {
+            gc.setFill(Color.rgb(50, 50, 150));
+        } else {
+            gc.setFill(Color.rgb(150, 50, 50));
+        }
+
+        double percentage = (double) currentHealth / maxHealth;
+
+        gc.fillRect(
+            centreX - rectWidth / 2, 
+            centreY - rectHeight / 2 + shiftY, 
+            rectWidth * percentage,
+            rectHeight
+        );
+
+        gc.strokeRoundRect(
+            centreX - rectWidth / 2, 
+            centreY - rectHeight / 2 + shiftY, 
+            rectWidth,
+            rectHeight,
+            rectHeight/2,
+            rectHeight/2
+        );
+
+        
+
+        gc.restore();
     }
 
 

@@ -33,7 +33,7 @@ public class GiantView extends TroopView {
 
     
     @Override
-    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, int side, double globalScale) {
+    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, byte side, double globalScale) {
 
         Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame, state));
         

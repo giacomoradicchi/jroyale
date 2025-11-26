@@ -13,9 +13,9 @@ public interface IView {
 
     public void renderArena();
 
-    public void renderTower(int towerType, double centreX, double centreY);
+    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, byte side);
 
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, int side);
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, byte side);
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 

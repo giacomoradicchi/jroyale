@@ -16,7 +16,8 @@ public abstract class Entity implements Comparable<Entity>{
 
     private int currentI, currentJ; // current location in map[i][j] tile
     private boolean animationCompleted; // turns true when currentFrame goes back to start (N-1 -> 0).
-    private int hitPoints; 
+    private int hitPoints;
+    private final int MAX_HIT_POINTS; 
     private int damage;
 
 
@@ -40,6 +41,7 @@ public abstract class Entity implements Comparable<Entity>{
         this.side = side;
         this.state = State.IDLE; // default state
         this.hitPoints = hitPoints;
+        this.MAX_HIT_POINTS = hitPoints;
         this.damage = damage;
     }
 
@@ -65,6 +67,10 @@ public abstract class Entity implements Comparable<Entity>{
 
     public byte getSide() {
         return side;
+    }
+
+    public int getMaxHitPoints() {
+        return MAX_HIT_POINTS;
     }
 
     // setters

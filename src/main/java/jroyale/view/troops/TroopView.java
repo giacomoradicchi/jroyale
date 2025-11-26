@@ -41,7 +41,7 @@ public abstract class TroopView {
 
     // abstract methods
 
-    public abstract void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, int side, double globalScale);
+    public abstract void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, byte side, double globalScale);
     
     protected abstract List<Image> getSpriteBuffer();
 }

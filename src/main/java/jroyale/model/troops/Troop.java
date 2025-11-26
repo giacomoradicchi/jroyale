@@ -42,7 +42,7 @@ public abstract class Troop extends Entity {
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
-    private boolean enemyHit;
+    protected boolean enemyHit;
 
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
