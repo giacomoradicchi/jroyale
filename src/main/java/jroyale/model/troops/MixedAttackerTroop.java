@@ -21,6 +21,7 @@ public abstract class MixedAttackerTroop extends Troop {
         if (target != null && target.getHitPoints() == 0) { 
             target = TowerTargetSelector.getClosestEnemyTower(this);
             setState(State.WALK);
+            enemyHit = false; // reset enemyHit
         }
     }
     

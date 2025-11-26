@@ -30,7 +30,7 @@ public class MiniPekkaView extends TroopView {
 
     
     @Override
-    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, int side, double globalScale) {
+    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, byte side, double globalScale) {
 
         /* if(state == State.IDLE) {
             return;

@@ -143,7 +143,10 @@ public class Controller implements IController {
             view.renderTower(
                 tower.getTowerType(), 
                 logic2GraphicX(tower.getX()),
-                logic2GraphicY(tower.getY())
+                logic2GraphicY(tower.getY()),
+                tower.getHitPoints(),
+                tower.getMaxHitPoints(),
+                tower.getSide()
             ); 
         }
          

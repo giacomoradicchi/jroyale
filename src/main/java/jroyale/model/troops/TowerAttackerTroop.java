@@ -16,6 +16,7 @@ public abstract class TowerAttackerTroop extends Troop {
     protected void updateTarget() {
         if (target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
             target = TowerTargetSelector.getClosestEnemyTower(this);
+            enemyHit = false; // reset enemyHit
         }
     }
     
