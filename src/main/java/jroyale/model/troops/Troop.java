@@ -4,6 +4,8 @@ package jroyale.model.troops;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.plaf.synth.SynthStyle;
+
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.FrameManager;
@@ -89,6 +91,8 @@ public abstract class Troop extends Entity {
         frameManager.updateFrame(elapsed);
         updateTarget();
         move(elapsed);
+
+        System.out.println(getCurrentJ() + ", " + getCurrentI());
     }
 
     @Override 
@@ -136,11 +140,11 @@ public abstract class Troop extends Entity {
 
         shiftPosition(speed);
 
-        // final fixing inside map and outside unreachable tiles:
+        /* // final fixing inside map and outside unreachable tiles:
         Point impactVector = CollisionManager.pushOutOfUnreachableTiles(this);
         if (!impactVector.isZeroVector()) {
             setTangentSpeed(impactVector.getX(), impactVector.getY());  
-        }
+        }  */
         
 
     }
@@ -201,9 +205,18 @@ public abstract class Troop extends Entity {
         double distance = getCollisionRadius() + other.getCollisionRadius();
         double shiftX = distance * Math.cos(angle);
         double shiftY = distance * Math.sin(angle);
+
+        shiftPosition(
+            other.getX() - position.getX() + shiftX, 
+            other.getY() - position.getY() + shiftY
+        );
+        // it's the same as:
+        // position.setX(other.getX() + shiftX);
+        // position.setY(other.getY() + shiftY);
         
-        position.setX(other.getX() + shiftX);
-        position.setY(other.getY() + shiftY);
+        /* 
+        // checking if entity is still inside reachable tiles.
+        CollisionManager.pushOutOfUnreachableTiles(this, shiftX, shiftY); */
     }
 
     private void setTangentSpeed(double dx, double dy) {
@@ -222,10 +235,6 @@ public abstract class Troop extends Entity {
         } else {
             speed.interpolate(TANGENT_VECTOR_2, TURNING_SPEED);
         }
-    }
-
-    private void shiftPosition(Point shift) {
-        position = position.add(shift);
     }
 
     private void updateSpeed(long elapsed) {
@@ -298,8 +307,7 @@ public abstract class Troop extends Entity {
         double targetX = target.getX();
         double targetY = target.getY();
 
-        /* targetX = Model.MAP_COLS/2;
-        targetY = 35; */
+        
 
         double troopY = getY();
 
@@ -331,6 +339,9 @@ public abstract class Troop extends Entity {
             targetY = bridgeStartY;
         }
 
+        //targetX = Model.MAP_COLS- 3; //Model.MAP_COLS
+        //targetY = Model.MAP_ROWS;
+        //targetY = Model.MAP_ROWS;
 
         setAimUnitVector(targetX, targetY);
     } 

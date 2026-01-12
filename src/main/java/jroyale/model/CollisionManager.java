@@ -14,9 +14,78 @@ public class CollisionManager {
     private static Circle collisionCircle1 = new Circle();
     private static Circle collisionCircle2 = new Circle();
     private static Point impactVector = new Point();
+    private static Point bufferedPoint = new Point();
 
     public static void setModel(IModel model) {
         CollisionManager.model = model;
+    }
+
+    public static Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY) {
+        // assuming abs(shiftX) and abs(shiftY) are less than 1, so there won't be unchecked tiles in the middle
+        int directionOnX = (int) Math.signum(shiftX);
+        int directionOnY = (int) Math.signum(shiftY);
+
+        double radius = e.getCollisionRadius();
+        double newX = e.getX() + shiftX;
+        double newY = e.getY() + shiftY;
+        
+        int currentI = e.getCurrentI();
+        int currentJ = e.getCurrentJ();
+        int nextI = (int) Math.floor(newY + directionOnY * radius);
+        int nextJ = (int) Math.floor(newX + directionOnX * radius);
+        boolean foundUnreachableTile = false;
+        
+        /* 
+         *          -------------        
+         *          | b | y | b |
+         *          -------------
+         *          | x |   | x | 
+         *          ------------- 
+         *          | b | y | b | 
+         *          ------------- 
+         * 
+         *          x : tiles to check on X based on directionX
+         *          y : tiles to check on Y based on directionY
+         *          b : tiles to check on both X and Y based on direction and shift values
+         * 
+        */
+
+        // checking X
+
+        if (!model.isTileReachable(currentI, nextJ)) {
+            newX = resolveCollisionCoordinate(directionOnX, nextJ, radius);
+            foundUnreachableTile = true;
+        } 
+
+        // checking Y
+        if (!model.isTileReachable(nextI, currentJ)) {
+            newY = resolveCollisionCoordinate(directionOnY, nextI, radius);
+            foundUnreachableTile = true;
+        } 
+
+        // checking both if not found on specific direction
+        if (!foundUnreachableTile && !model.isTileReachable(nextI, nextJ)) {
+            if (shiftX > shiftY) { 
+                // fixingOnY
+                newY = resolveCollisionCoordinate(directionOnY, nextI , radius);
+            } else { 
+                // fixingOnX
+                newX = resolveCollisionCoordinate(directionOnX, nextJ, radius);
+            }
+        } 
+
+        bufferedPoint.setPoint(newX, newY);
+        return bufferedPoint;
+    }
+
+    private static double resolveCollisionCoordinate(int direction, int nextTile, double radius) {
+        double newCoordinate = 0;
+        if (direction == +1) {
+            newCoordinate = nextTile - radius;
+        } else if (direction == -1) {
+            newCoordinate = nextTile + 1 + radius;
+        }
+        return newCoordinate;
     }
 
     public static Point pushOutOfUnreachableTiles(Entity e) {
@@ -28,9 +97,31 @@ public class CollisionManager {
             return impactVector;
         }
 
+        
+
+
+        return pushOutOfUnreachableTiles(e, direction.getX(), direction.getY());
+    }
+
+    public static Point pushOutOfUnreachableTiles(Entity e, double shiftX, double shiftY) {
+        boolean moveOnX = Math.abs(shiftX) < Math.abs(shiftY);
+        // if X direction < Y position, entity will be moved on Y axis, otherwise entity will be moved on X axis
+
         // getting direction regarding each axes. value wil be in {-1, 0, 1} 
-        int directionOnX = (int) Math.signum(direction.getX());
-        int directionOnY = (int) Math.signum(direction.getY());
+        int directionOnX = (int) Math.signum(shiftX);
+        int directionOnY = (int) Math.signum(shiftY);
+
+        return pushOutOfUnreachableTiles(e, directionOnX, directionOnY, moveOnX);
+    }
+
+    public static Point pushOutOfUnreachableTiles(Entity e, int directionOnX, int directionOnY, boolean moveOnX) {
+        
+        impactVector.setPoint(0, 0);
+        
+        // if entity is inside a reachable tile, return
+        if (model.isTileReachable(e.getCurrentI(), e.getCurrentJ())) {
+            return impactVector;
+        }
 
         /* 
          * 
@@ -84,8 +175,6 @@ public class CollisionManager {
 
         // in this case, there might be a collision with a common corner that wasn't checked before.
         if (impactVector.isZeroVector() && hasCommonCorner(directionOnX, directionOnY)) {
-            boolean moveOnX = Math.abs(direction.getX()) < Math.abs(direction.getY()); 
-            // if X direction < Y position, entity will be moved on Y axis, otherwise entity will be moved on X axis
             handleCommonCorner(directionOnX, directionOnY, iTopLeftCorner, jTopLeftCorner, size, moveOnX); 
         } 
 
