@@ -188,7 +188,8 @@ public class Model implements IModel {
         // footprintSize
         for (int i = 0; i < footprintSize; i++) {
             for (int j = 0; j < footprintSize; j++) {
-                if (0 <= i && i < MAP_ROWS && 0 <= j && j < MAP_COLS
+                if (0 <= offsetI + i && offsetI + i < MAP_ROWS 
+                    && 0 <= offsetJ + j && offsetJ + j < MAP_COLS
                  && reachableTiles[offsetI + i][offsetJ + j]) 
                     map[offsetI + i][offsetJ + j].addEntity(e);
             }

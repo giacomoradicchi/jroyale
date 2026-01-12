@@ -87,6 +87,22 @@ public abstract class Entity implements Comparable<Entity>{
         position.setY(y);
     }
 
+    public void shiftPosition(double shiftX, double shiftY) {
+
+        position.setPoint(
+            /* sets new point based on shift value given.
+            if point (posX + shiftX, posY + shiftY) is inside map, collisionManager's method
+            will return the same point. otherwise it will fix it inside map.  
+            */ 
+            CollisionManager.fixEntityInsideReachableTile(this, shiftX, shiftY)
+        ); 
+        
+    }
+
+    public void shiftPosition(Point shift) {
+        shiftPosition(shift.getX(), shift.getY());
+    }
+
     // checks if an entity is outside his current Tile
     public boolean isOutsideTile() {
         return currentI != (int) Math.floor(position.getY())

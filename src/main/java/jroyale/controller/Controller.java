@@ -88,8 +88,9 @@ public class Controller implements IController {
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
             model.addTroop(
-                new MiniPekka(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
-            );
+                new Giant(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
+            ); 
+            
             
             resetLastLogicMousePos();
             view.resetDragPlacementPreviewAnimation();
@@ -126,19 +127,19 @@ public class Controller implements IController {
             getDx() * (e.getCollisionRadius() * 2),
             getDy() * (e.getCollisionRadius() * 2),
             0.5
-        ); */    
+        );  */    
     }
 
     private void renderTower(Entity e) {
         Tower tower = (Tower) e;
 
-        /* view.renderOval(
+        view.renderOval(
             logic2GraphicX(tower.getX()), 
             logic2GraphicY(tower.getY()), 
             getDx() * (tower.getCollisionRadius() * 2),
             getDy() * (tower.getCollisionRadius() * 2),
             0.5
-        );    */
+        );    
         if (tower.getHitPoints() > 0) {
             view.renderTower(
                 tower.getTowerType(), 
