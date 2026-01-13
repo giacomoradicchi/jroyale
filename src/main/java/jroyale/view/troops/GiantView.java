@@ -17,7 +17,7 @@ public class GiantView extends TroopView {
     
     private static GiantView instance;
 
-    private static final String RELATIVE_PATH = "smlbiobot cr-assets-png 7099244ef1f3eb18014f6dbe5b10b222119083c9 assets-sc_chr_giant_out/";
+    private static final String RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_giant_out/";
     private static final String HEADER_NAME_FILE = "chr_giant_sprite_";
     private static final String FORMAT = ".png";
     private static final int NUM_FRAMES = 461;
@@ -77,9 +77,9 @@ public class GiantView extends TroopView {
     }
 
     private int getFrameIndex(double angleDirection, int currentFrame, byte state) {
-        return Math.max(0, Math.min(288 + getOffsetDirection(angleDirection) * NUM_FRAMES_PER_DIRECTION.get(state) + currentFrame, NUM_FRAMES - 1));
+        return Math.max(0, Math.min(160 + getOffsetDirection(angleDirection) * NUM_FRAMES_PER_DIRECTION.get(state) + currentFrame, NUM_FRAMES - 1));
     }
-
+    // 288
     private String getStringNumber(int number) {
         return String.format("%03d", number);
     }
@@ -93,6 +93,26 @@ public class GiantView extends TroopView {
         numFrames.put(State.ATTACK, 10);
 
         return numFrames;
+    }
+    // 448
+
+    private int getOffsetState(byte state) {
+        switch (state) {
+            case State.IDLE:
+                return 316;
+
+            case State.SPAWN:
+                return 0;
+
+            case State.WALK:
+                return 0;
+
+            case State.ATTACK:
+                return 0;
+        
+            default:
+                return 0;
+        }
     }
     
 }

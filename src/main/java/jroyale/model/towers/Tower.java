@@ -21,10 +21,13 @@ public abstract class Tower extends Entity {
 
     @Override
     public void update(long elapsed) {
-        if (getHitPoints() == 0) {
-            TowerTargetSelector.removeTower(this);
-        }
-        // TODO: implement animations also on towers
+        return;
+    }
+
+    @Override
+    public void onDelete() {
+        TowerTargetSelector.removeTower(this);
+        // TODO: implement distruction animations on towers
     }
 
     @Override
