@@ -88,7 +88,7 @@ public class Controller implements IController {
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
             model.addTroop(
-                new Giant(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
+                new MiniPekka(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
             ); 
             
             

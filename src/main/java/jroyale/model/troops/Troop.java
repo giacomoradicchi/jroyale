@@ -91,8 +91,12 @@ public abstract class Troop extends Entity {
         frameManager.updateFrame(elapsed);
         updateTarget();
         move(elapsed);
+    }
 
-        System.out.println(getCurrentJ() + ", " + getCurrentI());
+    @Override
+    public void onDelete() {
+        // TODO: adding animation when entity is deleted.
+        return;
     }
 
     @Override 
@@ -139,13 +143,6 @@ public abstract class Troop extends Entity {
         }
 
         shiftPosition(speed);
-
-        /* // final fixing inside map and outside unreachable tiles:
-        Point impactVector = CollisionManager.pushOutOfUnreachableTiles(this);
-        if (!impactVector.isZeroVector()) {
-            setTangentSpeed(impactVector.getX(), impactVector.getY());  
-        }  */
-        
 
     }
 
@@ -345,6 +342,8 @@ public abstract class Troop extends Entity {
 
         setAimUnitVector(targetX, targetY);
     } 
+
+
 
     //
     // abstract methods

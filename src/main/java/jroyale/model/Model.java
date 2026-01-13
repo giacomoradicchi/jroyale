@@ -2,6 +2,7 @@ package jroyale.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import jroyale.model.towers.ArcerTower;
@@ -32,6 +33,7 @@ public class Model implements IModel {
     
     
     private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
+    private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
     private List<Entity> entities = new ArrayList<>(); // insert order entities
 
     private long lastTimeStamp;
@@ -82,11 +84,11 @@ public class Model implements IModel {
     public void update(long now) {
         long elapsed = getElapsed(now);
 
-        updateMap();
-
         for (Entity e : entities) {
             e.update(elapsed);
         }
+
+        updateMap();
 
         // for debugging:
         /* for (int i = 0; i < MAP_ROWS; i++) {
@@ -151,19 +153,40 @@ public class Model implements IModel {
     //
 
     private void updateMap() {
-        
-        for (Entity e : entities) {
+
+        Iterator<Entity> itEntities = entities.iterator();
+
+        toRemoveEntities.clear();
+
+        while (itEntities.hasNext()) {
+            Entity e = itEntities.next();
+
+            if (e.getHitPoints() == 0) {
+                // means it's dead / destroied
+                toRemoveEntities.add(e);
+            }
+
             if (e.isOutsideTile()) { // when an entity is moving, his position change, so it might go outside his tile:
                 // in that case, it has to be displaced from the previous tile to the newest.
 
-                // TODO: in the future, if it will exist a troop whose footprintSize is > 1, it is necessary also to 
                 // remove entity from the sorrounding cells.
-                map[e.getCurrentI()][e.getCurrentJ()].removeEntity(e);
+                removeEntityFromMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
+                // updating entity tile position
                 e.updateCurrentTile();
-                map[e.getCurrentI()][e.getCurrentJ()].addEntity(e);
+                // adding entity to new tiles
+                addEntityToMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
             }
-
         }
+
+        for (Entity e : toRemoveEntities) {
+            removeEntity(e);
+        }
+    }
+
+    private void removeEntity(Entity e) {
+        e.onDelete();
+        removeEntityFromMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
+        entities.remove(e);
     }
 
     private void addEntity(Entity e) {
@@ -192,6 +215,23 @@ public class Model implements IModel {
                     && 0 <= offsetJ + j && offsetJ + j < MAP_COLS
                  && reachableTiles[offsetI + i][offsetJ + j]) 
                     map[offsetI + i][offsetJ + j].addEntity(e);
+            }
+        }
+    }
+
+    private void removeEntityFromMap(Entity e, int centreI, int centreJ, int footprintSize) {
+        int offsetI = centreI - footprintSize/2;
+        int offsetJ = centreJ - footprintSize/2;
+
+        // this method works also for entities whose footprint is grather than 1 (e.g. Towers).
+        // it adds entity also on the sorrounding cells that are close to (centreI, centreJ) based on
+        // footprintSize
+        for (int i = 0; i < footprintSize; i++) {
+            for (int j = 0; j < footprintSize; j++) {
+                if (0 <= offsetI + i && offsetI + i < MAP_ROWS 
+                    && 0 <= offsetJ + j && offsetJ + j < MAP_COLS
+                 && reachableTiles[offsetI + i][offsetJ + j]) 
+                    map[offsetI + i][offsetJ + j].removeEntity(e);
             }
         }
     }
