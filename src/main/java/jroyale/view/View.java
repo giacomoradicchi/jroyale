@@ -15,21 +15,25 @@ import javafx.scene.paint.Color;
 
 public class View implements IView {
 
+    private static View istance;
+
     // public attribs for controller class
     public enum TroopType {
-        MINI_PEKKA(0, MiniPekkaView.getInstance()),
-        GIANT(1, GiantView.getInstance());
+        MINI_PEKKA(MiniPekkaView.getInstance()),
+        GIANT(GiantView.getInstance());
 
-        private final int id;
         private final TroopView troopView;
 
-        TroopType(int id, TroopView troopView) {
-            this.id = id;
+        TroopType(TroopView troopView) {
             this.troopView = troopView;
         }
 
         public int getId() {
-            return id;
+            return this.ordinal();
+        }
+
+        public TroopView getViewIstance() {
+            return troopView;
         }
     };
 
@@ -56,7 +60,7 @@ public class View implements IView {
     // The timestamp of the current frame given in nanoseconds
     private long now;
 
-    public View(Canvas canvas, int rowsCount, int colsCount) {
+    private View(Canvas canvas, int rowsCount, int colsCount) {
         this.gc = canvas.getGraphicsContext2D();
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
@@ -79,6 +83,13 @@ public class View implements IView {
 
         // adjusting tower image
         this.imgPlayerKingTower = ImageUtils.enhanceOpacity(imgPlayerKingTower);
+    }
+
+    public static IView getIstance(Canvas canvas, int rowsCount, int colsCount) {
+        if (istance == null) {
+            istance = new View(canvas, rowsCount, colsCount);
+        }
+        return istance;
     }
 
     
@@ -255,6 +266,11 @@ public class View implements IView {
     @Override
     public void resetDragPlacementPreviewAnimation() {
         DragPlacementPreview.resetAnimation();
+    }
+
+    @Override
+    public void renderPlayerDeck(TroopType card1) {
+        DeckView.renderPlayerDeck(gc, card1.troopView.getSpellIcon(), globalScale);
     }
 
     private void fillPoint(double centreX, double centreY) {

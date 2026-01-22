@@ -33,8 +33,8 @@ public class App extends Application {
         scene = new Scene(root);
 
         // Creation of instances
-        IModel model = new Model();
-        IView view = new View(canvas, model.getRowsCount(), model.getColsCount());
+        IModel model = Model.getIstance();
+        IView view = View.getIstance(canvas, model.getRowsCount(), model.getColsCount());
         IController controller = new Controller(model, view, scene);
         
         
@@ -47,15 +47,6 @@ public class App extends Application {
 
         controller.start();
     } 
-
-    public static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
-    }
 
     public static void main(String[] args) {
         launch();

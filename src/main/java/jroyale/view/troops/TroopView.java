@@ -4,17 +4,22 @@ import java.util.List;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.utils.ImageUtils;
 
 public abstract class TroopView {
     
     protected static final String TROOPS_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/troops/";
 
     protected final List<Image> spriteBuffer;
+    protected final Image spellIcon;
+    private static final int CORNER_RADIUS = 20; // pixels
 
     protected static final int NUM_DIRECTIONS = 9;
 
     protected TroopView() {
         spriteBuffer = getSpriteBuffer();
+        Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
+        spellIcon = temp;
     }
 
     protected byte isFlippedOnX(double angleDirection) {
@@ -39,9 +44,16 @@ public abstract class TroopView {
         return (NUM_DIRECTIONS - 1) - (int) Math.floor(angleDirection);
     }
 
+    public Image getSpellIcon() {
+        return spellIcon;
+    }
+
     // abstract methods
 
     public abstract void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, byte state, byte side, double globalScale);
+
+    protected abstract Image getRawSpellIcon();
     
     protected abstract List<Image> getSpriteBuffer();
+    
 }

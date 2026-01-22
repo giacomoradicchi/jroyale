@@ -17,6 +17,8 @@ public class MiniPekkaView extends TroopView {
 
     private static MiniPekkaView instance;
 
+    private static final Image RAW_SPELL_ICON = new Image(MiniPekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/minipekka.png"));
+
     private static final String RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_mini_pekka_out/";
     private static final String HEADER_NAME_FILE = "chr_mini_pekka_sprite_";
     private static final String FORMAT = ".png";
@@ -111,6 +113,12 @@ public class MiniPekkaView extends TroopView {
         numFrames.put(State.ATTACK, 10);
 
         return numFrames;
+    }
+
+
+    @Override
+    public Image getRawSpellIcon() {
+        return RAW_SPELL_ICON;
     }
     
 }
