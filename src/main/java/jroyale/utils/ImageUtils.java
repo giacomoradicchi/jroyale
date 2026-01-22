@@ -150,11 +150,11 @@ public class ImageUtils {
         return rgbImage;
     }
 
-    public static Image clipToBoundingBox(Image img) {
-        return clipToBoundingBox(img, 0);
+    public static Image cropToBoundingBox(Image img) {
+        return cropToBoundingBox(img, 0);
     }
 
-    public static Image clipToBoundingBox(Image img, double opacityTolerance) {
+    public static Image cropToBoundingBox(Image img, double opacityTolerance) {
         Rectangle2D boundingBox = getAlphaBoundingBox(img, opacityTolerance);
         int width = (int) boundingBox.getWidth();
         int height = (int) boundingBox.getHeight();
@@ -173,5 +173,45 @@ public class ImageUtils {
             }
         }
         return croppedImage;
+    }
+
+    public static Image roundCorners(Image img, int radius) {
+        int width = (int) img.getWidth();
+        int height = (int) img.getHeight();
+        WritableImage roundedImage = new WritableImage(width, height);
+        
+        PixelReader reader = img.getPixelReader();
+        PixelWriter writer = roundedImage.getPixelWriter();
+
+        radius = (int) Math.min(radius, Math.min(width, height) / 2.0); // to make sure diameter is not grather than min{width, height}
+
+        Point TopLeftCenter = new Point(radius, radius);
+        Point TopRightCenter = new Point(width - radius, radius);
+        Point BottomLeftCenter = new Point(radius, height - radius);
+        Point BottomRightCenter = new Point(width - radius, height - radius);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color c;
+                Point centre = null;
+                if (x <= radius && y <= radius) {
+                    centre = TopLeftCenter;
+                } else if (x >= width - radius && y <= radius) {
+                    centre = TopRightCenter;
+                } else if (x <= radius && y >= height - radius) {
+                    centre = BottomLeftCenter;
+                } else if (x >= width - radius && y >= height - radius) {
+                    centre = BottomRightCenter;
+                }
+
+                if (centre != null && centre.distance(x, y) > radius) {
+                    c = Color.TRANSPARENT;
+                } else {
+                    c = reader.getColor(x, y);
+                }
+                writer.setColor(x, y, c);
+            }
+        }
+        return roundedImage;
     }
 }

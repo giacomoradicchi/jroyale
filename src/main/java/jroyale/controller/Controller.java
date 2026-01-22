@@ -55,12 +55,13 @@ public class Controller implements IController {
                 handleMouseEvents();
 
                 
-                
                 // depth rendering based on Y pos
 
                 for (Entity entity : model.getEntitiesOrderedByPosY()) {
                     renderEntity(entity);
                 }
+
+                view.renderPlayerDeck(TroopType.GIANT);
             }
         };
         loop.start();

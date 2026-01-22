@@ -17,6 +17,8 @@ public class GiantView extends TroopView {
     
     private static GiantView instance;
 
+    private static final Image RAW_SPELL_ICON = new Image(GiantView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/giant.png"));
+
     private static final String RELATIVE_PATH = "smlbiobot cr-assets-png master assets-sc_chr_giant_out/";
     private static final String HEADER_NAME_FILE = "chr_giant_sprite_";
     private static final String FORMAT = ".png";
@@ -113,6 +115,11 @@ public class GiantView extends TroopView {
             default:
                 return 0;
         }
+    }
+
+    @Override
+    public Image getRawSpellIcon() {
+        return RAW_SPELL_ICON;
     }
     
 }

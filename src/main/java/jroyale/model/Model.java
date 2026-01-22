@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import jroyale.model.cards.Card;
+import jroyale.model.cards.Deck;
+import jroyale.model.cards.GiantCard;
+import jroyale.model.cards.MiniPekkaCard;
 import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
@@ -12,6 +16,9 @@ import jroyale.model.troops.Troop;
 import jroyale.shared.Side;
 
 public class Model implements IModel {
+
+    private static Model istance;
+
     // 32x18 is the map size, each Tile 
     // has its own List where character are inserted based on
     // their position (so the collision algoritm will be much
@@ -26,6 +33,9 @@ public class Model implements IModel {
     private boolean[][] playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
     private boolean[][] opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
+    private Deck playerDeck;
+    private Deck opponentDeck;
+
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 
     // coord-system whose origin is 0 and his head is 18-. X-coords will 
@@ -39,7 +49,7 @@ public class Model implements IModel {
     private long lastTimeStamp;
 
 
-    public Model() {
+    private Model() {
         initReachableTiles();
 
         for (int i = 0; i < MAP_ROWS; i++) {
@@ -52,6 +62,17 @@ public class Model implements IModel {
         initTowers();
         initDroppableTiles();
         
+        playerDeck = new Deck(new Card[] {
+            MiniPekkaCard.getIstance(),
+            GiantCard.getIstance()
+        });
+    }
+
+    public static IModel getIstance() {
+        if (istance == null) {
+            istance = new Model();
+        }
+        return istance;
     }
 
     @Override

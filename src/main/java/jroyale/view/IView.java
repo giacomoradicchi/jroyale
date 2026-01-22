@@ -19,6 +19,8 @@ public interface IView {
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 
+    public void renderPlayerDeck(TroopType card1);
+
     public void resetDragPlacementPreviewAnimation();
 
     public double getCanvasWidth();
