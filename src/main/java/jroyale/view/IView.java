@@ -1,6 +1,7 @@
 package jroyale.view;
 
-import jroyale.shared.State;
+import jroyale.shared.Enums.State;
+import jroyale.shared.Enums.Side;
 import jroyale.view.View.TroopType;
 
 public interface IView {
@@ -13,9 +14,9 @@ public interface IView {
 
     public void renderArena();
 
-    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, byte side);
+    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, Side side);
 
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, byte side);
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, State state, Side side);
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 

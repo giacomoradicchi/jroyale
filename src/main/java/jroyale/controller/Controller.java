@@ -9,7 +9,7 @@ import jroyale.model.towers.Tower;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
 import jroyale.view.IView;
 import jroyale.view.View;
 import jroyale.view.View.TroopType;

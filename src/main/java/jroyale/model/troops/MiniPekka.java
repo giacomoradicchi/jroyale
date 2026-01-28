@@ -2,11 +2,14 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
+import jroyale.shared.Enums.Side;
+import jroyale.shared.Enums.State;
+
 public class MiniPekka extends MixedAttackerTroop {
 
     private static final String NAME = "Mini-Pekka";
     private static final byte SPEED = Troop.FAST;
-    private static Map<Byte, Integer> numFramesPerDirection;
+    private static Map<State, Integer> numFramesPerDirection;
     private static final double COLLISION_RADIUS = 0.45;
     private static final int FPS_ANIMATION = 18;
     private static final long LOAD_TIME = (long) (1.3 * 1_000_000_000L);
@@ -14,16 +17,16 @@ public class MiniPekka extends MixedAttackerTroop {
     private static final int HITPOINTS = 677;
     private static final int DAMAGE = 355;
 
-    public MiniPekka(double x, double y, byte side) {
+    public MiniPekka(double x, double y, Side side) {
         super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
     }
 
-    public MiniPekka(int n, int m, byte side) {
+    public MiniPekka(int n, int m, Side side) {
         super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
     }
 
-    public static void setFramesPerDirection(Map<Byte, Integer> numFramesPerDirection) {
-        MiniPekka.numFramesPerDirection = numFramesPerDirection;
+    public static void setFramesPerDirection(Map<State,Integer> numFramesPerDirection2) {
+        MiniPekka.numFramesPerDirection = numFramesPerDirection2;
     }
 
     @Override

@@ -1,15 +1,16 @@
 package jroyale.model.troops;
 
 import jroyale.model.TowerTargetSelector;
-import jroyale.shared.State;
+import jroyale.shared.Enums.State;
+import jroyale.shared.Enums.Side;
 
 public abstract class MixedAttackerTroop extends Troop {
 
-    public MixedAttackerTroop(String name, double x, double y, int healthPoints, int damage, byte speedType, byte side) {
+    public MixedAttackerTroop(String name, double x, double y, int healthPoints, int damage, byte speedType, Side side) {
         super(name, x, y, healthPoints, damage, speedType, side);
     }
 
-    public MixedAttackerTroop(String name, int n, int m, int healthPoints, int damage, byte speedType, byte side) {
+    public MixedAttackerTroop(String name, int n, int m, int healthPoints, int damage, byte speedType, Side side) {
         super(name, n, m, healthPoints, damage, speedType, side);
     }
 
@@ -20,7 +21,7 @@ public abstract class MixedAttackerTroop extends Troop {
         
         if (target != null && target.getHitPoints() == 0) { 
             target = TowerTargetSelector.getClosestEnemyTower(this);
-            setState(State.WALK);
+            setState(State.MOVE);
             enemyHit = false; // reset enemyHit
         }
     }

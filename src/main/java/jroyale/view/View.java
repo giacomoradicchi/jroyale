@@ -1,6 +1,7 @@
 package jroyale.view;
 
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
+import jroyale.shared.Enums.State;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
 
@@ -161,7 +162,7 @@ public class View implements IView {
 
 
     @Override
-    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, byte side) {
+    public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, Side side) {
         if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
@@ -185,7 +186,7 @@ public class View implements IView {
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, byte state, byte side) {
+    public void renderTroop(double centreX, double centreY, double angleDirection, TroopType type, int currentFrame, State state, Side side) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -204,7 +205,7 @@ public class View implements IView {
         
     }
 
-    private void renderHealth(GraphicsContext gc, double centreX, double centreY, int currentHealth, int maxHealth, byte side) {
+    private void renderHealth(GraphicsContext gc, double centreX, double centreY, int currentHealth, int maxHealth, Side side) {
         double rectWidth = 0.1 * width * globalScale;
         double rectHeight = 0.01 * height * globalScale;
         double shiftY = -70 * globalScale;
