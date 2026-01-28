@@ -65,6 +65,11 @@ public class GiantView extends TroopView {
             Math.pow(-1, isFlippedOnX(angleDirection)) * width, 
             height
         ); */
+
+        if (state == State.ATTACK && side == Side.OPPONENT) {
+            // TODO: draw also the opponent image on top (specific for giant troop).
+        }
+        
     }
 
     // giant: 189 x 185 -> 116 x 96
@@ -73,6 +78,10 @@ public class GiantView extends TroopView {
     // 154
     // 
 
+    protected void initAnimationBuffer() {
+        // TODO: build a specific buffer initialization for giant troop
+
+    }
     
 
     public static TroopView getInstance() {
