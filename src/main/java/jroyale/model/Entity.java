@@ -1,7 +1,7 @@
 package jroyale.model;
 
-import jroyale.shared.Side;
-import jroyale.shared.State;
+import jroyale.shared.Enums.Side;
+import jroyale.shared.Enums.State;
 import jroyale.utils.Point;
 
 public abstract class Entity implements Comparable<Entity>{
@@ -26,12 +26,12 @@ public abstract class Entity implements Comparable<Entity>{
       
     
     protected Point position;
-    protected byte side;
+    protected Side side;
     protected int currentFrame;
-    protected byte state; // defines wheather a troop is walking, attacking, etc.
+    protected State state; // defines wheather a troop is walking, attacking, etc.
     
 
-    public Entity(double x, double y, int hitPoints, int damage, byte side) {
+    public Entity(double x, double y, int hitPoints, int damage, Side side) {
         
         if (side != Side.PLAYER && side != Side.OPPONENT) {
             throw new IllegalArgumentException("Invalid argument side");
@@ -45,7 +45,7 @@ public abstract class Entity implements Comparable<Entity>{
         this.damage = damage;
     }
 
-    public Entity(Point position, int hitPoints, int damage, byte side) {
+    public Entity(Point position, int hitPoints, int damage, Side side) {
         this(position.getX(), position.getY(), hitPoints, damage, side);
     }
 
@@ -65,7 +65,7 @@ public abstract class Entity implements Comparable<Entity>{
         return currentJ;
     }
 
-    public byte getSide() {
+    public Side getSide() {
         return side;
     }
 
@@ -180,7 +180,7 @@ public abstract class Entity implements Comparable<Entity>{
         return completed;
     }
 
-    protected void setState(byte newState) {
+    protected void setState(State newState) {
         state = newState;
         currentFrame = 0;
         animationCompleted = false;

@@ -4,14 +4,13 @@ package jroyale.model.troops;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.plaf.synth.SynthStyle;
-
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
-import jroyale.shared.State;
+import jroyale.shared.Enums.State;
+import jroyale.shared.Enums.Side;
 import jroyale.utils.Point;
 
 public abstract class Troop extends Entity {
@@ -49,11 +48,11 @@ public abstract class Troop extends Entity {
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
 
-    public Troop(String name, double x, double y, int healthPoints, int damage, byte speedType, byte side) {
+    public Troop(String name, double x, double y, int healthPoints, int damage, byte speedType, Side side) {
         super(x, y, healthPoints, damage, side);
         this.name = name;
         this.frameManager = new FrameManager(this);
-        this.state = State.WALK; // TODO: set it to SPAWN
+        this.state = State.MOVE; // TODO: set it to SPAWN
         
         if (speedType < VERY_SLOW || speedType > VERY_FAST) {
             this.SPEED_TYPE = MEDIUM;
@@ -65,7 +64,7 @@ public abstract class Troop extends Entity {
         initSpeed();
     }
 
-    public Troop(String name, int n, int m, int healthPoints, int damage, byte speedType, byte side) {
+    public Troop(String name, int n, int m, int healthPoints, int damage, byte speedType, Side side) {
         // The constructor puts the troop in the centre of the cell (n, m).
         // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
         // which is half a cell. In this way, the placing won't be in the top left corner; 
@@ -82,7 +81,7 @@ public abstract class Troop extends Entity {
         return new Point(speed);
     }
 
-    public byte getState() {
+    public State getState() {
         return state;
     }
 
@@ -134,9 +133,10 @@ public abstract class Troop extends Entity {
             handleIdleState(elapsed);
         }
 
-        if (state != State.SPAWN) {
+        /* if (state != State.SPAWN) {
             handleCollisions();
-        }
+        } */
+        handleCollisions();
         
         if (state == State.ATTACK) {
             handleAttackState();
@@ -150,7 +150,7 @@ public abstract class Troop extends Entity {
         elapsedIdleTime += elapsed;
 
         if (elapsedIdleTime >= getLoadTime()) {
-            setState(State.WALK);
+            setState(State.MOVE);
             elapsedIdleTime = 0;
         }
     }
@@ -178,7 +178,7 @@ public abstract class Troop extends Entity {
 
     private void handleCollisions() {
         for (Entity other : CollisionManager.checkCollisions(this)) {
-            if (other == target && state == State.WALK) {
+            if (other == target && state == State.MOVE) {
                 setState(State.ATTACK);
             }
 

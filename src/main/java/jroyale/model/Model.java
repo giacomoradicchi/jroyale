@@ -13,7 +13,7 @@ import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
 
 public class Model implements IModel {
 

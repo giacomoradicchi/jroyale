@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import jroyale.model.troops.Troop;
+import jroyale.shared.Enums.Side;
 
 public class Deck {
     
@@ -69,7 +70,7 @@ public class Deck {
         selectedCardIndex = index;
     }
 
-    public Troop dropSelectedCard(int rowIndex, int columnIndex, byte side) {
+    public Troop dropSelectedCard(int rowIndex, int columnIndex, Side side) {
         if (!isSelectedCardDroppable()) {
             throw new IllegalStateException("Selected card is not droppable.");
         }

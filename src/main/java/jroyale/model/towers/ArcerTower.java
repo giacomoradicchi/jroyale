@@ -1,7 +1,7 @@
 package jroyale.model.towers;
 
 
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
 
@@ -26,7 +26,7 @@ public class ArcerTower extends Tower {
     private final byte TOWER_TYPE;
     
 
-    public ArcerTower(byte side, byte location) {
+    public ArcerTower(Side side, byte location) {
         super(getArcherPosition(side, location), HITPOINTS, DAMAGE, side);
 
         if (side == Side.PLAYER) {
@@ -40,7 +40,7 @@ public class ArcerTower extends Tower {
         }
     }
 
-    private static Point getArcherPosition(byte side, byte location) {
+    private static Point getArcherPosition(Side side, byte location) {
         // checks
         if (side != Side.PLAYER && side != Side.OPPONENT) 
             throw new IllegalArgumentException("Invalid argument side");

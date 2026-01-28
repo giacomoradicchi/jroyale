@@ -3,6 +3,7 @@ package jroyale.model.towers;
 import jroyale.model.Entity;
 import jroyale.model.TowerTargetSelector;
 import jroyale.model.troops.TowerAttackerTroop;
+import jroyale.shared.Enums.Side;
 import jroyale.utils.Point;
 
 public abstract class Tower extends Entity {
@@ -11,11 +12,11 @@ public abstract class Tower extends Entity {
 
     private static final double TOWER_COLLISION_RADIUS_FACTOR = 1.0; // just to make the collision radius slightly bigger
 
-    public Tower(double x, double y, int hitPoints, int damage, byte side) {
+    public Tower(double x, double y, int hitPoints, int damage, Side side) {
         super(x, y, hitPoints, damage, side);
     }
 
-    public Tower(Point position, int hitPoints, int damage, byte side) {
+    public Tower(Point position, int hitPoints, int damage, Side side) {
         this(position.getX(), position.getY(), hitPoints, damage, side);
     }
 

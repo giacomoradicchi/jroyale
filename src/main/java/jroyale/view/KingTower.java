@@ -1,7 +1,7 @@
 package jroyale.view;
 
 import javafx.scene.image.Image;
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
 import jroyale.utils.ImageUtils;
 
 public class KingTower extends Tower{
@@ -15,11 +15,11 @@ public class KingTower extends Tower{
     };
 
 
-    KingTower(int side) {
+    KingTower(Side side) {
         super(getKingTowerImage(checkSide(side)), checkSide(side), SCALE, getXOffset(checkSide(side)), Y_OFFSET);
     }
 
-    private static int checkSide(int side) {
+    private static Side checkSide(Side side) {
         if (side == Side.PLAYER || side == Side.OPPONENT) {
             return side;
         } else {
@@ -27,15 +27,15 @@ public class KingTower extends Tower{
         }
     }
 
-    private static Image getKingTowerImage(int side) {
-        Image kingTowerImage = new Image(KingTower.class.getResourceAsStream(KINGTOWER_RELATIVE_PATH[side]));
+    private static Image getKingTowerImage(Side side) {
+        Image kingTowerImage = new Image(KingTower.class.getResourceAsStream(KINGTOWER_RELATIVE_PATH[side.ordinal()]));
         // adjusting tower image
         kingTowerImage = ImageUtils.enhanceOpacity(kingTowerImage);
 
         return kingTowerImage;
     }
 
-    private static double getXOffset(int side) {
+    private static double getXOffset(Side side) {
         return (side == Side.PLAYER) ? PLAYER_X_OFFSET : OPPONENT_X_OFFSET;
     }
 

@@ -1,6 +1,6 @@
 package jroyale.model.towers;
 
-import jroyale.shared.Side;
+import jroyale.shared.Enums.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
 
@@ -16,7 +16,7 @@ public class KingTower extends Tower {
     private static final int HITPOINTS = 2400;
     private static final int DAMAGE = 0; // TODO: add damage
 
-    public KingTower(byte side) {
+    public KingTower(Side side) {
         super(
             (side == Side.PLAYER) ? 
             PLAYER_KING_TOWER_CENTRE : 

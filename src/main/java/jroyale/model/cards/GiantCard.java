@@ -2,6 +2,7 @@ package jroyale.model.cards;
 
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.Troop;
+import jroyale.shared.Enums.Side;
 
 public class GiantCard extends Card{
 
@@ -21,7 +22,7 @@ public class GiantCard extends Card{
     }
 
     @Override
-    protected Troop generateNewTroop(int rowIndex, int columnIndex, byte side) {
+    protected Troop generateNewTroop(int rowIndex, int columnIndex, Side side) {
         return new Giant(rowIndex, columnIndex, side);
     }
     
