@@ -32,7 +32,7 @@ public abstract class TroopView {
         return spellIcon;
     }
 
-    private void initAnimationBuffer() {
+    protected void initAnimationBuffer() {
 
         for (int direction = 0; direction < Direction.NUM_DIRECTIONS; direction++) {
 
@@ -52,7 +52,7 @@ public abstract class TroopView {
 
     }
 
-    private void loadSprites(State state, Side side, int direction, int baseSpriteIndex) {
+    protected void loadSprites(State state, Side side, int direction, int baseSpriteIndex) {
         AnimationKey key = new AnimationKey(side, state, direction);
         SpriteAnimation animation = new SpriteAnimation();
 
