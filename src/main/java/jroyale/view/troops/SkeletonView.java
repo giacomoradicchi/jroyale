@@ -32,4 +32,15 @@ public class SkeletonView extends TroopView {
 
         return numFrames;
     }
+
+    private static Map<State, String> getStatePath() {
+        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
+        Map<State, String> statePath = new HashMap<>();
+
+        statePath.put(State.IDLE, IDLE_PATH);
+        statePath.put(State.MOVE, MOVE_PATH);
+        statePath.put(State.ATTACK, ATTACK_PATH);
+
+        return statePath;
+    }
 }

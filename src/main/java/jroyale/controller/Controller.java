@@ -39,7 +39,7 @@ public class Controller implements IController {
         CollisionManager.setModel(model);
         view.loadSprites();
         initModelTroopsFrames();
-        //setBindings();
+        setBindings();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override

@@ -27,7 +27,6 @@ public class MiniPekkaView extends TroopView {
     private static final String FORMAT = ".png";
     private static final Map<State, String> STATE_PATH = getStatePath();
     private static final int NUM_INDEX_DIGITS = 3;
-    private static final int NUM_FRAMES = 415;
     private final double SCALE = 0.45;
 
     // Sprite sheet base indices for different states and sides
@@ -91,13 +90,6 @@ public class MiniPekkaView extends TroopView {
         }
         return instance;
     }
-
-    private String getStringNumber(int number, int digits) {
-        return String.format("%0" + digits + "d", number);
-    }
-
-    
-
     
 
     private static Map<State, Integer> getNumFramesPerDirection() {
