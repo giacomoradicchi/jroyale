@@ -13,6 +13,8 @@ public class Giant extends TowerAttackerTroop {
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
     private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
+    private static final int HIT_FRAME = 6;
+
     private static final int HITPOINTS = 1598;
     private static final int DAMAGE = 99;
 
@@ -51,7 +53,6 @@ public class Giant extends TowerAttackerTroop {
 
     @Override
     protected int getHitFrame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHitFrame'");
+        return HIT_FRAME;
     }
 }

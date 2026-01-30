@@ -8,10 +8,12 @@ import javafx.scene.image.Image;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 import jroyale.utils.ImageUtils;
+import jroyale.view.AnimationKey;
+import jroyale.view.Direction;
 
 public class GiantView extends TroopView {
 
-    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
+    private static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
     
     private static GiantView instance;
 
@@ -31,18 +33,17 @@ public class GiantView extends TroopView {
 
     private static final Map<State, String> STATE_PATH = getStatePath();
     private static final int NUM_INDEX_DIGITS = 3;
-    private static final int NUM_FRAMES = 461;
     private final double SCALE = 0.65;
     private static final double shiftX = 4;
-    private static final double shiftY = -12;
+    private static final double shiftY = -20;
 
     // Sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 0;
-    private static final int OPPONENT_IDLE_BASE_INDEX = 0;
-    private static final int PLAYER_MOVE_BASE_INDEX = 0;
+    private static final int OPPONENT_IDLE_BASE_INDEX = 9;
+    private static final int PLAYER_MOVE_BASE_INDEX = 144;
     private static final int OPPONENT_MOVE_BASE_INDEX = 0;
     private static final int PLAYER_ATTACK_BASE_INDEX = 0;
-    private static final int OPPONENT_ATTACK_BASE_INDEX = 0;
+    private static final int OPPONENT_ATTACK_BASE_INDEX = 90;
 
 
     private GiantView() {
@@ -66,8 +67,39 @@ public class GiantView extends TroopView {
             height
         ); */
 
-        if (state == State.ATTACK && side == Side.OPPONENT) {
-            // TODO: draw also the opponent image on top (specific for giant troop).
+        Side baseSide = side;
+        if (state != State.MOVE && side == Side.OPPONENT) {
+            baseSide = Side.PLAYER;
+        }
+
+        AnimationKey key = new AnimationKey(baseSide, state, Direction.fromAngle(angleDirection));
+        Image image = animationBuffer.get(key).getFrame(currentFrame);
+        
+        double width = image.getWidth() * SCALE * globalScale;
+        double height = image.getHeight() * SCALE * globalScale;
+        int flipped = 0;
+        if (Direction.hasToFlip(angleDirection)) 
+            flipped = 1;
+
+        gc.drawImage(
+            image, 
+            shiftX + centreX - width/2 + flipped * width, 
+            shiftY + centreY - height/2, 
+            Math.pow(-1, flipped) * width, 
+            height
+        );
+
+        if (state != State.MOVE && side == Side.OPPONENT) {
+            key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
+            image = animationBuffer.get(key).getFrame(currentFrame);
+
+            gc.drawImage(
+                image, 
+                shiftX + centreX - width/2 + flipped * width, 
+                shiftY + centreY - height/2, 
+                Math.pow(-1, flipped) * width, 
+                height
+            );
         }
         
     }
@@ -77,11 +109,6 @@ public class GiantView extends TroopView {
 
     // 154
     // 
-
-    protected void initAnimationBuffer() {
-        // TODO: build a specific buffer initialization for giant troop
-
-    }
     
 
     public static TroopView getInstance() {

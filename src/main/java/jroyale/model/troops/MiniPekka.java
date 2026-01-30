@@ -16,6 +16,7 @@ public class MiniPekka extends MixedAttackerTroop {
 
     private static final int HITPOINTS = 677;
     private static final int DAMAGE = 355;
+    private static final int HIT_FRAME = 6;
 
     public MiniPekka(double x, double y, Side side) {
         super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
@@ -25,8 +26,8 @@ public class MiniPekka extends MixedAttackerTroop {
         super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
     }
 
-    public static void setFramesPerDirection(Map<State,Integer> numFramesPerDirection2) {
-        MiniPekka.numFramesPerDirection = numFramesPerDirection2;
+    public static void setFramesPerDirection(Map<State,Integer> numFramesPerDirection) {
+        MiniPekka.numFramesPerDirection = numFramesPerDirection;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class MiniPekka extends MixedAttackerTroop {
 
     @Override
     protected int getHitFrame() {
-        return 6;
+        return HIT_FRAME;
     }
     
 }
