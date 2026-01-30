@@ -2,6 +2,7 @@ package jroyale.model.troops;
 
 import jroyale.model.TowerTargetSelector;
 import jroyale.shared.Enums.Side;
+import jroyale.shared.Enums.State;
 
 public abstract class TowerAttackerTroop extends Troop {
 
@@ -15,8 +16,9 @@ public abstract class TowerAttackerTroop extends Troop {
 
     @Override
     protected void updateTarget() {
-        if (target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
+        if (target != null && target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
             target = TowerTargetSelector.getClosestEnemyTower(this);
+            setState(State.MOVE);
             enemyHit = false; // reset enemyHit
         }
     }

@@ -39,7 +39,7 @@ public class Controller implements IController {
         CollisionManager.setModel(model);
         view.loadSprites();
         initModelTroopsFrames();
-        setBindings();
+        //setBindings();
 
         AnimationTimer loop = new AnimationTimer() {
             @Override
@@ -61,7 +61,7 @@ public class Controller implements IController {
                     renderEntity(entity);
                 }
 
-                view.renderPlayerDeck(TroopType.GIANT);
+                //view.renderPlayerDeck(TroopType.GIANT);
             }
         };
         loop.start();
@@ -89,7 +89,7 @@ public class Controller implements IController {
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
             model.addTroop(
-                new MiniPekka(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
+                new MiniPekka(lastMouseRowIndex, lastMouseColumnIndex, Side.OPPONENT)
             ); 
             
             
@@ -119,8 +119,10 @@ public class Controller implements IController {
             troopBinder.getViewTroopType(((Troop) e).getClass()),          // troop type
             e.getCurrentFrame(),                                           // current frame
             ((Troop) e).getState(),
-            Side.PLAYER                                                    // side
+            e.getSide()                                                    // side
         );
+
+        
 
         /* view.renderOval(
             logic2GraphicX(e.getX()), 
@@ -134,13 +136,14 @@ public class Controller implements IController {
     private void renderTower(Entity e) {
         Tower tower = (Tower) e;
 
-        view.renderOval(
+        /* view.renderOval(
             logic2GraphicX(tower.getX()), 
             logic2GraphicY(tower.getY()), 
             getDx() * (tower.getCollisionRadius() * 2),
             getDy() * (tower.getCollisionRadius() * 2),
             0.5
-        );    
+        );   */  
+
         if (tower.getHitPoints() > 0) {
             view.renderTower(
                 tower.getTowerType(), 
