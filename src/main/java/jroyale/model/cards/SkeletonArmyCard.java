@@ -24,7 +24,7 @@ public class SkeletonArmyCard extends Card {
     @Override
     protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         // TODO: drop more skeletons.
-        
+
         Model.getIstance().addTroop(
             new Skeleton(rowIndex, columnIndex, side)
         );

@@ -5,6 +5,11 @@ import javafx.scene.Scene;
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
+import jroyale.model.cards.Card;
+import jroyale.model.cards.GiantCard;
+import jroyale.model.cards.MiniPekkaCard;
+import jroyale.model.cards.SkeletonArmyCard;
+import jroyale.model.cards.SkeletonCard;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
@@ -28,6 +33,7 @@ public class Controller implements IController {
 
     // binders 
     private ModelViewBinder<Class<? extends Troop>, TroopType> troopBinder = new ModelViewBinder<>();
+    private ModelViewBinder<Card, TroopType> cardBinder = new ModelViewBinder<>();
 
     public Controller(IModel model, IView view, Scene scene) {
         this.model = model;
@@ -58,12 +64,11 @@ public class Controller implements IController {
 
                 
                 // depth rendering based on Y pos
-
                 for (Entity entity : model.getEntitiesOrderedByPosY()) {
                     renderEntity(entity);
                 }
 
-                view.renderPlayerDeck(TroopType.SKELETON_ARMY, null, null, null);
+                renderDeck();
             }
         };
         loop.start();
@@ -80,9 +85,18 @@ public class Controller implements IController {
     }
 
     private void setBindings() {
+        // bindings that associate model entity with view entity.
+
+        // troop Bindings (necessary to draw troop)
         troopBinder.bind(MiniPekka.class, View.TroopType.MINI_PEKKA);
         troopBinder.bind(Giant.class, View.TroopType.GIANT);
         troopBinder.bind(Skeleton.class, View.TroopType.SKELETON);
+
+        // card bindings (necessary to render card icon)
+        cardBinder.bind(MiniPekkaCard.getIstance(), View.TroopType.MINI_PEKKA);
+        cardBinder.bind(GiantCard.getIstance(), View.TroopType.GIANT);
+        cardBinder.bind(SkeletonCard.getIstance(), View.TroopType.SKELETON);
+        cardBinder.bind(SkeletonArmyCard.getIstance(), View.TroopType.SKELETON_ARMY);
     }
 
     private void handleMouseEvents() {
@@ -103,6 +117,16 @@ public class Controller implements IController {
     }
 
     // render methods:
+
+    private void renderDeck() {
+        view.renderPlayerDeck(
+            cardBinder.getViewTroopType(model.getFirstHandPlayerCard()), 
+            cardBinder.getViewTroopType(model.getSecondHandPlayerCard()),
+            cardBinder.getViewTroopType(model.getThirdHandPlayerCard()),
+            cardBinder.getViewTroopType(model.getFourthHandPlayerCard())
+        );
+    }
+
     private void renderEntity(Entity e) {
         if (e instanceof Troop) {
 

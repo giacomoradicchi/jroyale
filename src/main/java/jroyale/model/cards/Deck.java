@@ -6,12 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jroyale.model.troops.Troop;
 import jroyale.shared.Enums.Side;
 
 public class Deck {
     
-    private static final int AVAILABLE_CARDS_SIZE = 1; // in general has to be 4, but since we've not enough cards will be using numCardsAvailable -1
+    private static final int AVAILABLE_CARDS_SIZE = 3; // in general has to be 4, but since we've not enough cards will be using numCardsAvailable - 1
     private static final int MAX_NUM_CARDS = 8;
     private static final int MAX_ELIXIR = 10;
 
@@ -88,6 +87,23 @@ public class Deck {
     public boolean isSelectedCardDroppable() {
         Card selectedCard = availableCards[selectedCardIndex];
         return selectedCard != null && selectedCard.getElixirCost() <= elixirLeft;
+    }
+
+    public Card getCurrentFirstCard() {
+        return availableCards[0];
+    }
+
+    public Card getCurrentSecondCard() {
+        return availableCards[1];
+    }
+
+    public Card getCurrentThirdCard() {
+        return availableCards[2];
+    }
+
+    public Card getCurrentFourthCard() {
+        // TODO: add a fourth card.
+        return null;
     }
 
     private void replaceCard() {

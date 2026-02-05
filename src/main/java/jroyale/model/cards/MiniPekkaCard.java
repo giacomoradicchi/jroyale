@@ -27,4 +27,5 @@ public class MiniPekkaCard extends Card {
             new MiniPekka(rowIndex, columnIndex, side)
         );
     }
+    
 }
