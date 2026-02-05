@@ -13,23 +13,16 @@ import jroyale.view.Direction;
 
 public class GiantView extends TroopView {
 
-    private static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
+    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
     
     private static GiantView instance;
 
     private static final Image RAW_SPELL_ICON = new Image(GiantView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/giant.png"));
 
 
-
-    
-    
-
     private static final String TROOP_PATH = "giant/";
-    private static final String ATTACK_PATH = "attack/";
-    private static final String IDLE_PATH = "idle/";
-    private static final String MOVE_PATH = "move/";
     private static final String HEADER_NAME_FILE = "chr_giant_sprite_";
-    private static final String FORMAT = ".png";
+    
 
     private static final Map<State, String> STATE_PATH = getStatePath();
     private static final int NUM_INDEX_DIGITS = 3;
@@ -103,12 +96,6 @@ public class GiantView extends TroopView {
         }
         
     }
-
-    // giant: 189 x 185 -> 116 x 96
-    // minipekka: 163 x 166 -> 93 x 72
-
-    // 154
-    // 
     
 
     public static TroopView getInstance() {
@@ -189,11 +176,6 @@ public class GiantView extends TroopView {
     }
 
     @Override
-    protected String getStatePath(State state) {
-        return STATE_PATH.get(state);
-    }
-
-    @Override
     protected String getHeaderNamePath() {
         return HEADER_NAME_FILE;
     }
@@ -201,11 +183,6 @@ public class GiantView extends TroopView {
     @Override
     protected int getNumIndexDigits() {
         return NUM_INDEX_DIGITS;
-    }
-
-    @Override
-    protected String getFormat() {
-        return FORMAT;
     }
 
     @Override

@@ -11,8 +11,8 @@ public class Skeleton extends MixedAttackerTroop {
     private static final byte SPEED = Troop.VERY_FAST;
     private static Map<State, Integer> numFramesPerDirection;
     private static final double COLLISION_RADIUS = 0.5;
-    private static final int FPS_ANIMATION = 18;
-    private static final long LOAD_TIME = (long) (1.3 * 1_000_000_000L);
+    private static final int FPS_ANIMATION = 10;
+    private static final long LOAD_TIME = (long) (1.0 * 1_000_000_000L);
 
     private static final int HITPOINTS = 677;
     private static final int DAMAGE = 355;

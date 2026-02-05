@@ -7,6 +7,8 @@ import jroyale.utils.ImageUtils;
 
 import jroyale.view.troops.GiantView;
 import jroyale.view.troops.MiniPekkaView;
+import jroyale.view.troops.SingleSkeletonView;
+import jroyale.view.troops.SkeletonArmyView;
 import jroyale.view.troops.TroopView;
 
 import javafx.scene.canvas.Canvas;
@@ -21,7 +23,9 @@ public class View implements IView {
     // public attribs for controller class
     public enum TroopType {
         MINI_PEKKA(MiniPekkaView.getInstance()),
-        GIANT(GiantView.getInstance());
+        GIANT(GiantView.getInstance()),
+        SKELETON(SingleSkeletonView.getIstance()),
+        SKELETON_ARMY(SkeletonArmyView.getIstance());
 
         private final TroopView troopView;
 
@@ -270,7 +274,7 @@ public class View implements IView {
     }
 
     @Override
-    public void renderPlayerDeck(TroopType card1) {
+    public void renderPlayerDeck(TroopType card1, TroopType card2, TroopType card3, TroopType card4) {
         DeckView.renderPlayerDeck(gc, card1.troopView.getSpellIcon(), globalScale);
     }
 
