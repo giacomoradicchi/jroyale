@@ -8,6 +8,7 @@ import jroyale.model.IModel;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
+import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
 import jroyale.shared.Enums.Side;
 import jroyale.view.IView;
@@ -15,6 +16,7 @@ import jroyale.view.View;
 import jroyale.view.View.TroopType;
 import jroyale.view.troops.GiantView;
 import jroyale.view.troops.MiniPekkaView;
+import jroyale.view.troops.SkeletonView;
 
 public class Controller implements IController {
 
@@ -61,7 +63,7 @@ public class Controller implements IController {
                     renderEntity(entity);
                 }
 
-                //view.renderPlayerDeck(TroopType.GIANT);
+                view.renderPlayerDeck(TroopType.SKELETON_ARMY, null, null, null);
             }
         };
         loop.start();
@@ -74,11 +76,13 @@ public class Controller implements IController {
     private void initModelTroopsFrames() {
         MiniPekka.setFramesPerDirection(MiniPekkaView.NUM_FRAMES_PER_DIRECTION);
         Giant.setFramesPerDirection(GiantView.NUM_FRAMES_PER_DIRECTION);
+        Skeleton.setFramesPerDirection(SkeletonView.NUM_FRAMES_PER_DIRECTION);
     }
 
     private void setBindings() {
         troopBinder.bind(MiniPekka.class, View.TroopType.MINI_PEKKA);
         troopBinder.bind(Giant.class, View.TroopType.GIANT);
+        troopBinder.bind(Skeleton.class, View.TroopType.SKELETON);
     }
 
     private void handleMouseEvents() {
@@ -89,7 +93,7 @@ public class Controller implements IController {
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
             model.addTroop(
-                new MiniPekka(lastMouseRowIndex, lastMouseColumnIndex, Side.OPPONENT)
+                new Skeleton(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
             ); 
             
             

@@ -20,7 +20,7 @@ public interface IView {
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 
-    public void renderPlayerDeck(TroopType card1);
+    public void renderPlayerDeck(TroopType card1, TroopType card2, TroopType card3, TroopType card4);
 
     public void resetDragPlacementPreviewAnimation();
 

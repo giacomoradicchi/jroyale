@@ -17,5 +17,5 @@ public abstract class Card {
 
     // abstract methods
     
-    protected abstract Troop generateNewTroop(int rowIndex, int columnIndex, Side side);
+    protected abstract void dropCardIntoModel(int rowIndex, int columnIndex, Side side);
 }

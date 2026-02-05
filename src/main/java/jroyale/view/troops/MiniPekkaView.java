@@ -20,12 +20,8 @@ public class MiniPekkaView extends TroopView {
     private static final Image RAW_SPELL_ICON = new Image(MiniPekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/minipekka.png"));
 
     private static final String TROOP_PATH = "minipekka/";
-    private static final String ATTACK_PATH = "attack/";
-    private static final String IDLE_PATH = "idle/";
-    private static final String MOVE_PATH = "move/";
     private static final String HEADER_NAME_FILE = "chr_mini_pekka_sprite_";
-    private static final String FORMAT = ".png";
-    private static final Map<State, String> STATE_PATH = getStatePath();
+    
     private static final int NUM_INDEX_DIGITS = 3;
     private final double SCALE = 0.45;
 
@@ -47,10 +43,6 @@ public class MiniPekkaView extends TroopView {
     @Override
     public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame,
             State state, Side side, double globalScale) {
-
-        /* if(state == State.IDLE) {
-            return;
-        } */
         
 
         AnimationKey key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
@@ -103,18 +95,6 @@ public class MiniPekkaView extends TroopView {
         return numFrames;
     }
 
-    private static Map<State, String> getStatePath() {
-        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
-        Map<State, String> statePath = new HashMap<>();
-
-        statePath.put(State.IDLE, IDLE_PATH);
-        statePath.put(State.MOVE, MOVE_PATH);
-        statePath.put(State.ATTACK, ATTACK_PATH);
-
-        return statePath;
-    }
-
-
     @Override
     public Image getRawSpellIcon() {
         return RAW_SPELL_ICON;
@@ -162,11 +142,6 @@ public class MiniPekkaView extends TroopView {
     }
 
     @Override
-    protected String getStatePath(State state) {
-        return STATE_PATH.get(state);
-    }
-
-    @Override
     protected String getHeaderNamePath() {
         return HEADER_NAME_FILE;
     }
@@ -174,11 +149,6 @@ public class MiniPekkaView extends TroopView {
     @Override
     protected int getNumIndexDigits() {
         return NUM_INDEX_DIGITS;
-    }
-
-    @Override
-    protected String getFormat() {
-        return FORMAT;
     }
 
     @Override

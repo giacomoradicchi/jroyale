@@ -1,10 +1,10 @@
 package jroyale.model.cards;
 
+import jroyale.model.Model;
 import jroyale.model.troops.MiniPekka;
-import jroyale.model.troops.Troop;
 import jroyale.shared.Enums.Side;
 
-public class MiniPekkaCard extends Card{
+public class MiniPekkaCard extends Card {
 
     private static Card instance;
     private static final byte ELIXIR_COST = 4;
@@ -22,7 +22,9 @@ public class MiniPekkaCard extends Card{
     }
 
     @Override
-    protected Troop generateNewTroop(int rowIndex, int columnIndex, Side side) {
-        return new MiniPekka(rowIndex, columnIndex, side);
+    protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
+        Model.getIstance().addTroop(
+            new MiniPekka(rowIndex, columnIndex, side)
+        );
     }
 }

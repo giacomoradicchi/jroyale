@@ -21,6 +21,13 @@ public abstract class TroopView {
     protected final Image spellIcon;
     private static final int CORNER_RADIUS = 20; // pixels
 
+    // pattern for buffer initialization:
+    protected static final String ATTACK_PATH = "attack/";
+    protected static final String IDLE_PATH = "idle/";
+    protected static final String MOVE_PATH = "move/";
+    protected static final String FORMAT = ".png";
+    private static final Map<State, String> STATE_PATH = getStatePath();
+
     protected TroopView() {
         initAnimationBuffer();
         Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
@@ -53,6 +60,11 @@ public abstract class TroopView {
     }
 
     protected void loadSprites(State state, Side side, int direction, int baseSpriteIndex) {
+        if (baseSpriteIndex == -1) {
+            // this means there are no sprites to load for a certain side and state.
+            return;
+        }
+
         AnimationKey key = new AnimationKey(side, state, direction);
         SpriteAnimation animation = new SpriteAnimation();
 
@@ -64,11 +76,11 @@ public abstract class TroopView {
             String path = new StringBuilder()
                 .append(TROOPS_PATH_RELATIVE_TO_RESOURCE)
                 .append(getTroopPath())
-                .append(getStatePath(state))
+                .append(STATE_PATH.get(state))
                 .append(getHeaderNamePath())
                 .append(String.format("%0" + getNumIndexDigits() + "d", 
                 baseSpriteIndex + direction * numFrames + frame))
-                .append(getFormat())
+                .append(FORMAT)
                 .toString();
             
             Image sprite = new Image(this.getClass().getResourceAsStream(path));
@@ -79,6 +91,17 @@ public abstract class TroopView {
         }
 
         animationBuffer.put(key, animation);
+    }
+
+    private static Map<State, String> getStatePath() {
+        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
+        Map<State, String> statePath = new HashMap<>();
+
+        statePath.put(State.IDLE, IDLE_PATH);
+        statePath.put(State.MOVE, MOVE_PATH);
+        statePath.put(State.ATTACK, ATTACK_PATH);
+
+        return statePath;
     }
 
     //
@@ -100,11 +123,9 @@ public abstract class TroopView {
     protected abstract int getNumFramesPerDirection(State state);
 
     // methods for file path
-    protected abstract String getTroopPath();
-    protected abstract String getStatePath(State state);
     protected abstract String getHeaderNamePath();
+    protected abstract String getTroopPath();
     protected abstract int getNumIndexDigits();
-    protected abstract String getFormat();
 
     // methods for image transforming:
     protected abstract Image transformImage(Image image);

@@ -70,7 +70,7 @@ public class Deck {
         selectedCardIndex = index;
     }
 
-    public Troop dropSelectedCard(int rowIndex, int columnIndex, Side side) {
+    public void dropSelectedCard(int rowIndex, int columnIndex, Side side) {
         if (!isSelectedCardDroppable()) {
             throw new IllegalStateException("Selected card is not droppable.");
         }
@@ -82,8 +82,7 @@ public class Deck {
         // replacing selected card with a random card on the deck which is not inside available card array.
         replaceCard();
 
-        
-        return selectedCard.generateNewTroop(rowIndex, columnIndex, side);
+        selectedCard.dropCardIntoModel(rowIndex, columnIndex, side);
     }
 
     public boolean isSelectedCardDroppable() {
