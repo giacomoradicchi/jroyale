@@ -1,6 +1,5 @@
 package jroyale.model.cards;
 
-import jroyale.model.troops.Troop;
 import jroyale.shared.Enums.Side;
 
 public abstract class Card {
@@ -16,6 +15,6 @@ public abstract class Card {
     }
 
     // abstract methods
-    
+
     protected abstract void dropCardIntoModel(int rowIndex, int columnIndex, Side side);
 }

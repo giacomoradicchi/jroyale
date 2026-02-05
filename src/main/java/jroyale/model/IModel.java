@@ -3,6 +3,7 @@ package jroyale.model;
 import java.util.List;
 
 import jroyale.model.troops.Troop;
+import jroyale.model.cards.Card;
 
 public interface IModel {
 
@@ -18,9 +19,13 @@ public interface IModel {
 
     public List<Entity> getEntitiesOnTile(int i, int j);
 
-    //public List<Tower> getPlayerTowersLeft();
+    public Card getFirstHandPlayerCard();
 
-    //public List<Tower> getOpponentTowersLeft();
+    public Card getSecondHandPlayerCard();
+
+    public Card getThirdHandPlayerCard();
+
+    public Card getFourthHandPlayerCard();
 
     public boolean isTileReachable(int i, int j);
 

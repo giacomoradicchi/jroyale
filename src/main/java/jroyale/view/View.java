@@ -275,7 +275,14 @@ public class View implements IView {
 
     @Override
     public void renderPlayerDeck(TroopType card1, TroopType card2, TroopType card3, TroopType card4) {
-        DeckView.renderPlayerDeck(gc, card1.troopView.getSpellIcon(), globalScale);
+        DeckView.renderPlayerDeck(
+            gc, 
+            card1.troopView.getSpellIcon(), 
+            card2.troopView.getSpellIcon(), 
+            card3.troopView.getSpellIcon(), 
+            null, // TODO: set it to card4.troopView.getSpellIcon() when next card is created. 
+            globalScale
+        );
     }
 
     private void fillPoint(double centreX, double centreY) {

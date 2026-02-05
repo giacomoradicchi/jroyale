@@ -173,6 +173,26 @@ public class Model implements IModel {
         return map[i][j].getEntities();
     }
 
+    @Override
+    public Card getFirstHandPlayerCard() {
+        return playerDeck.getCurrentFirstCard();
+    }
+
+    @Override
+    public Card getSecondHandPlayerCard() {
+        return playerDeck.getCurrentSecondCard();
+    }
+
+    @Override
+    public Card getThirdHandPlayerCard() {
+        return playerDeck.getCurrentThirdCard();
+    }
+
+    @Override
+    public Card getFourthHandPlayerCard() {
+        return playerDeck.getCurrentFourthCard();
+    }
+
     // 
     // PRIVATE METHODS
     //
