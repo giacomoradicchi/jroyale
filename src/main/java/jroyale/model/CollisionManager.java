@@ -8,16 +8,12 @@ import jroyale.utils.Point;
 
 public class CollisionManager {
 
-    private static IModel model;
+    private static IModel model = Model.getIstance();
 
     // buffer variables to avoid "new" constructor each time
     private static Circle collisionCircle1 = new Circle();
     private static Circle collisionCircle2 = new Circle();
     private static Point bufferedPoint = new Point();
-
-    public static void setModel(IModel model) {
-        CollisionManager.model = model;
-    }
 
     public static Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY) {
         // making sure abs(shiftX) and abs(shiftY) are less than 1, so there won't be unchecked tiles in the middle

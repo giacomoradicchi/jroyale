@@ -12,9 +12,8 @@ import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
 
 public abstract class SkeletonView extends TroopView {
-    
-    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
 
+    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
 
     private static final String TROOP_PATH = "skeleton/";
     private static final String HEADER_NAME_FILE = "chr_skeleton_sprite_";
@@ -104,7 +103,7 @@ public abstract class SkeletonView extends TroopView {
     }
 
     @Override
-    protected int getNumFramesPerDirection(State state) {
+    public int getNumFramesPerDirection(State state) {
         return NUM_FRAMES_PER_DIRECTION.get(state);
     }
 

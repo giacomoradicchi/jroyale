@@ -120,7 +120,7 @@ public abstract class TroopView {
     protected abstract int getPlayerAttackBaseIndex();
     protected abstract int getOpponentAttackBaseIndex();
 
-    protected abstract int getNumFramesPerDirection(State state);
+    public abstract int getNumFramesPerDirection(State state);
 
     // methods for file path
     protected abstract String getHeaderNamePath();

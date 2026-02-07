@@ -24,8 +24,8 @@ public class View implements IView {
     public enum TroopType {
         MINI_PEKKA(MiniPekkaView.getInstance()),
         GIANT(GiantView.getInstance()),
-        SKELETON(SingleSkeletonView.getIstance()),
-        SKELETON_ARMY(SkeletonArmyView.getIstance());
+        SKELETON(SingleSkeletonView.getInstance()),
+        SKELETON_ARMY(SkeletonArmyView.getInstance());
 
         private final TroopView troopView;
 
@@ -37,7 +37,7 @@ public class View implements IView {
             return this.ordinal();
         }
 
-        public TroopView getViewIstance() {
+        public TroopView getViewInstance() {
             return troopView;
         }
     };
@@ -117,7 +117,7 @@ public class View implements IView {
         //globalScale -= 0.001;
 
         // update arena and dx dy
-        arena.update(width, height, globalScale);
+        arena.update(globalScale);
         updateDxDy();
     }
 
@@ -134,7 +134,7 @@ public class View implements IView {
 
     @Override
     public void renderArena() {
-        arena.renderArena(gc, width, height, globalScale, DEBUG_MODE);
+        arena.renderArena(gc, DEBUG_MODE);
     }
 
     public void renderCells(boolean[][] cells) {

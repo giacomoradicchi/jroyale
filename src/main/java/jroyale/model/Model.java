@@ -52,6 +52,18 @@ public class Model implements IModel {
 
 
     private Model() {
+        
+    }
+
+    public static IModel getIstance() {
+        if (istance == null) {
+            istance = new Model();
+        }
+        return istance;
+    }
+
+    @Override
+    public void init() {
         initReachableTiles();
 
         for (int i = 0; i < MAP_ROWS; i++) {
@@ -70,13 +82,7 @@ public class Model implements IModel {
             SkeletonCard.getIstance(),
             SkeletonArmyCard.getIstance()
         });
-    }
 
-    public static IModel getIstance() {
-        if (istance == null) {
-            istance = new Model();
-        }
-        return istance;
     }
 
     @Override

@@ -12,7 +12,7 @@ public class SingleSkeletonView extends SkeletonView {
         super();
     }
 
-    public static TroopView getIstance() {
+    public static TroopView getInstance() {
         if (instance == null) 
             instance = new SingleSkeletonView();
 
