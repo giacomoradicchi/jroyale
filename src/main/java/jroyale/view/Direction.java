@@ -4,7 +4,7 @@ public class Direction {
     
     public static final int NUM_DIRECTIONS = 9;
     
-    private static final double TOLERANCE = Math.PI/8;
+    private static final double TOLERANCE = Math.PI/16;
 
     public static int fromAngle(double angleDirection) {
         if (angleDirection < -Math.PI/2) {

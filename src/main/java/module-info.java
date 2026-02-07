@@ -4,7 +4,6 @@ module jroyale {
     requires javafx.graphics;
     requires java.desktop;
 
-    opens jroyale to javafx.fxml;
     opens jroyale.controller to javafx.fxml;
-    exports jroyale;
+    exports jroyale.controller;
 }

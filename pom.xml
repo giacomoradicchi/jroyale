@@ -51,7 +51,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>jroyale.App</mainClass>
+                    <mainClass>jroyale.controller.Main</mainClass>
                     <!-- Opzioni per ridurre i warning su macOS -->
                     <commandlineArgs>-Dprism.verbose=false -Djavafx.animation.fullspeed=true</commandlineArgs>
                 </configuration>

@@ -1,6 +1,7 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import jroyale.model.CollisionManager;
 import jroyale.model.Entity;
@@ -107,7 +108,7 @@ public class Controller implements IController {
 
         if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
             model.addTroop(
-                new Skeleton(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
+                new Giant(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
             ); 
             
             
