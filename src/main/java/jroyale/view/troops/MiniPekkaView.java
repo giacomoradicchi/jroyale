@@ -132,7 +132,7 @@ public class MiniPekkaView extends TroopView {
     }
 
     @Override
-    protected int getNumFramesPerDirection(State state) {
+    public int getNumFramesPerDirection(State state) {
         return NUM_FRAMES_PER_DIRECTION.get(state);
     }
 

@@ -7,6 +7,8 @@ import jroyale.model.cards.Card;
 
 public interface IModel {
 
+    public void init();
+
     public void update(long now);
 
     public int getRowsCount();

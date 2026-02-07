@@ -45,7 +45,6 @@ public class Controller implements IController {
     @Override
     public void start() {
         MouseManager.enableInput(scene);
-        CollisionManager.setModel(model);
         view.loadSprites();
         initModelTroopsFrames();
         setBindings();
@@ -152,7 +151,6 @@ public class Controller implements IController {
         );
 
         
-
         /* view.renderOval(
             logic2GraphicX(e.getX()), 
             logic2GraphicY(e.getY()), 

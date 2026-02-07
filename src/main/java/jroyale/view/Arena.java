@@ -17,6 +17,8 @@ public class Arena {
 
     private Image arenaImage;
     private double width, height;
+    private double canvasWidth, canvasHeight;
+    private double globalScale;
     private Rectangle2D mapBoundingBox;
     private double globalShiftY;
     private double dx, dy;
@@ -29,12 +31,15 @@ public class Arena {
         arenaImage = new Image(Arena.class.getResourceAsStream(ARENA_RELATIVE_PATH));
         width = arenaImage.getWidth();
         height = arenaImage.getHeight();
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.globalScale = globalScale;
         mapBoundingBox = new Rectangle2D.Double(0, 0, 0, 0);
         NUM_ROWS = num_rows;
         NUM_COLS = num_cols;
         INITIAL_CANVAS_WIDTH = canvasWidth;
         INITIAL_CANVAS_HEIGHT = canvasHeight;
-        update(canvasWidth, canvasHeight, globalScale);
+        update(globalScale);
     }
 
     public Image getArenaImage() {
@@ -57,7 +62,7 @@ public class Arena {
         return dy;
     }
 
-    public void update(double canvasWidth, double canvasHeight, double globalScale) {
+    public void update(double globalScale) {
         double mapWidth = NORMALIZED_MAP_WIDTH*canvasWidth*globalScale;
         double mapHeight = NORMALIZED_MAP_HEIGHT*canvasHeight*globalScale;
         globalShiftY = NORMALIZED_SHIFT_Y*canvasHeight*globalScale; // la mappa è alzata verso l'alto, non è centrata.
@@ -77,11 +82,11 @@ public class Arena {
         this.dy = (float) mapBoundingBox.getHeight()/NUM_ROWS;
     }
 
-    public void renderArena(GraphicsContext gc, double canvasWidth, double canvasHeight, double globalScale) {
-        renderArena(gc, canvasWidth, canvasHeight, globalScale, false);
+    public void renderArena(GraphicsContext gc) {
+        renderArena(gc, false);
     } 
 
-    public void renderArena(GraphicsContext gc, double canvasWidth, double canvasHeight, double globalScale, boolean debugMode) {
+    public void renderArena(GraphicsContext gc, boolean debugMode) {
         double scaleX = canvasWidth / INITIAL_CANVAS_WIDTH;
         double scaleY = canvasHeight / INITIAL_CANVAS_HEIGHT;
 
