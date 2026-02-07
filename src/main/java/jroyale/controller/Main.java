@@ -1,14 +1,13 @@
-package jroyale;
+package jroyale.controller;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import jroyale.controller.Controller;
-import jroyale.controller.IController;
 import jroyale.model.IModel;
 import jroyale.model.Model;
 import jroyale.view.IView;
@@ -19,16 +18,17 @@ import java.io.IOException;
 /**
  * JavaFX App
  */
-public class App extends Application {
+public class Main extends Application {
 
     private static Scene scene;
-    private static final double ORIGINAL_RATIO = 607.0 / 1080;
+    private static final double WH_RATIO = 607.0 / 1080;
 
-    @Override
+    private static final double HEIGHT = 800;
+    private static final double WIDTH = HEIGHT * WH_RATIO;
+
+    /* @Override
     public void start(Stage stage) throws IOException {
-        double height = 800;
-        double width = height * ORIGINAL_RATIO; 
-        Canvas canvas = new Canvas(width, height);
+        Canvas canvas = new Canvas(WIDTH, HEIGHT);
         Pane root = new Pane(canvas);
         scene = new Scene(root);
 
@@ -41,12 +41,20 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle("JRoyale");
         stage.show();
-        stage.setResizable(true);
+        stage.setResizable(false);
+        stage.toFront();
+        stage.requestFocus();
 
         
 
         controller.start();
-    } 
+
+    } */
+    
+    @Override
+    public void start(Stage stage) throws IOException {
+        ControllerForView.getInstance().openWindow(stage);
+    }
 
     public static void main(String[] args) {
         launch();

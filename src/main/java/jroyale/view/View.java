@@ -85,6 +85,8 @@ public class View implements IView {
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
         
+        // init deck
+        DeckView.init(gc);
 
         // adjusting tower image
         this.imgPlayerKingTower = ImageUtils.enhanceOpacity(imgPlayerKingTower);
@@ -112,7 +114,7 @@ public class View implements IView {
         height = newHeight;
         this.now = now;
 
-        //scale -= 0.001;
+        //globalScale -= 0.001;
 
         // update arena and dx dy
         arena.update(width, height, globalScale);
@@ -275,13 +277,14 @@ public class View implements IView {
 
     @Override
     public void renderPlayerDeck(TroopType card1, TroopType card2, TroopType card3, TroopType card4) {
+        // deck dimension stays the same, no matter globalScale.
+
         DeckView.renderPlayerDeck(
             gc, 
             card1.troopView.getSpellIcon(), 
             card2.troopView.getSpellIcon(), 
             card3.troopView.getSpellIcon(), 
-            null, // TODO: set it to card4.troopView.getSpellIcon() when next card is created. 
-            globalScale
+            null // TODO: set it to card4.troopView.getSpellIcon() when next card is created. 
         );
     }
 
