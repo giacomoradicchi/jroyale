@@ -1,6 +1,7 @@
 package jroyale.model.towers;
 
 
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
@@ -71,4 +72,8 @@ public class ArcerTower extends Tower {
         return FOOTPRINT_SIZE;
     }
     
+    @Override
+    public EntityType getType() {
+        return EntityType.ARCHER_TOWER;
+    }
 }

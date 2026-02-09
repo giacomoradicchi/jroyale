@@ -1,10 +1,9 @@
 package jroyale.controller;
 
 import javafx.stage.Stage;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
-import jroyale.view.View.TroopType;
-import jroyale.view.troops.TroopView;
 
 public interface IControllerForView {
     
@@ -20,11 +19,10 @@ public interface IControllerForView {
 
     public void renderArena();
 
-    public void renderTroop(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, TroopType type);
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, EntityType type);
 
     public double logicToGraphicX(double logicX);
 
     public double logicToGraphicY(double logicY);
 
-    public int getNumFramesPerDirection(TroopView troopView, State state);
 }

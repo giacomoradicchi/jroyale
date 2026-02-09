@@ -1,5 +1,6 @@
 package jroyale.model;
 
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 import jroyale.utils.Point;
@@ -22,12 +23,12 @@ public abstract class Entity implements Comparable<Entity>{
 
 
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
-    private static final int DEFAULT_NUM_FRAMES_PER_DIRECTION = 1; // just 1 frame for animation = static view, no animation.
+    private static final int DEFAULT_ANIMATION_STEPS = 1; // by default, entity has no animations.
       
     
     protected Point position;
     protected Side side;
-    protected int currentFrame;
+    protected int currentAnimationIndex;
     protected State state; // defines wheather a troop is walking, attacking, etc.
     
 
@@ -153,17 +154,18 @@ public abstract class Entity implements Comparable<Entity>{
     // animation methods
     //
 
-    public int getFramesPerDirection() {
-        return DEFAULT_NUM_FRAMES_PER_DIRECTION; 
+
+    public int getTotalAnimationSteps() {
+        return DEFAULT_ANIMATION_STEPS;
     }
 
-    public int getCurrentFrame() { 
-        return currentFrame;
+    public int getCurrentAnimationIndex() { 
+        return currentAnimationIndex;
     } 
 
     public void goToNextFrame() {
-        currentFrame = (currentFrame + 1) % getFramesPerDirection();
-        if (currentFrame == 0) {
+        currentAnimationIndex = (currentAnimationIndex + 1) % getTotalAnimationSteps();
+        if (currentAnimationIndex == 0) {
             animationCompleted = true;
         }
     }
@@ -182,7 +184,7 @@ public abstract class Entity implements Comparable<Entity>{
 
     protected void setState(State newState) {
         state = newState;
-        currentFrame = 0;
+        currentAnimationIndex = 0;
         animationCompleted = false;
     }
 
@@ -195,4 +197,6 @@ public abstract class Entity implements Comparable<Entity>{
     // (like troops) will return their direction. otherwise, they'll return null
 
     public abstract int getFPSAnimation();
+
+    public abstract EntityType getType();
 }

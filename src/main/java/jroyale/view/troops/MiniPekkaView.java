@@ -1,19 +1,20 @@
 package jroyale.view.troops;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 import jroyale.utils.ImageUtils;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
+import jroyale.view.EntityView;
+import jroyale.view.View2;
 
 public class MiniPekkaView extends TroopView {
 
-    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
+    private static Map<State, Integer> numFramesPerDirection;
 
     private static MiniPekkaView instance;
 
@@ -41,59 +42,24 @@ public class MiniPekkaView extends TroopView {
 
     
     @Override
-    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame,
-            State state, Side side, double globalScale) {
+    public void render(double centreX, double centreY, double angleDirection, int currentFrame,
+            State state, Side side) {
         
 
         AnimationKey key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
-        double width = image.getWidth() * SCALE * globalScale;
-        double height = image.getHeight() * SCALE * globalScale;
+        double width = image.getWidth() * SCALE;
+        double height = image.getHeight() * SCALE;
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        gc.drawImage(
-            image, 
-            centreX - width/2 + flipped * width, 
-            centreY - height/2, 
-            Math.pow(-1, flipped) * width, 
-            height
-        );
-    }
-
-    /* @Override
-    protected List<Image> getSpriteBuffer() {
-        List<Image> buffer = new ArrayList<>();
-
-        for (int i = 0; i < NUM_FRAMES; i++) {
-            Image image = new Image(this.getClass().getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH + HEADER_NAME_FILE + getStringNumber(i, 3) + FORMAT));
-            image = ImageUtils.enhanceOpacity(image);
-            buffer.add(image);
-        }
-
-        return buffer;
-    } */
-
-    public static TroopView getInstance() {
-        if (instance == null) {
-            instance = new MiniPekkaView();
-        }
-        return instance;
+        View2.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
     }
     
 
-    private static Map<State, Integer> getNumFramesPerDirection() {
-        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
-        Map<State, Integer> numFrames = new HashMap<>();
-
-        numFrames.put(State.IDLE, 1);
-        numFrames.put(State.MOVE, 12);
-        numFrames.put(State.ATTACK, 10);
-
-        return numFrames;
-    }
+    // instance methods
 
     @Override
     public Image getRawSpellIcon() {
@@ -133,7 +99,7 @@ public class MiniPekkaView extends TroopView {
 
     @Override
     public int getNumFramesPerDirection(State state) {
-        return NUM_FRAMES_PER_DIRECTION.get(state);
+        return numFramesPerDirection.get(state);
     }
 
     @Override
@@ -154,6 +120,24 @@ public class MiniPekkaView extends TroopView {
     @Override
     protected Image transformImage(Image image) {
         return ImageUtils.enhanceOpacity(image);
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.MINIPEKKA;
+    }
+
+    // static methods
+
+    public static EntityView getInstance() {
+        if (instance == null) {
+            instance = new MiniPekkaView();
+        }
+        return instance;
+    }
+
+    public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
+        MiniPekkaView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
     }
     
 }

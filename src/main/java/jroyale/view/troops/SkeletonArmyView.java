@@ -1,6 +1,7 @@
 package jroyale.view.troops;
 
 import javafx.scene.image.Image;
+import jroyale.view.EntityView;
 
 public class SkeletonArmyView extends SkeletonView {
     
@@ -12,15 +13,17 @@ public class SkeletonArmyView extends SkeletonView {
         super();
     }
 
-    public static TroopView getInstance() {
+    @Override
+    protected Image getRawSpellIcon() {
+        return new Image(MiniPekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SPELL_ICON_RELATIVE_PATH));
+    }
+
+    // static methods
+
+    public static EntityView getInstance() {
         if (instance == null) 
             instance = new SkeletonArmyView();
 
         return instance;
-    }
-
-    @Override
-    protected Image getRawSpellIcon() {
-        return new Image(MiniPekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SPELL_ICON_RELATIVE_PATH));
     }
 }

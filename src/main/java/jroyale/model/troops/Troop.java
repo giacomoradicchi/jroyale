@@ -165,7 +165,7 @@ public abstract class Troop extends Entity {
     }
 
     private boolean isHitFrameReached() {
-        if (currentFrame == getHitFrame() && !enemyHit) {
+        if (currentAnimationIndex == getHitFrame() && !enemyHit) {
             enemyHit = true;
             return true;
         }

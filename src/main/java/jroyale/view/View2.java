@@ -3,9 +3,12 @@ package jroyale.view;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.controller.ControllerForView;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 import jroyale.view.View.TroopType;
@@ -46,6 +49,7 @@ public class View2 implements IView2 {
         );
 
         loadSprites();
+        EntityViewBinder.getInstance().init();
     }
 
     @Override
@@ -97,12 +101,34 @@ public class View2 implements IView2 {
     }
 
     @Override
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height) {
+        gc.drawImage(
+            image, 
+            centerX - width / 2 * globalScale, 
+            centerY - height / 2 * globalScale,
+            width * globalScale, 
+            height * globalScale
+        );
+    }
+
+    @Override
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height) {
+        gc.drawImage(
+            image, 
+            centerX - width / 2, 
+            centerY - height / 2,
+            width, 
+            height
+        );
+    }
+
+    @Override
     public void renderArena() {
         arena.renderArena(gc, false);
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, TroopType type) {
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -117,13 +143,20 @@ public class View2 implements IView2 {
             color
         );  */
 
-        type.getViewInstance().render(gc, centreX, centreY, angleDirection, currentFrame, state, side, globalScale);
-        
-    }
+        Color color = Color.BLUE;
+        if (side == Side.OPPONENT) {
+            color = Color.RED;
+        }
 
-    @Override
-    public int getNumFramesPerDirection(TroopView troopView, State state) {
-        return troopView.getNumFramesPerDirection(state);
+        fillPoint(
+            centreX, 
+            centreY,
+            10,
+            color
+        );
+
+        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, angleDirection, currentFrame, state, side);
+        
     }
 
     // private methods
@@ -136,6 +169,24 @@ public class View2 implements IView2 {
         // forcing loading of all troop sprites
         TroopType.values();
     }
+
+    private void fillPoint(double centreX, double centreY, int size, Color color) {
+        gc.save();
+
+        gc.setFill(color);
+        gc.setGlobalAlpha(1);
+
+        gc.fillOval(
+            centreX - size/2, 
+            centreY - size/2,
+            10, 
+            10
+        );
+
+        // restoring previous settings
+        gc.restore();
+    }
+
 
     // static methods
     public static IView2 getInstance() {

@@ -5,15 +5,19 @@ import java.util.Map;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
+import jroyale.utils.GameData;
 import jroyale.utils.ImageUtils;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
+import jroyale.view.EntityView;
+import jroyale.view.View2;
 
 public class GiantView extends TroopView {
 
-    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
+    private static Map<State, Integer> numFramesPerDirection;
     
     private static GiantView instance;
 
@@ -45,7 +49,7 @@ public class GiantView extends TroopView {
 
     
     @Override
-    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, double globalScale) {
+    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side) {
 
         /* Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame, state));
         
@@ -68,54 +72,25 @@ public class GiantView extends TroopView {
         AnimationKey key = new AnimationKey(baseSide, state, Direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
         
-        double width = image.getWidth() * SCALE * globalScale;
-        double height = image.getHeight() * SCALE * globalScale;
+        double width = image.getWidth() * SCALE;
+        double height = image.getHeight() * SCALE;
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        gc.drawImage(
-            image, 
-            shiftX + centreX - width/2 + flipped * width, 
-            shiftY + centreY - height/2, 
-            Math.pow(-1, flipped) * width, 
-            height
-        );
+        View2.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
             key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
-            gc.drawImage(
-                image, 
-                shiftX + centreX - width/2 + flipped * width, 
-                shiftY + centreY - height/2, 
-                Math.pow(-1, flipped) * width, 
-                height
-            );
+            View2.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
         }
         
     }
     
 
-    public static TroopView getInstance() {
-        if (instance == null) {
-            instance = new GiantView();
-        }
-        return instance;
-    }
-
-    
-    private static Map<State, Integer> getNumFramesPerDirection() {
-        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
-        Map<State, Integer> numFrames = new HashMap<>();
-
-        numFrames.put(State.MOVE, 16);
-        numFrames.put(State.IDLE, 1);
-        numFrames.put(State.ATTACK, 10);
-
-        return numFrames;
-    }
+    // instance methods
 
     private static Map<State, String> getStatePath() {
         // num of frames per direction change based on troop state (wheather is walking/running or attacking)
@@ -167,7 +142,7 @@ public class GiantView extends TroopView {
 
     @Override
     public int getNumFramesPerDirection(State state) {
-        return NUM_FRAMES_PER_DIRECTION.get(state);
+        return numFramesPerDirection.get(state);
     }
 
     @Override
@@ -194,6 +169,23 @@ public class GiantView extends TroopView {
         return ImageUtils.enhanceOpacity(temp);
     }
     
+    @Override
+    public EntityType getType() {
+        return EntityType.GIANT;
+    }
+
+    // static methods
+
+    public static EntityView getInstance() {
+        if (instance == null) {
+            instance = new GiantView();
+        }
+        return instance;
+    }
+
+    public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
+        GiantView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
+    }
 }
 
 
