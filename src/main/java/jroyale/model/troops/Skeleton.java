@@ -2,6 +2,7 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 
@@ -9,7 +10,7 @@ public class Skeleton extends MixedAttackerTroop {
 
     private static final String NAME = "Skeleton";
     private static final byte SPEED = Troop.VERY_FAST;
-    private static Map<State, Integer> numFramesPerDirection;
+    private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.5;
     private static final int FPS_ANIMATION = 10;
     private static final long LOAD_TIME = (long) (1.0 * 1_000_000_000L);
@@ -26,13 +27,13 @@ public class Skeleton extends MixedAttackerTroop {
         super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
     }
 
-    public static void setFramesPerDirection(Map<State,Integer> numFramesPerDirection) {
-        Skeleton.numFramesPerDirection = numFramesPerDirection;
+    public static void setTotalAnimationSteps(Map<State,Integer> totalAnimationSteps) {
+        Skeleton.totalAnimationSteps = totalAnimationSteps;
     }
 
     @Override
-    public int getFramesPerDirection() {
-        return numFramesPerDirection.get(state);
+    public int getTotalAnimationSteps() {
+        return totalAnimationSteps.get(state);
     }
 
     @Override
@@ -53,6 +54,11 @@ public class Skeleton extends MixedAttackerTroop {
     @Override
     protected int getHitFrame() {
         return HIT_FRAME;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.SKELETON;
     }
     
 }

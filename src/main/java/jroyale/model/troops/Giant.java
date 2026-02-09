@@ -2,6 +2,7 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 
@@ -9,7 +10,7 @@ public class Giant extends TowerAttackerTroop {
     
     private static final String NAME = "Giant";
     private static final byte SPEED = Troop.SLOW;
-    private static Map<State, Integer> numFramesPerDirection;
+    private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
     private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
@@ -27,13 +28,13 @@ public class Giant extends TowerAttackerTroop {
         super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
     }
 
-    public static void setFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
-        Giant.numFramesPerDirection = numFramesPerDirection;
+    public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
+        Giant.totalAnimationSteps = totalAnimationSteps;
     }
 
     @Override
-    public int getFramesPerDirection() {
-        return numFramesPerDirection.get(state);
+    public int getTotalAnimationSteps() {
+        return totalAnimationSteps.get(state);
     }
 
     @Override
@@ -54,5 +55,10 @@ public class Giant extends TowerAttackerTroop {
     @Override
     protected int getHitFrame() {
         return HIT_FRAME;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.GIANT;
     }
 }

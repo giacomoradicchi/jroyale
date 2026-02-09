@@ -1,9 +1,10 @@
 package jroyale.view;
 
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
-import jroyale.view.View.TroopType;
 import jroyale.view.troops.TroopView;
 
 public interface IView2 {
@@ -22,9 +23,12 @@ public interface IView2 {
 
     public double getMapTopLeftCornerY();
 
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height);
+
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height);
+
     public void renderArena();
 
-    public void renderTroop(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, TroopType type);
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, EntityType type);
 
-    public int getNumFramesPerDirection(TroopView troopView, State state);
 }

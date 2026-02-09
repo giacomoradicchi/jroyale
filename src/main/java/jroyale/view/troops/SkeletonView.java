@@ -3,25 +3,26 @@ package jroyale.view.troops;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
 import jroyale.utils.ImageUtils;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
+import jroyale.view.View2;
 
 public abstract class SkeletonView extends TroopView {
 
-    public static final Map<State, Integer> NUM_FRAMES_PER_DIRECTION = getNumFramesPerDirection();
+    private static Map<State, Integer> numFramesPerDirection;
 
     private static final String TROOP_PATH = "skeleton/";
     private static final String HEADER_NAME_FILE = "chr_skeleton_sprite_";
 
     private static final int NUM_INDEX_DIGITS = 3;
     private final double SCALE = 0.65;
-    private static final double shiftX = 4;
-    private static final double shiftY = -20;
+    private static final double shiftX = 0;
+    private static final double shiftY = -4;
 
     // Sprite sheet base indices for different states and sides.
     // 
@@ -37,16 +38,7 @@ public abstract class SkeletonView extends TroopView {
     private static final int OPPONENT_ATTACK_BASE_INDEX = -1;
 
 
-    private static Map<State, Integer> getNumFramesPerDirection() {
-        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
-        Map<State, Integer> numFrames = new HashMap<>();
-
-        numFrames.put(State.MOVE, 8);
-        numFrames.put(State.IDLE, 1);
-        numFrames.put(State.ATTACK, 4);
-
-        return numFrames;
-    }
+    // instance methods
 
     @Override
     protected int getPlayerIdleBaseIndex() {
@@ -79,32 +71,28 @@ public abstract class SkeletonView extends TroopView {
     }
 
     @Override
-    public void render(GraphicsContext gc, double centreX, double centreY, double angleDirection, int currentFrame,
-            State state, Side side, double globalScale) {
+    public void render(double centreX, double centreY, double angleDirection, int currentFrame,
+            State state, Side side) {
         
         // skeleton has the same png's for both player and opponent, so it will always drawned 
         // the player side anyways.
         AnimationKey key = new AnimationKey(Side.PLAYER, state, Direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
-        double width = image.getWidth() * SCALE * globalScale;
-        double height = image.getHeight() * SCALE * globalScale;
+        double width = image.getWidth() * SCALE;
+        double height = image.getHeight() * SCALE;
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
+        
+        
 
-        gc.drawImage(
-            image, 
-            centreX - width/2 + flipped * width, 
-            centreY - height/2, 
-            Math.pow(-1, flipped) * width, 
-            height
-        );
+        View2.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
     }
 
     @Override
     public int getNumFramesPerDirection(State state) {
-        return NUM_FRAMES_PER_DIRECTION.get(state);
+        return numFramesPerDirection.get(state);
     }
 
     @Override
@@ -125,6 +113,18 @@ public abstract class SkeletonView extends TroopView {
     @Override
     protected Image transformImage(Image image) {
         return ImageUtils.enhanceOpacity(image);
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.SKELETON;
+    }
+
+    // static methods
+
+    
+    public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
+        SkeletonView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
     }
 
 }

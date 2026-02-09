@@ -1,5 +1,6 @@
 package jroyale.model.towers;
 
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
@@ -38,6 +39,11 @@ public class KingTower extends Tower {
     @Override
     public int getFootPrintSize() {
        return FOOTPRINT_SIZE;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.KING_TOWER;
     }
     
 }

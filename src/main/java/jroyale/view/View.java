@@ -27,9 +27,9 @@ public class View implements IView {
         SKELETON(SingleSkeletonView.getInstance()),
         SKELETON_ARMY(SkeletonArmyView.getInstance());
 
-        private final TroopView troopView;
+        private final EntityView troopView;
 
-        TroopType(TroopView troopView) {
+        TroopType(EntityView troopView) {
             this.troopView = troopView;
         }
 
@@ -37,7 +37,7 @@ public class View implements IView {
             return this.ordinal();
         }
 
-        public TroopView getViewInstance() {
+        public EntityView getViewInstance() {
             return troopView;
         }
     };
@@ -207,7 +207,7 @@ public class View implements IView {
             color
         );  */
 
-        type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, state, side, globalScale);
+        //type.troopView.render(gc, centreX, centreY, angleDirection, currentFrame, state, side, globalScale);
         
     }
 
@@ -279,13 +279,13 @@ public class View implements IView {
     public void renderPlayerDeck(TroopType card1, TroopType card2, TroopType card3, TroopType card4) {
         // deck dimension stays the same, no matter globalScale.
 
-        DeckView.renderPlayerDeck(
+        /* DeckView.renderPlayerDeck(
             gc, 
-            card1.troopView.getSpellIcon(), 
+            card1.getViewInstance().getSpellIcon(), 
             card2.troopView.getSpellIcon(), 
             card3.troopView.getSpellIcon(), 
             null // TODO: set it to card4.troopView.getSpellIcon() when next card is created. 
-        );
+        ); */
     }
 
     private void fillPoint(double centreX, double centreY) {

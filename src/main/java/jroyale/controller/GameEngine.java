@@ -40,14 +40,14 @@ public class GameEngine implements IGameEngine {
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
                     if (e instanceof Troop) {
-                        controllerForView.renderTroop(
+                        controllerForView.renderEntity(
                             controllerForView.logicToGraphicX(e.getX()),                                      // graphic X 
                             controllerForView.logicToGraphicY(e.getY()),                                      // graphic Y
                             e.getDirection().angle(),                                      // angle direction
-                            e.getCurrentFrame(),                                           // current frame
+                            e.getCurrentAnimationIndex(),                                           // current frame
                             ((Troop) e).getState(),
                             e.getSide(),                                                    // side
-                            EntityBinder.getInstance().getEntityTypeView((e.getClass()))          // troop type
+                            e.getType()        // troop type
                         );
                     }
                 }
@@ -60,8 +60,8 @@ public class GameEngine implements IGameEngine {
 
     private void initGameLoop() {
         controllerForView.initView();
-        controllerForModel.initModel();
         EntityBinder.getInstance().init();
+        controllerForModel.initModel();
     }
 
     // instance methods

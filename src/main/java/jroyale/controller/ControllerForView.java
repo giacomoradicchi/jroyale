@@ -1,12 +1,15 @@
 package jroyale.controller;
 
 import javafx.stage.Stage;
+import jroyale.shared.Enums.EntityType;
 import jroyale.shared.Enums.Side;
 import jroyale.shared.Enums.State;
+import jroyale.utils.GameData;
 import jroyale.view.IView2;
-import jroyale.view.View.TroopType;
 import jroyale.view.View2;
-import jroyale.view.troops.TroopView;
+import jroyale.view.troops.GiantView;
+import jroyale.view.troops.MiniPekkaView;
+import jroyale.view.troops.SkeletonView;
 
 public class ControllerForView implements IControllerForView {
 
@@ -18,6 +21,14 @@ public class ControllerForView implements IControllerForView {
         // empty
     }
 
+    // private methods
+    private void initTroopsFramesPerDirection() {
+        GiantView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
+        MiniPekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
+        SkeletonView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
+    }
+
+    // instance methods
     
     @Override
     public void openWindow(Stage stage) {
@@ -27,6 +38,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void initView() {
+        initTroopsFramesPerDirection();
         view.init();
     }
 
@@ -51,9 +63,9 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void renderTroop(double centreX, double centreY, double angleDirection, int currentFrame, State state,
-            Side side, TroopType type) {
-        view.renderTroop(centreX, centreY, angleDirection, currentFrame, state, side, type);
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+            Side side, EntityType type) {
+        view.renderEntity(centreX, centreY, angleDirection, currentFrame, state, side, type);
     }
 
     @Override
@@ -64,11 +76,6 @@ public class ControllerForView implements IControllerForView {
     @Override
     public double logicToGraphicY(double logicCoordY) {
         return view.getMapTopLeftCornerY() + logicCoordY * view.getDy();
-    }
-
-    @Override
-    public int getNumFramesPerDirection(TroopView troopView, State state) {
-        return view.getNumFramesPerDirection(troopView, state);
     }
 
     // static methods

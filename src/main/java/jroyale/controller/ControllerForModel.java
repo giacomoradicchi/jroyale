@@ -1,53 +1,37 @@
 package jroyale.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jroyale.model.Entity;
-import jroyale.model.IModel;
 import jroyale.model.Model;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Enums.State;
-import jroyale.view.troops.GiantView;
-import jroyale.view.troops.MiniPekkaView;
-import jroyale.view.troops.SingleSkeletonView;
-import jroyale.view.troops.TroopView;
+import jroyale.shared.Enums.EntityType;
+import jroyale.utils.GameData;
 
 public class ControllerForModel implements IControllerForModel{
 
     private static IControllerForModel instance = null;
 
     // private methods
-    private void initModelTroopsFrames() {
+    private void initTroopsAnimationSteps() {
 
-        
-        MiniPekka.setFramesPerDirection(getNumFrames(MiniPekkaView.getInstance()));
-        Giant.setFramesPerDirection(getNumFrames(GiantView.getInstance()));
-        Skeleton.setFramesPerDirection(getNumFrames(SingleSkeletonView.getInstance()));
+        MiniPekka.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
+        Giant.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
+        Skeleton.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
+
+
     }
 
-    private Map<State, Integer> getNumFrames(TroopView type) {
-        Map<State, Integer> numFrames = new HashMap<>();
-        for (State state : State.values()) {
-            numFrames.put(
-                state, 
-                ControllerForView.getInstance().getNumFramesPerDirection(type, state)
-            );
-        }
-
-        return numFrames;
-    }
 
     // instance methods
     @Override
     public void initModel() {
         Model.getIstance().init();
 
-        initModelTroopsFrames();
+        initTroopsAnimationSteps();
     }
 
     @Override

@@ -79,9 +79,9 @@ public class Controller implements IController {
     //
 
     private void initModelTroopsFrames() {
-        MiniPekka.setFramesPerDirection(MiniPekkaView.NUM_FRAMES_PER_DIRECTION);
-        Giant.setFramesPerDirection(GiantView.NUM_FRAMES_PER_DIRECTION);
-        Skeleton.setFramesPerDirection(SkeletonView.NUM_FRAMES_PER_DIRECTION);
+        /* MiniPekka.setTotalAnimationSteps(MiniPekkaView.NUM_FRAMES_PER_DIRECTION);
+        Giant.setTotalAnimationSteps(GiantView.NUM_FRAMES_PER_DIRECTION);
+        Skeleton.setTotalAnimationSteps(SkeletonView.NUM_FRAMES_PER_DIRECTION); */
     }
 
     private void setBindings() {
@@ -145,7 +145,7 @@ public class Controller implements IController {
             logic2GraphicY(e.getY()),                                      // graphic Y
             e.getDirection().angle(),                                      // angle direction
             troopBinder.getViewTroopType(((Troop) e).getClass()),          // troop type
-            e.getCurrentFrame(),                                           // current frame
+            e.getCurrentAnimationIndex(),                                           // current frame
             ((Troop) e).getState(),
             e.getSide()                                                    // side
         );

@@ -66,7 +66,7 @@ public class Arena {
         double mapWidth = NORMALIZED_MAP_WIDTH*canvasWidth*globalScale;
         double mapHeight = NORMALIZED_MAP_HEIGHT*canvasHeight*globalScale;
         globalShiftY = NORMALIZED_SHIFT_Y*canvasHeight*globalScale; // la mappa è alzata verso l'alto, non è centrata.
-
+        this.globalScale = globalScale;
         mapBoundingBox.setRect(
             (canvasWidth - mapWidth)/2,
             (canvasHeight - mapHeight)/2 + globalShiftY,
@@ -96,7 +96,15 @@ public class Arena {
             canvasHeight * 0.5 - height * SCALE * globalScale * NORMALIZED_FIXED_Y * scaleY + globalShiftY , 
             width * SCALE * globalScale * scaleX,
             height * SCALE * globalScale * scaleY
-        );
+        ); 
+
+        /* View2.getInstance().renderScreenImage(
+            arenaImage, 
+            canvasWidth * 0.5, 
+            canvasHeight * 0.5 + globalShiftY, 
+            width * SCALE * scaleX * globalScale, 
+            height * SCALE * scaleY * globalScale
+        );  */
 
         if (!debugMode) return;
         System.out.println("Width " + canvasWidth);
