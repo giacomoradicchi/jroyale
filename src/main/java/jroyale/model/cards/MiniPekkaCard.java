@@ -2,7 +2,7 @@ package jroyale.model.cards;
 
 import jroyale.model.Model;
 import jroyale.model.troops.MiniPekka;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public class MiniPekkaCard extends Card {
 

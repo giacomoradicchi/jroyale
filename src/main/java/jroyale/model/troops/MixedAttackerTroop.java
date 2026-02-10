@@ -1,8 +1,8 @@
 package jroyale.model.troops;
 
 import jroyale.model.TowerTargetSelector;
-import jroyale.shared.Enums.State;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public abstract class MixedAttackerTroop extends Troop {
 

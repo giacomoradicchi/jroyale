@@ -2,9 +2,9 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public class Skeleton extends MixedAttackerTroop {
 

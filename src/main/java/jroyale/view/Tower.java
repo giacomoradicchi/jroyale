@@ -2,7 +2,7 @@ package jroyale.view;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public abstract class Tower {
 

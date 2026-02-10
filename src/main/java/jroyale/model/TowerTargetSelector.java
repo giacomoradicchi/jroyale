@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jroyale.model.towers.Tower;
-import jroyale.shared.Enums.Side;
 import jroyale.utils.Point;
+import jroyale.utils.Enums.Side;
 
 public class TowerTargetSelector {
     

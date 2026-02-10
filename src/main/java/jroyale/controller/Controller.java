@@ -16,13 +16,13 @@ import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 import jroyale.view.IView;
 import jroyale.view.View;
 import jroyale.view.View.TroopType;
-import jroyale.view.troops.GiantView;
-import jroyale.view.troops.MiniPekkaView;
-import jroyale.view.troops.SkeletonView;
+import jroyale.view.entity_view.troops.GiantView;
+import jroyale.view.entity_view.troops.MiniPekkaView;
+import jroyale.view.entity_view.troops.SkeletonView;
 
 public class Controller implements IController {
 

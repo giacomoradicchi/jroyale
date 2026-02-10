@@ -7,7 +7,7 @@ import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public class GameEngine implements IGameEngine {
     
@@ -39,17 +39,15 @@ public class GameEngine implements IGameEngine {
                 controllerForView.renderArena();
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
-                    if (e instanceof Troop) {
-                        controllerForView.renderEntity(
-                            controllerForView.logicToGraphicX(e.getX()),                                      // graphic X 
-                            controllerForView.logicToGraphicY(e.getY()),                                      // graphic Y
-                            e.getDirection().angle(),                                      // angle direction
-                            e.getCurrentAnimationIndex(),                                           // current frame
-                            ((Troop) e).getState(),
-                            e.getSide(),                                                    // side
-                            e.getType()        // troop type
-                        );
-                    }
+                    controllerForView.renderEntity(
+                        controllerForView.logicToGraphicX(e.getX()),                                      // graphic X 
+                        controllerForView.logicToGraphicY(e.getY()),                                      // graphic Y
+                        e.getDirection().angle(),                                      // angle direction
+                        e.getCurrentAnimationIndex(),                                           // current frame
+                        e.getState(),
+                        e.getSide(),                                                    // side
+                        e.getType()        // troop type
+                    );
                 }
 
             }

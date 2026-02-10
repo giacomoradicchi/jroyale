@@ -1,8 +1,8 @@
 package jroyale.view;
 
 import javafx.scene.image.Image;
-import jroyale.shared.Enums.Side;
 import jroyale.utils.ImageUtils;
+import jroyale.utils.Enums.Side;
 
 public class KingTower extends Tower{
     private final static double SCALE = 0.4;
