@@ -1,7 +1,6 @@
 package jroyale.model.towers;
 
 
-import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -23,22 +22,10 @@ public class ArcerTower extends Tower {
     
     private static final int HITPOINTS = 1400;
     private static final int DAMAGE = 0; // TODO: add damage
-
-    private final byte TOWER_TYPE;
     
 
     public ArcerTower(Side side, byte location) {
         super(getArcherPosition(side, location), HITPOINTS, DAMAGE, side);
-
-        if (side == Side.PLAYER) {
-            TOWER_TYPE = (location == RIGHT) ? 
-                TowerIndex.PLAYER_RIGHT_TOWER : 
-                TowerIndex.PLAYER_LEFT_TOWER;
-        } else {
-            TOWER_TYPE = (location == RIGHT) ? 
-                TowerIndex.OPPONENT_RIGHT_TOWER : 
-                TowerIndex.OPPONENT_LEFT_TOWER;
-        }
     }
 
     private static Point getArcherPosition(Side side, byte location) {
@@ -60,11 +47,6 @@ public class ArcerTower extends Tower {
         return (location == RIGHT) ? 
                 OPPONENT_RIGHT_TOWER_CENTRE : 
                 OPPONENT_LEFT_TOWER_CENTRE;
-    }
-
-    @Override
-    public byte getTowerType() {
-        return TOWER_TYPE;
     }
 
     @Override

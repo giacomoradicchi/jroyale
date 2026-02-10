@@ -12,7 +12,7 @@ public class ArenaView {
     private final static String ARENA_RELATIVE_PATH = "/jroyale/images/arenas/IMG_6164.PNG";
 
     // Arena Config values found empirically through testing
-    private final static double SCALE = 0.417; // initial scale factor of the image
+    private final static double SCALE = 0.417; //0.417 // initial scale factor of the image
     private final static double NORMALIZED_MAP_WIDTH = 1 - 2*(32 / (800 * 607.0 / 1080)); 
     private final static double NORMALIZED_MAP_HEIGHT = 552.0 / 800;
     private final static double NORMALIZED_SHIFT_Y = -72.0 / 800;
