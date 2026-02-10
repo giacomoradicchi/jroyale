@@ -1,10 +1,10 @@
 package jroyale.model.towers;
 
 
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
 
 public class ArcerTower extends Tower {
 

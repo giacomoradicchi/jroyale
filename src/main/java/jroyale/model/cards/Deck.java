@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public class Deck {
     

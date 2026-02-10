@@ -9,9 +9,9 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
-import jroyale.shared.Enums.State;
-import jroyale.shared.Enums.Side;
 import jroyale.utils.Point;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public abstract class Troop extends Entity {
 
@@ -81,6 +81,7 @@ public abstract class Troop extends Entity {
         return new Point(speed);
     }
 
+    @Override
     public State getState() {
         return state;
     }

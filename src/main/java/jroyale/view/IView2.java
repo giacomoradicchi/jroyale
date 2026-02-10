@@ -2,14 +2,17 @@ package jroyale.view;
 
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
-import jroyale.view.troops.TroopView;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public interface IView2 {
     
     public void openWindow(Stage stage);
+
+    public double getCanvasWidth();
+
+    public double getCanvasHeight();
 
     public void init();
 

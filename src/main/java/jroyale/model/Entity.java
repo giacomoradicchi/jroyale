@@ -1,9 +1,9 @@
 package jroyale.model;
 
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
 import jroyale.utils.Point;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public abstract class Entity implements Comparable<Entity>{
 
@@ -30,6 +30,8 @@ public abstract class Entity implements Comparable<Entity>{
     protected Side side;
     protected int currentAnimationIndex;
     protected State state; // defines wheather a troop is walking, attacking, etc.
+
+    protected static final Point NO_DIRECTION = new Point(0, 0);
     
 
     public Entity(double x, double y, int hitPoints, int damage, Side side) {
@@ -195,6 +197,8 @@ public abstract class Entity implements Comparable<Entity>{
 
     public abstract Point getDirection(); // only entities that have speed attribs 
     // (like troops) will return their direction. otherwise, they'll return null
+
+    public abstract State getState();
 
     public abstract int getFPSAnimation();
 

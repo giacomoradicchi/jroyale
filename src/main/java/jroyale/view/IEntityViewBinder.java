@@ -1,6 +1,7 @@
 package jroyale.view;
 
-import jroyale.shared.Enums.EntityType;
+import jroyale.utils.Enums.EntityType;
+import jroyale.view.entity_view.EntityView;
 
 public interface IEntityViewBinder {
     

@@ -1,16 +1,16 @@
-package jroyale.view.troops;
+package jroyale.view.entity_view.troops;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
-import jroyale.view.EntityView;
 import javafx.scene.image.Image;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
 import jroyale.utils.ImageUtils;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 import jroyale.view.SpriteAnimation;
+import jroyale.view.entity_view.EntityView;
 
 public abstract class TroopView extends EntityView {
     
@@ -108,4 +108,30 @@ public abstract class TroopView extends EntityView {
     // 
 
     protected abstract Image getRawSpellIcon();
+
+    // methods for base index of a side based on the state of the troop
+    protected abstract int getPlayerIdleBaseIndex();
+
+    protected abstract int getOpponentIdleBaseIndex();
+
+    protected abstract int getPlayerMoveBaseIndex();
+
+    protected abstract int getOpponentMoveBaseIndex();
+
+    protected abstract int getPlayerAttackBaseIndex();
+
+    protected abstract int getOpponentAttackBaseIndex();
+
+    public abstract int getNumFramesPerDirection(State state);
+
+
+    // methods for file path
+    protected abstract String getHeaderNamePath();
+
+    protected abstract String getTroopPath();
+
+    protected abstract int getNumIndexDigits();
+
+    // methods for image transforming:
+    protected abstract Image transformImage(Image image);
 }

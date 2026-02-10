@@ -1,16 +1,15 @@
 package jroyale.view;
 
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
 import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
-
-import jroyale.view.troops.GiantView;
-import jroyale.view.troops.MiniPekkaView;
-import jroyale.view.troops.SingleSkeletonView;
-import jroyale.view.troops.SkeletonArmyView;
-import jroyale.view.troops.TroopView;
-
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
+import jroyale.view.entity_view.EntityView;
+import jroyale.view.entity_view.troops.GiantView;
+import jroyale.view.entity_view.troops.MiniPekkaView;
+import jroyale.view.entity_view.troops.SingleSkeletonView;
+import jroyale.view.entity_view.troops.SkeletonArmyView;
+import jroyale.view.entity_view.troops.TroopView;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -56,7 +55,7 @@ public class View implements IView {
     private final static String PLAYER_KING_TOWER_RELATIVE_PATH = "towers/player/king_tower.png";
 
     // Entities attribs
-    private Arena arena;
+    private ArenaView arena;
     private Tower[] towers = new Tower[TowerIndex.NUM_TOWERS];
 
     // scale of the entire scene
@@ -70,7 +69,7 @@ public class View implements IView {
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         
-        this.arena = new Arena(width, height, globalScale, rowsCount, colsCount);
+        //this.arena = new ArenaView(width, height, globalScale, rowsCount, colsCount);
         updateDxDy();
 
         // initializing towers
@@ -117,7 +116,7 @@ public class View implements IView {
         //globalScale -= 0.001;
 
         // update arena and dx dy
-        arena.update(globalScale);
+        //arena.update(globalScale);
         updateDxDy();
     }
 
@@ -132,10 +131,10 @@ public class View implements IView {
         dy = arena.getDy();
     }
 
-    @Override
+    /* @Override
     public void renderArena() {
         arena.renderArena(gc, DEBUG_MODE);
-    }
+    } */
 
     public void renderCells(boolean[][] cells) {
         arena.renderCells(gc, cells);
@@ -389,5 +388,11 @@ public class View implements IView {
             startY + LINE_LENGTH * globalScale * Math.sin(angle)
         );
         gc.restore();
+    }
+
+    @Override
+    public void renderArena() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'renderArena'");
     }
 }

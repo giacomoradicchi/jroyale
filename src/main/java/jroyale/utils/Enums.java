@@ -1,4 +1,4 @@
-package jroyale.shared;
+package jroyale.utils;
 
 public class Enums {
 

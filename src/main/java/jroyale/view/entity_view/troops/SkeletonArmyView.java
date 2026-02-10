@@ -1,7 +1,7 @@
-package jroyale.view.troops;
+package jroyale.view.entity_view.troops;
 
 import javafx.scene.image.Image;
-import jroyale.view.EntityView;
+import jroyale.view.entity_view.EntityView;
 
 public class SkeletonArmyView extends SkeletonView {
     

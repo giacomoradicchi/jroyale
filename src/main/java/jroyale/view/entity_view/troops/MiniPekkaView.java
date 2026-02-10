@@ -1,16 +1,16 @@
-package jroyale.view.troops;
+package jroyale.view.entity_view.troops;
 
 import java.util.Map;
 
 import javafx.scene.image.Image;
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
 import jroyale.utils.ImageUtils;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
-import jroyale.view.EntityView;
 import jroyale.view.View2;
+import jroyale.view.entity_view.EntityView;
 
 public class MiniPekkaView extends TroopView {
 

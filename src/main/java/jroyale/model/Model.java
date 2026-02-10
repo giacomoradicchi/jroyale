@@ -15,7 +15,7 @@ import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public class Model implements IModel {
 

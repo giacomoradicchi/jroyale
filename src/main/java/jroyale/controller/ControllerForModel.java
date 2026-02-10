@@ -8,8 +8,8 @@ import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
-import jroyale.shared.Enums.EntityType;
 import jroyale.utils.GameData;
+import jroyale.utils.Enums.EntityType;
 
 public class ControllerForModel implements IControllerForModel{
 

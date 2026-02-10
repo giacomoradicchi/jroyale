@@ -1,7 +1,7 @@
 package jroyale.view;
 
-import jroyale.shared.Enums.State;
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 import jroyale.view.View.TroopType;
 
 public interface IView {

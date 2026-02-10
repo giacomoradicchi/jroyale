@@ -1,10 +1,9 @@
 package jroyale.utils; 
 
-import jroyale.shared.Enums.State;
-
-import jroyale.shared.Enums.EntityType;
-
 import java.util.Map;
+
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.State;
 
 public final class GameData {
 

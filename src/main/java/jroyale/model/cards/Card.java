@@ -1,6 +1,6 @@
 package jroyale.model.cards;
 
-import jroyale.shared.Enums.Side;
+import jroyale.utils.Enums.Side;
 
 public abstract class Card {
     

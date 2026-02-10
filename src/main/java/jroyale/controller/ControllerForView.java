@@ -1,15 +1,15 @@
 package jroyale.controller;
 
 import javafx.stage.Stage;
-import jroyale.shared.Enums.EntityType;
-import jroyale.shared.Enums.Side;
-import jroyale.shared.Enums.State;
 import jroyale.utils.GameData;
+import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 import jroyale.view.IView2;
 import jroyale.view.View2;
-import jroyale.view.troops.GiantView;
-import jroyale.view.troops.MiniPekkaView;
-import jroyale.view.troops.SkeletonView;
+import jroyale.view.entity_view.troops.GiantView;
+import jroyale.view.entity_view.troops.MiniPekkaView;
+import jroyale.view.entity_view.troops.SkeletonView;
 
 public class ControllerForView implements IControllerForView {
 

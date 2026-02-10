@@ -3,8 +3,9 @@ package jroyale.model.towers;
 import jroyale.model.Entity;
 import jroyale.model.TowerTargetSelector;
 import jroyale.model.troops.TowerAttackerTroop;
-import jroyale.shared.Enums.Side;
 import jroyale.utils.Point;
+import jroyale.utils.Enums.Side;
+import jroyale.utils.Enums.State;
 
 public abstract class Tower extends Entity {
 
@@ -33,7 +34,12 @@ public abstract class Tower extends Entity {
 
     @Override
     public Point getDirection() {
-        return null; // tower entity has not a direction since it doesn't move
+        return Entity.NO_DIRECTION; // tower entity has not a direction since it doesn't move
+    }
+
+    @Override
+    public State getState() {
+        return State.IDLE; 
     }
 
     @Override
