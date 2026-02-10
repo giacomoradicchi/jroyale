@@ -1,6 +1,5 @@
 package jroyale.view;
 
-import jroyale.shared.TowerIndex;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -56,7 +55,7 @@ public class View implements IView {
 
     // Entities attribs
     private ArenaView arena;
-    private Tower[] towers = new Tower[TowerIndex.NUM_TOWERS];
+    //private Tower[] towers = new Tower[TowerIndex.NUM_TOWERS];
 
     // scale of the entire scene
     private double globalScale = 1.0;
@@ -73,13 +72,13 @@ public class View implements IView {
         updateDxDy();
 
         // initializing towers
-        towers[TowerIndex.PLAYER_KING_TOWER] = new KingTower(Side.PLAYER);
+        /* towers[TowerIndex.PLAYER_KING_TOWER] = new KingTower(Side.PLAYER);
         towers[TowerIndex.PLAYER_LEFT_TOWER] = new ArcherTower(Side.PLAYER);
         towers[TowerIndex.PLAYER_RIGHT_TOWER] = new ArcherTower(Side.PLAYER);
 
         towers[TowerIndex.OPPONENT_KING_TOWER] = new KingTower(Side.OPPONENT);
         towers[TowerIndex.OPPONENT_LEFT_TOWER] = new ArcherTower(Side.OPPONENT);
-        towers[TowerIndex.OPPONENT_RIGHT_TOWER] = new ArcherTower(Side.OPPONENT);
+        towers[TowerIndex.OPPONENT_RIGHT_TOWER] = new ArcherTower(Side.OPPONENT); */
         
         this.reference = new Image(getClass().getResourceAsStream("/jroyale/images/reference2.png"));
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
@@ -168,7 +167,7 @@ public class View implements IView {
 
     @Override
     public void renderTower(int towerType, double centreX, double centreY, int currentHealth, int maxHealth, Side side) {
-        if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
+        /* if (towerType < 0 || towerType >= TowerIndex.NUM_TOWERS) {
             throw new IllegalArgumentException("Invalid towerType: " + towerType);
         }
         towers[towerType].drawTower(gc, centreX, centreY, globalScale);
@@ -185,7 +184,7 @@ public class View implements IView {
         fillPoint(
             centreX, 
             centreY
-        );
+        ); */
 
         
     }

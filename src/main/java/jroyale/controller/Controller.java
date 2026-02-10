@@ -171,7 +171,7 @@ public class Controller implements IController {
             0.5
         );   */  
 
-        if (tower.getHitPoints() > 0) {
+        /* if (tower.getHitPoints() > 0) {
             view.renderTower(
                 tower.getTowerType(), 
                 logic2GraphicX(tower.getX()),
@@ -180,7 +180,7 @@ public class Controller implements IController {
                 tower.getMaxHitPoints(),
                 tower.getSide()
             ); 
-        }
+        } */
          
     }
 

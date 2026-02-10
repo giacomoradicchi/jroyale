@@ -6,7 +6,6 @@ import jroyale.model.Entity;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
-import jroyale.model.troops.Troop;
 import jroyale.utils.Enums.Side;
 
 public class GameEngine implements IGameEngine {
@@ -40,13 +39,13 @@ public class GameEngine implements IGameEngine {
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
                     controllerForView.renderEntity(
-                        controllerForView.logicToGraphicX(e.getX()),                                      // graphic X 
-                        controllerForView.logicToGraphicY(e.getY()),                                      // graphic Y
-                        e.getDirection().angle(),                                      // angle direction
-                        e.getCurrentAnimationIndex(),                                           // current frame
+                        controllerForView.logicToGraphicX(e.getX()),
+                        controllerForView.logicToGraphicY(e.getY()),
+                        e.getDirection().angle(),
+                        e.getCurrentAnimationIndex(),
                         e.getState(),
-                        e.getSide(),                                                    // side
-                        e.getType()        // troop type
+                        e.getSide(),
+                        e.getType()
                     );
                 }
 

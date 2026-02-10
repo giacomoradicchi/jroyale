@@ -51,8 +51,4 @@ public abstract class Tower extends Entity {
     public int getFPSAnimation() {
         return 0; // TODO
     }
-
-    // abstract methods
-
-    public abstract byte getTowerType();
 }

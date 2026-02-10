@@ -1,13 +1,10 @@
 package jroyale.model.towers;
 
-import jroyale.shared.TowerIndex;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 
 public class KingTower extends Tower {
-
-    private final byte TOWER_TYPE;
 
     private static final int FOOTPRINT_SIZE = 4;
 
@@ -26,14 +23,6 @@ public class KingTower extends Tower {
             DAMAGE,
             side 
         );
-        TOWER_TYPE = (side == Side.PLAYER) ? 
-            TowerIndex.PLAYER_KING_TOWER : 
-            TowerIndex.OPPONENT_KING_TOWER;
-    }
-
-    @Override
-    public byte getTowerType() {
-        return TOWER_TYPE;
     }
 
     @Override
