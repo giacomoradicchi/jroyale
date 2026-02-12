@@ -1,4 +1,4 @@
-package jroyale.controller;
+package jroyale.view;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;

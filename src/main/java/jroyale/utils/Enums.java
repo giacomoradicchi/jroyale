@@ -12,6 +12,7 @@ public class Enums {
         GIANT,
         SKELETON,
         SKELETON_ARMY,
+        PEKKA,
     }
 
     public enum Side {

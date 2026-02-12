@@ -6,8 +6,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import jroyale.controller.ControllerForModel;
 import jroyale.controller.ControllerForView;
+import jroyale.model.troops.Giant;
+import jroyale.model.troops.Skeleton;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -22,7 +27,11 @@ public class View2 implements IView2 {
     private static final double CANVAS_HEIGHT = 800;
     private static final double CANVAS_WIDTH = CANVAS_HEIGHT * WH_RATIO;
 
+    private int lastMouseColumnIndex = -1;
+    private int lastMouseRowIndex = -1;
+
     private GraphicsContext gc;
+    private Stage stage;
 
     // scale of the entire scene
     private double globalScale = 1.0;
@@ -30,6 +39,7 @@ public class View2 implements IView2 {
     private View2() {}
 
     // instance methods
+
     @Override
     public void init() {
         
@@ -42,6 +52,7 @@ public class View2 implements IView2 {
 
         loadSprites();
         EntityViewBinder.getInstance().init();
+        MouseManager.enableInput(stage.getScene());
     }
 
     @Override
@@ -50,8 +61,8 @@ public class View2 implements IView2 {
         Pane root = new Pane(canvas);
         gc = canvas.getGraphicsContext2D();
 
-        
-        
+        this.stage = stage;
+
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
         stage.show();
@@ -75,6 +86,7 @@ public class View2 implements IView2 {
 
         //globalScale -= 0.001;
 
+        handleMouseEvents();
     }
 
     @Override
@@ -162,7 +174,7 @@ public class View2 implements IView2 {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
+    public void renderEntity(double centreX, double centreY, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
 
         /* renderVector(centreX, centreY, angleDirection);
 
@@ -189,7 +201,26 @@ public class View2 implements IView2 {
             color
         ); */
 
+        // Definiamo il gradiente radiale
+        gc.save();
+        RadialGradient gradient = new RadialGradient(
+            0,      // focusAngle
+            0,      // focusDistance
+            centreX, // centerX (coordinata assoluta sul canvas)
+            centreY, // centerY (coordinata assoluta sul canvas)
+            shadowRadius, // radius (metà del diametro)
+            false,  // proportional: false perché usiamo i pixel esatti
+            null,   // cycleMethod
+            new Stop(0, new Color(0, 0, 0, 0.7)),              // Centro opaco
+            new Stop(1, Color.TRANSPARENT)       // Bordo trasparente
+        );
+
+        gc.setFill(gradient);
+        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, shadowRadius*2, shadowRadius*2); // Disegna il cerchio
+        gc.restore();
+        
         EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, angleDirection, currentFrame, state, side);
+        
         
     }
 
@@ -197,6 +228,74 @@ public class View2 implements IView2 {
         // forcing loading of all troop sprites
         TroopType.values();
     }
+
+
+    // mouse Events
+
+    private void handleMouseEvents() {
+        if (MouseManager.isMousePressed()) {
+            updateLogicMousePos();
+            renderDragPlacementPreview();
+        } 
+
+        if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
+            ControllerForModel.getInstance().addTroop(
+                new Skeleton(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
+                // TODO: remove depencency with model.768i
+            ); 
+            
+            
+            resetLastLogicMousePos();
+            DragPlacementPreview.resetAnimation();
+        }
+    }
+
+    private void resetLastLogicMousePos() {
+        lastMouseColumnIndex = -1;
+        lastMouseRowIndex = -1;
+    }
+
+    private void renderDragPlacementPreview() {
+        /* if (isLastLogicMousePosValid()) {
+            DragPlacementPreview.render(
+                gc, lastMouseColumnIndex, WH_RATIO, CANVAS_WIDTH, CANVAS_HEIGHT, globalScale, lastMouseRowIndex);
+            .renderDragPlacementPreview(index2GraphicCentreX(lastMouseColumnIndex), index2GraphicCentreY(lastMouseRowIndex));
+        } */
+    }
+
+    private boolean isLastLogicMousePosValid() {
+        return lastMouseColumnIndex != -1 && lastMouseRowIndex != -1;
+    }
+
+    private void updateLogicMousePos() {
+        // casting logic coords into int so the card placing will fit exactly inside a tile
+
+        /* int logicX = (int) Math.floor(graphic2LogicX(MouseManager.getLastMousePositionX()));
+        int logicY = (int) Math.floor(graphic2LogicY(MouseManager.getLastMousePositionY()));
+
+        if (0 <= logicX && logicX < model.getColsCount()
+        &&  0 <= logicY && logicY < model.getRowsCount()
+        &&  model.isPlayerTroopDroppableOnTile(logicY, logicX)) {
+            lastMouseColumnIndex = logicX;
+            lastMouseRowIndex = logicY;
+        }  */
+        
+        /* else if (lastLogicMousePositionX != -1 && lastLogicMousePositionY != -1){
+            if (0 <= logicX && logicX < model.getColsCount() 
+            &&  model.getReachableTiles()[lastLogicMousePositionY][logicX] == true) {
+                lastLogicMousePositionX = logicX;
+                lastLogicMousePositionY = Math.max(0, Math.min(logicY, model.getRowsCount()-1));
+            } 
+            if (0 <= logicY && logicY < model.getRowsCount()
+            &&  model.getReachableTiles()[logicY][Math.max(0, Math.min(logicX, model.getColsCount()-1))] == true) {
+                lastLogicMousePositionX = Math.max(0, Math.min(logicX, model.getColsCount()-1));
+                lastLogicMousePositionY = logicY;
+            } 
+        }  */
+
+        
+    }
+
 
     private void fillPoint(double centreX, double centreY, int size, Color color) {
         gc.save();

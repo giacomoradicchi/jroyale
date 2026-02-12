@@ -10,7 +10,7 @@ import jroyale.utils.Enums.Side;
 
 public class Deck {
     
-    private static final int AVAILABLE_CARDS_SIZE = 3; // in general has to be 4, but since we've not enough cards will be using numCardsAvailable - 1
+    private static final int AVAILABLE_CARDS_SIZE = 4; // in general has to be 4, but since we've not enough cards will be using numCardsAvailable - 1
     private static final int MAX_NUM_CARDS = 8;
     private static final int MAX_ELIXIR = 10;
 
