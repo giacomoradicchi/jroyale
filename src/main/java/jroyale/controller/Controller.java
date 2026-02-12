@@ -44,7 +44,7 @@ public class Controller implements IController {
 
     @Override
     public void start() {
-        MouseManager.enableInput(scene);
+        //MouseManager.enableInput(scene);
         view.loadSprites();
         initModelTroopsFrames();
         setBindings();
@@ -100,7 +100,7 @@ public class Controller implements IController {
     }
 
     private void handleMouseEvents() {
-        if (MouseManager.isMousePressed()) {
+        /* if (MouseManager.isMousePressed()) {
             updateLogicMousePos();
             renderDragPlacementPreview();
         } 
@@ -113,7 +113,7 @@ public class Controller implements IController {
             
             resetLastLogicMousePos();
             view.resetDragPlacementPreviewAnimation();
-        }
+        } */
     }
 
     // render methods:
@@ -204,15 +204,15 @@ public class Controller implements IController {
     private void updateLogicMousePos() {
         // casting logic coords into int so the card placing will fit exactly inside a tile
 
-        int logicX = (int) Math.floor(graphic2LogicX(MouseManager.getLastMousePositionX()));
-        int logicY = (int) Math.floor(graphic2LogicY(MouseManager.getLastMousePositionY()));
+        /* int logicX = (int) Math.floor(graphic2LogicX(MouseManager.getLastMousePositionX()));
+        int logicY = (int) Math.floor(graphic2LogicY(MouseManager.getLastMousePositionY())); */
 
-        if (0 <= logicX && logicX < model.getColsCount()
+        /* if (0 <= logicX && logicX < model.getColsCount()
         &&  0 <= logicY && logicY < model.getRowsCount()
         &&  model.isPlayerTroopDroppableOnTile(logicY, logicX)) {
             lastMouseColumnIndex = logicX;
             lastMouseRowIndex = logicY;
-        } 
+        }  */
         
         /* else if (lastLogicMousePositionX != -1 && lastLogicMousePositionY != -1){
             if (0 <= logicX && logicX < model.getColsCount() 

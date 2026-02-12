@@ -9,6 +9,7 @@ import jroyale.view.IView2;
 import jroyale.view.View2;
 import jroyale.view.entity_view.troops.GiantView;
 import jroyale.view.entity_view.troops.MiniPekkaView;
+import jroyale.view.entity_view.troops.PekkaView;
 import jroyale.view.entity_view.troops.SkeletonView;
 
 public class ControllerForView implements IControllerForView {
@@ -26,6 +27,7 @@ public class ControllerForView implements IControllerForView {
         GiantView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
         MiniPekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
         SkeletonView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
+        PekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.PEKKA));
     }
 
     // instance methods
@@ -58,14 +60,24 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
+    public double getDx() {
+        return view.getDx();
+    }
+
+    @Override
+    public double getDy() {
+        return view.getDy();
+    }
+
+    @Override
     public void renderArena() {
         view.renderArena();
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, double shadowRadius, double angleDirection, int currentFrame, State state,
             Side side, EntityType type) {
-        view.renderEntity(centreX, centreY, angleDirection, currentFrame, state, side, type);
+        view.renderEntity(centreX, centreY, shadowRadius, angleDirection, currentFrame, state, side, type);
     }
 
     @Override

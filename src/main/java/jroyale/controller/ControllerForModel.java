@@ -6,6 +6,7 @@ import jroyale.model.Entity;
 import jroyale.model.Model;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
+import jroyale.model.troops.Pekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
 import jroyale.utils.GameData;
@@ -13,7 +14,9 @@ import jroyale.utils.Enums.EntityType;
 
 public class ControllerForModel implements IControllerForModel{
 
-    private static IControllerForModel instance = null;
+    private static ControllerForModel instance = null;
+
+    private ControllerForModel() {}
 
     // private methods
     private void initTroopsAnimationSteps() {
@@ -21,7 +24,7 @@ public class ControllerForModel implements IControllerForModel{
         MiniPekka.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
         Giant.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
         Skeleton.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
-
+        Pekka.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.PEKKA));
 
     }
 

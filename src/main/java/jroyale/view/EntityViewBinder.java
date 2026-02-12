@@ -9,6 +9,7 @@ import jroyale.view.entity_view.towers.ArcherTowerView;
 import jroyale.view.entity_view.towers.KingTowerView;
 import jroyale.view.entity_view.troops.GiantView;
 import jroyale.view.entity_view.troops.MiniPekkaView;
+import jroyale.view.entity_view.troops.PekkaView;
 import jroyale.view.entity_view.troops.SingleSkeletonView;
 import jroyale.view.entity_view.troops.SkeletonArmyView;
 
@@ -31,6 +32,7 @@ public class EntityViewBinder implements IEntityViewBinder{
         entityBinder.put(EntityType.GIANT, GiantView.getInstance());
         entityBinder.put(EntityType.SKELETON, SingleSkeletonView.getInstance());
         entityBinder.put(EntityType.SKELETON_ARMY, SkeletonArmyView.getInstance());
+        entityBinder.put(EntityType.PEKKA, PekkaView.getInstance());
     }
 
     @Override

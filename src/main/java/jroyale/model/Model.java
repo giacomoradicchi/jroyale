@@ -9,6 +9,7 @@ import jroyale.model.cards.Card;
 import jroyale.model.cards.Deck;
 import jroyale.model.cards.GiantCard;
 import jroyale.model.cards.MiniPekkaCard;
+import jroyale.model.cards.PekkaCard;
 import jroyale.model.cards.SkeletonArmyCard;
 import jroyale.model.cards.SkeletonCard;
 import jroyale.model.towers.ArcerTower;
@@ -80,7 +81,8 @@ public class Model implements IModel {
             MiniPekkaCard.getIstance(),
             GiantCard.getIstance(),
             SkeletonCard.getIstance(),
-            SkeletonArmyCard.getIstance()
+            SkeletonArmyCard.getIstance(),
+            PekkaCard.getIstance()
         });
 
     }

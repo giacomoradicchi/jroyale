@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import jroyale.model.Entity;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
+import jroyale.model.troops.Pekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.utils.Enums.Side;
 
@@ -24,7 +25,7 @@ public class GameEngine implements IGameEngine {
 
         // TODO: remove it, just for debug
         controllerForModel.addTroop(
-            new Skeleton(22, 10, Side.PLAYER)
+            new Pekka(22, 10, Side.PLAYER)
         );
 
         gameLoop = new AnimationTimer() {
@@ -41,6 +42,7 @@ public class GameEngine implements IGameEngine {
                     controllerForView.renderEntity(
                         controllerForView.logicToGraphicX(e.getX()),
                         controllerForView.logicToGraphicY(e.getY()),
+                        controllerForView.getDx() * e.getCollisionRadius(),
                         e.getDirection().angle(),
                         e.getCurrentAnimationIndex(),
                         e.getState(),
