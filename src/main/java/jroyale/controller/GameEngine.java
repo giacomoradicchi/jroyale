@@ -7,6 +7,7 @@ import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Pekka;
 import jroyale.model.troops.Skeleton;
+import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Enums.Side;
 
 public class GameEngine implements IGameEngine {
@@ -25,8 +26,28 @@ public class GameEngine implements IGameEngine {
 
         // TODO: remove it, just for debug
         controllerForModel.addTroop(
-            new Pekka(22, 10, Side.PLAYER)
+            new MiniPekka(22, 10, Side.PLAYER)
         );
+        controllerForModel.addTroop(
+            new Skeleton(10, 13, Side.OPPONENT)
+        ); 
+        /* controllerForModel.addTroop(
+            new Skeleton(10, 13, Side.OPPONENT)
+        ); 
+        controllerForModel.addTroop(
+            new Pekka(10, 5, Side.OPPONENT)
+        );
+
+        controllerForModel.addTroop(
+            new Valkyrie(22, 5, Side.PLAYER)
+        );
+        controllerForModel.addTroop(
+            new Skeleton(22, 6, Side.PLAYER)
+        );
+        controllerForModel.addTroop(
+            new Skeleton(23, 6, Side.PLAYER)
+        ); */
+        
 
         gameLoop = new AnimationTimer() {
             @Override

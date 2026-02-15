@@ -6,7 +6,7 @@ import jroyale.utils.Enums.Side;
 
 public class PekkaCard extends Card{
 
-    private static Card instance;
+    private static PekkaCard instance;
     private static final byte ELIXIR_COST = 7;
 
     private PekkaCard() {

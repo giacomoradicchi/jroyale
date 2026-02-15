@@ -32,6 +32,11 @@ public final class GameData {
                         State.MOVE, 14,
                         State.ATTACK, 7,
                         State.IDLE, 1
+                ),
+                EntityType.VALKYRIE, Map.of(
+                        State.MOVE, 8,
+                        State.ATTACK, 12,
+                        State.IDLE, 1
                 )
             );
 

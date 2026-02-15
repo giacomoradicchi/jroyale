@@ -13,6 +13,8 @@ public class Enums {
         SKELETON,
         SKELETON_ARMY,
         PEKKA,
+        VALKYRIE,
+        KNIGHT
     }
 
     public enum Side {

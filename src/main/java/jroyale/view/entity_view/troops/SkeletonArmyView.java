@@ -15,7 +15,7 @@ public class SkeletonArmyView extends SkeletonView {
 
     @Override
     protected Image getRawSpellIcon() {
-        return new Image(MiniPekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SPELL_ICON_RELATIVE_PATH));
+        return new Image(SkeletonArmyView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SPELL_ICON_RELATIVE_PATH));
     }
 
     // static methods

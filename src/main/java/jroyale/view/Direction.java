@@ -17,7 +17,7 @@ public class Direction {
         angleDirection /= Math.PI; // angle in [0, 1]
         angleDirection *= (NUM_DIRECTIONS - 1); // angle in [0, 8]
 
-        return (NUM_DIRECTIONS - 1) - (int) Math.floor(angleDirection);
+        return (NUM_DIRECTIONS - 1) - (int) Math.round(angleDirection);
     }
 
     public static boolean hasToFlip(double angleDirection) {

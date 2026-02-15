@@ -1,6 +1,5 @@
 package jroyale.view.entity_view.troops;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.image.Image;
@@ -19,7 +18,7 @@ public class PekkaView extends TroopView{
 
     private static Map<State, Integer> numFramesPerDirection;
 
-    private static final Image RAW_SPELL_ICON = new Image(GiantView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/pekka.png"));
+    private static final Image RAW_SPELL_ICON = new Image(PekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/pekka.png"));
 
     private static final String TROOP_PATH = "pekka/";
     private static final String HEADER_NAME_FILE = "chr_pekka_sprite_";

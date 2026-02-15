@@ -9,23 +9,23 @@ import jroyale.utils.Enums.State;
 public class Giant extends TowerAttackerTroop {
     
     private static final String NAME = "Giant";
-    private static final byte SPEED = Troop.SLOW;
+    private static final Speed SPEED = Speed.SLOW;
+    private static final Range MELEE = Range.LONG;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
     private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
-    private static final int HIT_FRAME = 6;
-
+    private static final int HIT_FRAME = 7;
     private static final int HITPOINTS = 1598;
     private static final int DAMAGE = 99;
 
 
     public Giant(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public Giant(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
