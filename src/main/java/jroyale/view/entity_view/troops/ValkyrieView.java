@@ -12,33 +12,37 @@ import jroyale.view.Direction;
 import jroyale.view.View2;
 import jroyale.view.entity_view.EntityView;
 
-public class PekkaView extends TroopView{
+public class ValkyrieView extends TroopView {
 
-    private static PekkaView instance = null;
+    private static ValkyrieView instance = null;
 
     private static Map<State, Integer> numFramesPerDirection;
 
-    private static final Image RAW_SPELL_ICON = new Image(PekkaView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/pekka.png"));
+    private static final Image RAW_SPELL_ICON = new Image(ValkyrieView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/valkyrie.png"));
 
-    private static final String TROOP_PATH = "pekka/";
-    private static final String HEADER_NAME_FILE = "chr_pekka_sprite_";
+    private static final String TROOP_PATH = "valkyrie/";
+    private static final String HEADER_NAME_FILE = "chr_valkyrie_sprite_";
+
+    private static final String SWIRL_RELATIVE_PATH = "valkyrie/attack/swirl/chr_valkyrie_sprite.png";
+    private static final Image SWIRL_IMAGE = new Image(ValkyrieView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SWIRL_RELATIVE_PATH));
     
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private final double SCALE = 0.65;
-    private static final double shiftX = 0;
-    private static final double shiftY = -25;
+    private final double SCALE = 0.5;
+    private static final double shiftX = 4;
+    private static final double shiftY = -10;
+    private static final double ALPHA_THRESHOLD = 0.5;
 
 
     // Sprite sheet base indices for different states and sides
-    private static final int PLAYER_IDLE_BASE_INDEX = 126;
-    private static final int OPPONENT_IDLE_BASE_INDEX = 261;
+    private static final int PLAYER_IDLE_BASE_INDEX = 72;
+    private static final int OPPONENT_IDLE_BASE_INDEX = 153;
     private static final int PLAYER_MOVE_BASE_INDEX = 0;
-    private static final int OPPONENT_MOVE_BASE_INDEX = 135;
-    private static final int PLAYER_ATTACK_BASE_INDEX = 333;
-    private static final int OPPONENT_ATTACK_BASE_INDEX = 270;
+    private static final int OPPONENT_MOVE_BASE_INDEX = 81;
+    private static final int PLAYER_ATTACK_BASE_INDEX = 271;
+    private static final int OPPONENT_ATTACK_BASE_INDEX = 163;
 
-    private PekkaView() {}
+    private ValkyrieView() {}
 
     @Override
     protected Image getRawSpellIcon() {
@@ -77,7 +81,7 @@ public class PekkaView extends TroopView{
 
     @Override
     public int getNumFramesPerDirection(State state) {
-        return PekkaView.numFramesPerDirection.get(state);
+        return ValkyrieView.numFramesPerDirection.get(state);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class PekkaView extends TroopView{
 
     @Override
     protected Image transformImage(Image image) {
-        return ImageUtils.enhanceOpacity(image);
+        return ImageUtils.enhanceOpacity(image, ALPHA_THRESHOLD);
     }
 
     @Override
@@ -118,19 +122,23 @@ public class PekkaView extends TroopView{
             flipped = 1;
 
         View2.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+
+        if(state == State.ATTACK)
+            // swirl rendering
+            View2.getInstance().renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height);
     }
 
     // static methods
 
     public static EntityView getInstance() {
         if (instance == null) {
-            instance = new PekkaView();
+            instance = new ValkyrieView();
         }
         return instance;
     }
 
     public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
-        PekkaView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
+        ValkyrieView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
     }
     
 }

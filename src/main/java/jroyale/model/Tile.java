@@ -20,7 +20,7 @@ public class Tile {
 
     public List<Entity> getEntities() {
         return entities;
-    }    
+    }
 
     public boolean isOccupied() {
         return entities.size() != 0;

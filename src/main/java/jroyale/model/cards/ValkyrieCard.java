@@ -1,21 +1,21 @@
 package jroyale.model.cards;
 
 import jroyale.model.Model;
-import jroyale.model.troops.Giant;
+import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Enums.Side;
 
-public class GiantCard extends Card{
+public class ValkyrieCard extends Card{
+    
+    private static ValkyrieCard instance;
+    private static final byte ELIXIR_COST = 4;
 
-    private static GiantCard instance;
-    private static final byte ELIXIR_COST = 8;
-
-    private GiantCard() {
+    private ValkyrieCard() {
         super(ELIXIR_COST);
     }
     
     public static Card getIstance() {
         if (instance == null) {
-            instance = new GiantCard();
+            instance = new ValkyrieCard();
         }
 
         return instance;
@@ -24,8 +24,7 @@ public class GiantCard extends Card{
     @Override
     protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         Model.getIstance().addTroop(
-            new Giant(rowIndex, columnIndex, side)
+            new Valkyrie(rowIndex, columnIndex, side)
         );
     }
-    
 }

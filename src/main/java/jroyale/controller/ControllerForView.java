@@ -11,6 +11,7 @@ import jroyale.view.entity_view.troops.GiantView;
 import jroyale.view.entity_view.troops.MiniPekkaView;
 import jroyale.view.entity_view.troops.PekkaView;
 import jroyale.view.entity_view.troops.SkeletonView;
+import jroyale.view.entity_view.troops.ValkyrieView;
 
 public class ControllerForView implements IControllerForView {
 
@@ -28,6 +29,7 @@ public class ControllerForView implements IControllerForView {
         MiniPekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
         SkeletonView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
         PekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.PEKKA));
+        ValkyrieView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.VALKYRIE));
     }
 
     // instance methods

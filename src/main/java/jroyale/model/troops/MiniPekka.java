@@ -9,22 +9,23 @@ import jroyale.utils.Enums.State;
 public class MiniPekka extends MixedAttackerTroop {
 
     private static final String NAME = "Mini-Pekka";
-    private static final byte SPEED = Troop.FAST;
+    private static final Speed SPEED = Speed.FAST;
+    private static final Range MELEE = Range.MEDIUM;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.45;
-    private static final int FPS_ANIMATION = 18;
+    private static final int FPS_ANIMATION = 18; //18
     private static final long LOAD_TIME = (long) (1.3 * 1_000_000_000L);
 
     private static final int HITPOINTS = 677;
     private static final int DAMAGE = 355;
-    private static final int HIT_FRAME = 6;
+    private static final int HIT_FRAME = 7;
 
     public MiniPekka(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public MiniPekka(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public static void setTotalAnimationSteps(Map<State,Integer> totalAnimationSteps) {

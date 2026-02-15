@@ -8,6 +8,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class ImageUtils {
+
+    private static final double DEFAULT_ALPHA_THRESHOLD = 0.1; // threshold = 10% of alpha channel
     /**
      * Computes bounding box of visible pixels (alpha channel is not 0)
      * @param img original image (RGBA)
@@ -89,6 +91,10 @@ public class ImageUtils {
     }
 
     public static Image enhanceOpacity(Image img) {
+        return enhanceOpacity(img, DEFAULT_ALPHA_THRESHOLD);
+    }
+
+    public static Image enhanceOpacity(Image img, double alphaTreshold) {
         int width = (int) img.getWidth();
         int height = (int) img.getHeight();
         WritableImage rgbImage = new WritableImage(width, height);
@@ -99,7 +105,7 @@ public class ImageUtils {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color c = reader.getColor(x, y);
-                double opacity = (c.getBrightness() < 0.1) ? c.getOpacity() : 1.0;
+                double opacity = (c.getBrightness() < alphaTreshold) ? c.getOpacity() : 1.0;
                 Color opaque = new Color(c.getRed(), c.getGreen(), c.getBlue(), opacity); // alpha = 1
                 writer.setColor(x, y, opaque);
             }

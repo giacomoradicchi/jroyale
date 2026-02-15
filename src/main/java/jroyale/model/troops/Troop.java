@@ -1,10 +1,11 @@
 package jroyale.model.troops; 
 
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import jroyale.model.CollisionManager;
+import jroyale.model.EnemyTargetSelector;
 import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
@@ -15,26 +16,51 @@ import jroyale.utils.Enums.State;
 
 public abstract class Troop extends Entity {
 
-    static final byte VERY_SLOW = 0;
-    static final byte SLOW = 1;
-    static final byte MEDIUM = 2;
-    static final byte FAST = 3;
-    static final byte VERY_FAST = 4;
+    public static enum Speed {
+        // category - associated speed [tiles/minute]
+        // based on: https://clashroyale.fandom.com/wiki/Cards
+
+        VERY_SLOW(30),
+        SLOW(45),
+        MEDIUM(60),
+        FAST(90),
+        VERY_FAST(120);
+
+        private int tilesPerMinute;
+
+        private Speed(int tilesPerMinute) {
+            this.tilesPerMinute = tilesPerMinute;
+        }
+
+        private int getTilesPerMinute() {
+            return tilesPerMinute;
+        }
+    }
+
+    public static enum Range {
+        // based on: https://clashroyale.fandom.com/wiki/Cards
+
+        SHORT(0.8),
+        MEDIUM(1.2),
+        LONG(1.6);
+
+        private double radius;
+
+        private Range(double radiusRange) {
+            this.radius = radiusRange;
+        }
+
+        private double getRadiusRange() {
+            return this.radius;
+        }
+    }
 
     private String name;
-    private final byte SPEED_TYPE;
+    private final Speed SPEED_TYPE;
     private FrameManager frameManager;
+    private Range melee;
 
-    private static Map<Byte, Integer> SPEEDS = new HashMap<>() {
-        {   // category - associated speed [tiles/minutes]
-            // based on: https://clashroyale.fandom.com/wiki/Cards
-            put(VERY_SLOW, 30);
-            put(SLOW, 45);
-            put(MEDIUM, 60);
-            put(FAST, 90);
-            put(VERY_FAST, 120);
-        }
-    };
+    
 
     protected Entity target;
     protected Point speed;
@@ -43,34 +69,30 @@ public abstract class Troop extends Entity {
 
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
-    protected boolean enemyHit;
+    protected boolean enemyHit, targetKilled;
 
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
 
-    public Troop(String name, double x, double y, int healthPoints, int damage, byte speedType, Side side) {
+    public Troop(String name, double x, double y, int healthPoints, int damage, Speed speedType, Range melee, Side side) {
         super(x, y, healthPoints, damage, side);
         this.name = name;
         this.frameManager = new FrameManager(this);
-        this.state = State.MOVE; // TODO: set it to SPAWN
-        
-        if (speedType < VERY_SLOW || speedType > VERY_FAST) {
-            this.SPEED_TYPE = MEDIUM;
-        } else {
-            this.SPEED_TYPE = speedType;
-        }
+        this.state = State.MOVE;
+        this.melee = melee;
+        this.SPEED_TYPE = speedType;
 
         initTarget();
         initSpeed();
     }
 
-    public Troop(String name, int n, int m, int healthPoints, int damage, byte speedType, Side side) {
+    public Troop(String name, int n, int m, int healthPoints, int damage, Speed speedType, Range melee, Side side) {
         // The constructor puts the troop in the centre of the cell (n, m).
         // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
         // which is half a cell. In this way, the placing won't be in the top left corner; 
         // instead, it will be in the cell's centre.
 
-        this(name, m + 0.5, n + 0.5, healthPoints, damage, speedType, side);
+        this(name, m + 0.5, n + 0.5, healthPoints, damage, speedType, melee, side);
     }
 
     public String getName() {
@@ -79,6 +101,10 @@ public abstract class Troop extends Entity {
 
     public Point getSpeed() {
         return new Point(speed);
+    }
+
+    public double getRadiusRange() {
+        return melee.radius;
     }
 
     @Override
@@ -90,7 +116,20 @@ public abstract class Troop extends Entity {
     public void update(long elapsed) {
         frameManager.updateFrame(elapsed);
         updateTarget();
-        move(elapsed);
+        if(state != State.ATTACK) {
+            updateSpeed(elapsed);
+        }
+        
+        //System.out.println(state);
+
+        if (state == State.IDLE) {
+            handleIdleState(elapsed);
+        } else {
+            move();
+        }
+        
+        
+
     }
 
     @Override
@@ -122,28 +161,47 @@ public abstract class Troop extends Entity {
     
     }
 
+    protected boolean selectClosestEnemy() {
+        Troop closestEnemy = EnemyTargetSelector.getInstance().getClosestEnemyOnRange(this);
+
+        if (closestEnemy == null) { // this means it was not found any enemy in the troop range
+            return false;
+        }
+
+        target = closestEnemy;
+
+        return true;
+    }
+
+    protected boolean selectClosestTower() {
+        if (target != null && target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
+            target = TowerTargetSelector.getClosestEnemyTower(this);
+            setState(State.MOVE);
+            //enemyHit = false; // reset enemyHit
+            return true;
+        }
+        return false;
+    }
+
     //
     // private methods
     //
 
-    private void move(long elapsed) {
-        updateSpeed(elapsed);
-        updateTarget();
-
-        if (state == State.IDLE) {
-            handleIdleState(elapsed);
-        }
-
-        /* if (state != State.SPAWN) {
-            handleCollisions();
-        } */
-        handleCollisions();
+    private void move() {
         
+        handleCollisions();
+
         if (state == State.ATTACK) {
             handleAttackState();
+            
         }
 
-        shiftPosition(speed);
+        if (state == State.MOVE) {
+            shiftPosition(speed);
+        }
+        
+        
+        
 
     }
 
@@ -151,7 +209,7 @@ public abstract class Troop extends Entity {
         elapsedIdleTime += elapsed;
 
         if (elapsedIdleTime >= getLoadTime()) {
-            setState(State.MOVE);
+            setState(State.ATTACK);
             elapsedIdleTime = 0;
         }
     }
@@ -267,7 +325,7 @@ public abstract class Troop extends Entity {
 
     private double getAbsoluteSpeed(long elapsed) {
         // elapsed is in nanosec (10^(-9) sec) and speed is in tiles/minutes, so the speed in tiles/ns will be:
-        return elapsed / 1_000_000_000.0 * SPEEDS.get(SPEED_TYPE) / 60.0 ;
+        return elapsed / 1_000_000_000.0 * SPEED_TYPE.getTilesPerMinute() / 60.0 ;
     }
 
     private void setAimUnitVector(double targetX, double targetY) {
@@ -343,8 +401,6 @@ public abstract class Troop extends Entity {
 
         setAimUnitVector(targetX, targetY);
     } 
-
-
 
     //
     // abstract methods

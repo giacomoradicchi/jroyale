@@ -9,22 +9,23 @@ import jroyale.utils.Enums.State;
 public class Skeleton extends MixedAttackerTroop {
 
     private static final String NAME = "Skeleton";
-    private static final byte SPEED = Troop.VERY_FAST;
+    private static final Speed SPEED = Speed.VERY_FAST;
+    private static final Range MELEE = Range.SHORT;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.5;
     private static final int FPS_ANIMATION = 10;
     private static final long LOAD_TIME = (long) (1.0 * 1_000_000_000L);
 
     private static final int HITPOINTS = 677;
-    private static final int DAMAGE = 355;
-    private static final int HIT_FRAME = 1;
+    private static final int DAMAGE = 55;
+    private static final int HIT_FRAME = 2;
 
     public Skeleton(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public Skeleton(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, side);
+        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public static void setTotalAnimationSteps(Map<State,Integer> totalAnimationSteps) {

@@ -6,25 +6,25 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 
-public class Pekka extends MixedAttackerTroop {
+public class Valkyrie extends MixedAttackerTroop{
 
-    private static final String NAME = "Pekka";
-    private static final Speed SPEED = Speed.SLOW;
-    private static final Range MELEE = Range.MEDIUM;
+    private static final String NAME = "Valkyrie";
+    private static final Speed SPEED = Speed.MEDIUM;
+    private static final Range MELEE = Range.LONG;
     private static Map<State, Integer> totalAnimationSteps;
-    private static final double COLLISION_RADIUS = 0.75;
-    private static final int FPS_ANIMATION = 12;
-    private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
-    private static final int HIT_FRAME = 5;
+    private static final double COLLISION_RADIUS = 0.5;
+    private static final int FPS_ANIMATION = 15;
+    private static final long LOAD_TIME = (long) (1.0 * 1_000_000_000L);
 
-    private static final int HITPOINTS = 1598;
-    private static final int DAMAGE = 99;
+    private static final int HITPOINTS = 677;
+    private static final int DAMAGE = 355;
+    private static final int HIT_FRAME = 4;
 
-    public Pekka(double x, double y, Side side) {
+    public Valkyrie(double x, double y, Side side) {
         super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
-    public Pekka(int n, int m, Side side) {
+    public Valkyrie(int n, int m, Side side) {
         super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
@@ -39,18 +39,13 @@ public class Pekka extends MixedAttackerTroop {
     }
 
     @Override
-    public double getCollisionRadius() {
-        return COLLISION_RADIUS;
-    }
-
-    @Override
     public int getFPSAnimation() {
         return FPS_ANIMATION;
     }
 
     @Override
     public EntityType getType() {
-        return EntityType.PEKKA;
+        return EntityType.VALKYRIE;
     }
 
     @Override
@@ -58,10 +53,15 @@ public class Pekka extends MixedAttackerTroop {
         return totalAnimationSteps.get(state);
     }
 
+    @Override
+    public double getCollisionRadius() {
+        return COLLISION_RADIUS;
+    }
+    
+
     // static methods
 
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
-        Pekka.totalAnimationSteps = totalAnimationSteps;
+        Valkyrie.totalAnimationSteps = totalAnimationSteps;
     }
-    
 }

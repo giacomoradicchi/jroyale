@@ -6,7 +6,7 @@ import jroyale.utils.Enums.Side;
 
 public class SkeletonCard extends Card {
 
-    private static Card instance;
+    private static SkeletonCard instance;
     private static final byte ELIXIR_COST = 1;
 
     private SkeletonCard() {

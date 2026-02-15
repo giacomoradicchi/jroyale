@@ -1,6 +1,7 @@
 package jroyale.view.entity_view.towers;
 
 import javafx.scene.image.Image;
+import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -42,12 +43,12 @@ public class ArcherTowerView extends TowerView{
 
      @Override
     public Image getPlayerTowerImage() {
-        return new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE));
+        return ImageUtils.enhanceOpacity(new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE)));
     }
 
     @Override
     public Image getOpponentTowerImage() {
-        return new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE));
+        return ImageUtils.enhanceOpacity(new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE)));
     }
     
     // static methods
