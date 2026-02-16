@@ -63,6 +63,8 @@ public class GameEngine implements IGameEngine {
                     controllerForView.renderEntity(
                         controllerForView.logicToGraphicX(e.getX()),
                         controllerForView.logicToGraphicY(e.getY()),
+                        e.getHitPoints(),
+                        e.getMaxHitPoints(),
                         controllerForView.getDx() * e.getCollisionRadius(),
                         e.getDirection().angle(),
                         e.getCurrentAnimationIndex(),

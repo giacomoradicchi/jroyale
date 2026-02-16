@@ -28,7 +28,7 @@ public class ArcherTowerView extends TowerView{
     }
 
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
             Side side) {
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
@@ -41,7 +41,12 @@ public class ArcherTowerView extends TowerView{
         );
     }
 
-     @Override
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * playerTowerImage.getHeight();
+    }
+
+    @Override
     public Image getPlayerTowerImage() {
         return ImageUtils.enhanceOpacity(new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE)));
     }

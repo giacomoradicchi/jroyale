@@ -49,7 +49,7 @@ public class GiantView extends TroopView {
 
     
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side) {
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side) {
 
         /* Image image = spriteBuffer.get(getFrameIndex(angleDirection, currentFrame, state));
         
@@ -87,6 +87,11 @@ public class GiantView extends TroopView {
             View2.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
         }
         
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * SPRITES_HEIGHT;
     }
     
 

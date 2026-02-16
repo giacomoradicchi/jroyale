@@ -77,9 +77,9 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double shadowRadius, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state,
             Side side, EntityType type) {
-        view.renderEntity(centreX, centreY, shadowRadius, angleDirection, currentFrame, state, side, type);
+        view.renderEntity(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side, type);
     }
 
     @Override

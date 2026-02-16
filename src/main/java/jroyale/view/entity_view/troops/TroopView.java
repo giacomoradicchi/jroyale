@@ -17,6 +17,7 @@ public abstract class TroopView extends EntityView {
     protected static final String TROOPS_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/troops/";
 
     protected final Map<AnimationKey, SpriteAnimation> animationBuffer = new HashMap<>();
+    protected final double SPRITES_HEIGHT;
     protected final Image spellIcon;
     private static final int CORNER_RADIUS = 20; // pixels
 
@@ -29,6 +30,7 @@ public abstract class TroopView extends EntityView {
 
     protected TroopView() {
         initAnimationBuffer();
+        SPRITES_HEIGHT = animationBuffer.values().iterator().next().getFrame(0).getHeight(); // absolute height (in pixels) of every sprite.
         Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
         spellIcon = temp;
     }

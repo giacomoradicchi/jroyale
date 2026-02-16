@@ -23,7 +23,7 @@ public interface IControllerForView {
 
     public void renderArena();
 
-    public void renderEntity(double centreX, double centreY, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type);
+    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type);
 
     public double logicToGraphicX(double logicX);
 
