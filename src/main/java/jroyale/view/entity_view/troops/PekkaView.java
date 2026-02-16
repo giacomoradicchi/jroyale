@@ -106,7 +106,7 @@ public class PekkaView extends TroopView{
     }
 
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
             Side side) {
         AnimationKey key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
@@ -118,6 +118,11 @@ public class PekkaView extends TroopView{
             flipped = 1;
 
         View2.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * SPRITES_HEIGHT;
     }
 
     // static methods

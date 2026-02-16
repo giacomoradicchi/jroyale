@@ -110,7 +110,7 @@ public class ValkyrieView extends TroopView {
     }
 
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
             Side side) {
         AnimationKey key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
@@ -126,6 +126,11 @@ public class ValkyrieView extends TroopView {
         if(state == State.ATTACK)
             // swirl rendering
             View2.getInstance().renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height);
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * SPRITES_HEIGHT;
     }
 
     // static methods

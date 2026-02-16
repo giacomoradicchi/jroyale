@@ -42,7 +42,7 @@ public class MiniPekkaView extends TroopView {
 
     
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame,
             State state, Side side) {
         
 
@@ -56,6 +56,11 @@ public class MiniPekkaView extends TroopView {
             flipped = 1;
 
         View2.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * SPRITES_HEIGHT;
     }
     
 

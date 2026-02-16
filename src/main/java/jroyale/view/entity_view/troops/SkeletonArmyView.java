@@ -17,6 +17,7 @@ public class SkeletonArmyView extends SkeletonView {
     protected Image getRawSpellIcon() {
         return new Image(SkeletonArmyView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SPELL_ICON_RELATIVE_PATH));
     }
+    
 
     // static methods
 

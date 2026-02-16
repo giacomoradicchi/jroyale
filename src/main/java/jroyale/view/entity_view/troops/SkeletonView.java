@@ -71,7 +71,7 @@ public abstract class SkeletonView extends TroopView {
     }
 
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame,
             State state, Side side) {
         
         // skeleton has the same png's for both player and opponent, so it will always drawned 
@@ -88,6 +88,11 @@ public abstract class SkeletonView extends TroopView {
         
 
         View2.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * SPRITES_HEIGHT;
     }
 
     @Override

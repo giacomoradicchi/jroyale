@@ -174,32 +174,7 @@ public class View2 implements IView2 {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
-
-        /* renderVector(centreX, centreY, angleDirection);
-
-        Color color = Color.BLUE;
-        if (side == Side.OPPONENT) {
-            color = Color.RED;
-        }
-
-        fillPoint(
-            centreX, 
-            centreY,
-            color
-        );  */
-
-        /* Color color = Color.BLUE;
-        if (side == Side.OPPONENT) {
-            color = Color.RED;
-        }
-
-        fillPoint(
-            centreX, 
-            centreY,
-            10,
-            color
-        ); */
+    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
 
         // Definiamo il gradiente radiale
         gc.save();
@@ -218,8 +193,8 @@ public class View2 implements IView2 {
         gc.setFill(gradient);
         gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, shadowRadius*2, shadowRadius*2); // Disegna il cerchio
         gc.restore();
-        
-        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, angleDirection, currentFrame, state, side);
+
+        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, currentHealth, maxHealth, angleDirection, currentFrame, state, side);
         
         
     }

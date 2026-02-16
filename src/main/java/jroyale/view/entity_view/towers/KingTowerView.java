@@ -29,7 +29,7 @@ public class KingTowerView extends TowerView {
     }
 
     @Override
-    public void render(double centreX, double centreY, double angleDirection, int currentFrame, State state,
+    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
             Side side) {
 
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
@@ -41,6 +41,11 @@ public class KingTowerView extends TowerView {
             img.getWidth() * SCALE, 
             img.getHeight() * SCALE
         );
+    }
+
+    @Override
+    public double getSpritesHeight() {
+        return SCALE * playerTowerImage.getHeight();
     }
 
     @Override
