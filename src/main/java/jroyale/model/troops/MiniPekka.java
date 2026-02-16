@@ -14,7 +14,7 @@ public class MiniPekka extends MixedAttackerTroop {
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.45;
     private static final int FPS_ANIMATION = 18; //18
-    private static final long LOAD_TIME = (long) (1.3 * 1_000_000_000L);
+    private static final long LOAD_TIME = (long) (1.6 * 1_000_000_000L);
 
     private static final int HITPOINTS = 677;
     private static final int DAMAGE = 355;
