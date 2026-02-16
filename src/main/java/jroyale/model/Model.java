@@ -52,16 +52,7 @@ public class Model implements IModel {
     private long lastTimeStamp;
 
 
-    private Model() {
-        
-    }
-
-    public static IModel getIstance() {
-        if (istance == null) {
-            istance = new Model();
-        }
-        return istance;
-    }
+    private Model() {}
 
     @Override
     public void init() {
@@ -364,5 +355,14 @@ public class Model implements IModel {
                 playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
             }
         }
+    }
+
+    // static methods
+
+    public static IModel getIstance() {
+        if (istance == null) {
+            istance = new Model();
+        }
+        return istance;
     }
 }

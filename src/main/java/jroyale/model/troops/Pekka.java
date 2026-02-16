@@ -14,7 +14,7 @@ public class Pekka extends MixedAttackerTroop {
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
-    private static final long LOAD_TIME = (long) (1 * 1_000_000_000);
+    private static final long LOAD_TIME = (long) (1.8 * 1_000_000_000);
     private static final int HIT_FRAME = 5;
 
     private static final int HITPOINTS = 1598;

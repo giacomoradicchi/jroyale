@@ -31,22 +31,20 @@ public class GameEngine implements IGameEngine {
         controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
         ); 
-        /* controllerForModel.addTroop(
+        controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); 
+        controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
         ); 
         controllerForModel.addTroop(
-            new Pekka(10, 5, Side.OPPONENT)
+            new Valkyrie(30, 5, Side.PLAYER)
+        );
+        
+        controllerForModel.addTroop(
+            new Giant(10, 5, Side.OPPONENT)
         );
 
-        controllerForModel.addTroop(
-            new Valkyrie(22, 5, Side.PLAYER)
-        );
-        controllerForModel.addTroop(
-            new Skeleton(22, 6, Side.PLAYER)
-        );
-        controllerForModel.addTroop(
-            new Skeleton(23, 6, Side.PLAYER)
-        ); */
         
 
         gameLoop = new AnimationTimer() {

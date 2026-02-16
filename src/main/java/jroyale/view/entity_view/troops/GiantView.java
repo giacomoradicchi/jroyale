@@ -26,9 +26,9 @@ public class GiantView extends TroopView {
 
     private static final String TROOP_PATH = "giant/";
     private static final String HEADER_NAME_FILE = "chr_giant_sprite_";
+    private static final double ALPHA_THRESHOLD = 0.25;
     
 
-    private static final Map<State, String> STATE_PATH = getStatePath();
     private static final int NUM_INDEX_DIGITS = 3;
     private final double SCALE = 0.65;
     private static final double shiftX = 4;
@@ -171,7 +171,7 @@ public class GiantView extends TroopView {
         temp = ImageUtils.enhanceOpacity(temp);
         // TODO: farlo più robusto
         temp = ImageUtils.crop(image, 0, 0, (int) temp.getWidth() - 30, (int) temp.getHeight());
-        return ImageUtils.enhanceOpacity(temp);
+        return ImageUtils.enhanceOpacity(temp, ALPHA_THRESHOLD);
     }
     
     @Override

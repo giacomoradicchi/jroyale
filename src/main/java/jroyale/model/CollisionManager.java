@@ -6,16 +6,18 @@ import java.util.Set;
 import jroyale.utils.Circle;
 import jroyale.utils.Point;
 
-public class CollisionManager {
+public class CollisionManager implements ICollisionManager{
 
-    private static IModel model = Model.getIstance();
+    private static CollisionManager instance = null;
 
     // buffer variables to avoid "new" constructor each time
-    private static Circle collisionCircle1 = new Circle();
-    private static Circle collisionCircle2 = new Circle();
-    private static Point bufferedPoint = new Point();
+    private Circle collisionCircle1 = new Circle();
+    private Circle collisionCircle2 = new Circle();
+    private Point bufferedPoint = new Point();
 
-    public static Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY) {
+    private CollisionManager() {}
+
+    public Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY) {
         // making sure abs(shiftX) and abs(shiftY) are less than 1, so there won't be unchecked tiles in the middle
         double biggestCoord = Math.max(Math.abs(shiftX), Math.abs(shiftY));
         if (biggestCoord > 1) {
@@ -53,19 +55,19 @@ public class CollisionManager {
 
         // checking X
 
-        if (!model.isTileReachable(currentI, nextJ)) {
+        if (!Model.getIstance().isTileReachable(currentI, nextJ)) {
             newX = resolveCollisionCoordinate(directionOnX, nextJ, radius);
             foundUnreachableTile = true;
         } 
 
         // checking Y
-        if (!model.isTileReachable(nextI, currentJ)) {
+        if (!Model.getIstance().isTileReachable(nextI, currentJ)) {
             newY = resolveCollisionCoordinate(directionOnY, nextI, radius);
             foundUnreachableTile = true;
         } 
 
         // checking both if not found on specific direction
-        if (!foundUnreachableTile && !model.isTileReachable(nextI, nextJ)) {
+        if (!foundUnreachableTile && !Model.getIstance().isTileReachable(nextI, nextJ)) {
             if (shiftX > shiftY) { 
                 // fixingOnY
                 newY = resolveCollisionCoordinate(directionOnY, nextI , radius);
@@ -79,7 +81,7 @@ public class CollisionManager {
         return bufferedPoint;
     }
 
-    private static double resolveCollisionCoordinate(int direction, int nextTile, double radius) {
+    private double resolveCollisionCoordinate(int direction, int nextTile, double radius) {
         double newCoordinate = 0;
         if (direction == +1) {
             newCoordinate = nextTile - radius;
@@ -89,12 +91,8 @@ public class CollisionManager {
         return newCoordinate;
     }
 
-    public static boolean isTileReachable(int i, int j) {
-        return model.isTileReachable(i, j);
-    }
-
     // using Set instead of List to avoid duplicates
-    public static Set<Entity> checkCollisions(Entity e) {
+    public Set<Entity> getCollidingEntitiesWith(Entity e) {
         // getting list of sorrounding entities that might collide with entity e
         Set<Entity> possibleEntities = getPossibleCollidingEntities(e);
 
@@ -120,7 +118,7 @@ public class CollisionManager {
     // private methods
     //  
 
-    private static Set<Entity> getPossibleCollidingEntities(Entity e) {
+    private Set<Entity> getPossibleCollidingEntities(Entity e) {
         Set<Entity> foundEntities = new HashSet<>();
         // even though there might be some duplicates in the map, since we're using
         // set instead of list, there won't be any duplicate.
@@ -147,7 +145,7 @@ public class CollisionManager {
 
         for (int i = 0; i <= limit; i++) {
             for (int j = 0; j <= limit; j++) {
-                foundEntities.addAll(model.getEntitiesOnTile(iStart + i, jStart + j));
+                foundEntities.addAll(Model.getIstance().getEntitiesOnTile(iStart + i, jStart + j));
             }
         }
 
@@ -160,27 +158,36 @@ public class CollisionManager {
         return foundEntities;
     }
 
-    private static boolean checkCollision(Entity a, Entity b) {
+    @Override
+    public boolean checkCollision(Entity e1, Entity e2) {
         // if the intersection of the two shapes is not empty, than they intersect
 
         // initializing first circle
-        setCollisionCircle1(a.getX(), a.getY(), a.getCollisionRadius());
+        setCollisionCircle1(e1.getX(), e1.getY(), e1.getCollisionRadius());
 
         // initializing second circle
-        setCollisionCircle2(b.getX(), b.getY(), b.getCollisionRadius());
+        setCollisionCircle2(e2.getX(), e2.getY(), e2.getCollisionRadius());
 
         return collisionCircle1.collides(collisionCircle2);
     }
 
-    private static void setCollisionCircle1(double x, double y, double radius) {
+    private void setCollisionCircle1(double x, double y, double radius) {
         collisionCircle1.setCenterX(x);
         collisionCircle1.setCenterY(y);
         collisionCircle1.setRadius(radius);
     }
 
-    private static void setCollisionCircle2(double x, double y, double radius) {
+    private void setCollisionCircle2(double x, double y, double radius) {
         collisionCircle2.setCenterX(x);
         collisionCircle2.setCenterY(y);
         collisionCircle2.setRadius(radius);
+    }
+
+    // static methods
+    public static ICollisionManager getInstance() {
+        if (instance == null) {
+            instance = new CollisionManager();
+        }
+        return instance;
     }
 }

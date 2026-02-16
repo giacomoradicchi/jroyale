@@ -40,9 +40,9 @@ public abstract class Troop extends Entity {
     public static enum Range {
         // based on: https://clashroyale.fandom.com/wiki/Cards
 
-        SHORT(0.8),
-        MEDIUM(1.2),
-        LONG(1.6);
+        SHORT(2), //0.8
+        MEDIUM(3), //1.2
+        LONG(4); //1.6
 
         private double radius;
 
@@ -67,7 +67,7 @@ public abstract class Troop extends Entity {
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
     protected long elapsedIdleTime;
 
-    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
+    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
     protected boolean enemyHit, targetKilled;
 
@@ -153,10 +153,10 @@ public abstract class Troop extends Entity {
         fixDistance(other);
 
         if (other != target) {
-            setTangentSpeed(
+            /* setTangentSpeed(
                 position.getX() - other.getX(), // dx
                 position.getY() - other.getY()  // dy
-            );
+            ); */
         } 
     
     }
@@ -188,18 +188,17 @@ public abstract class Troop extends Entity {
     //
 
     private void move() {
-        
-        handleCollisions();
 
         if (state == State.ATTACK) {
             handleAttackState();
             
         }
 
-        if (state == State.MOVE) {
+        if (state != State.ATTACK) {
             shiftPosition(speed);
         }
         
+        handleCollisions();
         
         
 
@@ -207,11 +206,17 @@ public abstract class Troop extends Entity {
 
     private void handleIdleState(long elapsed) {
         elapsedIdleTime += elapsed;
+        
+        if (elapsedIdleTime < getLoadTime()) return;
 
-        if (elapsedIdleTime >= getLoadTime()) {
+        // idle time terminated: decide wheather attack the troop or move toward the target based on collision.
+        if (CollisionManager.getInstance().checkCollision(this, target)) {
             setState(State.ATTACK);
-            elapsedIdleTime = 0;
+        } else {
+            setState(State.MOVE);
         }
+            
+        elapsedIdleTime = 0;
     }
 
     private void handleAttackState() {
@@ -236,7 +241,7 @@ public abstract class Troop extends Entity {
     }
 
     private void handleCollisions() {
-        for (Entity other : CollisionManager.checkCollisions(this)) {
+        for (Entity other : CollisionManager.getInstance().getCollidingEntitiesWith(this)) {
             if (other == target && state == State.MOVE) {
                 setState(State.ATTACK);
             }
@@ -261,18 +266,15 @@ public abstract class Troop extends Entity {
         double distance = getCollisionRadius() + other.getCollisionRadius();
         double shiftX = distance * Math.cos(angle);
         double shiftY = distance * Math.sin(angle);
-
+        
         shiftPosition(
             other.getX() - position.getX() + shiftX, 
             other.getY() - position.getY() + shiftY
-        );
+        );  
+
         // it's the same as:
         // position.setX(other.getX() + shiftX);
         // position.setY(other.getY() + shiftY);
-        
-        /* 
-        // checking if entity is still inside reachable tiles.
-        CollisionManager.pushOutOfUnreachableTiles(this, shiftX, shiftY); */
     }
 
     private void setTangentSpeed(double dx, double dy) {
@@ -286,11 +288,7 @@ public abstract class Troop extends Entity {
         double dot1 = TANGENT_VECTOR_1.dotProduct(speed); 
         double dot2 = TANGENT_VECTOR_2.dotProduct(speed); 
 
-        if (dot1 > dot2) { // the closest is tangentVector1
-            speed.interpolate(TANGENT_VECTOR_1, TURNING_SPEED);
-        } else {
-            speed.interpolate(TANGENT_VECTOR_2, TURNING_SPEED);
-        }
+        speed.interpolate(dot1 >= dot2 ? TANGENT_VECTOR_1 : TANGENT_VECTOR_2, TURNING_SPEED);
     }
 
     private void updateSpeed(long elapsed) {
