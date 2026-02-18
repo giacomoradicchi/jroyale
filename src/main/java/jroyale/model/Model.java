@@ -349,7 +349,7 @@ public class Model implements IModel {
     private void initDroppableTiles() {
         // every opponent tower are not damaged
 
-        int start = (int) Math.floor(Entity.LEFT_BRIDGE_START_POS.getY());
+        int start = (int) Math.floor(ArenaData.LEFT_BRIDGE_START_POS.getY());
         for (int i = start; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);

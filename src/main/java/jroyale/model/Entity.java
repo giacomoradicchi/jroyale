@@ -6,13 +6,6 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 
 public abstract class Entity implements Comparable<Entity>{
-
-    // bridges position
-    public static final Point LEFT_BRIDGE_START_POS = new Point(3.5,17);
-    public static final Point RIGHT_BRIDGE_START_POS = new Point(14.5,17);
-    public static final Point LEFT_BRIDGE_END_POS = new Point(3.5,15);
-    public static final Point RIGHT_BRIDGE_END_POS = new Point(14.5,15);
-
     
 
     private int currentI, currentJ; // current location in map[i][j] tile
@@ -203,4 +196,5 @@ public abstract class Entity implements Comparable<Entity>{
     public abstract int getFPSAnimation();
 
     public abstract EntityType getType();
+
 }

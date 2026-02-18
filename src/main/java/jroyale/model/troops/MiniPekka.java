@@ -10,7 +10,7 @@ public class MiniPekka extends MixedAttackerTroop {
 
     private static final String NAME = "Mini-Pekka";
     private static final Speed SPEED = Speed.FAST;
-    private static final Range MELEE = Range.MEDIUM;
+    private static final MeleeRange MELEE = MeleeRange.MEDIUM;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.45;
     private static final int FPS_ANIMATION = 18; //18

@@ -20,7 +20,7 @@ public abstract class SkeletonView extends TroopView {
     private static final String HEADER_NAME_FILE = "chr_skeleton_sprite_";
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private final double SCALE = 0.65;
+    private final double SCALE = 0.45;
     private static final double shiftX = 0;
     private static final double shiftY = -4;
 

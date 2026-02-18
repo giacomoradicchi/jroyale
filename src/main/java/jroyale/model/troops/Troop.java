@@ -4,6 +4,7 @@ package jroyale.model.troops;
 import java.util.EnumMap;
 import java.util.Map;
 
+import jroyale.model.ArenaData;
 import jroyale.model.CollisionManager;
 import jroyale.model.EnemyTargetSelector;
 import jroyale.model.Entity;
@@ -37,16 +38,16 @@ public abstract class Troop extends Entity {
         }
     }
 
-    public static enum Range {
+    public static enum MeleeRange {
         // based on: https://clashroyale.fandom.com/wiki/Cards
 
-        SHORT(2), //0.8
-        MEDIUM(3), //1.2
-        LONG(4); //1.6
+        SHORT(0.8), //0.8
+        MEDIUM(1.2), //1.2
+        LONG(1.6); //1.6
 
         private double radius;
 
-        private Range(double radiusRange) {
+        private MeleeRange(double radiusRange) {
             this.radius = radiusRange;
         }
 
@@ -58,23 +59,24 @@ public abstract class Troop extends Entity {
     private String name;
     private final Speed SPEED_TYPE;
     private FrameManager frameManager;
-    private Range melee;
+    private MeleeRange melee;
 
-    
+    private static final double DEFAULT_VISION_RANGE = 6;
+
 
     protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
     protected long elapsedIdleTime;
 
-    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
+    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
     protected boolean enemyHit, targetKilled;
 
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
 
-    public Troop(String name, double x, double y, int healthPoints, int damage, Speed speedType, Range melee, Side side) {
+    public Troop(String name, double x, double y, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
         super(x, y, healthPoints, damage, side);
         this.name = name;
         this.frameManager = new FrameManager(this);
@@ -86,7 +88,7 @@ public abstract class Troop extends Entity {
         initSpeed();
     }
 
-    public Troop(String name, int n, int m, int healthPoints, int damage, Speed speedType, Range melee, Side side) {
+    public Troop(String name, int n, int m, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
         // The constructor puts the troop in the centre of the cell (n, m).
         // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
         // which is half a cell. In this way, the placing won't be in the top left corner; 
@@ -103,8 +105,12 @@ public abstract class Troop extends Entity {
         return new Point(speed);
     }
 
-    public double getRadiusRange() {
-        return melee.radius;
+    public double getMeleeRange() {
+        return melee.getRadiusRange();
+    }
+
+    public double getVisionRange() {
+        return DEFAULT_VISION_RANGE;
     }
 
     @Override
@@ -153,16 +159,16 @@ public abstract class Troop extends Entity {
         fixDistance(other);
 
         if (other != target) {
-            /* setTangentSpeed(
+            setTangentSpeed(
                 position.getX() - other.getX(), // dx
                 position.getY() - other.getY()  // dy
-            ); */
+            );
         } 
     
     }
 
     protected boolean selectClosestEnemy() {
-        Troop closestEnemy = EnemyTargetSelector.getInstance().getClosestEnemyOnRange(this);
+        Troop closestEnemy = EnemyTargetSelector.getInstance().getClosestEnemyInVisionRange(this);
 
         if (closestEnemy == null) { // this means it was not found any enemy in the troop range
             return false;
@@ -236,7 +242,7 @@ public abstract class Troop extends Entity {
         return false;
     }
 
-    private void attackTarget() {
+    protected void attackTarget() {
         target.setDamage(getDamage());
     }
 
@@ -266,15 +272,24 @@ public abstract class Troop extends Entity {
         double distance = getCollisionRadius() + other.getCollisionRadius();
         double shiftX = distance * Math.cos(angle);
         double shiftY = distance * Math.sin(angle);
-        
-        shiftPosition(
-            other.getX() - position.getX() + shiftX, 
-            other.getY() - position.getY() + shiftY
-        );  
 
+        double interpFactor = 1;
+        if (other instanceof Troop) {
+            interpFactor = getMass() / Math.max(getMass(), ((Troop) other).getMass()); // TODO: make it better
+        }
+
+        shiftPosition(
+            other.getX() - position.getX() + shiftX * interpFactor, 
+            other.getY() - position.getY() + shiftY * interpFactor
+        ); 
         // it's the same as:
         // position.setX(other.getX() + shiftX);
         // position.setY(other.getY() + shiftY);
+
+        other.shiftPosition(
+            - shiftX * (1 - interpFactor), 
+            - shiftY * (1 - interpFactor)
+        ); 
     }
 
     private void setTangentSpeed(double dx, double dy) {
@@ -366,13 +381,13 @@ public abstract class Troop extends Entity {
         double troopY = getY();
 
         
-        double bridgeStartY = Entity.LEFT_BRIDGE_START_POS.getY(); 
-        double bridgeEndY = Entity.LEFT_BRIDGE_END_POS.getY(); // left and right bridge have same Y cords
+        double bridgeStartY = ArenaData.LEFT_BRIDGE_START_POS.getY(); 
+        double bridgeEndY = ArenaData.LEFT_BRIDGE_END_POS.getY(); // left and right bridge have same Y cords
 
-        double leftBridgeStartX = Entity.LEFT_BRIDGE_START_POS.getX();
-        double rightBridgeStartX = Entity.RIGHT_BRIDGE_START_POS.getX();
-        double leftBridgeEndX = Entity.LEFT_BRIDGE_END_POS.getX();
-        double rightBridgeEndX = Entity.RIGHT_BRIDGE_END_POS.getX();
+        double leftBridgeStartX = ArenaData.LEFT_BRIDGE_START_POS.getX();
+        double rightBridgeStartX = ArenaData.RIGHT_BRIDGE_START_POS.getX();
+        double leftBridgeEndX = ArenaData.LEFT_BRIDGE_END_POS.getX();
+        double rightBridgeEndX = ArenaData.RIGHT_BRIDGE_END_POS.getX();
 
 
         if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
@@ -380,7 +395,7 @@ public abstract class Troop extends Entity {
             targetY = bridgeStartY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY < bridgeEndY) {
-            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = getX();
             targetY = bridgeEndY; 
         }
 
@@ -389,7 +404,7 @@ public abstract class Troop extends Entity {
             targetY = bridgeEndY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY > bridgeStartY) {
-            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = getX();
             targetY = bridgeStartY;
         }
 
@@ -409,5 +424,7 @@ public abstract class Troop extends Entity {
     protected abstract long getLoadTime(); // nanosec in Idle state before attacking again
 
     protected abstract int getHitFrame();
+
+    protected abstract double getMass();
 
 }
