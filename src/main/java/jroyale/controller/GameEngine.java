@@ -26,19 +26,30 @@ public class GameEngine implements IGameEngine {
 
         // TODO: remove it, just for debug
         controllerForModel.addTroop(
-            new MiniPekka(22, 10, Side.PLAYER)
+            new Valkyrie(22, 10, Side.PLAYER)
         );
         controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
         ); 
+        
         controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); controllerForModel.addTroop(
+            new Skeleton(8, 13, Side.OPPONENT)
+        ); controllerForModel.addTroop(
             new Skeleton(8, 13, Side.OPPONENT)
         ); 
         controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
         ); 
         controllerForModel.addTroop(
-            new Valkyrie(30, 5, Side.PLAYER)
+            new Valkyrie(23, 5, Side.PLAYER)
         );
         
         controllerForModel.addTroop(

@@ -10,7 +10,7 @@ public class Pekka extends MixedAttackerTroop {
 
     private static final String NAME = "Pekka";
     private static final Speed SPEED = Speed.SLOW;
-    private static final Range MELEE = Range.MEDIUM;
+    private static final MeleeRange MELEE = MeleeRange.MEDIUM;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;

@@ -2,6 +2,7 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
+import jroyale.model.EnemyTargetSelector;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -10,7 +11,7 @@ public class Valkyrie extends MixedAttackerTroop{
 
     private static final String NAME = "Valkyrie";
     private static final Speed SPEED = Speed.MEDIUM;
-    private static final Range MELEE = Range.LONG;
+    private static final MeleeRange MELEE = MeleeRange.LONG;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.5;
     private static final int FPS_ANIMATION = 15;
@@ -57,6 +58,13 @@ public class Valkyrie extends MixedAttackerTroop{
     public double getCollisionRadius() {
         return COLLISION_RADIUS;
     }
+
+    @Override 
+    protected void attackTarget() {
+        for (Troop enemy : EnemyTargetSelector.getInstance().getTroopsInMeleeRange(this)) {
+            enemy.setDamage(getDamage());
+        }
+    }
     
 
     // static methods
@@ -64,4 +72,6 @@ public class Valkyrie extends MixedAttackerTroop{
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
         Valkyrie.totalAnimationSteps = totalAnimationSteps;
     }
+
+
 }

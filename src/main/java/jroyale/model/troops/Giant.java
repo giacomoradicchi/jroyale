@@ -10,7 +10,7 @@ public class Giant extends TowerAttackerTroop {
     
     private static final String NAME = "Giant";
     private static final Speed SPEED = Speed.SLOW;
-    private static final Range MELEE = Range.LONG;
+    private static final MeleeRange MELEE = MeleeRange.LONG;
     private static Map<State, Integer> totalAnimationSteps;
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
