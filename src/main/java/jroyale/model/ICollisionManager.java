@@ -1,5 +1,6 @@
 package jroyale.model;
 
+import java.util.List;
 import java.util.Set;
 
 import jroyale.utils.Point;

@@ -1,8 +1,10 @@
 package jroyale.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import jroyale.model.troops.Troop;
 import jroyale.utils.Circle;
 import jroyale.utils.Point;
 
@@ -17,6 +19,7 @@ public class CollisionManager implements ICollisionManager{
 
     private CollisionManager() {}
 
+    @Override
     public Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY) {
         // making sure abs(shiftX) and abs(shiftY) are less than 1, so there won't be unchecked tiles in the middle
         double biggestCoord = Math.max(Math.abs(shiftX), Math.abs(shiftY));
@@ -92,6 +95,7 @@ public class CollisionManager implements ICollisionManager{
     }
 
     // using Set instead of List to avoid duplicates
+    @Override
     public Set<Entity> getCollidingEntitiesWith(Entity e) {
         // getting list of sorrounding entities that might collide with entity e
         Set<Entity> possibleEntities = getPossibleCollidingEntities(e);
@@ -113,10 +117,6 @@ public class CollisionManager implements ICollisionManager{
 
         return collidingEntities;
     }
-
-    //
-    // private methods
-    //  
 
     private Set<Entity> getPossibleCollidingEntities(Entity e) {
         Set<Entity> foundEntities = new HashSet<>();
@@ -184,6 +184,7 @@ public class CollisionManager implements ICollisionManager{
     }
 
     // static methods
+
     public static ICollisionManager getInstance() {
         if (instance == null) {
             instance = new CollisionManager();
