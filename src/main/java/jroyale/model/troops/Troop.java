@@ -101,6 +101,7 @@ public abstract class Troop extends Entity {
         return name;
     }
 
+    @Override
     public Point getSpeed() {
         return new Point(speed);
     }
@@ -156,14 +157,12 @@ public abstract class Troop extends Entity {
     // 
 
     protected void slideAlong(Entity other) {
-        fixDistance(other);
 
-        if (other != target) {
+        if (other != target)
             setTangentSpeed(
                 position.getX() - other.getX(), // dx
                 position.getY() - other.getY()  // dy
-            );
-        } 
+            ); 
     
     }
 
@@ -252,13 +251,82 @@ public abstract class Troop extends Entity {
                 setState(State.ATTACK);
             }
 
+            fixDistance(other);
+
             if (state != State.ATTACK || (state == State.ATTACK && other == target)) {
                 slideAlong(other);
             }
         }
     }
 
-    private void fixDistance(Entity other) { // distance will be the sum of both collision radius
+    private void fixDistance(Entity other) {
+        double dx = position.getX() - other.getX();
+        double dy = position.getY() - other.getY();
+        double currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+        // Evitiamo divisioni per zero se le entità sono perfettamente sovrapposte
+        if (currentDistance == 0) return;
+
+        double targetDistance = getCollisionRadius() + other.getCollisionRadius();
+
+        // Se non si stanno toccando, non fare nulla
+        if (currentDistance >= targetDistance) return;
+
+        // Di quanto dobbiamo spostarle in totale?
+        double overlap = targetDistance - currentDistance;
+
+        // Normalizziamo il vettore direzione (dx, dy)
+        double nx = dx / currentDistance;
+        double ny = dy / currentDistance;
+
+        // Calcoliamo i pesi basati sulla massa
+        // Se interpFactor è 0.5, si muovono uguali. 
+        // Se la mia massa è enorme, interpFactor si avvicina a 0 (io non mi muovo, si muove l'altro)
+
+        double thisMoveWeight;  // Più l'altro è pesante, più mi muovo io
+        double otherMoveWeight;    // Più io sono pesante, più si muove l'altro
+
+        // 1. Gestione Masse Infinite (Immobili)
+        if (getMass() == Double.POSITIVE_INFINITY && other.getMass() == Double.POSITIVE_INFINITY) {
+            return; // Entrambi immobili, non si sposta nessuno
+        } else if (other.getMass() == Double.POSITIVE_INFINITY) {
+            thisMoveWeight = 1.0;
+            otherMoveWeight = 0.0;
+        } else if (getMass() == Double.POSITIVE_INFINITY) {
+            thisMoveWeight = 0.0;
+            otherMoveWeight = 1.0;
+        } else {
+            // 2. Calcolo basato sul Momentum
+            double thisP = getMass() * speed.magnitude();
+            double otherP = other.getMass() * other.getSpeed().magnitude();
+            double totalP = thisP + otherP;
+
+            if (totalP > 0) {
+                // Chi ha meno momentum subisce più spostamento
+                thisMoveWeight = otherP / totalP;
+                otherMoveWeight = thisP / totalP;
+            } else {
+                // 3. Fallback: Se entrambi sono fermi, usa solo la massa
+                double totalMass = getMass() + other.getMass();
+                thisMoveWeight = other.getMass() / totalMass;
+                otherMoveWeight = getMass() / totalMass;
+            }
+        }
+        
+
+        // Applichiamo lo spostamento
+        this.shiftPosition(
+            nx * overlap * thisMoveWeight,
+            ny * overlap * thisMoveWeight
+        );
+
+        other.shiftPosition(
+            -nx * overlap * otherMoveWeight,
+            -ny * overlap * otherMoveWeight
+        );
+    }
+
+    private void fixDistance2(Entity other) { // distance will be the sum of both collision radius
         // getting direction of the line passing through both center points
         double dy = position.getY() - other.getY();
         double dx = position.getX() - other.getX();
@@ -269,13 +337,17 @@ public abstract class Troop extends Entity {
         double angle = Math.atan2(dy, dx);
 
         // fixing distance between entities. 
-        double distance = getCollisionRadius() + other.getCollisionRadius();
-        double shiftX = distance * Math.cos(angle);
-        double shiftY = distance * Math.sin(angle);
+        double minDistance = getCollisionRadius() + other.getCollisionRadius();
+
+        if (Math.sqrt(dx * dx + dy * dy) >= minDistance) return;
+
+        
+        double shiftX = minDistance * Math.cos(angle);
+        double shiftY = minDistance * Math.sin(angle);
 
         double interpFactor = 1;
         if (other instanceof Troop) {
-            interpFactor = getMass() / Math.max(getMass(), ((Troop) other).getMass()); // TODO: make it better
+            interpFactor = getMass() / (getMass() + other.getMass()); 
         }
 
         shiftPosition(
@@ -424,7 +496,5 @@ public abstract class Troop extends Entity {
     protected abstract long getLoadTime(); // nanosec in Idle state before attacking again
 
     protected abstract int getHitFrame();
-
-    protected abstract double getMass();
 
 }

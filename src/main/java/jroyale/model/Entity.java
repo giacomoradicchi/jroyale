@@ -1,5 +1,6 @@
 package jroyale.model;
 
+import jroyale.utils.GameData;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -17,6 +18,7 @@ public abstract class Entity implements Comparable<Entity>{
 
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
     private static final int DEFAULT_ANIMATION_STEPS = 1; // by default, entity has no animations.
+    private static final Point DEFAULT_SPEED = new Point(0, 0); // doesn't move
       
     
     protected Point position;
@@ -136,13 +138,20 @@ public abstract class Entity implements Comparable<Entity>{
         return damage;
     }
 
+    public double getMass() {
+        return GameData.getInstance().getEntityMass(getType());
+    }
+
+    public Point getSpeed() {
+        return DEFAULT_SPEED;
+    }
+
     @Override
     public int compareTo(Entity entity) {
         // this method is crucial to achieve depth rendering.
         // order will be based on Y position
         return Double.compare(position.getY(), entity.getY()); // ascendent order
     }
-
     
 
     //
