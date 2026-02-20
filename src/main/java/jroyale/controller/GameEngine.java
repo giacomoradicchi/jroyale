@@ -56,6 +56,10 @@ public class GameEngine implements IGameEngine {
             new Giant(10, 5, Side.OPPONENT)
         );
 
+        controllerForModel.addTroop(
+            new MiniPekka(10, 15, Side.OPPONENT)
+        );
+
         
 
         gameLoop = new AnimationTimer() {

@@ -1,9 +1,5 @@
 package jroyale.model.troops; 
 
-
-import java.util.EnumMap;
-import java.util.Map;
-
 import jroyale.model.ArenaData;
 import jroyale.model.CollisionManager;
 import jroyale.model.EnemyTargetSelector;
@@ -41,9 +37,9 @@ public abstract class Troop extends Entity {
     public static enum MeleeRange {
         // based on: https://clashroyale.fandom.com/wiki/Cards
 
-        SHORT(0.8), //0.8
-        MEDIUM(1.2), //1.2
-        LONG(1.6); //1.6
+        SHORT(0.8),
+        MEDIUM(1.2),
+        LONG(1.6);
 
         private double radius;
 
@@ -75,6 +71,8 @@ public abstract class Troop extends Entity {
 
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
+
+    private boolean shouldMove, shouldAttack, shouldIdle;
 
     public Troop(String name, double x, double y, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
         super(x, y, healthPoints, damage, side);
@@ -123,21 +121,46 @@ public abstract class Troop extends Entity {
     public void update(long elapsed) {
         frameManager.updateFrame(elapsed);
         updateTarget();
-        if(state != State.ATTACK) {
-            updateSpeed(elapsed);
-        }
-        
-        //System.out.println(state);
 
-        if (state == State.IDLE) {
-            handleIdleState(elapsed);
-        } else {
-            move();
-        }
         
-        
+        updateState();
 
+        switch (state) {
+            case State.MOVE:
+                handleMoveState(elapsed);
+                break;
+            case State.ATTACK:
+                handleAttackState();
+                break;
+            case State.IDLE:
+                handleIdleState(elapsed);
+                break;
+        
+            default:
+                break;
+        }
+
+        handleCollisions();
     }
+
+    private void updateState() {
+        
+        if (shouldAttack && isAnimationCompleted()) {
+            setState(State.ATTACK);
+            shouldAttack = false;
+            shouldMove = false;
+        } 
+        else if (shouldMove && isAnimationCompleted()) {
+            setState(State.MOVE);
+            shouldMove = false;
+            shouldAttack = false;
+        } 
+        else if (shouldIdle) {
+            setState(State.IDLE);
+            shouldIdle = false;
+        }
+    }
+
 
     @Override
     public void onDelete() {
@@ -152,16 +175,13 @@ public abstract class Troop extends Entity {
         return direction;
     }
 
-    // 
-    // protected methods
-    // 
-
-    protected void slideAlong(Entity other) {
+    protected void slideAlong(Entity other, double turning_speed) {
 
         if (other != target)
             setTangentSpeed(
                 position.getX() - other.getX(), // dx
-                position.getY() - other.getY()  // dy
+                position.getY() - other.getY(), // dy
+                turning_speed
             ); 
     
     }
@@ -181,56 +201,49 @@ public abstract class Troop extends Entity {
     protected boolean selectClosestTower() {
         if (target != null && target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
             target = TowerTargetSelector.getClosestEnemyTower(this);
-            setState(State.MOVE);
-            //enemyHit = false; // reset enemyHit
+            
+            shouldMove = true;
             return true;
         }
         return false;
     }
 
-    //
-    // private methods
-    //
-
-    private void move() {
-
-        if (state == State.ATTACK) {
-            handleAttackState();
-            
-        }
-
-        if (state != State.ATTACK) {
-            shiftPosition(speed);
-        }
-        
-        handleCollisions();
-        
-        
-
+    private void handleMoveState(long elapsed) {
+        updateSpeed(elapsed);
+        shiftPosition(speed);
     }
 
     private void handleIdleState(long elapsed) {
+        updateSpeed(elapsed);
+        
+
         elapsedIdleTime += elapsed;
         
-        if (elapsedIdleTime < getLoadTime()) return;
+        if (elapsedIdleTime < getLoadTime()) {
+            return;
+        }
+            
 
         // idle time terminated: decide wheather attack the troop or move toward the target based on collision.
-        if (CollisionManager.getInstance().checkCollision(this, target)) {
-            setState(State.ATTACK);
+        if (target != null && CollisionManager.getInstance().checkNextCollision(this, target)) {
+            shouldAttack = true;
         } else {
-            setState(State.MOVE);
+            shouldMove = true;
         }
             
         elapsedIdleTime = 0;
+
     }
 
     private void handleAttackState() {
+
         if (isHitFrameReached()) {
             attackTarget();
         } else if (isAnimationCompleted()) {
-            setState(State.IDLE);
+            shouldIdle = true;
             enemyHit = false; // reset enemyHit
         }
+
     }
 
     private boolean isHitFrameReached() {
@@ -248,14 +261,14 @@ public abstract class Troop extends Entity {
     private void handleCollisions() {
         for (Entity other : CollisionManager.getInstance().getCollidingEntitiesWith(this)) {
             if (other == target && state == State.MOVE) {
-                setState(State.ATTACK);
+                shouldAttack = true;
             }
 
             fixDistance(other);
 
-            if (state != State.ATTACK || (state == State.ATTACK && other == target)) {
+            /* if (state != State.ATTACK || (state == State.ATTACK && other == target)) {
                 slideAlong(other);
-            }
+            } */
         }
     }
 
@@ -320,51 +333,20 @@ public abstract class Troop extends Entity {
             ny * overlap * thisMoveWeight
         );
 
-        other.shiftPosition(
-            -nx * overlap * otherMoveWeight,
-            -ny * overlap * otherMoveWeight
-        );
+        if (other.getState() != State.IDLE)
+            other.shiftPosition(
+                -nx * overlap * otherMoveWeight,
+                -ny * overlap * otherMoveWeight
+            );
+
+        if (state == State.MOVE) 
+            slideAlong(other, thisMoveWeight/2);
+
+        if (other.getState() == State.MOVE && other instanceof Troop) 
+            ((Troop) other).slideAlong(this, otherMoveWeight/2);
     }
 
-    private void fixDistance2(Entity other) { // distance will be the sum of both collision radius
-        // getting direction of the line passing through both center points
-        double dy = position.getY() - other.getY();
-        double dx = position.getX() - other.getX();
-
-        if (dx == 0 && dy == 0) {
-            return;
-        }
-        double angle = Math.atan2(dy, dx);
-
-        // fixing distance between entities. 
-        double minDistance = getCollisionRadius() + other.getCollisionRadius();
-
-        if (Math.sqrt(dx * dx + dy * dy) >= minDistance) return;
-
-        
-        double shiftX = minDistance * Math.cos(angle);
-        double shiftY = minDistance * Math.sin(angle);
-
-        double interpFactor = 1;
-        if (other instanceof Troop) {
-            interpFactor = getMass() / (getMass() + other.getMass()); 
-        }
-
-        shiftPosition(
-            other.getX() - position.getX() + shiftX * interpFactor, 
-            other.getY() - position.getY() + shiftY * interpFactor
-        ); 
-        // it's the same as:
-        // position.setX(other.getX() + shiftX);
-        // position.setY(other.getY() + shiftY);
-
-        other.shiftPosition(
-            - shiftX * (1 - interpFactor), 
-            - shiftY * (1 - interpFactor)
-        ); 
-    }
-
-    private void setTangentSpeed(double dx, double dy) {
+    private void setTangentSpeed(double dx, double dy, double turning_speed) {
         // getting the two vectors that are tangent to the entities (they are opposite)
         TANGENT_VECTOR_1.setPoint(dx, dy).normalize().multiply(speed.magnitude()).rotate(90);
         TANGENT_VECTOR_2.setPoint(TANGENT_VECTOR_1).multiply(-1);
@@ -375,18 +357,10 @@ public abstract class Troop extends Entity {
         double dot1 = TANGENT_VECTOR_1.dotProduct(speed); 
         double dot2 = TANGENT_VECTOR_2.dotProduct(speed); 
 
-        speed.interpolate(dot1 >= dot2 ? TANGENT_VECTOR_1 : TANGENT_VECTOR_2, TURNING_SPEED);
+        speed.interpolate(dot1 >= dot2 ? TANGENT_VECTOR_1 : TANGENT_VECTOR_2, turning_speed);
     }
 
     private void updateSpeed(long elapsed) {
-        
-
-        /* if (hasReachedTarget()) { 
-            updateTarget();
-            
-            return;
-        } */
-
         
 
         fixPathTroughBridge();

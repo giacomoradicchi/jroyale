@@ -16,7 +16,7 @@ public class Giant extends TowerAttackerTroop {
     private static final int FPS_ANIMATION = 12;
     private static final long LOAD_TIME = (long) (1.5 * 1_000_000_000);
     private static final int HIT_FRAME = 7;
-    private static final int HITPOINTS = Integer.MAX_VALUE; //1598
+    private static final int HITPOINTS = 1598;
     private static final int DAMAGE = 300;
 
 

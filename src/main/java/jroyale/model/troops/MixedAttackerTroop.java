@@ -1,5 +1,6 @@
 package jroyale.model.troops;
 
+import jroyale.model.EnemyTargetSelector;
 import jroyale.model.TowerTargetSelector;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -16,8 +17,6 @@ public abstract class MixedAttackerTroop extends Troop {
 
     @Override
     protected void updateTarget() {
-        // TODO: mettere la ricerca delle truppe avversarie vicine nel caso in cui il target c'è e non è 
-        // una istanza di una torre e se non sono state trovate allora mettere una torre come target.
         
         if (!selectClosestEnemy()) {
             selectClosestTower();
