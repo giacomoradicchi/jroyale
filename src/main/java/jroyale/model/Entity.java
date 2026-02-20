@@ -187,6 +187,8 @@ public abstract class Entity implements Comparable<Entity>{
     }
 
     protected void setState(State newState) {
+        if (this.state == newState) return;
+        
         state = newState;
         currentAnimationIndex = 0;
         animationCompleted = false;

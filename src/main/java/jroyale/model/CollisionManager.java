@@ -171,6 +171,27 @@ public class CollisionManager implements ICollisionManager{
         return collisionCircle1.collides(collisionCircle2);
     }
 
+    @Override
+    public boolean checkNextCollision(Entity e1, Entity e2) {
+        // if the intersection of the two shapes is not empty, than they intersect
+
+        // initializing first circle
+        setCollisionCircle1(
+            e1.getX() + e1.getSpeed().getX(), 
+            e1.getY() + e1.getSpeed().getY(), 
+            e1.getCollisionRadius()
+        );
+
+        // initializing second circle
+        setCollisionCircle2(
+            e2.getX() + e2.getSpeed().getX(), 
+            e2.getY() + e2.getSpeed().getY(), 
+            e2.getCollisionRadius()
+        );
+
+        return collisionCircle1.collides(collisionCircle2);
+    }
+
     private void setCollisionCircle1(double x, double y, double radius) {
         collisionCircle1.setCenterX(x);
         collisionCircle1.setCenterY(y);

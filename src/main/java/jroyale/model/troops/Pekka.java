@@ -18,7 +18,7 @@ public class Pekka extends MixedAttackerTroop {
     private static final int HIT_FRAME = 5;
 
     private static final int HITPOINTS = 1598;
-    private static final int DAMAGE = 99;
+    private static final int DAMAGE = 355;
 
     public Pekka(double x, double y, Side side) {
         super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
