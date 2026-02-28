@@ -18,20 +18,40 @@ public class CardView {
     }
 
 
-    public void render(GraphicsContext gc, Image icon, Image outline) {
+    public void render(Image icon, Image outline) {
 
         // first, drawing of icon
-        gc.drawImage(icon, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
+        View2.getInstance().renderScreenImage(
+            icon, 
+            currentPos.getX(), 
+            currentPos.getY(), 
+            width, 
+            height
+        );
+        //gc.drawImage(icon, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
 
         // then, drawing of outline
-        gc.drawImage(outline, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
+        View2.getInstance().renderScreenImage(
+            outline, 
+            currentPos.getX(), 
+            currentPos.getY(), 
+            width, 
+            height
+        );
+        //gc.drawImage(outline, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
     }
 
-    public void render(GraphicsContext gc, Image outline) {
+    public void render(Image outline) {
 
         // drawing only outline (just for debug)
-        
-        gc.drawImage(outline, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
+        View2.getInstance().renderScreenImage(
+            outline, 
+            currentPos.getX() - width/2, 
+            currentPos.getY() - height/2, 
+            width, 
+            height
+        );
+        //gc.drawImage(outline, currentPos.getX() - width/2, currentPos.getY() - height/2, width, height);
     }
 
     public boolean isCardClicked(double mouseX, double mouseY) {

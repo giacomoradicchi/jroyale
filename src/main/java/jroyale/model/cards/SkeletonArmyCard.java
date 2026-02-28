@@ -2,6 +2,7 @@ package jroyale.model.cards;
 
 import jroyale.model.Model;
 import jroyale.model.troops.Skeleton;
+import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 
 public class SkeletonArmyCard extends Card {
@@ -10,7 +11,7 @@ public class SkeletonArmyCard extends Card {
     private static final byte ELIXIR_COST = 3;
 
     private SkeletonArmyCard() {
-        super(ELIXIR_COST);
+        super(ELIXIR_COST, EntityType.SKELETON_ARMY);
     }
     
     public static Card getIstance() {

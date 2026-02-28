@@ -102,8 +102,7 @@ public class Deck {
     }
 
     public Card getCurrentFourthCard() {
-        // TODO: add a fourth card.
-        return null;
+        return availableCards[3];
     }
 
     private void replaceCard() {

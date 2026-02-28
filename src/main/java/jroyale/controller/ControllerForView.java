@@ -152,6 +152,11 @@ public class ControllerForView implements IControllerForView {
         View2.getInstance().renderDragPlacementPreview(centreX, centreY);
     }
 
+    @Override
+    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4) {
+        View2.getInstance().renderPlayerDeck(card1, card2, card3, card4);
+    }
+
     private boolean isPositionValid() {
         return lastSelectedColumnIndex != -1 && lastSelectedRowIndex != -1;
     }

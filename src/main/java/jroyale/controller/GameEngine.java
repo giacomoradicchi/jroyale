@@ -47,7 +47,7 @@ public class GameEngine implements IGameEngine {
             new Skeleton(8, 13, Side.OPPONENT)
         ); 
         controllerForModel.addTroop(
-            new Skeleton(10, 13, Side.OPPONENT)
+            new MiniPekka(10, 13, Side.OPPONENT)
         ); 
         controllerForModel.addTroop(
             new Valkyrie(23, 5, Side.PLAYER)
@@ -79,11 +79,11 @@ public class GameEngine implements IGameEngine {
                         controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5), 
                         10, 
                         Color.BLUE
-                    ); */
+                    );  */
                     controllerForView.renderDragPlacementPreview(
                         controllerForView.logicToGraphicX(controllerForView.getSelectedCol() + 0.5),
                         controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5)
-                    );
+                    ); 
                 }
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
@@ -101,6 +101,13 @@ public class GameEngine implements IGameEngine {
                     );
                 }
 
+                controllerForView.renderPlayerDeck(
+                    controllerForModel.getFirstHandPlayerCard().getType(), 
+                    controllerForModel.getSecondHandPlayerCard().getType(), 
+                    controllerForModel.getThirdHandPlayerCard().getType(), 
+                    controllerForModel.getFourthHandPlayerCard().getType()
+                );
+
             }
         };
 
@@ -109,7 +116,6 @@ public class GameEngine implements IGameEngine {
 
     private void initGameLoop() {
         controllerForView.initView();
-        EntityBinder.getInstance().init();
         controllerForModel.initModel();
     }
 

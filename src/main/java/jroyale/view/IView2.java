@@ -43,10 +43,15 @@ public interface IView2 {
 
     public void stopDragPlacementPreview();
 
-    public void fillRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color);
+    public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color);
 
-    public void strokeRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color);
+    public void strokeWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color);
 
+    public void fillScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color);
+
+    public void strokeScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color);
+
+    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4);
 
     // for debug
     public void fillPoint(double centreX, double centreY, int size, Color color);

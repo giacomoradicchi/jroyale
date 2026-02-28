@@ -26,7 +26,7 @@ public class DragPlacementPreview {
     public void render(double centreX, double centreY) {
 
         // fill
-        View2.getInstance().fillRoundedSquared(
+        View2.getInstance().fillWorldRoundedRect(
             centreX, 
             centreY, 
             View2.getInstance().getDx() * scaleAnimation, 
@@ -38,7 +38,7 @@ public class DragPlacementPreview {
         );
 
         // outline
-        View2.getInstance().strokeRoundedSquared(
+        View2.getInstance().strokeWorldRoundedRect(
             centreX, 
             centreY, 
             View2.getInstance().getDx() * scaleAnimation, 
