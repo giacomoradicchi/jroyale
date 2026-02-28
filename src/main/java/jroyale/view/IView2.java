@@ -1,6 +1,7 @@
 package jroyale.view;
 
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -33,5 +34,11 @@ public interface IView2 {
     public void renderArena();
 
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type);
+
+    public void renderWorldShadow(double centreX, double centreY, double shadowRadius);
+
+
+    // for debug
+    public void fillPoint(double centreX, double centreY, int size, Color color);
 
 }

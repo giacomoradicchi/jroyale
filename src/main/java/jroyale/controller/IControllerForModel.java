@@ -18,4 +18,6 @@ public interface IControllerForModel {
     public List<Entity> getEntitiesOrderedByPosY();
 
     public void addTroop(Troop troop);
+
+    public boolean isPlayerEntityDroppableOnTile(int row, int col);
 } 

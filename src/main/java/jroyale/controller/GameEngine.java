@@ -1,6 +1,7 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.model.Entity;
 import jroyale.model.troops.Giant;
@@ -71,6 +72,15 @@ public class GameEngine implements IGameEngine {
                 
                 // rendering
                 controllerForView.renderArena();
+
+                if (controllerForView.shouldRenderDragPlacementPreview()) {
+                    controllerForView.fillPoint(
+                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol() + 0.5),
+                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5), 
+                        10, 
+                        Color.BLUE
+                    );
+                }
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
                     controllerForView.renderEntity(
