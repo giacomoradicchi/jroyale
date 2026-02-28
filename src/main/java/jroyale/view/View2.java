@@ -87,6 +87,8 @@ public class View2 implements IView2 {
         // clears canvas
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);  
 
+        DragPlacementPreview.getInstance().update(now);
+
         //globalScale -= 0.0001;
 
         //handleMouseEvents();
@@ -263,13 +265,59 @@ public class View2 implements IView2 {
         ); 
     }
 
-    private void renderDragPlacementPreview() {
+    @Override
+    public void startDragPlacementPreview() {
+        DragPlacementPreview.getInstance().startAnimation();
+    }
+
+    @Override
+    public void renderDragPlacementPreview(double centreX, double centreY) {
         /* if (isLastLogicMousePosValid()) {
             DragPlacementPreview.render(
                 gc, lastMouseColumnIndex, WH_RATIO, CANVAS_WIDTH, CANVAS_HEIGHT, globalScale, lastMouseRowIndex);
             .renderDragPlacementPreview(index2GraphicCentreX(lastMouseColumnIndex), index2GraphicCentreY(lastMouseRowIndex));
         } */
+        DragPlacementPreview.getInstance().render(centreX, centreY);
     }
+
+    @Override
+    public void stopDragPlacementPreview() {
+        DragPlacementPreview.getInstance().stopAnimation();
+    }
+
+    @Override
+    public void fillRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
+        gc.save();
+        gc.setGlobalAlpha(alpha);
+        gc.setFill(color);
+        gc.fillRoundRect(
+            fromWorldToScreenX(centerX) - width/2 * globalScale, 
+            fromWorldToScreenY(centerY) - height/2 * globalScale, 
+            width * globalScale, 
+            height * globalScale, 
+            arcWidth * globalScale, 
+            arcHeight * globalScale
+        );
+        gc.restore();
+    }
+
+    @Override
+    public void strokeRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
+        gc.save();
+        gc.setGlobalAlpha(alpha);
+        gc.setFill(color);
+        gc.setLineWidth(lineWidth * globalScale);
+        gc.strokeRoundRect(
+            fromWorldToScreenX(centerX) - width/2 * globalScale, 
+            fromWorldToScreenY(centerY) - height/2 * globalScale, 
+            width * globalScale, 
+            height * globalScale, 
+            arcWidth * globalScale, 
+            arcHeight * globalScale
+        );
+        gc.restore();
+    }
+
 
 
     @Override

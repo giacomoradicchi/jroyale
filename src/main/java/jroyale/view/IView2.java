@@ -37,6 +37,16 @@ public interface IView2 {
 
     public void renderWorldShadow(double centreX, double centreY, double shadowRadius);
 
+    public void startDragPlacementPreview();
+
+    public void renderDragPlacementPreview(double centreX, double centreY);
+
+    public void stopDragPlacementPreview();
+
+    public void fillRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color);
+
+    public void strokeRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color);
+
 
     // for debug
     public void fillPoint(double centreX, double centreY, int size, Color color);
