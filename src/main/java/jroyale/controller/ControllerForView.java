@@ -111,6 +111,7 @@ public class ControllerForView implements IControllerForView {
             if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
                 lastSelectedColumnIndex = col;
                 lastSelectedRowIndex = row;
+                View2.getInstance().startDragPlacementPreview();
             }
 
             return;
@@ -133,6 +134,7 @@ public class ControllerForView implements IControllerForView {
     public void handleMouseReleased() {
         // TODO: drop selected troop
         resetLastSelectedTile();
+        View2.getInstance().stopDragPlacementPreview();
     }
 
     private void resetLastSelectedTile() {
@@ -143,6 +145,11 @@ public class ControllerForView implements IControllerForView {
     @Override
     public boolean shouldRenderDragPlacementPreview() {
         return isPositionValid();
+    }
+
+    @Override
+    public void renderDragPlacementPreview(double centreX, double centreY) {
+        View2.getInstance().renderDragPlacementPreview(centreX, centreY);
     }
 
     private boolean isPositionValid() {

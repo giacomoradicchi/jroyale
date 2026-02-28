@@ -38,6 +38,8 @@ public interface IControllerForView {
 
     public boolean shouldRenderDragPlacementPreview();
 
+    public void renderDragPlacementPreview(double centreX, double centreY);
+
     public int getSelectedCol();
 
     public int getSelectedRow();

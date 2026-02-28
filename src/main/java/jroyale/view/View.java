@@ -270,7 +270,7 @@ public class View implements IView {
 
     @Override
     public void resetDragPlacementPreviewAnimation() {
-        DragPlacementPreview.resetAnimation();
+        //DragPlacementPreview.resetAnimation();
     }
 
     @Override
