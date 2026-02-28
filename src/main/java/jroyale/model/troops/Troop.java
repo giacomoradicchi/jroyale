@@ -120,9 +120,7 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         frameManager.updateFrame(elapsed);
-        updateTarget();
-
-        
+        updateTarget(); 
         updateState();
         updateSpeed(elapsed);
 
@@ -136,7 +134,6 @@ public abstract class Troop extends Entity {
             case State.IDLE:
                 handleIdleState(elapsed);
                 break;
-        
             default:
                 break;
         }

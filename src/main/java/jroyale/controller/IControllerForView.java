@@ -1,5 +1,6 @@
 package jroyale.controller;
 
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -25,8 +26,19 @@ public interface IControllerForView {
 
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type);
 
+    public void fillPoint(double centreX, double centreY, int size, Color color);
+
     public double logicToGraphicX(double logicX);
 
     public double logicToGraphicY(double logicY);
 
+    public void handleMouseSelectedTile(int row, int col);
+
+    public void handleMouseReleased();
+
+    public boolean shouldRenderDragPlacementPreview();
+
+    public int getSelectedCol();
+
+    public int getSelectedRow();
 }

@@ -1,5 +1,6 @@
 package jroyale.controller;
 
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.GameData;
 import jroyale.utils.Enums.EntityType;
@@ -18,6 +19,9 @@ public class ControllerForView implements IControllerForView {
     private static ControllerForView instance;
 
     private IView2 view;
+
+    private int lastSelectedColumnIndex = -1;
+    private int lastSelectedRowIndex = -1;
 
     private ControllerForView() {
         // empty
@@ -44,6 +48,7 @@ public class ControllerForView implements IControllerForView {
     public void initView() {
         initTroopsFramesPerDirection();
         view.init();
+
     }
 
     @Override
@@ -83,6 +88,11 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
+    public void fillPoint(double centreX, double centreY, int size, Color color) {
+        View2.getInstance().fillPoint(centreX, centreY, size, color);
+    }
+
+    @Override
     public double logicToGraphicX(double logicCoordX) {
         return view.getMapTopLeftCornerX() + logicCoordX * view.getDx();
     }
@@ -90,6 +100,63 @@ public class ControllerForView implements IControllerForView {
     @Override
     public double logicToGraphicY(double logicCoordY) {
         return view.getMapTopLeftCornerY() + logicCoordY * view.getDy();
+    }
+
+    @Override
+    public void handleMouseSelectedTile(int row, int col) {
+
+
+        // 1. Initializing first valid position (stays (-1,-1) if it's not droppable)
+        if (!isPositionValid()) {
+            if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
+                lastSelectedColumnIndex = col;
+                lastSelectedRowIndex = row;
+            }
+
+            return;
+        }
+
+
+        // 2. Tries the horizontal slide (based on previous row)
+        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(lastSelectedRowIndex, col)) {
+            lastSelectedColumnIndex = col;
+        }
+
+        // 3.Tries the vertical slide (based on previous col)
+        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, lastSelectedColumnIndex)) {
+            lastSelectedRowIndex = row;
+        }
+        
+    }
+
+    @Override
+    public void handleMouseReleased() {
+        // TODO: drop selected troop
+        resetLastSelectedTile();
+    }
+
+    private void resetLastSelectedTile() {
+        lastSelectedColumnIndex = -1;
+        lastSelectedRowIndex = -1;
+    }
+
+    @Override
+    public boolean shouldRenderDragPlacementPreview() {
+        return isPositionValid();
+    }
+
+    private boolean isPositionValid() {
+        return lastSelectedColumnIndex != -1 && lastSelectedRowIndex != -1;
+    }
+
+    @Override
+    public int getSelectedCol() {
+        return lastSelectedColumnIndex;
+    }
+
+    @Override
+    public int getSelectedRow() {
+        return lastSelectedRowIndex;
     }
 
     // static methods

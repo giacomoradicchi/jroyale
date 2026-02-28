@@ -11,6 +11,7 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import jroyale.controller.ControllerForModel;
 import jroyale.controller.ControllerForView;
+import jroyale.model.ArenaData;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.Skeleton;
 import jroyale.utils.Enums.EntityType;
@@ -52,7 +53,9 @@ public class View2 implements IView2 {
 
         loadSprites();
         EntityViewBinder.getInstance().init();
-        MouseManager.enableInput(stage.getScene());
+        MouseManager.getInstance().init(stage.getScene());
+
+        handleMouseEvents();
     }
 
     @Override
@@ -84,9 +87,9 @@ public class View2 implements IView2 {
         // clears canvas
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);  
 
-        //globalScale -= 0.001;
+        //globalScale -= 0.0001;
 
-        handleMouseEvents();
+        //handleMouseEvents();
     }
 
     @Override
@@ -115,8 +118,16 @@ public class View2 implements IView2 {
 
     @Override
     public void renderWorldImage(Image image, double centerX, double centerY, double width, double height) {
+        renderScreenImage(
+            image, 
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            width * globalScale, 
+            height * globalScale
+        );
+    }
 
-        /* 
+    /* 
         The transformed Center C' is computated by doing this operations in sequence:
 
         1) The point C = (centerX, centerY) is related to canvas top left corner, 
@@ -129,12 +140,14 @@ public class View2 implements IView2 {
             C' = C' + (WIDTH/2, HEIGHT/2)
         4) Simply use the renderScreenImage methon with C' as a center and 
             (width, height) * globalScale as the dimension of the image.
-         */
+    */
 
-        double transformedCenterX = centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(centerX));
-        double transformedCenterY = centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(centerY));
+    private double fromWorldToScreenX(double coordX) {
+        return centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(coordX));
+    }
 
-        renderScreenImage(image, transformedCenterX, transformedCenterY, width * globalScale, height * globalScale);
+    private double fromWorldToScreenY(double coordY) {
+        return centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(coordY));
     }
 
     private double topLeftToCenterCanvasX(double coordX) {
@@ -175,7 +188,19 @@ public class View2 implements IView2 {
 
     @Override
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
+        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side);
+    }
 
+    @Override
+    public void renderWorldShadow(double centerX, double centerY, double shadowRadius) {
+        renderScreenShadow(
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            shadowRadius * globalScale
+        );
+    }
+
+    private void renderScreenShadow(double centreX, double centreY, double shadowRadius) {
         // Definiamo il gradiente radiale
         gc.save();
         RadialGradient gradient = new RadialGradient(
@@ -193,10 +218,6 @@ public class View2 implements IView2 {
         gc.setFill(gradient);
         gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, shadowRadius*2, shadowRadius*2); // Disegna il cerchio
         gc.restore();
-
-        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, currentHealth, maxHealth, angleDirection, currentFrame, state, side);
-        
-        
     }
 
     private void loadSprites() {
@@ -208,26 +229,38 @@ public class View2 implements IView2 {
     // mouse Events
 
     private void handleMouseEvents() {
-        if (MouseManager.isMousePressed()) {
-            updateLogicMousePos();
-            renderDragPlacementPreview();
-        } 
+        stage.getScene().setOnMousePressed(event -> {
+            ControllerForView.getInstance().handleMouseSelectedTile(
+                getRowFromMouseY(event.getSceneY()),
+                getColFromMouseX(event.getSceneX())
+            );
+        });
 
-        if (MouseManager.isMouseReleased() && isLastLogicMousePosValid()) {
-            ControllerForModel.getInstance().addTroop(
-                new Skeleton(lastMouseRowIndex, lastMouseColumnIndex, Side.PLAYER)
-                // TODO: remove depencency with model.768i
-            ); 
+        stage.getScene().setOnMouseDragged(event -> {
+            ControllerForView.getInstance().handleMouseSelectedTile(
+                getRowFromMouseY(event.getSceneY()),
+                getColFromMouseX(event.getSceneX())
+            );
+
+            //System.out.println(getRowFromMouseY(event.getSceneY()) + ", " + getColFromMouseX(event.getSceneX()));
             
-            
-            resetLastLogicMousePos();
-            DragPlacementPreview.resetAnimation();
-        }
+        });
+
+        stage.getScene().setOnMouseReleased(event -> {
+            ControllerForView.getInstance().handleMouseReleased();
+        });
     }
 
-    private void resetLastLogicMousePos() {
-        lastMouseColumnIndex = -1;
-        lastMouseRowIndex = -1;
+    private int getColFromMouseX(double mouseX) {
+        return (int) Math.floor(
+            (mouseX - fromWorldToScreenX(getMapTopLeftCornerX())) / (getDx() * globalScale)
+        ); 
+    }
+
+    private int getRowFromMouseY(double mouseY) {
+        return (int) Math.floor(
+            (mouseY - fromWorldToScreenY(getMapTopLeftCornerY())) / (getDy() * globalScale)
+        ); 
     }
 
     private void renderDragPlacementPreview() {
@@ -238,41 +271,9 @@ public class View2 implements IView2 {
         } */
     }
 
-    private boolean isLastLogicMousePosValid() {
-        return lastMouseColumnIndex != -1 && lastMouseRowIndex != -1;
-    }
 
-    private void updateLogicMousePos() {
-        // casting logic coords into int so the card placing will fit exactly inside a tile
-
-        /* int logicX = (int) Math.floor(graphic2LogicX(MouseManager.getLastMousePositionX()));
-        int logicY = (int) Math.floor(graphic2LogicY(MouseManager.getLastMousePositionY()));
-
-        if (0 <= logicX && logicX < model.getColsCount()
-        &&  0 <= logicY && logicY < model.getRowsCount()
-        &&  model.isPlayerTroopDroppableOnTile(logicY, logicX)) {
-            lastMouseColumnIndex = logicX;
-            lastMouseRowIndex = logicY;
-        }  */
-        
-        /* else if (lastLogicMousePositionX != -1 && lastLogicMousePositionY != -1){
-            if (0 <= logicX && logicX < model.getColsCount() 
-            &&  model.getReachableTiles()[lastLogicMousePositionY][logicX] == true) {
-                lastLogicMousePositionX = logicX;
-                lastLogicMousePositionY = Math.max(0, Math.min(logicY, model.getRowsCount()-1));
-            } 
-            if (0 <= logicY && logicY < model.getRowsCount()
-            &&  model.getReachableTiles()[logicY][Math.max(0, Math.min(logicX, model.getColsCount()-1))] == true) {
-                lastLogicMousePositionX = Math.max(0, Math.min(logicX, model.getColsCount()-1));
-                lastLogicMousePositionY = logicY;
-            } 
-        }  */
-
-        
-    }
-
-
-    private void fillPoint(double centreX, double centreY, int size, Color color) {
+    @Override
+    public void fillPoint(double centreX, double centreY, int size, Color color) {
         gc.save();
 
         gc.setFill(color);
@@ -281,8 +282,8 @@ public class View2 implements IView2 {
         gc.fillOval(
             centreX - size/2, 
             centreY - size/2,
-            10, 
-            10
+            size, 
+            size
         );
 
         // restoring previous settings

@@ -97,7 +97,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public boolean isPlayerTroopDroppableOnTile(int i, int j) {
+    public boolean isPlayerEntityDroppableOnTile(int i, int j) {
         if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
             return false;
         

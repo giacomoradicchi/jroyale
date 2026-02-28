@@ -1,27 +1,32 @@
 package jroyale.view;
 
-import javafx.geometry.Point2D;
+import jroyale.utils.Point;
 import javafx.scene.Scene;
 
-class MouseManager {
+public class MouseManager implements IMouseManager{
     
-    private static boolean mousePressed = false, mouseReleased = false;
-    private static Point2D initialMousePosition; // mouse position when mouse is first pressed
-    private static Point2D lastMousePosition; // last mouse position when mouse is dragged 
+    private static MouseManager instance = null;
 
-    static void enableInput(Scene scene) {
+    private boolean mousePressed = false, mouseReleased = false;
+    private Point initialMousePosition = new Point(-1, -1); // mouse position when mouse is first pressed
+    private Point lastMousePosition = new Point(-1, -1);; // last mouse position when mouse is dragged 
+
+    private MouseManager() {} 
+
+    @Override
+    public void init(Scene scene) {
         scene.setOnMousePressed(event -> {
             mousePressed = true;
             double x = event.getSceneX();
             double y = event.getSceneY();
-            initialMousePosition = new Point2D(x, y);
-            lastMousePosition = new Point2D(x, y);
+            initialMousePosition.setPoint(x, y);
+            lastMousePosition.setPoint(x, y);
         });
 
         scene.setOnMouseDragged(event -> {
             double x = event.getSceneX(); // coordinata rispetto alla scena
             double y = event.getSceneY();
-            lastMousePosition = new Point2D(x, y);
+            lastMousePosition.setPoint(x, y);
         });
 
         scene.setOnMouseReleased(event -> {
@@ -30,11 +35,13 @@ class MouseManager {
         });
     }
 
-    static boolean isMousePressed() {
+    @Override
+    public boolean isMousePressed() {
         return mousePressed;
     } 
 
-    static boolean isMouseReleased() {
+    @Override
+    public boolean isMouseReleased() {
         // if mouse is released, this methods must return true only the first time
         // it's called, then it must return to false.
 
@@ -48,19 +55,33 @@ class MouseManager {
         return previousState;
     }
 
-    static double getInitialMousePositionX() {
+    @Override
+    public double getInitialMousePositionX() {
         return initialMousePosition.getX();
     }
 
-    static double getInitialMousePositionY() {
+    @Override
+    public double getInitialMousePositionY() {
         return initialMousePosition.getY();
     }
 
-    static double getLastMousePositionX() {
+    @Override
+    public double getLastMousePositionX() {
         return lastMousePosition.getX();
     }
 
-    static double getLastMousePositionY() {
+    @Override
+    public double getLastMousePositionY() {
         return lastMousePosition.getY();
+    }
+
+    // static methods
+
+    public static IMouseManager getInstance() {
+        if (instance == null) {
+            instance = new MouseManager();
+        }
+
+        return instance;
     }
 }

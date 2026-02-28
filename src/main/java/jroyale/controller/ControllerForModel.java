@@ -64,6 +64,11 @@ public class ControllerForModel implements IControllerForModel{
         Model.getIstance().addTroop(troop);
     }
 
+    @Override
+    public boolean isPlayerEntityDroppableOnTile(int row, int col) {
+        return Model.getIstance().isPlayerEntityDroppableOnTile(row, col);
+    }
+
     // static methods
     public static IControllerForModel getInstance() {
         if (instance == null) {
