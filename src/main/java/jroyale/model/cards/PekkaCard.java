@@ -2,6 +2,7 @@ package jroyale.model.cards;
 
 import jroyale.model.Model;
 import jroyale.model.troops.Pekka;
+import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 
 public class PekkaCard extends Card{
@@ -10,7 +11,7 @@ public class PekkaCard extends Card{
     private static final byte ELIXIR_COST = 7;
 
     private PekkaCard() {
-        super(ELIXIR_COST);
+        super(ELIXIR_COST, EntityType.PEKKA);
     }
     
     public static Card getIstance() {

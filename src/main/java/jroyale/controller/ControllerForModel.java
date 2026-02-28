@@ -4,6 +4,7 @@ import java.util.List;
 
 import jroyale.model.Entity;
 import jroyale.model.Model;
+import jroyale.model.cards.Card;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Pekka;
@@ -67,6 +68,26 @@ public class ControllerForModel implements IControllerForModel{
     @Override
     public boolean isPlayerEntityDroppableOnTile(int row, int col) {
         return Model.getIstance().isPlayerEntityDroppableOnTile(row, col);
+    }
+
+    @Override
+    public Card getFirstHandPlayerCard() {
+        return Model.getIstance().getFirstHandPlayerCard();
+    }
+
+    @Override
+    public Card getSecondHandPlayerCard() {
+        return Model.getIstance().getSecondHandPlayerCard();
+    }
+
+    @Override
+    public Card getThirdHandPlayerCard() {
+        return Model.getIstance().getThirdHandPlayerCard();
+    }
+
+    @Override
+    public Card getFourthHandPlayerCard() {
+        return Model.getIstance().getFourthHandPlayerCard();
     }
 
     // static methods

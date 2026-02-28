@@ -1,65 +1,87 @@
 package jroyale.view;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import jroyale.utils.ImageUtils;
 
 public class DeckView {
 
+    private static DeckView instance = null;
+
     private static final String UI_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/ui/";
     private static final Image OUTLINE_DEFAULT_SPELL = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "outline_default.png")));
+    private static final Image DECK_IMAGE = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "deck.png")));
+    private static final double DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH = 0.82; // right side of deck is 82% of deck's width (based on experiments)
     private static final int NUM_CARDS = 4;
-    private static final double NORMALIZED_RECT_HEIGHT = 0.2; 
-    private static final double RECT_OPACITY = 0.5; // alpha in [0, 1]
-    private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 2); // arbitrary width decision
-    private static final double NORMALIZED_CARD_HEIGHT = 0.9; // 90% of height
+    private static final double NORMALIZED_DECK_WIDTH = 0.9;
+    private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 1); // arbitrary width decision
+    private static final double NORMALIZED_CARD_HEIGHT = 0.4; // 40% of deck height
 
-    private static CardView card1, card2, card3, card4;
+    private CardView card1, card2, card3, card4;
 
-    public static void init(GraphicsContext gc) {
-        initCardsView(gc);
+    private DeckView() {} // private methods
+
+    public void init() {
+        initCardsView();
     }
     
-    public static void renderPlayerDeck(GraphicsContext gc, Image icon1, Image icon2, Image icon3, Image icon4) {
-        renderBackDeck(gc);
+    public void renderPlayerDeck(Image icon1, Image icon2, Image icon3, Image icon4) {
+        renderBackDeck();
         
-        card1.render(gc, icon1, OUTLINE_DEFAULT_SPELL);
-        card2.render(gc, icon2, OUTLINE_DEFAULT_SPELL);
-        card3.render(gc, icon3, OUTLINE_DEFAULT_SPELL);
-        card4.render(gc, /* icon4, */ OUTLINE_DEFAULT_SPELL);
+        card1.render(icon1, OUTLINE_DEFAULT_SPELL);
+        card2.render(icon2, OUTLINE_DEFAULT_SPELL);
+        card3.render(icon3, OUTLINE_DEFAULT_SPELL);
+        card4.render(icon4, OUTLINE_DEFAULT_SPELL);  
     }
 
 
     // private methods
 
-    private static void renderBackDeck(GraphicsContext gc) {
-        // black background
-        gc.save();
-        gc.setGlobalAlpha(RECT_OPACITY); 
+    private void renderBackDeck() {
 
-        final double CANVAS_WIDTH = gc.getCanvas().getWidth();
-        final double CANVAS_HEIGHT = gc.getCanvas().getHeight();
+        final double CANVAS_WIDTH = View2.getInstance().getCanvasWidth();
+        final double CANVAS_HEIGHT = View2.getInstance().getCanvasHeight();
 
-        final double RECT_HEIGHT = NORMALIZED_RECT_HEIGHT * CANVAS_HEIGHT;
+        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
+        final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
 
-        gc.fillRect(0, CANVAS_HEIGHT - RECT_HEIGHT, CANVAS_WIDTH, RECT_HEIGHT);
+        View2.getInstance().renderScreenImage(
+            DECK_IMAGE, 
+            CANVAS_WIDTH/2, 
+            CANVAS_HEIGHT - DECK_HEIGHT/2, 
+            DECK_WIDTH, 
+            DECK_HEIGHT
+        );
 
-        // reset alpha
-        gc.restore();
+        View2.getInstance().strokeScreenRoundedRect(
+            CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2, 
+            CANVAS_HEIGHT - DECK_HEIGHT/2, 
+            DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH, 
+            DECK_HEIGHT,
+            0, 0, 1, 1, Color.BLACK
+        );
     }
 
-    private static void initCardsView(GraphicsContext gc) {
-        final double Y_CENTER = gc.getCanvas().getHeight()* NORMALIZED_CARD_HEIGHT; 
+    private void initCardsView() {
 
-        final double WIDTH = gc.getCanvas().getWidth();
+        final double CANVAS_WIDTH = View2.getInstance().getCanvasWidth();
+        final double CANVAS_HEIGHT = View2.getInstance().getCanvasHeight();
 
-        final double X_CENTER_1 = WIDTH / (NUM_CARDS + 1) * 1; // center of first card
-        final double X_CENTER_2 = WIDTH / (NUM_CARDS + 1) * 2; // center of second card
-        final double X_CENTER_3 = WIDTH / (NUM_CARDS + 1) * 3; // center of third card
-        final double X_CENTER_4 = WIDTH / (NUM_CARDS + 1) * 4; // center of fourth card
+        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * View2.getInstance().getCanvasWidth();
+        final double RIGHT_SIDE_DECK_WIDTH = DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * DECK_WIDTH;
+
+        final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
+        final double Y_CENTER = CANVAS_HEIGHT - (1 - NORMALIZED_CARD_HEIGHT) * DECK_HEIGHT; 
+
+        final double OFFSET_X = CANVAS_WIDTH/2 + (0.5 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH) * DECK_WIDTH ; 
+
+        final double X_CENTER_1 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 0) + OFFSET_X; // center of first card
+        final double X_CENTER_2 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 1) + OFFSET_X; // center of second card
+        final double X_CENTER_3 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 2) + OFFSET_X; // center of third card
+        final double X_CENTER_4 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 3) + OFFSET_X; // center of fourth card
 
         // based on arbitrary choice: card width has to be 1/6 of width 
-        double cardWidth = gc.getCanvas().getWidth() * NORMALIZED_CARD_WIDTH; 
+        double cardWidth = RIGHT_SIDE_DECK_WIDTH * NORMALIZED_CARD_WIDTH; 
         // setting the same ratio of OUTLINE_SPELL:
         double cardHeight = cardWidth / OUTLINE_DEFAULT_SPELL.getWidth() * OUTLINE_DEFAULT_SPELL.getHeight();
 
@@ -68,5 +90,15 @@ public class DeckView {
         card3 = new CardView(X_CENTER_3, Y_CENTER, cardWidth, cardHeight);
         card4 = new CardView(X_CENTER_4, Y_CENTER, cardWidth, cardHeight);
 
+    }
+
+    // static methods
+
+    public static DeckView getInstance() {
+        if (instance == null) {
+            instance = new DeckView();
+        }
+
+        return instance;
     }
 }

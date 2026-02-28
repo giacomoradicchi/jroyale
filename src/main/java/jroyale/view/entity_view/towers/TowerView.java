@@ -15,6 +15,11 @@ public abstract class TowerView extends EntityView {
         opponentTowerImage = getOpponentTowerImage();
     }
 
+    @Override
+    public Image getSpellIcon() {
+        return null; // towers don't have spell icons
+    }
+
     // abstract methods
 
     public abstract Image getPlayerTowerImage();

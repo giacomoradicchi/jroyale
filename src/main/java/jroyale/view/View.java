@@ -84,7 +84,7 @@ public class View implements IView {
         this.imgPlayerKingTower = new Image(getClass().getResourceAsStream("/jroyale/images/" + PLAYER_KING_TOWER_RELATIVE_PATH));
         
         // init deck
-        DeckView.init(gc);
+        //DeckView.init(gc);
 
         // adjusting tower image
         this.imgPlayerKingTower = ImageUtils.enhanceOpacity(imgPlayerKingTower);

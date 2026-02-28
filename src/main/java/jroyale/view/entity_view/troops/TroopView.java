@@ -35,7 +35,7 @@ public abstract class TroopView extends EntityView {
         spellIcon = temp;
     }
 
-
+    @Override
     public Image getSpellIcon() {
         return spellIcon;
     }

@@ -9,11 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-import jroyale.controller.ControllerForModel;
 import jroyale.controller.ControllerForView;
-import jroyale.model.ArenaData;
-import jroyale.model.troops.Giant;
-import jroyale.model.troops.Skeleton;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -27,9 +23,6 @@ public class View2 implements IView2 {
 
     private static final double CANVAS_HEIGHT = 800;
     private static final double CANVAS_WIDTH = CANVAS_HEIGHT * WH_RATIO;
-
-    private int lastMouseColumnIndex = -1;
-    private int lastMouseRowIndex = -1;
 
     private GraphicsContext gc;
     private Stage stage;
@@ -54,7 +47,7 @@ public class View2 implements IView2 {
         loadSprites();
         EntityViewBinder.getInstance().init();
         MouseManager.getInstance().init(stage.getScene());
-
+        DeckView.getInstance().init();
         handleMouseEvents();
     }
 
@@ -90,8 +83,6 @@ public class View2 implements IView2 {
         DragPlacementPreview.getInstance().update(now);
 
         //globalScale -= 0.0001;
-
-        //handleMouseEvents();
     }
 
     @Override
@@ -272,11 +263,6 @@ public class View2 implements IView2 {
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        /* if (isLastLogicMousePosValid()) {
-            DragPlacementPreview.render(
-                gc, lastMouseColumnIndex, WH_RATIO, CANVAS_WIDTH, CANVAS_HEIGHT, globalScale, lastMouseRowIndex);
-            .renderDragPlacementPreview(index2GraphicCentreX(lastMouseColumnIndex), index2GraphicCentreY(lastMouseRowIndex));
-        } */
         DragPlacementPreview.getInstance().render(centreX, centreY);
     }
 
@@ -286,38 +272,76 @@ public class View2 implements IView2 {
     }
 
     @Override
-    public void fillRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
+    public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
+        fillScreenRoundedRect(
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            width * globalScale, 
+            height * globalScale, 
+            arcWidth * globalScale, 
+            arcHeight * globalScale, 
+            alpha, 
+            color
+        );
+    }
+
+    @Override
+    public void strokeWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
+        strokeScreenRoundedRect(
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            width * globalScale, 
+            height * globalScale, 
+            arcWidth * globalScale, 
+            arcHeight * globalScale, 
+            lineWidth * globalScale, 
+            alpha, 
+            color
+        );
+    }
+
+    @Override
+    public void fillScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
         gc.save();
         gc.setGlobalAlpha(alpha);
         gc.setFill(color);
         gc.fillRoundRect(
-            fromWorldToScreenX(centerX) - width/2 * globalScale, 
-            fromWorldToScreenY(centerY) - height/2 * globalScale, 
-            width * globalScale, 
-            height * globalScale, 
-            arcWidth * globalScale, 
-            arcHeight * globalScale
+            centerX - width/2, 
+            centerY - height/2, 
+            width, 
+            height, 
+            arcWidth, 
+            arcHeight
         );
         gc.restore();
     }
 
     @Override
-    public void strokeRoundedSquared(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
+    public void strokeScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
         gc.save();
         gc.setGlobalAlpha(alpha);
-        gc.setFill(color);
+        gc.setStroke(color);
         gc.setLineWidth(lineWidth * globalScale);
         gc.strokeRoundRect(
-            fromWorldToScreenX(centerX) - width/2 * globalScale, 
-            fromWorldToScreenY(centerY) - height/2 * globalScale, 
-            width * globalScale, 
-            height * globalScale, 
-            arcWidth * globalScale, 
-            arcHeight * globalScale
+            centerX - width/2, 
+            centerY - height/2, 
+            width, 
+            height, 
+            arcWidth, 
+            arcHeight
         );
         gc.restore();
     }
 
+    @Override
+    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4) {
+        DeckView.getInstance().renderPlayerDeck(
+            EntityViewBinder.getInstance().getViewInstance(card1).getSpellIcon(), 
+            EntityViewBinder.getInstance().getViewInstance(card2).getSpellIcon(), 
+            EntityViewBinder.getInstance().getViewInstance(card3).getSpellIcon(), 
+            EntityViewBinder.getInstance().getViewInstance(card4).getSpellIcon()
+        );
+    }
 
 
     @Override
