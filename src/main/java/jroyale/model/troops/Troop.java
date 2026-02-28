@@ -124,10 +124,11 @@ public abstract class Troop extends Entity {
 
         
         updateState();
+        updateSpeed(elapsed);
 
         switch (state) {
             case State.MOVE:
-                handleMoveState(elapsed);
+                handleMoveState();
                 break;
             case State.ATTACK:
                 handleAttackState();
@@ -147,6 +148,7 @@ public abstract class Troop extends Entity {
         
         if (shouldAttack && isAnimationCompleted()) {
             setState(State.ATTACK);
+            enemyHit = false;
             shouldAttack = false;
             shouldMove = false;
         } 
@@ -154,10 +156,12 @@ public abstract class Troop extends Entity {
             setState(State.MOVE);
             shouldMove = false;
             shouldAttack = false;
+            enemyHit = false;
         } 
         else if (shouldIdle) {
             setState(State.IDLE);
             shouldIdle = false;
+            enemyHit = false;
         }
     }
 
@@ -208,13 +212,11 @@ public abstract class Troop extends Entity {
         return false;
     }
 
-    private void handleMoveState(long elapsed) {
-        updateSpeed(elapsed);
+    private void handleMoveState() {
         shiftPosition(speed);
     }
 
     private void handleIdleState(long elapsed) {
-        updateSpeed(elapsed);
         
 
         elapsedIdleTime += elapsed;
@@ -236,12 +238,11 @@ public abstract class Troop extends Entity {
     }
 
     private void handleAttackState() {
-
+        
         if (isHitFrameReached()) {
             attackTarget();
         } else if (isAnimationCompleted()) {
             shouldIdle = true;
-            enemyHit = false; // reset enemyHit
         }
 
     }
@@ -255,7 +256,8 @@ public abstract class Troop extends Entity {
     }
 
     protected void attackTarget() {
-        target.setDamage(getDamage());
+        if (target != null)
+            target.setDamage(getDamage());
     }
 
     private void handleCollisions() {
@@ -265,10 +267,6 @@ public abstract class Troop extends Entity {
             }
 
             fixDistance(other);
-
-            /* if (state != State.ATTACK || (state == State.ATTACK && other == target)) {
-                slideAlong(other);
-            } */
         }
     }
 
@@ -333,16 +331,16 @@ public abstract class Troop extends Entity {
             ny * overlap * thisMoveWeight
         );
 
-        if (other.getState() != State.IDLE)
-            other.shiftPosition(
-                -nx * overlap * otherMoveWeight,
-                -ny * overlap * otherMoveWeight
-            );
+        other.shiftPosition(
+            -nx * overlap * otherMoveWeight,
+            -ny * overlap * otherMoveWeight
+        );
+            
 
         if (state == State.MOVE) 
             slideAlong(other, thisMoveWeight/2);
 
-        if (other.getState() == State.MOVE && other instanceof Troop) 
+        if (other instanceof Troop) 
             ((Troop) other).slideAlong(this, otherMoveWeight/2);
     }
 

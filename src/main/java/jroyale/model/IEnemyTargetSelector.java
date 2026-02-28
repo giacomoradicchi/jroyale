@@ -1,6 +1,6 @@
 package jroyale.model;
 
-import java.util.List;
+import java.util.Set;
 
 import jroyale.model.troops.Troop;
 
@@ -8,5 +8,5 @@ public interface IEnemyTargetSelector {
 
     public Troop getClosestEnemyInVisionRange(Troop troop);
 
-    public List<Troop> getTroopsInMeleeRange(Troop troop);
+    public Set<Troop> getTroopsInMeleeRange(Troop troop);
 }

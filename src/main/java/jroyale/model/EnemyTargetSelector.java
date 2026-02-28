@@ -1,7 +1,7 @@
 package jroyale.model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jroyale.model.troops.Troop;
 import jroyale.utils.Point;
@@ -10,7 +10,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
 
     private static EnemyTargetSelector instance = null;
 
-    private static final List<Troop> enemyBuffer = new LinkedList<>(); // enemy buffer to avoid new constructor for each call.
+    private static final Set<Troop> enemyBuffer = new HashSet<>(); // enemy buffer to avoid new constructor for each call.
 
     private EnemyTargetSelector() {}
 
@@ -76,7 +76,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
     }
 
     @Override
-    public List<Troop> getTroopsInMeleeRange(Troop troop) {
+    public Set<Troop> getTroopsInMeleeRange(Troop troop) {
         enemyBuffer.clear();
 
         int troopI = troop.getCurrentI();
