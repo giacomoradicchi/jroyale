@@ -1,5 +1,6 @@
 package jroyale.view;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,6 +27,7 @@ public class View2 implements IView2 {
 
     private GraphicsContext gc;
     private Stage stage;
+    private Pane root;
 
     // scale of the entire scene
     private double globalScale = 1.0;
@@ -36,7 +38,6 @@ public class View2 implements IView2 {
 
     @Override
     public void init() {
-        
         ArenaView.getInstance().init(
             CANVAS_WIDTH,
             CANVAS_HEIGHT,
@@ -58,11 +59,17 @@ public class View2 implements IView2 {
         gc = canvas.getGraphicsContext2D();
 
         this.stage = stage;
+        this.root = root;
 
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
         stage.show();
 
+    }
+
+    @Override
+    public void addToRoot(Node node) {
+        root.getChildren().add(node);
     }
 
     @Override
