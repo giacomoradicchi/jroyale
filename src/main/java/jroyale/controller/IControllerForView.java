@@ -45,4 +45,6 @@ public interface IControllerForView {
     public int getSelectedCol();
 
     public int getSelectedRow();
+
+    public void dropPlayerEntityOnLastMousePos(EntityType type);
 }

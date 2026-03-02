@@ -13,20 +13,21 @@ public class PekkaCard extends Card{
     private PekkaCard() {
         super(ELIXIR_COST, EntityType.PEKKA);
     }
-    
-    public static Card getIstance() {
+
+    @Override
+    public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
+        Model.getIstance().addTroop(
+            new Pekka(rowIndex, columnIndex, side)
+        );
+    }
+
+    // static methods
+    public static Card getInstance() {
         if (instance == null) {
             instance = new PekkaCard();
         }
 
         return instance;
-    }
-
-    @Override
-    protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getIstance().addTroop(
-            new Pekka(rowIndex, columnIndex, side)
-        );
     }
     
 }

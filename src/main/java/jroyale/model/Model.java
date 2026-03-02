@@ -69,11 +69,11 @@ public class Model implements IModel {
         initDroppableTiles();
         
         playerDeck = new Deck(new Card[] {
-            MiniPekkaCard.getIstance(),
-            GiantCard.getIstance(),
-            SkeletonCard.getIstance(),
-            SkeletonArmyCard.getIstance(),
-            PekkaCard.getIstance()
+            MiniPekkaCard.getInstance(),
+            GiantCard.getInstance(),
+            SkeletonCard.getInstance(),
+            SkeletonArmyCard.getInstance(),
+            PekkaCard.getInstance()
         });
 
     }

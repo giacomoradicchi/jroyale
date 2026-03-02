@@ -2,6 +2,7 @@ package jroyale.controller;
 
 import java.util.List;
 
+import jroyale.controller.binders.CardBinder;
 import jroyale.model.Entity;
 import jroyale.model.Model;
 import jroyale.model.cards.Card;
@@ -12,13 +13,16 @@ import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
 import jroyale.model.troops.Valkyrie;
 import jroyale.utils.GameData;
+import jroyale.view.DeckView;
 import jroyale.utils.Enums.EntityType;
+import jroyale.utils.Enums.Side;
 
 public class ControllerForModel implements IControllerForModel{
 
     private static ControllerForModel instance = null;
 
     private ControllerForModel() {}
+
 
     // private methods
     private void initTroopsAnimationSteps() {
@@ -63,6 +67,15 @@ public class ControllerForModel implements IControllerForModel{
     @Override
     public void addTroop(Troop troop) {
         Model.getIstance().addTroop(troop);
+    }
+
+    @Override
+    public void dropPlayerEntity(int row, int col, EntityType type) {
+        Card selectedCard = CardBinder.getInstance().getCardInstance(type);
+
+        if (selectedCard != null) {
+            selectedCard.dropCardIntoModel(row, col, Side.PLAYER);
+        }
     }
 
     @Override

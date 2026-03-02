@@ -13,20 +13,21 @@ public class GiantCard extends Card{
     private GiantCard() {
         super(ELIXIR_COST, EntityType.GIANT);
     }
+
+    @Override
+    public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
+        Model.getIstance().addTroop(
+            new Giant(rowIndex, columnIndex, side)
+        );
+    }
     
-    public static Card getIstance() {
+    // static methods
+    
+    public static Card getInstance() {
         if (instance == null) {
             instance = new GiantCard();
         }
 
         return instance;
     }
-
-    @Override
-    protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getIstance().addTroop(
-            new Giant(rowIndex, columnIndex, side)
-        );
-    }
-    
 }

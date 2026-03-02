@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Point;
 
 
@@ -14,6 +15,7 @@ public class CardView extends StackPane {
     
     private final Point startingPos;
     private final Point dragOffset = new Point(0, 0);
+    private EntityType type;
 
     private final static int ANIMATION_TIME_MILLIS = 250;
     private final static double SCALE_ON_CLICK = 1.05;
@@ -37,6 +39,9 @@ public class CardView extends StackPane {
 
     private void setupEvents() {
         this.setOnMousePressed(e -> {
+
+            DeckView.getInstance().setSelectedCard(type);
+
             // Store the click location RELATIVE to the card's top-left corner
             // to prevent the card from "snapping" its corner to the mouse cursor.
             dragOffset.setPoint(e.getX(), e.getY());
@@ -49,6 +54,7 @@ public class CardView extends StackPane {
             this.setScaleY(SCALE_ON_CLICK);
             
             e.consume();
+
         });
 
         this.setOnMouseDragged(e -> {
@@ -117,4 +123,13 @@ public class CardView extends StackPane {
     private double getScaledHeight() {
         return getHeight() * getScaleY();
     }
+
+    public EntityType getType() {
+        return type;
+    }
+
+    public void setType(EntityType type) {
+        if (type != this.type) this.type = type;
+    }
+
 }

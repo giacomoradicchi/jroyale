@@ -2,6 +2,7 @@ package jroyale.view;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import jroyale.utils.Enums.EntityType;
 import jroyale.utils.ImageUtils;
 
 public class DeckView {
@@ -18,6 +19,7 @@ public class DeckView {
     private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
 
     private CardView card1, card2, card3, card4;
+    private EntityType selectedCardType;
 
     private DeckView() {} // private methods
 
@@ -30,14 +32,20 @@ public class DeckView {
         View2.getInstance().addToRoot(card4);
     }
     
-    public void renderPlayerDeck(Image icon1, Image icon2, Image icon3, Image icon4) {
+    public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4) {
         renderBackDeck();
         
-        card1.render(icon1, OUTLINE_DEFAULT_SPELL);
-        card2.render(icon2, OUTLINE_DEFAULT_SPELL);
-        card3.render(icon3, OUTLINE_DEFAULT_SPELL);
-        card4.render(icon4, OUTLINE_DEFAULT_SPELL);  
+        card1.setType(type1);
+        card2.setType(type2);
+        card3.setType(type3);
+        card4.setType(type4);
+
+        card1.render(EntityViewBinder.getInstance().getViewInstance(type1).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card2.render(EntityViewBinder.getInstance().getViewInstance(type2).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card3.render(EntityViewBinder.getInstance().getViewInstance(type3).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card4.render(EntityViewBinder.getInstance().getViewInstance(type4).getSpellIcon(), OUTLINE_DEFAULT_SPELL);  
     }
+
 
 
     // private methods
@@ -95,6 +103,18 @@ public class DeckView {
         card3 = new CardView(X_CENTER_3, Y_CENTER, cardWidth, cardHeight);
         card4 = new CardView(X_CENTER_4, Y_CENTER, cardWidth, cardHeight);
 
+    }
+
+    public EntityType getSelectedCard() {
+        return selectedCardType;
+    }
+
+    public void setSelectedCard(EntityType type) {
+        selectedCardType = type;
+    }
+
+    public void resetSelectedCard() {
+        selectedCardType = null;
     }
 
     // static methods
