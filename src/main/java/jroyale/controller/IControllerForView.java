@@ -46,5 +46,7 @@ public interface IControllerForView {
 
     public int getSelectedRow();
 
-    public void dropPlayerEntityOnLastMousePos(EntityType type);
+    public void setSelectedPlayerCard(int cardIndex);
+
+    public void dropSelectedPlayerCardOnLastMousePos();
 }

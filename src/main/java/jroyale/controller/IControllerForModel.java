@@ -21,7 +21,9 @@ public interface IControllerForModel {
 
     public void addTroop(Troop troop);
 
-    public void dropPlayerEntity(int row, int col, EntityType type);
+    public void setSelectedPlayerCard(int cardIndex);
+
+    public void dropSelectedPlayerCard(int row, int col);
 
     public boolean isPlayerEntityDroppableOnTile(int row, int col);
 

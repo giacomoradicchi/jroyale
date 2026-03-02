@@ -172,10 +172,15 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void dropPlayerEntityOnLastMousePos(EntityType type) {
-        
+    public void setSelectedPlayerCard(int cardIndex) {
+        ControllerForModel.getInstance().setSelectedPlayerCard(cardIndex);
+    }
+
+    @Override
+    public void dropSelectedPlayerCardOnLastMousePos() {
         if (isPositionValid())
-            ControllerForModel.getInstance().dropPlayerEntity(lastSelectedRowIndex, lastSelectedColumnIndex, type);
+            ControllerForModel.getInstance().dropSelectedPlayerCard(lastSelectedRowIndex, lastSelectedColumnIndex);
+        
     }
 
     // static methods

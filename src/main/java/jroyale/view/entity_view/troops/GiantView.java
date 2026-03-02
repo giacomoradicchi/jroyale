@@ -69,7 +69,7 @@ public class GiantView extends TroopView {
             baseSide = Side.PLAYER;
         }
 
-        AnimationKey key = new AnimationKey(baseSide, state, Direction.fromAngle(angleDirection));
+        AnimationKey key = new AnimationKey(baseSide, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
         
         double width = image.getWidth() * SCALE;
@@ -81,7 +81,7 @@ public class GiantView extends TroopView {
         View2.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
-            key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
+            key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
             View2.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height);

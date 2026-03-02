@@ -18,7 +18,7 @@ public class Deck {
     
     private final Card[] availableCards = new Card[AVAILABLE_CARDS_SIZE]; // player/opponent will choose between those cards.
     private Set<Card> deck = new HashSet<>(); // using Set data structure to avoid duplicates.
-    private byte elixirLeft;
+    private byte elixirLeft = Byte.MAX_VALUE; // TODO: set it to 0
     private int selectedCardIndex;
 
 
@@ -70,9 +70,6 @@ public class Deck {
     }
 
     public void dropSelectedCard(int rowIndex, int columnIndex, Side side) {
-        if (!isSelectedCardDroppable()) {
-            throw new IllegalStateException("Selected card is not droppable.");
-        }
 
         Card selectedCard = availableCards[selectedCardIndex];
         // updating elixirLeft
@@ -82,6 +79,9 @@ public class Deck {
         replaceCard();
 
         selectedCard.dropCardIntoModel(rowIndex, columnIndex, side);
+
+        // reset selected card
+        selectedCard = null;
     }
 
     public boolean isSelectedCardDroppable() {

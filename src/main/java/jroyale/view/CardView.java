@@ -17,7 +17,7 @@ public class CardView extends StackPane {
     private final Point dragOffset = new Point(0, 0);
     private EntityType type;
 
-    private final static int ANIMATION_TIME_MILLIS = 250;
+    private final static int ANIMATION_TIME_MILLIS = 150;
     private final static double SCALE_ON_CLICK = 1.05;
 
     public CardView(double x, double y, double width, double height) {
@@ -40,7 +40,7 @@ public class CardView extends StackPane {
     private void setupEvents() {
         this.setOnMousePressed(e -> {
 
-            DeckView.getInstance().setSelectedCard(type);
+            DeckView.getInstance().setSelectedCard(this);
 
             // Store the click location RELATIVE to the card's top-left corner
             // to prevent the card from "snapping" its corner to the mouse cursor.

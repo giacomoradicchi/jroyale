@@ -247,9 +247,7 @@ public class View2 implements IView2 {
         });
 
         stage.getScene().setOnMouseReleased(event -> {
-            ControllerForView.getInstance().dropPlayerEntityOnLastMousePos(
-                DeckView.getInstance().getSelectedCard()
-            );
+            ControllerForView.getInstance().dropSelectedPlayerCardOnLastMousePos();
 
             ControllerForView.getInstance().handleMouseReleased();
         });
@@ -347,6 +345,11 @@ public class View2 implements IView2 {
     @Override
     public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4) {
         DeckView.getInstance().renderPlayerDeck(card1, card2, card3, card4);
+    }
+
+    @Override
+    public void setSelectedCard(int cardIndex) {
+        ControllerForView.getInstance().setSelectedPlayerCard(cardIndex);
     }
 
     @Override

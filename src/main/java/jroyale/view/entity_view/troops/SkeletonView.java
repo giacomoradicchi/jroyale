@@ -76,7 +76,7 @@ public abstract class SkeletonView extends TroopView {
         
         // skeleton has the same png's for both player and opponent, so it will always drawned 
         // the player side anyways.
-        AnimationKey key = new AnimationKey(Side.PLAYER, state, Direction.fromAngle(angleDirection));
+        AnimationKey key = new AnimationKey(Side.PLAYER, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
         double width = image.getWidth() * SCALE;

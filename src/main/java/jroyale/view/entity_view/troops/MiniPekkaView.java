@@ -46,7 +46,7 @@ public class MiniPekkaView extends TroopView {
             State state, Side side) {
         
 
-        AnimationKey key = new AnimationKey(side, state, Direction.fromAngle(angleDirection));
+        AnimationKey key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
         double width = image.getWidth() * SCALE;

@@ -56,6 +56,8 @@ public interface IView2 {
 
     public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4);
 
+    public void setSelectedCard(int cardIndex);
+
     // for debug
     public void fillPoint(double centreX, double centreY, int size, Color color);
 
