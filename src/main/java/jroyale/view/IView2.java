@@ -1,5 +1,6 @@
 package jroyale.view;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -18,6 +19,8 @@ public interface IView2 {
     public void init();
 
     public void update(long now);
+
+    public void addToRoot(Node node);
 
     public double getDx();
 

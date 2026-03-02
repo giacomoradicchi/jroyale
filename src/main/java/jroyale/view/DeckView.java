@@ -15,7 +15,7 @@ public class DeckView {
     private static final int NUM_CARDS = 4;
     private static final double NORMALIZED_DECK_WIDTH = 0.9;
     private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 1); // arbitrary width decision
-    private static final double NORMALIZED_CARD_HEIGHT = 0.4; // 40% of deck height
+    private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
 
     private CardView card1, card2, card3, card4;
 
@@ -23,6 +23,11 @@ public class DeckView {
 
     public void init() {
         initCardsView();
+
+        View2.getInstance().addToRoot(card1);
+        View2.getInstance().addToRoot(card2);
+        View2.getInstance().addToRoot(card3);
+        View2.getInstance().addToRoot(card4);
     }
     
     public void renderPlayerDeck(Image icon1, Image icon2, Image icon3, Image icon4) {
