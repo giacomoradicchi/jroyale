@@ -24,8 +24,8 @@ public class Giant extends TowerAttackerTroop {
         super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
-    public Giant(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public Giant(int row, int col, Side side) {
+        super(NAME, row, col, HITPOINTS, DAMAGE, SPEED, MELEE, side);
     }
 
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {

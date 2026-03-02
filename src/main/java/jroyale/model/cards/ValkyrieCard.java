@@ -13,19 +13,21 @@ public class ValkyrieCard extends Card{
     private ValkyrieCard() {
         super(ELIXIR_COST, EntityType.VALKYRIE);
     }
-    
-    public static Card getIstance() {
+
+    @Override
+    public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
+        Model.getIstance().addTroop(
+            new Valkyrie(rowIndex, columnIndex, side)
+        );
+    }
+
+    // static methods
+
+    public static Card getInstance() {
         if (instance == null) {
             instance = new ValkyrieCard();
         }
 
         return instance;
-    }
-
-    @Override
-    protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getIstance().addTroop(
-            new Valkyrie(rowIndex, columnIndex, side)
-        );
     }
 }

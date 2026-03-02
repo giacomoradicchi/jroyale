@@ -13,22 +13,25 @@ public class SkeletonArmyCard extends Card {
     private SkeletonArmyCard() {
         super(ELIXIR_COST, EntityType.SKELETON_ARMY);
     }
-    
-    public static Card getIstance() {
-        if (instance == null) {
-            instance = new SkeletonArmyCard();
-        }
 
-        return instance;
-    }
 
     @Override
-    protected void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
+    public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         // TODO: drop more skeletons.
 
         Model.getIstance().addTroop(
             new Skeleton(rowIndex, columnIndex, side)
         );
+    }
+
+    // static methods
+
+    public static Card getInstance() {
+        if (instance == null) {
+            instance = new SkeletonArmyCard();
+        }
+
+        return instance;
     }
     
 }

@@ -171,6 +171,13 @@ public class ControllerForView implements IControllerForView {
         return lastSelectedRowIndex;
     }
 
+    @Override
+    public void dropPlayerEntityOnLastMousePos(EntityType type) {
+        
+        if (isPositionValid())
+            ControllerForModel.getInstance().dropPlayerEntity(lastSelectedRowIndex, lastSelectedColumnIndex, type);
+    }
+
     // static methods
     public static IControllerForView getInstance() {
         if (instance == null) {

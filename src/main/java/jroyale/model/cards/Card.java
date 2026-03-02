@@ -23,5 +23,5 @@ public abstract class Card {
 
     // abstract methods
 
-    protected abstract void dropCardIntoModel(int rowIndex, int columnIndex, Side side);
+    public abstract void dropCardIntoModel(int rowIndex, int columnIndex, Side side);
 }
