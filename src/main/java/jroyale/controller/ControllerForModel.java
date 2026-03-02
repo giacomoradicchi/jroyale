@@ -70,12 +70,13 @@ public class ControllerForModel implements IControllerForModel{
     }
 
     @Override
-    public void dropPlayerEntity(int row, int col, EntityType type) {
-        Card selectedCard = CardBinder.getInstance().getCardInstance(type);
+    public void setSelectedPlayerCard(int cardIndex) {
+        Model.getIstance().setSelectedCard(cardIndex);
+    }
 
-        if (selectedCard != null) {
-            selectedCard.dropCardIntoModel(row, col, Side.PLAYER);
-        }
+    @Override
+    public void dropSelectedPlayerCard(int row, int col) {
+        Model.getIstance().dropPlayerCard(row, col);
     }
 
     @Override

@@ -12,6 +12,7 @@ import jroyale.model.cards.MiniPekkaCard;
 import jroyale.model.cards.PekkaCard;
 import jroyale.model.cards.SkeletonArmyCard;
 import jroyale.model.cards.SkeletonCard;
+import jroyale.model.cards.ValkyrieCard;
 import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
@@ -73,7 +74,8 @@ public class Model implements IModel {
             GiantCard.getInstance(),
             SkeletonCard.getInstance(),
             SkeletonArmyCard.getInstance(),
-            PekkaCard.getInstance()
+            PekkaCard.getInstance(),
+            ValkyrieCard.getInstance()
         });
 
     }
@@ -149,6 +151,18 @@ public class Model implements IModel {
     @Override
     public void addTroop(Troop troop) {
         addEntity(troop);
+    }
+
+    @Override
+    public void setSelectedCard(int cardIndex) {
+        playerDeck.selectCard(cardIndex);
+    }
+
+    @Override
+    public void dropPlayerCard(int row, int col) {
+        if (playerDeck.isSelectedCardDroppable()) 
+            playerDeck.dropSelectedCard(row, col, Side.PLAYER);
+        
     }
 
     @Override

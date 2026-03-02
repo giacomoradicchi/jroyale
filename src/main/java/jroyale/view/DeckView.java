@@ -19,7 +19,6 @@ public class DeckView {
     private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
 
     private CardView card1, card2, card3, card4;
-    private EntityType selectedCardType;
 
     private DeckView() {} // private methods
 
@@ -105,16 +104,23 @@ public class DeckView {
 
     }
 
-    public EntityType getSelectedCard() {
-        return selectedCardType;
+    private int getSelectedCardIndex(CardView selectedCard) {
+        if (selectedCard == card1) {
+            return 0;
+        } else if (selectedCard == card2) {
+            return 1;
+        } else if (selectedCard == card3) {
+            return 2;
+        } else if (selectedCard == card4) {
+            return 3;
+        }
+        return -1;
     }
 
-    public void setSelectedCard(EntityType type) {
-        selectedCardType = type;
-    }
-
-    public void resetSelectedCard() {
-        selectedCardType = null;
+    public void setSelectedCard(CardView card) {
+        View2.getInstance().setSelectedCard(
+            getSelectedCardIndex(card)
+        );
     }
 
     // static methods

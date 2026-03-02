@@ -17,6 +17,10 @@ public interface IModel {
 
     public void addTroop(Troop troop);
 
+    public void setSelectedCard(int cardIndex);
+
+    public void dropPlayerCard(int row, int col);
+
     public List<Entity> getEntitiesOrderedByPosY(); // necessary to enable depth in rendering
 
     public List<Entity> getEntitiesOnTile(int i, int j);

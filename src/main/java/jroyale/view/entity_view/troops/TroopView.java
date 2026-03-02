@@ -20,6 +20,7 @@ public abstract class TroopView extends EntityView {
     protected final double SPRITES_HEIGHT;
     protected final Image spellIcon;
     private static final int CORNER_RADIUS = 20; // pixels
+    protected final Direction direction;
 
     // pattern for buffer initialization:
     protected static final String ATTACK_PATH = "attack/";
@@ -30,6 +31,7 @@ public abstract class TroopView extends EntityView {
 
     protected TroopView() {
         initAnimationBuffer();
+        direction = new Direction();
         SPRITES_HEIGHT = animationBuffer.values().iterator().next().getFrame(0).getHeight(); // absolute height (in pixels) of every sprite.
         Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
         spellIcon = temp;

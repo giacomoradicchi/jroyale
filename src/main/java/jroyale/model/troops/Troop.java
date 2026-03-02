@@ -65,6 +65,9 @@ public abstract class Troop extends Entity {
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
     protected long elapsedIdleTime;
 
+    private static final int DIRECTION_BUFFER_SIZE = 4;
+    private Point[] directionBuffer = new Point[DIRECTION_BUFFER_SIZE];
+    private int bufferIndex = 0;
     private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
     protected boolean enemyHit, targetKilled;
@@ -393,21 +396,49 @@ public abstract class Troop extends Entity {
     }
 
     private Point getSmoothAimUnitVector() {
+        // 1. aggiorna il buffer con la direzione target corrente
+        directionBuffer[bufferIndex] = new Point(aimUnitVector);
+        bufferIndex = (bufferIndex + 1) % DIRECTION_BUFFER_SIZE;
+
+        // 2. calcola la media mobile del buffer
+        double avgX = 0, avgY = 0;
+        for (Point p : directionBuffer) {
+            avgX += p.getX();
+            avgY += p.getY();
+        }
+
+        Point movingAverage = new Point(
+            avgX / DIRECTION_BUFFER_SIZE, 
+            avgY / DIRECTION_BUFFER_SIZE
+        ).normalize();
+
+        // 3. interpola tra la direzione attuale e la media mobile
+        return movingAverage.interpolate(getLastDirectionUnitVector(), TURNING_SPEED).normalize();
+    }
+
+    /* private Point getSmoothAimUnitVector() {
         // calculating mean between direction and last direction (for smooth turning)
         //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
 
         return getLastDirectionUnitVector().interpolate(aimUnitVector, TURNING_SPEED).normalize();
-    }
+    } */
 
     private void initSpeed() {
-        this.aimUnitVector = new Point();
+        this.aimUnitVector = side == Side.PLAYER ? new Point(0, -1) : new Point(0, +1); // nord or sud based on side
         fixPathTroughBridge();
+        initDirectionBuffer();
         this.speed = new Point(aimUnitVector);
         this.direction = new Point(speed).normalize();
     }
 
     private void initTarget() {
         target = TowerTargetSelector.getClosestEnemyTower(this);
+    }
+
+    private void initDirectionBuffer() {
+        for (int i = 0; i < DIRECTION_BUFFER_SIZE; i++) {
+            directionBuffer[i] = new Point(aimUnitVector);
+        }
     }
 
     private void fixPathTroughBridge() {
