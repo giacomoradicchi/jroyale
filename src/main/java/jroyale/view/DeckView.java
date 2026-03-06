@@ -25,10 +25,10 @@ public class DeckView {
     public void init() {
         initCardsView();
 
-        View2.getInstance().addToRoot(card1);
-        View2.getInstance().addToRoot(card2);
-        View2.getInstance().addToRoot(card3);
-        View2.getInstance().addToRoot(card4);
+        View.getInstance().addToRoot(card1);
+        View.getInstance().addToRoot(card2);
+        View.getInstance().addToRoot(card3);
+        View.getInstance().addToRoot(card4);
     }
     
     public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4) {
@@ -51,13 +51,13 @@ public class DeckView {
 
     private void renderBackDeck() {
 
-        final double CANVAS_WIDTH = View2.getInstance().getCanvasWidth();
-        final double CANVAS_HEIGHT = View2.getInstance().getCanvasHeight();
+        final double CANVAS_WIDTH = View.getInstance().getCanvasWidth();
+        final double CANVAS_HEIGHT = View.getInstance().getCanvasHeight();
 
         final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
 
-        View2.getInstance().renderScreenImage(
+        View.getInstance().renderScreenImage(
             DECK_IMAGE, 
             CANVAS_WIDTH/2, 
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
@@ -65,7 +65,7 @@ public class DeckView {
             DECK_HEIGHT
         );
 
-        View2.getInstance().strokeScreenRoundedRect(
+        View.getInstance().strokeScreenRoundedRect(
             CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2, 
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
             DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH, 
@@ -76,10 +76,10 @@ public class DeckView {
 
     private void initCardsView() {
 
-        final double CANVAS_WIDTH = View2.getInstance().getCanvasWidth();
-        final double CANVAS_HEIGHT = View2.getInstance().getCanvasHeight();
+        final double CANVAS_WIDTH = View.getInstance().getCanvasWidth();
+        final double CANVAS_HEIGHT = View.getInstance().getCanvasHeight();
 
-        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * View2.getInstance().getCanvasWidth();
+        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * View.getInstance().getCanvasWidth();
         final double RIGHT_SIDE_DECK_WIDTH = DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * DECK_WIDTH;
 
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
@@ -118,7 +118,7 @@ public class DeckView {
     }
 
     public void setSelectedCard(CardView card) {
-        View2.getInstance().setSelectedCard(
+        View.getInstance().setSelectedCard(
             getSelectedCardIndex(card)
         );
     }

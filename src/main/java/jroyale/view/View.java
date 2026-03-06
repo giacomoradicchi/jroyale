@@ -15,9 +15,9 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 
-public class View2 implements IView2 {
+public class View implements IView {
 
-    private static IView2 instance = null;
+    private static IView instance = null;
 
     private static final double WH_RATIO = 607.0 / 1080;
 
@@ -31,7 +31,7 @@ public class View2 implements IView2 {
     // scale of the entire scene
     private double globalScale = 1.0;
 
-    private View2() {}
+    private View() {}
 
     // instance methods
 
@@ -424,9 +424,9 @@ public class View2 implements IView2 {
 
 
     // static methods
-    public static IView2 getInstance() {
+    public static IView getInstance() {
         if (instance == null) {
-            instance = new View2();
+            instance = new View();
         }
 
         return instance;

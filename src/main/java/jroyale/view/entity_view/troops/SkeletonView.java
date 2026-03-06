@@ -9,7 +9,7 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
-import jroyale.view.View2;
+import jroyale.view.View;
 
 public abstract class SkeletonView extends TroopView {
 
@@ -86,7 +86,7 @@ public abstract class SkeletonView extends TroopView {
         
         
 
-        View2.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
     }
 
     @Override

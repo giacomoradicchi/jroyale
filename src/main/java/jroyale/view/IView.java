@@ -8,7 +8,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 
-public interface IView2 {
+public interface IView {
     
     public void openWindow(Stage stage);
 

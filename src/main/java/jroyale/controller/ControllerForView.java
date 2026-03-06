@@ -6,8 +6,8 @@ import jroyale.utils.GameData;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.IView2;
-import jroyale.view.View2;
+import jroyale.view.IView;
+import jroyale.view.View;
 import jroyale.view.entity_view.troops.GiantView;
 import jroyale.view.entity_view.troops.MiniPekkaView;
 import jroyale.view.entity_view.troops.PekkaView;
@@ -18,7 +18,7 @@ public class ControllerForView implements IControllerForView {
 
     private static ControllerForView instance;
 
-    private IView2 view;
+    private IView view;
 
     private int lastSelectedColumnIndex = -1;
     private int lastSelectedRowIndex = -1;
@@ -40,7 +40,7 @@ public class ControllerForView implements IControllerForView {
     
     @Override
     public void openWindow(Stage stage) {
-        view = View2.getInstance();
+        view = View.getInstance();
         view.openWindow(stage);
     }
 
@@ -89,7 +89,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
-        View2.getInstance().fillPoint(centreX, centreY, size, color);
+        View.getInstance().fillPoint(centreX, centreY, size, color);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ControllerForView implements IControllerForView {
             if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
                 lastSelectedColumnIndex = col;
                 lastSelectedRowIndex = row;
-                View2.getInstance().startDragPlacementPreview();
+                View.getInstance().startDragPlacementPreview();
             }
 
             return;
@@ -134,7 +134,7 @@ public class ControllerForView implements IControllerForView {
     public void handleMouseReleased() {
         // TODO: drop selected troop
         resetLastSelectedTile();
-        View2.getInstance().stopDragPlacementPreview();
+        View.getInstance().stopDragPlacementPreview();
     }
 
     private void resetLastSelectedTile() {
@@ -149,12 +149,12 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        View2.getInstance().renderDragPlacementPreview(centreX, centreY);
+        View.getInstance().renderDragPlacementPreview(centreX, centreY);
     }
 
     @Override
     public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4) {
-        View2.getInstance().renderPlayerDeck(card1, card2, card3, card4);
+        View.getInstance().renderPlayerDeck(card1, card2, card3, card4);
     }
 
     private boolean isPositionValid() {
