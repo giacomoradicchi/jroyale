@@ -117,7 +117,7 @@ public class ControllerForView implements IControllerForView {
             return;
         }
 
-
+ 
         // 2. Tries the horizontal slide (based on previous row)
         if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(lastSelectedRowIndex, col)) {
             lastSelectedColumnIndex = col;
@@ -126,7 +126,7 @@ public class ControllerForView implements IControllerForView {
         // 3.Tries the vertical slide (based on previous col)
         if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, lastSelectedColumnIndex)) {
             lastSelectedRowIndex = row;
-        }
+        } 
         
     }
 
