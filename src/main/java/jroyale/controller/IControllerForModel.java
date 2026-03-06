@@ -5,7 +5,6 @@ import java.util.List;
 import jroyale.model.Entity;
 import jroyale.model.cards.Card;
 import jroyale.model.troops.Troop;
-import jroyale.utils.Enums.EntityType;
 
 public interface IControllerForModel {
 
