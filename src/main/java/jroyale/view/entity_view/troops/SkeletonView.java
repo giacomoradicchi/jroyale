@@ -1,6 +1,5 @@
 package jroyale.view.entity_view.troops;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.image.Image;

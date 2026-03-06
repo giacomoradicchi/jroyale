@@ -75,6 +75,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
 
     }
 
+
     @Override
     public Set<Troop> getTroopsInMeleeRange(Troop troop) {
         enemyBuffer.clear();
@@ -115,6 +116,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
 
         return enemyBuffer;
     }
+    
 
     // static methods
     public static IEnemyTargetSelector getInstance() {
@@ -123,5 +125,5 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
         }
         return instance;
     }
-    
+
 }

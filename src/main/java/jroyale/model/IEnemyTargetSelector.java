@@ -9,4 +9,5 @@ public interface IEnemyTargetSelector {
     public Troop getClosestEnemyInVisionRange(Troop troop);
 
     public Set<Troop> getTroopsInMeleeRange(Troop troop);
+
 }
