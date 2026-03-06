@@ -25,25 +25,25 @@ public class DragPlacementPreview {
     public void render(double centreX, double centreY) {
 
         // fill
-        View2.getInstance().fillWorldRoundedRect(
+        View.getInstance().fillWorldRoundedRect(
             centreX, 
             centreY, 
-            View2.getInstance().getDx() * scaleAnimation, 
-            View2.getInstance().getDy() * scaleAnimation, 
-            View2.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
-            View2.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
+            View.getInstance().getDx() * scaleAnimation, 
+            View.getInstance().getDy() * scaleAnimation, 
+            View.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
+            View.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
             ALPHA_FILL, 
             FILL_COLOR
         );
 
         // outline
-        View2.getInstance().strokeWorldRoundedRect(
+        View.getInstance().strokeWorldRoundedRect(
             centreX, 
             centreY, 
-            View2.getInstance().getDx() * scaleAnimation, 
-            View2.getInstance().getDy() * scaleAnimation, 
-            View2.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
-            View2.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
+            View.getInstance().getDx() * scaleAnimation, 
+            View.getInstance().getDy() * scaleAnimation, 
+            View.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
+            View.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
             LINE_WIDTH,
             1.0, // fully visible 
             STROKE_COLOR

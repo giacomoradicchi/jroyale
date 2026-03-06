@@ -104,7 +104,7 @@ public class CardView extends StackPane {
         double centerX = this.getLayoutX() + this.getTranslateX() + getWidth() / 2;
         double centerY = this.getLayoutY() + this.getTranslateY() + getWidth() / 2;
 
-        IView2 v = View2.getInstance();
+        IView v = View.getInstance();
         
         // 1. Draw Icon
         v.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight());

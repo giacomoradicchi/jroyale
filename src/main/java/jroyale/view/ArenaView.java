@@ -81,7 +81,7 @@ public class ArenaView {
     public void renderArena(boolean debugMode) {
 
 
-        View2.getInstance().renderWorldImage(
+        View.getInstance().renderWorldImage(
             arenaImage, 
             canvasWidth * 0.5, 
             canvasHeight * 0.5 - 108, 

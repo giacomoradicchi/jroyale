@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.View2;
+import jroyale.view.View;
 
 public abstract class EntityView {
     
@@ -22,7 +22,7 @@ public abstract class EntityView {
     }
 
     private void renderShadow(double centreX, double centreY, double shadowRadius) {
-        View2.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
+        View.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
     }
 
     // abstract methods

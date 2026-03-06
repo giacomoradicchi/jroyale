@@ -9,7 +9,7 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
-import jroyale.view.View2;
+import jroyale.view.View;
 import jroyale.view.entity_view.EntityView;
 
 public class MiniPekkaView extends TroopView {
@@ -55,7 +55,7 @@ public class MiniPekkaView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        View2.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
+        View.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height);
     }
 
     @Override
