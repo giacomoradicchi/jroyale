@@ -52,6 +52,12 @@ public class CardView extends StackPane {
             // Subtle visual feedback: scale up when picked up
             this.setScaleX(SCALE_ON_CLICK);
             this.setScaleY(SCALE_ON_CLICK);
+
+            // send data to view:
+            View.getInstance().processOnMousePressed(
+                e.getSceneX(), 
+                e.getSceneY()
+            );
             
             e.consume();
 
@@ -62,9 +68,19 @@ public class CardView extends StackPane {
             this.setLayoutX(e.getSceneX() - dragOffset.getX());
             this.setLayoutY(e.getSceneY() - dragOffset.getY());
             e.consume();
+
+            // send data to view:
+            View.getInstance().processOnMouseDragged(
+                e.getSceneX(), 
+                e.getSceneY()
+            );
         });
 
         this.setOnMouseReleased(e -> {
+
+            // notify view:
+            View.getInstance().processOnMouseReleased();
+
             // Reset scale
             this.setScaleX(1.0);
             this.setScaleY(1.0);

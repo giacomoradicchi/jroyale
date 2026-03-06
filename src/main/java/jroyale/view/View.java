@@ -229,27 +229,45 @@ public class View implements IView {
 
     private void handleMouseEvents() {
         stage.getScene().setOnMousePressed(event -> {
-            ControllerForView.getInstance().handleMouseSelectedTile(
-                getRowFromMouseY(event.getSceneY()),
-                getColFromMouseX(event.getSceneX())
+            processOnMousePressed(
+                event.getSceneX(), 
+                event.getSceneY()
             );
         });
 
         stage.getScene().setOnMouseDragged(event -> {
-            ControllerForView.getInstance().handleMouseSelectedTile(
-                getRowFromMouseY(event.getSceneY()),
-                getColFromMouseX(event.getSceneX())
+            processOnMouseDragged(
+                event.getSceneX(), 
+                event.getSceneY()
             );
-
-            //System.out.println(getRowFromMouseY(event.getSceneY()) + ", " + getColFromMouseX(event.getSceneX()));
-            
         });
 
         stage.getScene().setOnMouseReleased(event -> {
-            ControllerForView.getInstance().dropSelectedPlayerCardOnLastMousePos();
-
-            ControllerForView.getInstance().handleMouseReleased();
+            processOnMouseReleased();
         });
+    }
+
+    @Override
+    public void processOnMousePressed(double x, double y) {
+        ControllerForView.getInstance().handleMouseSelectedTile(
+            getRowFromMouseY(y),
+            getColFromMouseX(x)
+        );
+    }
+
+    @Override
+    public void processOnMouseDragged(double x, double y) {
+        ControllerForView.getInstance().handleMouseSelectedTile(
+            getRowFromMouseY(y),
+            getColFromMouseX(x)
+        );
+    }
+
+    @Override
+    public void processOnMouseReleased() {
+        ControllerForView.getInstance().dropSelectedPlayerCardOnLastMousePos();
+
+        ControllerForView.getInstance().handleMouseReleased();
     }
 
     private int getColFromMouseX(double mouseX) {

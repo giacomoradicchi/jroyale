@@ -58,6 +58,12 @@ public interface IView {
 
     public void setSelectedCard(int cardIndex);
 
+    public void processOnMousePressed(double x, double y);
+
+    public void processOnMouseDragged(double x, double y);
+    
+    public void processOnMouseReleased();
+
     // for debug
     public void fillPoint(double centreX, double centreY, int size, Color color);
 
