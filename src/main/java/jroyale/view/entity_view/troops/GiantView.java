@@ -3,7 +3,6 @@ package jroyale.view.entity_view.troops;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import jroyale.utils.GameData;
 import jroyale.utils.ImageUtils;
@@ -92,20 +91,6 @@ public class GiantView extends TroopView {
     @Override
     public double getSpritesHeight() {
         return SCALE * SPRITES_HEIGHT;
-    }
-    
-
-    // instance methods
-
-    private static Map<State, String> getStatePath() {
-        // num of frames per direction change based on troop state (wheather is walking/running or attacking)
-        Map<State, String> statePath = new HashMap<>();
-
-        statePath.put(State.IDLE, IDLE_PATH);
-        statePath.put(State.MOVE, MOVE_PATH);
-        statePath.put(State.ATTACK, ATTACK_PATH);
-
-        return statePath;
     }
     
 
