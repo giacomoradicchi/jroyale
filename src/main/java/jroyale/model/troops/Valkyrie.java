@@ -3,6 +3,7 @@ package jroyale.model.troops;
 import java.util.Map;
 
 import jroyale.model.EnemyTargetSelector;
+import jroyale.model.Entity;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -17,8 +18,8 @@ public class Valkyrie extends MixedAttackerTroop{
     private static final int FPS_ANIMATION = 15;
     private static final long LOAD_TIME = (long) (1.5 * 1_000_000_000L);
 
-    private static final int HITPOINTS = 677;
-    private static final int DAMAGE = 1;
+    private static final int HITPOINTS = Integer.MAX_VALUE; //677
+    private static final int DAMAGE = Integer.MAX_VALUE;
     private static final int HIT_FRAME = 4;
 
     public Valkyrie(double x, double y, Side side) {
@@ -61,7 +62,11 @@ public class Valkyrie extends MixedAttackerTroop{
 
     @Override 
     protected void attackTarget() {
-        for (Troop enemy : EnemyTargetSelector.getInstance().getTroopsInMeleeRange(this)) {
+        // first attack target
+        super.attackTarget();
+
+        // then attack also sourrounding enemies
+        for (Entity enemy : EnemyTargetSelector.getInstance().getTroopsInMeleeRange(this)) {
             enemy.setDamage(getDamage());
         }
     }
