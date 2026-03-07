@@ -6,6 +6,7 @@ import java.util.Map;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -32,7 +33,7 @@ public abstract class TroopView extends EntityView {
     protected TroopView() {
         initAnimationBuffer();
         direction = new Direction();
-        SPRITES_HEIGHT = animationBuffer.values().iterator().next().getFrame(0).getHeight(); // absolute height (in pixels) of every sprite.
+        SPRITES_HEIGHT = ImageUtils.getAlphaBoundingBox(animationBuffer.values().iterator().next().getFrame(0)).getHeight(); // absolute height (in pixels) of every sprite.
         Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
         spellIcon = temp;
     }

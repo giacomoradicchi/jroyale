@@ -1,7 +1,7 @@
 package jroyale.view.entity_view.towers;
 
 import javafx.scene.image.Image;
-
+import jroyale.utils.ImageUtils;
 import jroyale.view.entity_view.EntityView;
 
 public abstract class TowerView extends EntityView {
@@ -10,9 +10,12 @@ public abstract class TowerView extends EntityView {
 
     protected final Image playerTowerImage, opponentTowerImage;
 
+    protected final double SPRITE_HEIGHT;
+
     protected TowerView() {
         playerTowerImage = getPlayerTowerImage();
         opponentTowerImage = getOpponentTowerImage();
+        SPRITE_HEIGHT = ImageUtils.getAlphaBoundingBox(playerTowerImage).getHeight();
     }
 
     @Override
