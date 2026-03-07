@@ -369,59 +369,6 @@ public class View implements IView {
         ControllerForView.getInstance().setSelectedPlayerCard(cardIndex);
     }
 
-    private void renderHealth(GraphicsContext gc, double centreX, double centreY, int currentHealth, int maxHealth, Side side) {
-        double rectWidth = 0.1 * getCanvasWidth() * globalScale;
-        double rectHeight = 0.01 * getCanvasHeight() * globalScale;
-        double shiftY = -70 * globalScale;
-
-        gc.save();
-
-        if (side == Side.PLAYER) {
-            gc.setStroke(Color.rgb(20, 20, 150));
-            gc.setFill(Color.rgb(100, 100, 255));
-        } else {
-            gc.setStroke(Color.rgb(150, 20, 20));
-            gc.setFill(Color.rgb(255, 100, 100));  
-        }
-
-        gc.setLineWidth(2);
-
-        gc.fillRect(
-            centreX - rectWidth / 2, 
-            centreY - rectHeight / 2 + shiftY, 
-            rectWidth,
-            rectHeight
-        );
-
-        if (side == Side.PLAYER) {
-            gc.setFill(Color.rgb(50, 50, 150));
-        } else {
-            gc.setFill(Color.rgb(150, 50, 50));
-        }
-
-        double percentage = (double) currentHealth / maxHealth;
-
-        gc.fillRect(
-            centreX - rectWidth / 2, 
-            centreY - rectHeight / 2 + shiftY, 
-            rectWidth * percentage,
-            rectHeight
-        );
-
-        gc.strokeRoundRect(
-            centreX - rectWidth / 2, 
-            centreY - rectHeight / 2 + shiftY, 
-            rectWidth,
-            rectHeight,
-            rectHeight/2,
-            rectHeight/2
-        );
-
-        
-
-        gc.restore();
-    }
-
     @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
         gc.save();

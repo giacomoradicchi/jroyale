@@ -43,7 +43,7 @@ public class ArcherTowerView extends TowerView{
 
     @Override
     public double getSpritesHeight() {
-        return SCALE * playerTowerImage.getHeight();
+        return SCALE * SPRITE_HEIGHT;
     }
 
     @Override

@@ -18,8 +18,8 @@ public class Valkyrie extends MixedAttackerTroop{
     private static final int FPS_ANIMATION = 15;
     private static final long LOAD_TIME = (long) (1.5 * 1_000_000_000L);
 
-    private static final int HITPOINTS = Integer.MAX_VALUE; //677
-    private static final int DAMAGE = Integer.MAX_VALUE;
+    private static final int HITPOINTS = 677; 
+    private static final int DAMAGE = 677;
     private static final int HIT_FRAME = 4;
 
     public Valkyrie(double x, double y, Side side) {

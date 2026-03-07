@@ -227,7 +227,8 @@ public abstract class Troop extends Entity {
             
 
         // idle time terminated: decide wheather attack the troop or move toward the target based on collision.
-        if (target != null && CollisionManager.getInstance().checkNextCollision(this, target)) {
+        if (target != null && CollisionManager.getInstance().checkNextCollision(this, target)
+        && target.getHitPoints() > 0) {
             shouldAttack = true;
         } else {
             shouldMove = true;
