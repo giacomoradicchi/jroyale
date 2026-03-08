@@ -10,4 +10,6 @@ public interface IEnemyTargetSelector {
 
     public Set<Troop> getTroopsInMeleeRange(Troop troop);
 
+    public boolean isEntityInMeleeRange(Entity entity, Troop troop);
+
 }

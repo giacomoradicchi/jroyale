@@ -123,7 +123,7 @@ public abstract class Troop extends Entity {
     @Override
     public void update(long elapsed) {
         frameManager.updateFrame(elapsed);
-        updateTarget(); 
+        
         updateState();
         updateSpeed(elapsed);
 
@@ -141,6 +141,7 @@ public abstract class Troop extends Entity {
                 break;
         }
 
+        updateTarget();
         handleCollisions();
     }
 
@@ -203,10 +204,15 @@ public abstract class Troop extends Entity {
     }
 
     protected boolean selectClosestTower() {
-        if (target != null && target.getHitPoints() == 0) { // TODO: aggiungere metodo attack(entity) che attacca una torre e che la rimuove dai target quando la vita è a zero.
+        if (target != null && target.getHitPoints() == 0) { 
             target = TowerTargetSelector.getClosestEnemyTower(this);
             
+            // set move state and reset others  
             shouldMove = true;
+            shouldAttack = false;
+            shouldIdle = false;
+            enemyHit = true;
+
             return true;
         }
         return false;
@@ -417,13 +423,6 @@ public abstract class Troop extends Entity {
         return movingAverage.interpolate(getLastDirectionUnitVector(), TURNING_SPEED).normalize();
     }
 
-    /* private Point getSmoothAimUnitVector() {
-        // calculating mean between direction and last direction (for smooth turning)
-        //return getAimUnitVector().midpoint(getLastDirectionUnitVector()).normalize();
-
-        return getLastDirectionUnitVector().interpolate(aimUnitVector, TURNING_SPEED).normalize();
-    } */
-
     private void initSpeed() {
         this.aimUnitVector = side == Side.PLAYER ? new Point(0, -1) : new Point(0, +1); // nord or sud based on side
         fixPathTroughBridge();
@@ -450,7 +449,7 @@ public abstract class Troop extends Entity {
         double targetY = target.getY();
 
         
-
+        double troopX = getX();
         double troopY = getY();
 
         
@@ -463,27 +462,56 @@ public abstract class Troop extends Entity {
         double rightBridgeEndX = ArenaData.RIGHT_BRIDGE_END_POS.getX();
 
 
+        /* 
+        going from south to north:
+
+        ***************
+        ***************
+            |*****| <- end
+            |*****|         <- bridge
+            |*****| <- start
+        ***************
+        ***************
+               ^
+               |
+        (troopX, troopY)
+        */
+
+
         if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
-            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
             targetY = bridgeStartY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY < bridgeEndY) {
-            targetX = getX();
+            targetX = troopX;
             targetY = bridgeEndY; 
         }
 
+
+        /* 
+        going from north to south:
+
+        (troopX, troopY)
+               |
+               v
+        ***************
+        ***************
+            |*****| <- end
+            |*****|         <- bridge
+            |*****| <- start
+        ***************
+        ***************
+               
+        */
+
         else if (troopY < bridgeEndY && targetY >= bridgeEndY) {
-            targetX = (targetX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
             targetY = bridgeEndY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY > bridgeStartY) {
-            targetX = getX();
+            targetX = troopX;
             targetY = bridgeStartY;
         }
-
-        //targetX = Model.MAP_COLS- 3; //Model.MAP_COLS
-        //targetY = Model.MAP_ROWS;
-        //targetY = Model.MAP_ROWS;
 
         setAimUnitVector(targetX, targetY);
     } 

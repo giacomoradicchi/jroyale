@@ -39,10 +39,10 @@ public class DeckView {
         card3.setType(type3);
         card4.setType(type4);
 
-        card1.render(EntityViewBinder.getInstance().getViewInstance(type1).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card2.render(EntityViewBinder.getInstance().getViewInstance(type2).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card3.render(EntityViewBinder.getInstance().getViewInstance(type3).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card4.render(EntityViewBinder.getInstance().getViewInstance(type4).getSpellIcon(), OUTLINE_DEFAULT_SPELL);  
+        card1.render(EntityViewBinder.getInstance().getViewInstance(card1.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card2.render(EntityViewBinder.getInstance().getViewInstance(card2.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card3.render(EntityViewBinder.getInstance().getViewInstance(card3.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        card4.render(EntityViewBinder.getInstance().getViewInstance(card4.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);  
     }
 
 
