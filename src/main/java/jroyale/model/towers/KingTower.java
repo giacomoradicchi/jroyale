@@ -11,7 +11,7 @@ public class KingTower extends Tower {
     public static final Point PLAYER_KING_TOWER_CENTRE = new Point(9, 29);
     public static final Point OPPONENT_KING_TOWER_CENTRE = new Point(9, 3);
     
-    private static final int HITPOINTS = Integer.MAX_VALUE;
+    private static final int HITPOINTS = 3000;
     private static final int DAMAGE = 0; // TODO: add damage
 
     public KingTower(Side side) {

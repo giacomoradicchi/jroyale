@@ -29,7 +29,7 @@ public class ValkyrieView extends TroopView {
 
     private static final int NUM_INDEX_DIGITS = 3;
     private final double SCALE = 0.5;
-    private static final double shiftX = 4;
+    private static final double shiftX = 0;
     private static final double shiftY = -10;
     private static final double ALPHA_THRESHOLD = 0.5;
 
@@ -101,7 +101,11 @@ public class ValkyrieView extends TroopView {
 
     @Override
     protected Image transformImage(Image image) {
-        return ImageUtils.enhanceOpacity(image, ALPHA_THRESHOLD);
+        Image temp = image;
+        temp = ImageUtils.enhanceOpacity(temp);
+        // TODO: farlo più robusto
+        temp = ImageUtils.crop(image, 0, 0, (int) temp.getWidth() - 20, (int) temp.getHeight());
+        return ImageUtils.enhanceOpacity(temp, 1*ALPHA_THRESHOLD);
     }
 
     @Override

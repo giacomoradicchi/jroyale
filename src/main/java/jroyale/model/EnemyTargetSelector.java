@@ -116,6 +116,14 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
 
         return enemyBuffer;
     }
+
+    @Override
+    public boolean isEntityInMeleeRange(Entity entity, Troop troop) {
+        return Point.distance(
+                        troop.getX(), troop.getY(), // troop position
+                        entity.getX(), entity.getY()  // entity position
+                    ) <= troop.getMeleeRange(); 
+    }
     
 
     // static methods
