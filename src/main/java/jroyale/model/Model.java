@@ -78,6 +78,15 @@ public class Model implements IModel {
             ValkyrieCard.getInstance()
         });
 
+        opponentDeck = new Deck(new Card[] {
+            MiniPekkaCard.getInstance(),
+            GiantCard.getInstance(),
+            SkeletonCard.getInstance(),
+            SkeletonArmyCard.getInstance(),
+            PekkaCard.getInstance(),
+            ValkyrieCard.getInstance()
+        });
+
     }
 
     @Override
@@ -136,6 +145,8 @@ public class Model implements IModel {
             System.out.println();
         }  */
 
+        playerDeck.update(elapsed);
+        opponentDeck.update(elapsed);
     }
 
     @Override
@@ -204,6 +215,21 @@ public class Model implements IModel {
     @Override
     public Card getFourthHandPlayerCard() {
         return playerDeck.getCurrentFourthCard();
+    }
+
+    @Override
+    public byte getPlayerElixirLeft() {
+        return playerDeck.getElixir();
+    }
+
+    @Override
+    public byte getMaxElixir() {
+        return Deck.getMaxElixir();
+    }
+
+    @Override
+    public double getPlayerElixirChargeTimeProgress() {
+        return playerDeck.getChargeTimeProgress();
     }
 
     // 

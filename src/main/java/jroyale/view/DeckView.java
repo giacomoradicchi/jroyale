@@ -20,6 +20,11 @@ public class DeckView {
 
     private CardView card1, card2, card3, card4;
 
+    private static final Color PLAYER_STROKE_COLOR = Color.rgb(250, 199, 250);
+    private static final Color PLAYER_FILL_DARK = Color.rgb(81, 30, 81); 
+    private static final Color PLAYER_FILL_PROGRESS = Color.rgb(161, 60, 161); 
+    private static final Color PLAYER_FILL_LIGHT = Color.rgb(255, 106, 255);
+
     private DeckView() {} // private methods
 
     public void init() {
@@ -31,7 +36,7 @@ public class DeckView {
         View.getInstance().addToRoot(card4);
     }
     
-    public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4) {
+    public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
         renderBackDeck();
         
         card1.setType(type1);
@@ -43,11 +48,78 @@ public class DeckView {
         card2.render(EntityViewBinder.getInstance().getViewInstance(card2.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
         card3.render(EntityViewBinder.getInstance().getViewInstance(card3.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
         card4.render(EntityViewBinder.getInstance().getViewInstance(card4.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);  
+
+        renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir);
+        
     }
 
 
+    private void renderElixirBar(byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+        // elixir
+        final double CANVAS_WIDTH = View.getInstance().getCanvasWidth();
+        final double CANVAS_HEIGHT = View.getInstance().getCanvasHeight();
 
-    // private methods
+        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
+        final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
+
+        final double centerX = CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2;
+        final double centerY = CANVAS_HEIGHT - DECK_HEIGHT * 0.15;
+        final double barWidth = DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.9;
+        final double barHeight = DECK_HEIGHT * 0.10;
+
+        IView view = View.getInstance();
+
+        /* View.getInstance().strokeScreenRoundedRect(
+            centerX, 
+            centerY,
+            DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.9, 
+            DECK_HEIGHT * 0.2,
+            0, 0, 1, 1, Color.BLACK
+        ); */
+
+        Color cFill, cStroke;
+        Color cFillDark;
+        cStroke   = PLAYER_STROKE_COLOR;
+        cFill     = PLAYER_FILL_LIGHT;
+        cFillDark = PLAYER_FILL_DARK;
+
+        // Draw the empty (background) health bar
+        view.fillScreenRoundedRect(centerX, centerY, barWidth, barHeight,
+                barHeight / 2, barHeight / 2, 1, cFillDark);
+
+        // Calculate the filled portion width based on current health percentage
+        double percentage   = (double) elixirLeft / maxElixir;
+        double elixirWidth  = barWidth * percentage;
+
+        // Align the filled bar to the left edge of the background bar
+        double ElixirBarCenterX = centerX - barWidth / 2 + elixirWidth / 2;
+        
+        double dx = 1.0 / maxElixir * barWidth;
+        double elixirProgressWidth = dx * elixirChargeTimeProgress;
+        view.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, 1, PLAYER_FILL_PROGRESS);
+
+        // Draw the filled (current elixir) portion of the bar
+        view.fillScreenRoundedRect(ElixirBarCenterX, centerY, elixirWidth, barHeight,
+                barHeight / 2, barHeight / 2, 1, cFill);
+
+        // Draw the border around the full elixir bar
+        view.strokeScreenRoundedRect(centerX, centerY, barWidth, barHeight,
+                barHeight / 2, barHeight / 2, 1.5, 1, cStroke);
+
+
+        for (int i = 1; i < maxElixir; i++) {
+            double x = centerX - barWidth / 2 + i * dx;
+            view.strokeScreenLine(
+                x, 
+                centerY - barHeight/2, 
+                x, 
+                centerY + barHeight/2, 
+                1, 
+                cStroke, 
+                1.5
+            );
+        }
+    }
 
     private void renderBackDeck() {
 
@@ -65,13 +137,13 @@ public class DeckView {
             DECK_HEIGHT
         );
 
-        View.getInstance().strokeScreenRoundedRect(
+        /* View.getInstance().strokeScreenRoundedRect(
             CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2, 
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
             DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH, 
             DECK_HEIGHT,
             0, 0, 1, 1, Color.BLACK
-        );
+        ); */
     }
 
     private void initCardsView() {

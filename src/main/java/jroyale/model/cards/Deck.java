@@ -18,9 +18,13 @@ public class Deck {
     
     private final Card[] availableCards = new Card[AVAILABLE_CARDS_SIZE]; // player/opponent will choose between those cards.
     private Set<Card> deck = new HashSet<>(); // using Set data structure to avoid duplicates.
-    private byte elixirLeft = Byte.MAX_VALUE; // TODO: set it to 0
+    private byte elixirLeft = 0; 
     private int selectedCardIndex;
 
+    private long accumulator; // it will increase for each frame by elapsed
+    private static final double DEFAULT_ELISIR_CHARGE_TIME_SEC = 3;
+    private static final double DEFAULT_ELISIR_CHARGE_TIME_NANOSEC = DEFAULT_ELISIR_CHARGE_TIME_SEC * 1_000_000_000L;
+    private static double chargeTimeSpeed = 1.0;
 
     public Deck(Card[] deckCards) {
         int numCards = deckCards.length;
@@ -49,18 +53,35 @@ public class Deck {
         
     }
 
-    public void update(long now) {
-        // TODO
+    public void update(long elapsed) {
+        if (elixirLeft >= MAX_ELIXIR) return;
+
+        accumulator += elapsed;
+        
+        if (shouldIncrement()) {
+            elixirLeft++;
+            resetAccumulator();
+        }
     }
 
-    public void addElixir() {
-        if (elixirLeft < MAX_ELIXIR) {
-            elixirLeft++;
-        }
+    private boolean shouldIncrement() {
+        return accumulator >= getChargeTimeNanoSec();
+    }
+
+    private long getChargeTimeNanoSec() {
+        return (long) (DEFAULT_ELISIR_CHARGE_TIME_NANOSEC * chargeTimeSpeed);
+    }
+
+    private void resetAccumulator() {
+        accumulator -= getChargeTimeNanoSec();
     }
 
     public byte getElixir() {
         return elixirLeft;
+    }
+
+    public double getChargeTimeProgress() {
+        return Math.clamp((double) (accumulator) / getChargeTimeNanoSec(), 0, 1); // between 0 and 1
     }
 
     public void selectCard(int index) {
@@ -126,6 +147,11 @@ public class Deck {
             availableCards[i] = cardBuffer.get(i);
         }
     }
+    
+    // static methods
 
+    public static byte getMaxElixir() {
+        return MAX_ELIXIR;
+    }
 
 }

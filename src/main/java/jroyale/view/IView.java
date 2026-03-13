@@ -54,7 +54,11 @@ public interface IView {
 
     public void strokeScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color);
 
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4);
+    public void strokeScreenLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth);
+
+    public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth);
+
+    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
 
     public void setSelectedCard(int cardIndex);
 
