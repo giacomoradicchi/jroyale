@@ -39,6 +39,12 @@ public interface IModel {
 
     public boolean[][] getPlayerDroppableTiles();
 
+    public byte getPlayerElixirLeft();
+
+    public byte getMaxElixir();
+
+    public double getPlayerElixirChargeTimeProgress();
+
     // just for debugging:
     public boolean[][] getReachableTiles();
 }

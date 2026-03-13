@@ -74,12 +74,6 @@ public class GameEngine implements IGameEngine {
                 controllerForView.renderArena();
 
                 if (controllerForView.shouldRenderDragPlacementPreview()) {
-                    /* controllerForView.fillPoint(
-                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol() + 0.5),
-                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5), 
-                        10, 
-                        Color.BLUE
-                    );  */
                     controllerForView.renderDragPlacementPreview(
                         controllerForView.logicToGraphicX(controllerForView.getSelectedCol() + 0.5),
                         controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5)
@@ -105,7 +99,10 @@ public class GameEngine implements IGameEngine {
                     controllerForModel.getFirstHandPlayerCard().getType(), 
                     controllerForModel.getSecondHandPlayerCard().getType(), 
                     controllerForModel.getThirdHandPlayerCard().getType(), 
-                    controllerForModel.getFourthHandPlayerCard().getType()
+                    controllerForModel.getFourthHandPlayerCard().getType(),
+                    controllerForModel.getPlayerElixirLeft(),
+                    controllerForModel.getPlayerElixirChargeTimeProgress(),
+                    controllerForModel.getMaxElixir()
                 );
 
             }

@@ -33,4 +33,11 @@ public interface IControllerForModel {
     public Card getThirdHandPlayerCard();
 
     public Card getFourthHandPlayerCard();
+
+    public byte getPlayerElixirLeft();
+
+    public byte getMaxElixir();
+
+    public double getPlayerElixirChargeTimeProgress();
+
 } 

@@ -104,6 +104,21 @@ public class ControllerForModel implements IControllerForModel{
         return Model.getIstance().getFourthHandPlayerCard();
     }
 
+    @Override
+    public byte getPlayerElixirLeft() {
+        return Model.getIstance().getPlayerElixirLeft();
+    }
+
+    @Override
+    public byte getMaxElixir() {
+        return Model.getIstance().getMaxElixir();
+    }
+
+    @Override
+    public double getPlayerElixirChargeTimeProgress() {
+        return Model.getIstance().getPlayerElixirChargeTimeProgress();
+    }
+
     // static methods
     public static IControllerForModel getInstance() {
         if (instance == null) {

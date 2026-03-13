@@ -347,7 +347,7 @@ public class View implements IView {
         gc.save();
         gc.setGlobalAlpha(alpha);
         gc.setStroke(color);
-        gc.setLineWidth(lineWidth * globalScale);
+        gc.setLineWidth(lineWidth);
         gc.strokeRoundRect(
             centerX - width/2, 
             centerY - height/2, 
@@ -360,8 +360,31 @@ public class View implements IView {
     }
 
     @Override
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4) {
-        DeckView.getInstance().renderPlayerDeck(card1, card2, card3, card4);
+    public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
+        strokeScreenLine(
+            fromWorldToScreenX(x1), 
+            fromWorldToScreenY(y1),
+            fromWorldToScreenX(x2), 
+            fromWorldToScreenY(y2),
+            alpha, 
+            color, 
+            lineWidth * globalScale
+        );
+    }
+
+    @Override
+    public void strokeScreenLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
+        gc.save();
+        gc.setGlobalAlpha(alpha);
+        gc.setStroke(color);
+        gc.setLineWidth(lineWidth);
+        gc.strokeLine(x1, y1, x2, y2);
+        gc.restore();
+    }
+
+    @Override
+    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+        DeckView.getInstance().renderPlayerDeck(card1, card2, card3, card4, elixirLeft, elixirChargeTimeProgress, maxElixir);
     }
 
     @Override
