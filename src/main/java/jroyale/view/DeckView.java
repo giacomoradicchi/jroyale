@@ -11,11 +11,12 @@ public class DeckView {
 
     private CardView[] cards;
 
-    private int selectedCardIndex = 0;
+    private int selectedCardIndex = -1;
 
     private static final String UI_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/ui/";
     private static final Image OUTLINE_DEFAULT_SPELL = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "outline_default.png")));
     private static final Image DECK_IMAGE = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "deck.png")));
+    private static final Image ELIXIR_DROP_IMAGE = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "elixir_drop.png")));
     private static final double DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH = 0.82; // right side of deck is 82% of deck's width (based on experiments)
     private static final int NUM_CARDS = 4;
     private static final double NORMALIZED_DECK_WIDTH = 0.9;
@@ -42,24 +43,78 @@ public class DeckView {
         
     }
     
-    public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+    public void renderPlayerDeck(EntityType type1, byte elixirCost1, EntityType type2, byte elixirCost2, EntityType type3, byte elixirCost3, EntityType type4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
         renderBackDeck();
         
-        cards[0].setType(type1);
-        cards[1].setType(type2);
-        cards[2].setType(type3);
-        cards[3].setType(type4);
+        cards[0].setType(type1).setElixirCost(elixirCost1);
+        cards[1].setType(type2).setElixirCost(elixirCost2);
+        cards[2].setType(type3).setElixirCost(elixirCost3);
+        cards[3].setType(type4).setElixirCost(elixirCost4);
 
+        renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir);
+
+        // first render non selected card 
         for (int i = 0; i < cards.length; i++) {
             if (i != selectedCardIndex) {
                 cards[i].render(EntityViewBinder.getInstance().getViewInstance(cards[i].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+
+                
+                double dropWidth = cards[0].getWidth() * 0.35;
+                double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
+                double dropCenterX = cards[i].getLayoutX() + cards[i].getWidth()/2;
+                double dropCenterY = cards[i].getLayoutY() + cards[i].getHeight() - dropHeight/2;
+
+                renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[i].getElixirCost());
+
+                
+
             }
         }
 
-        cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+        // then render selected card (has to be on top of the others)
+        if (selectedCardIndex != -1 && cards[selectedCardIndex].isVisible()) {
 
-        renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir);
+            cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+
+            double dropWidth = cards[0].getWidth() * 0.35;
+            double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
+            double dropCenterX = cards[selectedCardIndex].getLayoutX() + cards[selectedCardIndex].getTranslateX() + cards[selectedCardIndex].getWidth()/2;
+            double dropCenterY = cards[selectedCardIndex].getLayoutY() + cards[selectedCardIndex].getTranslateY() + cards[selectedCardIndex].getHeight() - dropHeight/2;
+
+            renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[selectedCardIndex].getElixirCost());
+
+            
+        }
+
         
+    }
+
+    private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir) {
+        View.getInstance().renderScreenImage(
+            ELIXIR_DROP_IMAGE, 
+            dropCenterX, 
+            dropCenterY, 
+            dropWidth, 
+            dropHeight
+        ); 
+
+        // render counter elixir
+        View.getInstance().fillScreenTextFromCenter(
+            String.valueOf(elixir), 
+            dropCenterX, 
+            dropCenterY, 
+            FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
+            Color.WHITE
+        );
+
+        View.getInstance().strokeScreenTextFromCenter(
+            String.valueOf(elixir), 
+            dropCenterX, 
+            dropCenterY, 
+            FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
+            Color.BLACK,
+            1
+        );
     }
 
 
@@ -73,19 +128,12 @@ public class DeckView {
 
         final double centerX = CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2;
         final double centerY = CANVAS_HEIGHT - DECK_HEIGHT * 0.15;
-        final double barWidth = DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.9;
+        final double barWidth = DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.85;
         final double barHeight = DECK_HEIGHT * 0.10;
 
         IView view = View.getInstance();
 
-        /* View.getInstance().strokeScreenRoundedRect(
-            centerX, 
-            centerY,
-            DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.9, 
-            DECK_HEIGHT * 0.2,
-            0, 0, 1, 1, Color.BLACK
-        ); */
-
+        
         Color cFill, cStroke;
         Color cFillDark;
         cStroke   = PLAYER_STROKE_COLOR;
@@ -128,6 +176,14 @@ public class DeckView {
                 1.5
             );
         }
+
+        // render drop elixir 
+        double dropWidth = barHeight * 2.5;
+        double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
+        double dropCenterX = centerX - barWidth/2;
+        double dropCenterY = centerY;
+
+        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft);
     }
 
     private void renderBackDeck() {
@@ -145,14 +201,6 @@ public class DeckView {
             DECK_WIDTH, 
             DECK_HEIGHT
         );
-
-        /* View.getInstance().strokeScreenRoundedRect(
-            CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2, 
-            CANVAS_HEIGHT - DECK_HEIGHT/2, 
-            DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH, 
-            DECK_HEIGHT,
-            0, 0, 1, 1, Color.BLACK
-        ); */
     }
 
     private void initCardsView() {
@@ -198,7 +246,7 @@ public class DeckView {
         View.getInstance().setSelectedCard(
             selectedCardIndex
         );
-    }
+    } 
 
     public void setVisibleSelectedCard(boolean value) {
         cards[selectedCardIndex].setVisible(value);

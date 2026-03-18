@@ -16,6 +16,7 @@ public class CardView extends StackPane {
     private final Point startingPos;
     private final Point dragOffset = new Point(0, 0);
     private EntityType type;
+    private byte elixirCost;
 
     private final static int ANIMATION_TIME_MILLIS = 150;
     private final static double SCALE_ON_CLICK = 1.05;
@@ -147,8 +148,20 @@ public class CardView extends StackPane {
         return type;
     }
 
-    public void setType(EntityType type) {
+    public CardView setType(EntityType type) {
         if (type != this.type) this.type = type;
+
+        return this;
+    }
+
+    public byte getElixirCost() {
+        return elixirCost;
+    }
+
+    public CardView setElixirCost(byte elixirCost) {
+        if (elixirCost != this.elixirCost) this.elixirCost = elixirCost;
+
+        return this;
     }
 
     

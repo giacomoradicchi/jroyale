@@ -1,5 +1,6 @@
 package jroyale.view;
 
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -9,6 +10,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jroyale.controller.ControllerForView;
 import jroyale.utils.Enums.EntityType;
@@ -48,6 +51,7 @@ public class View implements IView {
         EntityViewBinder.getInstance().init();
         MouseManager.getInstance().init(stage.getScene());
         DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
+        FontManager.getInstance().init();
         handleMouseEvents();
     }
 
@@ -385,8 +389,37 @@ public class View implements IView {
     }
 
     @Override
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
-        DeckView.getInstance().renderPlayerDeck(card1, card2, card3, card4, elixirLeft, elixirChargeTimeProgress, maxElixir);
+    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color) {
+        gc.save();
+        gc.setFont(font);
+        gc.setFill(color);
+
+        // alligned in center
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+
+        gc.fillText(text, centerX, centerY);
+        gc.restore();
+    }
+
+    @Override
+    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth) {
+        gc.save();
+        gc.setFont(font);
+        gc.setStroke(color);
+        gc.setLineWidth(lineWidth);
+
+        // alligned in center
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+
+        gc.strokeText(text, centerX, centerY);
+        gc.restore();
+    }
+
+    @Override
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+        DeckView.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir);
     }
 
     @Override

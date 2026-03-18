@@ -3,6 +3,7 @@ package jroyale.view;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -58,7 +59,11 @@ public interface IView {
 
     public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth);
 
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
+
+    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color);
+
+    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth);
 
     public void setSelectedCard(int cardIndex);
 

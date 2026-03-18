@@ -40,7 +40,7 @@ public interface IControllerForView {
 
     public void renderDragPlacementPreview(double centreX, double centreY);
 
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
 
     public int getSelectedCol();
 
