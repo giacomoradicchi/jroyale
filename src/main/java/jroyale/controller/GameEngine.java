@@ -1,7 +1,6 @@
 package jroyale.controller;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.model.Entity;
 import jroyale.model.troops.Giant;

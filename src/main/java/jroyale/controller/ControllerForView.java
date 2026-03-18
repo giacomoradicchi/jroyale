@@ -3,7 +3,6 @@ package jroyale.controller;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.GameData;
-import jroyale.model.Model;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
