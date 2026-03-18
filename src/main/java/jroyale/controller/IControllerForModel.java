@@ -38,6 +38,8 @@ public interface IControllerForModel {
 
     public byte getMaxElixir();
 
+    public int getAvailableDeckCards();
+
     public double getPlayerElixirChargeTimeProgress();
 
 } 

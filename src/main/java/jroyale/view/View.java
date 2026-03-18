@@ -47,7 +47,7 @@ public class View implements IView {
         //loadSprites();
         EntityViewBinder.getInstance().init();
         MouseManager.getInstance().init(stage.getScene());
-        DeckView.getInstance().init();
+        DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
         handleMouseEvents();
     }
 
@@ -284,6 +284,7 @@ public class View implements IView {
 
     @Override
     public void startDragPlacementPreview() {
+        DeckView.getInstance().setVisibleSelectedCard(false);
         DragPlacementPreview.getInstance().startAnimation();
     }
 
@@ -294,6 +295,7 @@ public class View implements IView {
 
     @Override
     public void stopDragPlacementPreview() {
+        DeckView.getInstance().setVisibleSelectedCard(true);
         DragPlacementPreview.getInstance().stopAnimation();
     }
 

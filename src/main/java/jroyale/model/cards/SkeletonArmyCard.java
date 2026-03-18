@@ -21,7 +21,7 @@ public class SkeletonArmyCard extends Card {
         // TODO: drop more skeletons.
 
         for (int i = 0; i < ARMY_SIZE; i++)
-            Model.getIstance().addTroop(
+            Model.getInstance().addTroop(
                 new Skeleton(rowIndex, columnIndex, side)
             );
     }

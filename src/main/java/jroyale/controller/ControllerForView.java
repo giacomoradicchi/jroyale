@@ -3,6 +3,7 @@ package jroyale.controller;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.GameData;
+import jroyale.model.Model;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -105,25 +106,32 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void handleMouseSelectedTile(int row, int col) {
 
+        // 1. Valid Position 
+        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
+            if (!isPositionValid()) View.getInstance().startDragPlacementPreview();
 
-        // 1. Initializing first valid position (stays (-1,-1) if it's not droppable)
-        if (!isPositionValid()) {
-            if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
-                lastSelectedColumnIndex = col;
-                lastSelectedRowIndex = row;
-                View.getInstance().startDragPlacementPreview();
-            }
-
+            lastSelectedColumnIndex = col;
+            lastSelectedRowIndex = row;
+            return;
+            
+        } 
+        
+        // 2. Position outside bounds
+        if(row < 0 || row >= ControllerForModel.getInstance().getNumRowsArena()
+               || col < 0 || col >= ControllerForModel.getInstance().getNumColsArena()) {
+            resetLastSelectedTile();
+            View.getInstance().stopDragPlacementPreview();
             return;
         }
 
- 
-        // 2. Tries the horizontal slide (based on previous row)
+        // 3. Position inside bounds but (row, col) not droppable
+
+        // Tries the horizontal slide (based on previous row)
         if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(lastSelectedRowIndex, col)) {
             lastSelectedColumnIndex = col;
         }
 
-        // 3.Tries the vertical slide (based on previous col)
+        // Tries the vertical slide (based on previous col)
         if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, lastSelectedColumnIndex)) {
             lastSelectedRowIndex = row;
         } 
@@ -181,6 +189,11 @@ public class ControllerForView implements IControllerForView {
         if (isPositionValid())
             ControllerForModel.getInstance().dropSelectedPlayerCard(lastSelectedRowIndex, lastSelectedColumnIndex);
         
+    }
+
+    @Override
+    public int getAvailableDeckCards() {
+        return ControllerForModel.getInstance().getAvailableDeckCards();
     }
 
     // static methods

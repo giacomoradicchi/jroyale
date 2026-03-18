@@ -21,7 +21,7 @@ import jroyale.utils.Enums.Side;
 
 public class Model implements IModel {
 
-    private static Model istance;
+    private static Model instance;
 
     // 32x18 is the map size, each Tile 
     // has its own List where character are inserted based on
@@ -228,6 +228,11 @@ public class Model implements IModel {
     }
 
     @Override
+    public int getAvailableDeckCards() {
+        return Deck.AVAILABLE_CARDS_SIZE;
+    }
+
+    @Override
     public double getPlayerElixirChargeTimeProgress() {
         return playerDeck.getChargeTimeProgress();
     }
@@ -399,10 +404,10 @@ public class Model implements IModel {
 
     // static methods
 
-    public static IModel getIstance() {
-        if (istance == null) {
-            istance = new Model();
+    public static IModel getInstance() {
+        if (instance == null) {
+            instance = new Model();
         }
-        return istance;
+        return instance;
     }
 }

@@ -43,6 +43,8 @@ public interface IModel {
 
     public byte getMaxElixir();
 
+    public int getAvailableDeckCards();
+
     public double getPlayerElixirChargeTimeProgress();
 
     // just for debugging:

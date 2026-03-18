@@ -9,6 +9,10 @@ public class DeckView {
 
     private static DeckView instance = null;
 
+    private CardView[] cards;
+
+    private int selectedCardIndex = 0;
+
     private static final String UI_PATH_RELATIVE_TO_RESOURCE = "/jroyale/images/ui/";
     private static final Image OUTLINE_DEFAULT_SPELL = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "outline_default.png")));
     private static final Image DECK_IMAGE = ImageUtils.cropToBoundingBox(new Image(DeckView.class.getResourceAsStream(UI_PATH_RELATIVE_TO_RESOURCE + "deck.png")));
@@ -18,8 +22,6 @@ public class DeckView {
     private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 1); // arbitrary width decision
     private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
 
-    private CardView card1, card2, card3, card4;
-
     private static final Color PLAYER_STROKE_COLOR = Color.rgb(250, 199, 250);
     private static final Color PLAYER_FILL_DARK = Color.rgb(81, 30, 81); 
     private static final Color PLAYER_FILL_PROGRESS = Color.rgb(161, 60, 161); 
@@ -27,27 +29,34 @@ public class DeckView {
 
     private DeckView() {} // private methods
 
-    public void init() {
+    public void init(int numCards) {
+        if (numCards < 0) throw new IllegalArgumentException("Invalid parameter numCards: must be positive.\n");
+
+        cards = new CardView[numCards];
+
         initCardsView();
 
-        View.getInstance().addToRoot(card1);
-        View.getInstance().addToRoot(card2);
-        View.getInstance().addToRoot(card3);
-        View.getInstance().addToRoot(card4);
+        for (int i = 0; i < numCards; i++) {
+            View.getInstance().addToRoot(cards[i]);
+        }
+        
     }
     
     public void renderPlayerDeck(EntityType type1, EntityType type2, EntityType type3, EntityType type4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
         renderBackDeck();
         
-        card1.setType(type1);
-        card2.setType(type2);
-        card3.setType(type3);
-        card4.setType(type4);
+        cards[0].setType(type1);
+        cards[1].setType(type2);
+        cards[2].setType(type3);
+        cards[3].setType(type4);
 
-        card1.render(EntityViewBinder.getInstance().getViewInstance(card1.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card2.render(EntityViewBinder.getInstance().getViewInstance(card2.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card3.render(EntityViewBinder.getInstance().getViewInstance(card3.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
-        card4.render(EntityViewBinder.getInstance().getViewInstance(card4.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);  
+        for (int i = 0; i < cards.length; i++) {
+            if (i != selectedCardIndex) {
+                cards[i].render(EntityViewBinder.getInstance().getViewInstance(cards[i].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+            }
+        }
+
+        cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
 
         renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir);
         
@@ -159,40 +168,40 @@ public class DeckView {
 
         final double OFFSET_X = CANVAS_WIDTH/2 + (0.5 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH) * DECK_WIDTH ; 
 
-        final double X_CENTER_1 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 0) + OFFSET_X; // center of first card
-        final double X_CENTER_2 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 1) + OFFSET_X; // center of second card
-        final double X_CENTER_3 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 2) + OFFSET_X; // center of third card
-        final double X_CENTER_4 = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * 3) + OFFSET_X; // center of fourth card
+        final double X_CENTERS[] = new double[cards.length];
+
+        for (int i = 0; i < cards.length; i++) {
+            X_CENTERS[i] = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * i) + OFFSET_X;
+        }
 
         // based on arbitrary choice: card width has to be 1/6 of width 
         double cardWidth = RIGHT_SIDE_DECK_WIDTH * NORMALIZED_CARD_WIDTH; 
         // setting the same ratio of OUTLINE_SPELL:
         double cardHeight = cardWidth / OUTLINE_DEFAULT_SPELL.getWidth() * OUTLINE_DEFAULT_SPELL.getHeight();
 
-        card1 = new CardView(X_CENTER_1, Y_CENTER, cardWidth, cardHeight);
-        card2 = new CardView(X_CENTER_2, Y_CENTER, cardWidth, cardHeight);
-        card3 = new CardView(X_CENTER_3, Y_CENTER, cardWidth, cardHeight);
-        card4 = new CardView(X_CENTER_4, Y_CENTER, cardWidth, cardHeight);
-
+        for (int i = 0; i < cards.length; i++) {
+            cards[i] = new CardView(X_CENTERS[i], Y_CENTER, cardWidth, cardHeight);
+        }
     }
 
     private int getSelectedCardIndex(CardView selectedCard) {
-        if (selectedCard == card1) {
-            return 0;
-        } else if (selectedCard == card2) {
-            return 1;
-        } else if (selectedCard == card3) {
-            return 2;
-        } else if (selectedCard == card4) {
-            return 3;
+        for (int i = 0; i < cards.length; i++) {
+            if (selectedCard == cards[i]) return i;
         }
-        return -1;
+        
+        return -1; // not found
     }
 
     public void setSelectedCard(CardView card) {
+        selectedCardIndex = getSelectedCardIndex(card);
+
         View.getInstance().setSelectedCard(
-            getSelectedCardIndex(card)
+            selectedCardIndex
         );
+    }
+
+    public void setVisibleSelectedCard(boolean value) {
+        cards[selectedCardIndex].setVisible(value);
     }
 
     // static methods
