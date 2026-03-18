@@ -58,19 +58,19 @@ public class CollisionManager implements ICollisionManager{
 
         // checking X
 
-        if (!Model.getIstance().isTileReachable(currentI, nextJ)) {
+        if (!Model.getInstance().isTileReachable(currentI, nextJ)) {
             newX = resolveCollisionCoordinate(directionOnX, nextJ, radius);
             foundUnreachableTile = true;
         } 
 
         // checking Y
-        if (!Model.getIstance().isTileReachable(nextI, currentJ)) {
+        if (!Model.getInstance().isTileReachable(nextI, currentJ)) {
             newY = resolveCollisionCoordinate(directionOnY, nextI, radius);
             foundUnreachableTile = true;
         } 
 
         // checking both if not found on specific direction
-        if (!foundUnreachableTile && !Model.getIstance().isTileReachable(nextI, nextJ)) {
+        if (!foundUnreachableTile && !Model.getInstance().isTileReachable(nextI, nextJ)) {
             if (shiftX > shiftY) { 
                 // fixingOnY
                 newY = resolveCollisionCoordinate(directionOnY, nextI , radius);
@@ -145,7 +145,7 @@ public class CollisionManager implements ICollisionManager{
 
         for (int i = 0; i <= limit; i++) {
             for (int j = 0; j <= limit; j++) {
-                foundEntities.addAll(Model.getIstance().getEntitiesOnTile(iStart + i, jStart + j));
+                foundEntities.addAll(Model.getInstance().getEntitiesOnTile(iStart + i, jStart + j));
             }
         }
 

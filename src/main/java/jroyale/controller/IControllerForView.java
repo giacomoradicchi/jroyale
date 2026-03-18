@@ -49,5 +49,7 @@ public interface IControllerForView {
     public void setSelectedPlayerCard(int cardIndex);
 
     public void dropSelectedPlayerCardOnLastMousePos();
+    
+    public int getAvailableDeckCards();
 
 }

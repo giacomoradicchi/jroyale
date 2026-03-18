@@ -37,7 +37,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
                 // if it goes outside the map there won't be any error since getEntitiesOnTile returns always
                 // a linked list (in this case, an empty one)
                 
-                for (Entity entity : Model.getIstance().getEntitiesOnTile(i, j)) {
+                for (Entity entity : Model.getInstance().getEntitiesOnTile(i, j)) {
 
                     double distance = Point.distance(
                         troop.getX(), troop.getY(), // troop position
@@ -98,7 +98,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
                 // a linked list (in this case, an empty one)
 
                 
-                for (Entity entity : Model.getIstance().getEntitiesOnTile(i, j)) {
+                for (Entity entity : Model.getInstance().getEntitiesOnTile(i, j)) {
 
                     double distance = Point.distance(
                         troop.getX(), troop.getY(), // troop position

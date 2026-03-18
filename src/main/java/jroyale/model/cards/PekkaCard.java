@@ -16,7 +16,7 @@ public class PekkaCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getIstance().addTroop(
+        Model.getInstance().addTroop(
             new Pekka(rowIndex, columnIndex, side)
         );
     }

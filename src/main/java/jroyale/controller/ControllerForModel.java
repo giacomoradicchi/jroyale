@@ -39,84 +39,89 @@ public class ControllerForModel implements IControllerForModel{
     // instance methods
     @Override
     public void initModel() {
-        Model.getIstance().init();
+        Model.getInstance().init();
 
         initTroopsAnimationSteps();
     }
 
     @Override
     public void updateModel(long now) {
-        Model.getIstance().update(now);
+        Model.getInstance().update(now);
     }
 
     @Override
     public int getNumRowsArena() {
-        return Model.getIstance().getRowsCount();
+        return Model.getInstance().getRowsCount();
     }
 
     @Override
     public int getNumColsArena() {
-        return Model.getIstance().getColsCount();
+        return Model.getInstance().getColsCount();
     }
 
     @Override
     public List<Entity> getEntitiesOrderedByPosY() {
-        return Model.getIstance().getEntitiesOrderedByPosY();
+        return Model.getInstance().getEntitiesOrderedByPosY();
     }
 
     @Override
     public void addTroop(Troop troop) {
-        Model.getIstance().addTroop(troop);
+        Model.getInstance().addTroop(troop);
     }
 
     @Override
     public void setSelectedPlayerCard(int cardIndex) {
-        Model.getIstance().setSelectedCard(cardIndex);
+        Model.getInstance().setSelectedCard(cardIndex);
     }
 
     @Override
     public void dropSelectedPlayerCard(int row, int col) {
-        Model.getIstance().dropPlayerCard(row, col);
+        Model.getInstance().dropPlayerCard(row, col);
     }
 
     @Override
     public boolean isPlayerEntityDroppableOnTile(int row, int col) {
-        return Model.getIstance().isPlayerEntityDroppableOnTile(row, col);
+        return Model.getInstance().isPlayerEntityDroppableOnTile(row, col);
     }
 
     @Override
     public Card getFirstHandPlayerCard() {
-        return Model.getIstance().getFirstHandPlayerCard();
+        return Model.getInstance().getFirstHandPlayerCard();
     }
 
     @Override
     public Card getSecondHandPlayerCard() {
-        return Model.getIstance().getSecondHandPlayerCard();
+        return Model.getInstance().getSecondHandPlayerCard();
     }
 
     @Override
     public Card getThirdHandPlayerCard() {
-        return Model.getIstance().getThirdHandPlayerCard();
+        return Model.getInstance().getThirdHandPlayerCard();
     }
 
     @Override
     public Card getFourthHandPlayerCard() {
-        return Model.getIstance().getFourthHandPlayerCard();
+        return Model.getInstance().getFourthHandPlayerCard();
     }
 
     @Override
     public byte getPlayerElixirLeft() {
-        return Model.getIstance().getPlayerElixirLeft();
+        return Model.getInstance().getPlayerElixirLeft();
     }
 
     @Override
     public byte getMaxElixir() {
-        return Model.getIstance().getMaxElixir();
+        return Model.getInstance().getMaxElixir();
+    }
+
+    @Override
+    public int getAvailableDeckCards() {
+        return Model.getInstance().getAvailableDeckCards();
     }
 
     @Override
     public double getPlayerElixirChargeTimeProgress() {
-        return Model.getIstance().getPlayerElixirChargeTimeProgress();
+        return Model.getInstance().getPlayerElixirChargeTimeProgress();
     }
 
     // static methods

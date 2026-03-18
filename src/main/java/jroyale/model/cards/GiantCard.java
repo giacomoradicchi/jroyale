@@ -16,7 +16,7 @@ public class GiantCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getIstance().addTroop(
+        Model.getInstance().addTroop(
             new Giant(rowIndex, columnIndex, side)
         );
     }

@@ -116,12 +116,15 @@ public class CardView extends StackPane {
     }
 
     public void render(Image icon, Image outline) {
+        if (!isVisible()) return;
+
         // Calculate the current visual center by summing Layout + Translate
         double centerX = this.getLayoutX() + this.getTranslateX() + getWidth() / 2;
         double centerY = this.getLayoutY() + this.getTranslateY() + getWidth() / 2;
 
         IView v = View.getInstance();
         
+
         // 1. Draw Icon
         v.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight());
         
@@ -147,5 +150,7 @@ public class CardView extends StackPane {
     public void setType(EntityType type) {
         if (type != this.type) this.type = type;
     }
+
+    
 
 }
