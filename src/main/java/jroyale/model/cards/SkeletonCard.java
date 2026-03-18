@@ -9,6 +9,7 @@ public class SkeletonCard extends Card {
 
     private static SkeletonCard instance;
     private static final byte ELIXIR_COST = 1;
+    private static final byte SKELETONS_DROPPED = 3;
 
     private SkeletonCard() {
         super(ELIXIR_COST, EntityType.SKELETON);
@@ -16,9 +17,10 @@ public class SkeletonCard extends Card {
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getInstance().addTroop(
-            new Skeleton(rowIndex, columnIndex, side)
-        );
+        for (int i = 0; i < SKELETONS_DROPPED; i++)
+            Model.getInstance().addTroop(
+                new Skeleton(rowIndex, columnIndex, side)
+            );
     }
 
     // static methods

@@ -160,8 +160,8 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void renderPlayerDeck(EntityType card1, EntityType card2, EntityType card3, EntityType card4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
-        View.getInstance().renderPlayerDeck(card1, card2, card3, card4, elixirLeft, elixirChargeTimeProgress, maxElixir);
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+        View.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir);
     }
 
     private boolean isPositionValid() {
