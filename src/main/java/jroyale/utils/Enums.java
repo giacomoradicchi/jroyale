@@ -27,4 +27,12 @@ public class Enums {
         MOVE,
         ATTACK
     }
+
+    public enum Difficulty {
+        EASY,
+        MEDIUM,
+        HARD,
+        IMPOSSIBLE
+    }
+    
 }
