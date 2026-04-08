@@ -13,13 +13,13 @@ public class Deck {
     public static final int AVAILABLE_CARDS_SIZE = 4;
 
     private static final int MAX_NUM_CARDS = 8;
-    private static final int MAX_ELIXIR = 10;
+    private static final int MAX_ELIXIR = 10; 
 
     private final List<Card> cardBuffer = new ArrayList<>(); // to avoid new constructor whenever replaceCard() and initAvailableCards() is called.
     
     private final Card[] availableCards = new Card[AVAILABLE_CARDS_SIZE]; // player/opponent will choose between those cards.
     private Set<Card> deck = new HashSet<>(); // using Set data structure to avoid duplicates.
-    private byte elixirLeft = 0; 
+    private byte elixirLeft = 3; 
     private int selectedCardIndex;
 
     private long accumulator; // it will increase for each frame by elapsed
@@ -74,7 +74,11 @@ public class Deck {
     }
 
     private void resetAccumulator() {
-        accumulator -= getChargeTimeNanoSec();
+        if (elixirLeft == MAX_ELIXIR) {
+            accumulator = 0;
+        } else {
+            accumulator -= getChargeTimeNanoSec();
+        }
     }
 
     public byte getElixir() {

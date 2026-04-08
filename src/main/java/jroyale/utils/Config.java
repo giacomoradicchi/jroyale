@@ -50,14 +50,18 @@ public class Config {
 	private String getConfigFile() throws URISyntaxException {
 		String configFile = null;
 		String relPath = "\\conf\\config.txt";
-		if (System.getProperty("os.name").startsWith("Linux")) {
+		if (System.getProperty("os.name").startsWith("Linux")
+		|| System.getProperty("os.name").startsWith("Mac")) {
 			relPath = "/conf/config.txt";
 		}
 		if (IS_DIST_VERSION)
 			configFile = getHomeFolderForDistVersion() + relPath;
 		else
 			configFile = getHomeFolderForDevVersion() + relPath;
-		return configFile;
+
+		
+		//return configFile;
+		return "conf/config.txt";
 	}
 
 	private String getHomeFolderForDistVersion() throws URISyntaxException {

@@ -8,7 +8,7 @@ import jroyale.utils.Enums.Side;
 public class GiantCard extends Card{
 
     private static GiantCard instance;
-    private static final byte ELIXIR_COST = 8;
+    private static final byte ELIXIR_COST = 5;
 
     private GiantCard() {
         super(ELIXIR_COST, EntityType.GIANT);

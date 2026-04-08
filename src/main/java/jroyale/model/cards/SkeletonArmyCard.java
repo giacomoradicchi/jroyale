@@ -9,7 +9,7 @@ public class SkeletonArmyCard extends Card {
 
     private static SkeletonArmyCard instance;
     private static final byte ELIXIR_COST = 3;
-    private static final byte ARMY_SIZE = 15;
+    private static final int ARMY_SIZE = 15;
 
     private SkeletonArmyCard() {
         super(ELIXIR_COST, EntityType.SKELETON_ARMY);
