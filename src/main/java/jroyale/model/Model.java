@@ -17,6 +17,7 @@ import jroyale.model.towers.ArcerTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Troop;
+import jroyale.utils.Config;
 import jroyale.utils.Enums.Side;
 
 public class Model implements IModel {
@@ -68,6 +69,7 @@ public class Model implements IModel {
 
         initTowers();
         initDroppableTiles();
+        initAIAgent();
         
         playerDeck = new Deck(new Card[] {
             MiniPekkaCard.getInstance(),
@@ -147,6 +149,8 @@ public class Model implements IModel {
 
         playerDeck.update(elapsed);
         opponentDeck.update(elapsed);
+        AIAgent.getInstance().update(elapsed);
+        
     }
 
     @Override
@@ -400,6 +404,11 @@ public class Model implements IModel {
                 playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
             }
         }
+    }
+
+    private void initAIAgent() {
+        //AIAgent.getInstance().init(Config.getInstance().getDifficulty());
+        AIAgent.getInstance().init("master");
     }
 
     // static methods
