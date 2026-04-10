@@ -29,8 +29,8 @@ public class Model implements IModel {
     // their position (so the collision algoritm will be much
     // more efficient)
     
-    public static final int MAP_ROWS = 32;
-    public static final int MAP_COLS = 18;
+    private static final int MAP_ROWS = 32;
+    private static final int MAP_COLS = 18;
     
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
@@ -49,7 +49,10 @@ public class Model implements IModel {
     
     private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
     private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
-    private List<Entity> entities = new ArrayList<>(); // insert order entities
+    //private List<Entity> entities = new ArrayList<>(); // insert order entities
+    private List<Entity> playerEntities = new ArrayList<>();
+    private List<Entity> opponentEntities = new ArrayList<>();
+    
 
     private long lastTimeStamp;
 
@@ -121,7 +124,11 @@ public class Model implements IModel {
     public void update(long now) {
         long elapsed = getElapsed(now);
 
-        for (Entity e : entities) {
+        for (Entity e : playerEntities) {
+            e.update(elapsed);
+        }
+
+        for (Entity e : opponentEntities) {
             e.update(elapsed);
         }
 
@@ -186,7 +193,9 @@ public class Model implements IModel {
 
         // clears renderOrderTroops buffer and puts every troop entry
         renderOrderEntities.clear();
-        renderOrderEntities.addAll(entities);
+        renderOrderEntities.addAll(playerEntities);
+        renderOrderEntities.addAll(opponentEntities);
+
         Collections.sort(renderOrderEntities); // sorting based on Y pos (sorting is 
         // based on double Y coords, not on column; otherwise a simple for loop 
         // scan for j = 0..COLS-1 would have been sufficient)
@@ -199,6 +208,16 @@ public class Model implements IModel {
             return new ArrayList<>();
         
         return map[i][j].getEntities();
+    }
+
+    @Override
+    public List<Entity> getPlayerEntities() {
+        return playerEntities;
+    }
+
+    @Override
+    public List<Entity> getOpponentEntities() {
+        return opponentEntities;
     }
 
     @Override
@@ -246,7 +265,11 @@ public class Model implements IModel {
     //
 
     private void updateMap() {
+        updateMap(playerEntities);
+        updateMap(opponentEntities);
+    }
 
+    private void updateMap(List<Entity> entities) {
         Iterator<Entity> itEntities = entities.iterator();
 
         toRemoveEntities.clear();
@@ -279,7 +302,11 @@ public class Model implements IModel {
     private void removeEntity(Entity e) {
         e.onDelete();
         removeEntityFromMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
-        entities.remove(e);
+
+        if (e.getSide() == Side.PLAYER) 
+            playerEntities.remove(e);
+        else 
+            opponentEntities.remove(e);
     }
 
     private void addEntity(Entity e) {
@@ -292,7 +319,11 @@ public class Model implements IModel {
         
         addEntityToMap(e, i, j, e.getFootPrintSize());
         e.updateCurrentTile();
-        entities.add(e);
+
+        if (e.getSide() == Side.PLAYER)
+            playerEntities.add(e);
+        else 
+            opponentEntities.add(e);
     }
 
     private void addEntityToMap(Entity e, int centreI, int centreJ, int footprintSize) {

@@ -2,26 +2,35 @@ package jroyale.model;
 
 import java.util.Random;
 
+import jroyale.model.towers.Tower;
+import jroyale.model.troops.Troop;
+
 public class AIAgent {
 
     private static AIAgent instance = null;
 
     private AIAgent() {}
 
-    public enum AgentIntelligence {
-        BASIC(0.25),
-        STANDARD(0.5), 
-        EXPERT(0.75),
-        MASTER(1);  
+    public enum AgentDifficulty {
+        BASIC(0.25, 0.1),
+        STANDARD(0.5, 0.2), 
+        EXPERT(0.75, 0.5),
+        MASTER(1, 0.75);  
 
         private double intelligence; // in [0, 1]
+        private double proactivity; // in [0, 1]
         
-        private AgentIntelligence(double intelligence) {
+        private AgentDifficulty(double intelligence, double proactivity) {
             this.intelligence = intelligence;
+            this.proactivity = proactivity;
         }
 
-        public double getIntelligenceValue() {
+        public double getIntelligence() {
             return intelligence;
+        }
+
+        public double getProactivity() {
+            return proactivity;
         }
     }
 
@@ -39,46 +48,52 @@ public class AIAgent {
     */
 
 
-    private AgentIntelligence intelligence; 
+    private AgentDifficulty difficulty; 
     private AgentAction action;
     private Random random;
 
     private long idleAccumulator;
-    
 
     private long idleTime; // time between decisions.
-    private final long MIN_IDLE_TIME = 100_000_000L;    // 100 ms   (10^8 nanosec)
-    private final long MAX_IDLE_TIME = 1_000_000_000L;  // 1.0 s    (10^9 nanosec)
+    private static final long MIN_IDLE_TIME = 100_000_000L;    // 100 ms   (10^8 nanosec)
+    private static final long MAX_IDLE_TIME = 1_000_000_000L;  // 1.0 s    (10^9 nanosec)
+    private static final double MAX_POLYNOMIAL_DEGREE = 1.5;   // max polinomial degree of proactivity function
+    private static final double MIN_POLYNOMIAL_DEGREE = 0.5;   // max polinomial degree of proactivity function
 
-    public void init(String intelligence) {
-        switch (intelligence.toUpperCase()) {
+    private static final double NOISE_OFFSET = 0.1; // the higher the greater noise
+    private static final double NEUTRAL_PROBABILITY = 0.5;
+    private static final double AGGRESSION_WEIGHT = 0.2;
+
+    public void init(String difficulty) {
+        switch (difficulty.toUpperCase()) {
             case "BASIC":
-                init(AgentIntelligence.BASIC);
+                init(AgentDifficulty.BASIC);
                 break;
             case "STANDARD":
-                init(AgentIntelligence.STANDARD);
+                init(AgentDifficulty.STANDARD);
                 break;
             case "EXPERT":
-                init(AgentIntelligence.EXPERT);
+                init(AgentDifficulty.EXPERT);
                 break;
             case "MASTER":
-                init(AgentIntelligence.MASTER);
+                init(AgentDifficulty.MASTER);
                 break;
         
             default:
-                init(AgentIntelligence.STANDARD);
+                init(AgentDifficulty.STANDARD);
                 break;
         }
     }
 
-    public void init(AgentIntelligence intelligence) {
+    public void init(AgentDifficulty difficulty) {
         this.action = AgentAction.IDLE;
-        setIntelligence(intelligence); 
+        //setIntelligence(difficulty); 
+        setIntelligence(AgentDifficulty.BASIC); 
         this.random = new Random();
     }
 
-    public void setIntelligence(AgentIntelligence intelligence) {
-        this.intelligence = intelligence;
+    public void setIntelligence(AgentDifficulty difficulty) {
+        this.difficulty = difficulty;
         this.idleTime = getIdleTime();
     }
 
@@ -102,7 +117,7 @@ public class AIAgent {
     private void handleAttack() {
         // TODO: attack logic
 
-        System.out.println("attack!");
+        //System.out.println("attack!");
         // reset to idle
         action = AgentAction.IDLE;
     }
@@ -110,7 +125,7 @@ public class AIAgent {
     private void handleDefence() {
         // TODO: defence logic
 
-        System.out.println("defense.");
+        //System.out.println("defense.");
 
         // reset to idle
         action = AgentAction.IDLE;
@@ -131,25 +146,116 @@ public class AIAgent {
         // his intention will be modified by some gaussian noise, whose stddev changes 
         // based on AI difficulty.
 
+        /* 
+        * aggressivity
+        * opponent / total_troops ratio
+        * health / total_health ratio
+        */
+
         // TODO: modify attackWeight based on health and aggressivity
-        double intention = 0.5;
+       
 
+        int[] totalPlayerHitPoints = getTotalPlayerHitPoints();
+        int[] totalAIHitPoints = getTotalAIHitPoints();
+
+        double attackProbability = 0;
+
+        for (int i = 0; i < totalAIHitPoints.length; i++) {
+            double totalHitPoints = totalAIHitPoints[i] + totalPlayerHitPoints[i];
+            if (totalHitPoints > 0) {
+                // if player_entities-entities ratio is high, intention value is higher (so it will probably attack)
+                // otherwise intention value is lower (so it will probably defend)
+                attackProbability += (double) totalAIHitPoints[i] / totalHitPoints;
+            } else {
+                attackProbability += NEUTRAL_PROBABILITY;
+            }
+        }
+
+        attackProbability /= totalAIHitPoints.length;
+        
+        
+        
+        //double intention = attackProbability * (1 - AGGRESSIVITY_WEIGHT) + difficulty.getAggressivity() * AGGRESSIVITY_WEIGHT;
+        double proactivity = difficulty.getProactivity();
+
+        double intention = proactivityFunction(attackProbability, getDegreeFromProactivity(proactivity));
+
+        
         // adding little noise:
-        double intelligenceValue = intelligence.getIntelligenceValue();
+        double intelligence = difficulty.getIntelligence();
 
-        double noiseVariance = (1 - intelligenceValue);
+        double noiseVariance = (1 - intelligence) + NOISE_OFFSET;
         double noise = Math.sqrt(noiseVariance) * random.nextGaussian();
         intention += noise;
 
         // intention must stay between 0 and 1
         intention = Math.clamp(intention, 0, 1);
 
-        // decision: if intention is in [0, 0.5[ it attacks. otherwise it defends.
+        System.out.println("Attack Probability: " + attackProbability + ", proactivity: " + proactivity + ", intention: " + intention);
+
+
+        // decision: if intention is in [0, 0.5[ it defends. otherwise it attacks.
         if (intention < 0.5) {
-            action = AgentAction.ATTACK;
-        } else {
             action = AgentAction.DEFEND;
+        } else {
+            action = AgentAction.ATTACK;
         }
+    }
+
+    private double proactivityFunction(double x, double degree) {
+        // this function was built for x in [0, 1]
+        if (x < 0 || x > 1) {
+            throw new IllegalArgumentException("Invalid argument x: " + x + ". It must be in [0, 1].");
+        }
+
+        // if 0 <= x < 0.5 -> 0 <= output <= x (pushes x to 0)
+        // if x = 0.5 -> output = x 
+        // if 0.5 < x <= 1 -> x <= output <= 1 (pushes x to 1)
+
+        // the higher alpha, the closer to 0 or 1 the output will be.
+
+        if (x == 0) return 0;   // avoiding div by 0 case
+
+        return 1.0 / (1.0 + Math.pow((1-x)/x, degree)); 
+    }
+
+    private double getDegreeFromProactivity(double proactivity) {
+        // considering input in [0, 1]
+        return MIN_POLYNOMIAL_DEGREE * (1 - proactivity) + MAX_POLYNOMIAL_DEGREE * proactivity;
+    }
+
+    private int[] getTotalPlayerHitPoints() {
+        int[] totalHitPoints = new int[2];
+
+        // 0: total player troop hitpoints
+        // 1: total player tower hitpoints
+        
+        for (Entity e : Model.getInstance().getPlayerEntities()) {
+            if (e instanceof Troop) {
+                totalHitPoints[0] += e.getHitPoints();
+            } else if (e instanceof Tower) {
+                totalHitPoints[1] += e.getHitPoints();
+            }
+        }
+
+        return totalHitPoints;
+    }
+
+    private int[] getTotalAIHitPoints() {
+        int[] totalHitPoints = new int[2];
+
+        // 0: total AI troop hitpoints
+        // 1: total AI tower hitpoints
+        
+        for (Entity e : Model.getInstance().getOpponentEntities()) {
+            if (e instanceof Troop) {
+                totalHitPoints[0] += e.getHitPoints();
+            } else if (e instanceof Tower) {
+                totalHitPoints[1] += e.getHitPoints();
+            }
+        }
+
+        return totalHitPoints;
     }
 
     private void resetIdleAccumulator() {
@@ -158,7 +264,7 @@ public class AIAgent {
 
     private long getIdleTime() {
         // the smarter the AI is the shorter the idle time.
-        double intelligenceValue = intelligence.getIntelligenceValue();
+        double intelligenceValue = difficulty.getIntelligence();
         
         // weighted mean between min idle time and max idle time. (linear interpolation)
         // if it's smart, it tends to min time. otherwise, tends to max time.
