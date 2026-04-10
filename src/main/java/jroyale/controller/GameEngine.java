@@ -3,12 +3,6 @@ package jroyale.controller;
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 import jroyale.model.Entity;
-import jroyale.model.troops.Giant;
-import jroyale.model.troops.MiniPekka;
-import jroyale.model.troops.Pekka;
-import jroyale.model.troops.Skeleton;
-import jroyale.model.troops.Valkyrie;
-import jroyale.utils.Enums.Side;
 
 public class GameEngine implements IGameEngine {
     
@@ -23,44 +17,6 @@ public class GameEngine implements IGameEngine {
     // private methods
     private void startGameLoop() {
         initGameLoop();
-
-        // TODO: remove it, just for debug
-        controllerForModel.addTroop(
-            new Skeleton(10, 13, Side.OPPONENT)
-        );  
-
-        /* controllerForModel.addTroop(
-            new Valkyrie(22, 10, Side.PLAYER)
-        ); 
-        controllerForModel.addTroop(
-            new Skeleton(10, 13, Side.OPPONENT)
-        ); 
-        
-        controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); controllerForModel.addTroop(
-            new Skeleton(8, 13, Side.OPPONENT)
-        ); 
-        controllerForModel.addTroop(
-            new MiniPekka(10, 13, Side.OPPONENT)
-        ); 
-        controllerForModel.addTroop(
-            new Valkyrie(23, 5, Side.PLAYER)
-        );
-        
-        controllerForModel.addTroop(
-            new Giant(10, 5, Side.OPPONENT)
-        );
-
-        */
         
 
         gameLoop = new AnimationTimer() {
@@ -118,7 +74,7 @@ public class GameEngine implements IGameEngine {
 
     // instance methods
     @Override
-    public void start(Stage stage) {
+    public void start(@SuppressWarnings("exports") Stage stage) {
         // saving instances so the access to them will be faster
         controllerForView = ControllerForView.getInstance();
         controllerForModel = ControllerForModel.getInstance();

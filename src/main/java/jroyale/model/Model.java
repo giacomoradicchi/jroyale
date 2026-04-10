@@ -149,7 +149,6 @@ public class Model implements IModel {
             }
             System.out.println();
         }  */
-
         playerDeck.update(elapsed);
         AIAgent.getInstance().update(elapsed);
         
@@ -184,6 +183,11 @@ public class Model implements IModel {
 
     @Override
     public List<Entity> getEntitiesOrderedByPosY() {
+        sortRenderOrderEntities();
+        return renderOrderEntities;
+    }
+
+    private void sortRenderOrderEntities() {
         // this method has to be called for each frame, because order might change fast
 
         // clears renderOrderTroops buffer and puts every troop entry
@@ -194,7 +198,6 @@ public class Model implements IModel {
         Collections.sort(renderOrderEntities); // sorting based on Y pos (sorting is 
         // based on double Y coords, not on column; otherwise a simple for loop 
         // scan for j = 0..COLS-1 would have been sufficient)
-        return renderOrderEntities;
     }
 
     @Override
