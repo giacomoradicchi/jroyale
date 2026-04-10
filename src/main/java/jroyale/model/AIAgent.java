@@ -56,16 +56,16 @@ public class AIAgent {
     private Random random;
     private Deck deck;
     private long idleAccumulator;
+    private long idleTime;                  // time between decisions.                                      
 
-    private long idleTime; // time between decisions.
-    private static final long MIN_IDLE_TIME = 100_000_000L;         // 100 ms   (10^8 nanosec)
-    private static final long MAX_IDLE_TIME = 1_000_000_000L;       // 1.0 s    (10^9 nanosec)
-    private static final double MAX_POLYNOMIAL_DEGREE = 1.5;        // max polinomial degree of proactivity function
-    private static final double MIN_POLYNOMIAL_DEGREE = 0.5;        // max polinomial degree of proactivity function
-    private static final double MAX_NOISE_STDEV = 0.2;             // the higher the greater noise
+    private static final long MIN_IDLE_TIME = 500_000_000L;             // in nanosec
+    private static final long MAX_IDLE_TIME = 10_000_000_000L;          // in nanosec
+    private static final double MAX_POLYNOMIAL_DEGREE = 1.5;            // max polinomial degree of proactivity function
+    private static final double MIN_POLYNOMIAL_DEGREE = 0.5;            // max polinomial degree of proactivity function
+    private static final double MAX_NOISE_STDEV = 0.2;                  // the higher the greater noise
     private static final double NEUTRAL_PROBABILITY = 0.5;          
-    private static final double DEFENCE_DECISION_THRESHOLD = 0.35;  // it'll defend if intention <= defence threshold
-    private static final double ATTACK_DECISION_THRESHOLD = 0.75;   // it'll attack if intention >= attack threshold
+    private static final double DEFENCE_DECISION_THRESHOLD = 0.35;      // it'll defend if intention <= defence threshold
+    private static final double ATTACK_DECISION_THRESHOLD = 0.75;       // it'll attack if intention >= attack threshold
 
     public void init(String difficulty, Deck deck) {
         switch (difficulty.toUpperCase()) {
@@ -144,7 +144,6 @@ public class AIAgent {
             deck.dropSelectedCard(5, 5, Side.OPPONENT);
 
         
-
         // reset to idle
         action = AgentAction.IDLE;
     }
