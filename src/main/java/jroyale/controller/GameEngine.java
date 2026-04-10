@@ -25,9 +25,13 @@ public class GameEngine implements IGameEngine {
         initGameLoop();
 
         // TODO: remove it, just for debug
-        controllerForModel.addTroop(
+        /* controllerForModel.addTroop(
+            new Skeleton(10, 13, Side.OPPONENT)
+        );  */
+
+        /* controllerForModel.addTroop(
             new Valkyrie(22, 10, Side.PLAYER)
-        );
+        ); 
         controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
         ); 
@@ -56,10 +60,7 @@ public class GameEngine implements IGameEngine {
             new Giant(10, 5, Side.OPPONENT)
         );
 
-        /* controllerForModel.addTroop(
-            new MiniPekka(10, 15, Side.OPPONENT)
-        ); */
-
+        */
         
 
         gameLoop = new AnimationTimer() {

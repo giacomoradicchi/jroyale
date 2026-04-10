@@ -25,6 +25,10 @@ public interface IModel {
 
     public List<Entity> getEntitiesOnTile(int i, int j);
 
+    public List<Entity> getOpponentEntities();
+
+    public List<Entity> getPlayerEntities();
+
     public Card getFirstHandPlayerCard();
 
     public Card getSecondHandPlayerCard();

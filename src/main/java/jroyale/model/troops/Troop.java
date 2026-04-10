@@ -479,7 +479,7 @@ public abstract class Troop extends Entity {
 
 
         if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = (troopX < Model.getInstance().getColsCount() / 2.0) ? leftBridgeStartX : rightBridgeStartX;
             targetY = bridgeStartY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY < bridgeEndY) {
@@ -505,7 +505,7 @@ public abstract class Troop extends Entity {
         */
 
         else if (troopY < bridgeEndY && targetY >= bridgeEndY) {
-            targetX = (troopX < Model.MAP_COLS / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = (troopX < Model.getInstance().getColsCount() / 2.0) ? leftBridgeEndX : rightBridgeEndX;
             targetY = bridgeEndY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY > bridgeStartY) {
