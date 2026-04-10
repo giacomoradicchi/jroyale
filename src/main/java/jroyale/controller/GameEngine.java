@@ -25,9 +25,9 @@ public class GameEngine implements IGameEngine {
         initGameLoop();
 
         // TODO: remove it, just for debug
-        /* controllerForModel.addTroop(
+        controllerForModel.addTroop(
             new Skeleton(10, 13, Side.OPPONENT)
-        );  */
+        );  
 
         /* controllerForModel.addTroop(
             new Valkyrie(22, 10, Side.PLAYER)

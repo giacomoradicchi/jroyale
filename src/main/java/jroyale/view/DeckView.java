@@ -249,7 +249,8 @@ public class DeckView {
     } 
 
     public void setVisibleSelectedCard(boolean value) {
-        cards[selectedCardIndex].setVisible(value);
+        if (selectedCardIndex != -1)
+            cards[selectedCardIndex].setVisible(value);
     }
 
     // static methods

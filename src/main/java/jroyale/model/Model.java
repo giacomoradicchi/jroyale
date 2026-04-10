@@ -39,7 +39,6 @@ public class Model implements IModel {
     private boolean[][] opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
     private Deck playerDeck;
-    private Deck opponentDeck;
 
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 
@@ -49,7 +48,6 @@ public class Model implements IModel {
     
     private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
     private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
-    //private List<Entity> entities = new ArrayList<>(); // insert order entities
     private List<Entity> playerEntities = new ArrayList<>();
     private List<Entity> opponentEntities = new ArrayList<>();
     
@@ -69,10 +67,6 @@ public class Model implements IModel {
                     this.map[i][j] = new Tile();
             }
         }
-
-        initTowers();
-        initDroppableTiles();
-        initAIAgent();
         
         playerDeck = new Deck(new Card[] {
             MiniPekkaCard.getInstance(),
@@ -83,15 +77,17 @@ public class Model implements IModel {
             ValkyrieCard.getInstance()
         });
 
-        opponentDeck = new Deck(new Card[] {
+        initTowers();
+        initDroppableTiles();
+
+        initAIAgent(new Deck(new Card[] {
             MiniPekkaCard.getInstance(),
             GiantCard.getInstance(),
             SkeletonCard.getInstance(),
             SkeletonArmyCard.getInstance(),
             PekkaCard.getInstance(),
             ValkyrieCard.getInstance()
-        });
-
+        }));
     }
 
     @Override
@@ -155,7 +151,6 @@ public class Model implements IModel {
         }  */
 
         playerDeck.update(elapsed);
-        opponentDeck.update(elapsed);
         AIAgent.getInstance().update(elapsed);
         
     }
@@ -240,10 +235,12 @@ public class Model implements IModel {
         return playerDeck.getCurrentFourthCard();
     }
 
+    
     @Override
     public byte getPlayerElixirLeft() {
         return playerDeck.getElixir();
     }
+
 
     @Override
     public byte getMaxElixir() {
@@ -437,9 +434,9 @@ public class Model implements IModel {
         }
     }
 
-    private void initAIAgent() {
+    private void initAIAgent(Deck deck) {
         //AIAgent.getInstance().init(Config.getInstance().getDifficulty());
-        AIAgent.getInstance().init("master");
+        AIAgent.getInstance().init("master", deck);
     }
 
     // static methods
