@@ -1,7 +1,5 @@
 package jroyale.utils;
 
-import javafx.scene.shape.Rectangle;
-
 public class Circle {
     private Point center;
     private double radius;

@@ -12,6 +12,7 @@ import jroyale.model.troops.Pekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.model.troops.Troop;
 import jroyale.model.troops.Valkyrie;
+import jroyale.utils.Config;
 import jroyale.utils.GameData;
 import jroyale.view.DeckView;
 import jroyale.utils.Enums.EntityType;
@@ -35,6 +36,10 @@ public class ControllerForModel implements IControllerForModel{
         
     }
 
+    private void setTroopsStats() {
+        System.out.println(Config.getInstance().getTroopStats(EntityType.MINIPEKKA).getDamage());
+    }
+
 
     // instance methods
     @Override
@@ -42,6 +47,7 @@ public class ControllerForModel implements IControllerForModel{
         Model.getInstance().init();
 
         initTroopsAnimationSteps();
+        setTroopsStats();
     }
 
     @Override
