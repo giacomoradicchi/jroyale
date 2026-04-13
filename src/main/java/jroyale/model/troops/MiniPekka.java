@@ -8,24 +8,27 @@ import jroyale.utils.Enums.State;
 
 public class MiniPekka extends MixedAttackerTroop {
 
-    private static final String NAME = "Mini-Pekka";
-    private static final Speed SPEED = Speed.FAST;
-    private static final MeleeRange MELEE = MeleeRange.MEDIUM;
-    private static Map<State, Integer> totalAnimationSteps;
-    private static final double COLLISION_RADIUS = 0.45;
-    private static final int FPS_ANIMATION = 18; //18
-    private static final long LOAD_TIME = (long) (1.6 * 1_000_000_000L);
+    //private final String name;
+    //private final Speed speed;
+    //private final MeleeRange melee;
+    //private final double collisionRadius;
+    //private final long loadTime;
+    //private final int hitPoints;
+    //private final int damage;
 
-    private static final int HITPOINTS = 677;
-    private static final int DAMAGE = 355;
+    private static Map<State, Integer> totalAnimationSteps;
+    private static final int FPS_ANIMATION = 18; //18
     private static final int HIT_FRAME = 7;
 
-    public MiniPekka(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public MiniPekka(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        
     }
 
-    public MiniPekka(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public MiniPekka(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     public static void setTotalAnimationSteps(Map<State,Integer> totalAnimationSteps) {
@@ -38,18 +41,8 @@ public class MiniPekka extends MixedAttackerTroop {
     }
 
     @Override
-    public double getCollisionRadius() {
-        return COLLISION_RADIUS;
-    }
-
-    @Override
     public int getFPSAnimation() {
         return FPS_ANIMATION;
-    }
-
-    @Override
-    protected long getLoadTime() {
-        return LOAD_TIME;
     }
 
     @Override

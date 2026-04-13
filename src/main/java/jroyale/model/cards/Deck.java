@@ -98,8 +98,9 @@ public class Deck {
     public void dropSelectedCard(int rowIndex, int columnIndex, Side side) {
 
         Card selectedCard = availableCards[selectedCardIndex];
+        byte elixirCost = selectedCard.getCardStats().getElixirCost();
         // updating elixirLeft
-        elixirLeft -= selectedCard.getElixirCost();
+        elixirLeft -= elixirCost;
 
         // replacing selected card with a random card on the deck which is not inside available card array.
         replaceCard();
@@ -112,7 +113,7 @@ public class Deck {
 
     public boolean isSelectedCardDroppable() {
         Card selectedCard = availableCards[selectedCardIndex];
-        return selectedCard != null && selectedCard.getElixirCost() <= elixirLeft;
+        return selectedCard != null && selectedCard.getCardStats().getElixirCost() <= elixirLeft;
     }
 
     public Card getCurrentFirstCard() {

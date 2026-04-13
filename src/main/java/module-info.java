@@ -10,7 +10,7 @@ module jroyale {
 
     opens jroyale.controller to javafx.fxml;
     opens jroyale.utils to com.fasterxml.jackson.databind;
-    opens jroyale.model to com.fasterxml.jackson.databind;
+    opens jroyale.model.cards to com.fasterxml.jackson.databind;
 
     exports jroyale.controller;
 }

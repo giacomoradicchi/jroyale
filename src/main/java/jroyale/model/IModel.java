@@ -4,7 +4,6 @@ import java.util.List;
 
 import jroyale.model.troops.Troop;
 import jroyale.model.cards.Card;
-import jroyale.model.cards.Deck;
 
 public interface IModel {
 
@@ -15,6 +14,8 @@ public interface IModel {
     public int getRowsCount();
 
     public int getColsCount();
+
+    public double getTileSize();
 
     public void addTroop(Troop troop);
 

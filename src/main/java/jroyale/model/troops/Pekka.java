@@ -15,22 +15,19 @@ public class Pekka extends MixedAttackerTroop {
     private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
     private static final long LOAD_TIME = (long) (1.8 * 1_000_000_000);
-    private static final int HIT_FRAME = 5;
 
+    private static final int HIT_FRAME = 5;
     private static final int HITPOINTS = 1598;
     private static final int DAMAGE = 355;
 
-    public Pekka(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public Pekka(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Pekka(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
-    }
-
-    @Override
-    protected long getLoadTime() {
-        return LOAD_TIME;
+    public Pekka(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     @Override

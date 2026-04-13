@@ -7,6 +7,7 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
+import jroyale.model.cards.CardStats;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -52,10 +53,13 @@ public abstract class Troop extends Entity {
         }
     }
 
-    private String name;
-    private final Speed SPEED_TYPE;
-    private FrameManager frameManager;
-    private MeleeRange melee;
+    protected String name;
+    protected Speed speedType;
+    protected FrameManager frameManager;
+    protected MeleeRange melee;
+    protected double loadTime;
+    protected int hitPoints;
+    protected int damage;
 
     private static final double DEFAULT_VISION_RANGE = 6;
 
@@ -77,25 +81,41 @@ public abstract class Troop extends Entity {
 
     private boolean shouldMove, shouldAttack, shouldIdle;
 
-    public Troop(String name, double x, double y, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
-        super(x, y, healthPoints, damage, side);
+    /* 
+        "name": "Mini-Pekka",   no
+    "speed": "FAST",            no 
+    "meleeRange": "MEDIUM",     no
+    "collisionRadius": 0.45,    si
+    "loadTime": 1.6,            no
+    "hitPoints": 677,           si
+    "damage": 355,              si
+    "elixirCost": 4             no
+        */
+
+    public Troop(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+            super(x, y, collisionRadius, hitPoints, damage, side);
+            setTroopStats(name, speedType, melee, loadTime, hitPoints, damage);
+    }
+
+    public Troop(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+            super(row, col, collisionRadius, hitPoints, damage, side);
+            setTroopStats(name, speedType, melee, loadTime, hitPoints, damage);
+    }
+
+    private void setTroopStats(String name, Speed speedType, MeleeRange melee, double loadTime, int hitPoints, int damage) {
         this.name = name;
         this.frameManager = new FrameManager(this);
         this.state = State.MOVE;
         this.melee = melee;
-        this.SPEED_TYPE = speedType;
+        this.speedType = speedType;
+        this.loadTime = loadTime;
+        this.hitPoints = hitPoints;
+        this.damage = damage;
 
         initTarget();
         initSpeed();
-    }
-
-    public Troop(String name, int n, int m, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
-        // The constructor puts the troop in the centre of the cell (n, m).
-        // In order to achieve this, it's necessary to shift the posX and posY by +0.5,
-        // which is half a cell. In this way, the placing won't be in the top left corner; 
-        // instead, it will be in the cell's centre.
-
-        this(name, m + 0.5, n + 0.5, healthPoints, damage, speedType, melee, side);
     }
 
     public String getName() {
@@ -104,7 +124,7 @@ public abstract class Troop extends Entity {
 
     @Override
     public Point getSpeed() {
-        return new Point(speed);
+        return speed;
     }
 
     public double getMeleeRange() {
@@ -119,6 +139,11 @@ public abstract class Troop extends Entity {
     public State getState() {
         return state;
     }
+
+    protected long getLoadTimeNanoSec(){
+        // nanosec in Idle state before attacking again
+        return (long) (loadTime * 1_000_000_000L); 
+    } 
 
     @Override
     public void update(long elapsed) {
@@ -227,7 +252,7 @@ public abstract class Troop extends Entity {
 
         elapsedIdleTime += elapsed;
         
-        if (elapsedIdleTime < getLoadTime()) {
+        if (elapsedIdleTime < getLoadTimeNanoSec()) {
             return;
         }
             
@@ -389,7 +414,7 @@ public abstract class Troop extends Entity {
 
     private double getAbsoluteSpeed(long elapsed) {
         // elapsed is in nanosec (10^(-9) sec) and speed is in tiles/minutes, so the speed in tiles/ns will be:
-        return elapsed / 1_000_000_000.0 * SPEED_TYPE.getTilesPerMinute() / 60.0 ;
+        return elapsed / 1_000_000_000.0 * speedType.getTilesPerMinute() / 60.0 ;
     }
 
     private void setAimUnitVector(double targetX, double targetY) {
@@ -521,8 +546,6 @@ public abstract class Troop extends Entity {
     //
 
     protected abstract void updateTarget();
-
-    protected abstract long getLoadTime(); // nanosec in Idle state before attacking again
 
     protected abstract int getHitFrame();
 

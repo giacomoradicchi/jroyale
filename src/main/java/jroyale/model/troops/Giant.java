@@ -20,12 +20,14 @@ public class Giant extends TowerAttackerTroop {
     private static final int DAMAGE = 300;
 
 
-    public Giant(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public Giant(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Giant(int row, int col, Side side) {
-        super(NAME, row, col, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public Giant(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
@@ -45,11 +47,6 @@ public class Giant extends TowerAttackerTroop {
     @Override
     public int getFPSAnimation() {
         return FPS_ANIMATION;
-    }
-
-    @Override
-    protected long getLoadTime() {
-        return LOAD_TIME;
     }
 
     @Override

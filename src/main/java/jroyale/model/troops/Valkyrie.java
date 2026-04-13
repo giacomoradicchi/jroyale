@@ -22,17 +22,14 @@ public class Valkyrie extends MixedAttackerTroop{
     private static final int DAMAGE = 200;
     private static final int HIT_FRAME = 4;
 
-    public Valkyrie(double x, double y, Side side) {
-        super(NAME, x, y, HITPOINTS, DAMAGE, SPEED, MELEE, side);
+    public Valkyrie(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Valkyrie(int n, int m, Side side) {
-        super(NAME, n, m, HITPOINTS, DAMAGE, SPEED, MELEE, side);
-    }
-
-    @Override
-    protected long getLoadTime() {
-        return LOAD_TIME;
+    public Valkyrie(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     @Override

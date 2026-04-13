@@ -20,7 +20,7 @@ public abstract class Entity implements Comparable<Entity>{
     private static final int DEFAULT_ANIMATION_STEPS = 1; // by default, entity has no animations.
     private static final Point DEFAULT_SPEED = new Point(0, 0); // doesn't move
       
-    
+    private double collisionRadius;
     protected Point position;
     protected Side side;
     protected int currentAnimationIndex;
@@ -29,22 +29,43 @@ public abstract class Entity implements Comparable<Entity>{
     protected static final Point NO_DIRECTION = new Point(0, 0);
     
 
-    public Entity(double x, double y, int hitPoints, int damage, Side side) {
+    public Entity(double x, double y, double collisionRadius, int hitPoints, int damage, Side side) {
         
         if (side != Side.PLAYER && side != Side.OPPONENT) {
             throw new IllegalArgumentException("Invalid argument side");
         }
-
+        
         this.position = new Point(x, y);
         this.side = side;
         this.state = State.IDLE; // default state
+        this.collisionRadius = collisionRadius;
         this.hitPoints = hitPoints;
         this.MAX_HIT_POINTS = hitPoints;
         this.damage = damage;
     }
 
+    public Entity(double x, double y, int hitPoints, int damage, Side side) {
+        this(x, y, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+    }
+
+    public Entity(Point position, double collisionRadius, int hitPoints, int damage, Side side) {
+        this(position.getX(), position.getY(), collisionRadius, hitPoints, damage, side);
+    }
+
     public Entity(Point position, int hitPoints, int damage, Side side) {
-        this(position.getX(), position.getY(), hitPoints, damage, side);
+        this(position.getX(), position.getY(), DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+    }
+
+    // costructors for when position is an integer (row and column)
+
+    public Entity(int row, int col, double collisionRadius, int hitPoints, int damage, Side side) {
+        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, collisionRadius, hitPoints, damage, side);
+        // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
+    }
+
+    public Entity(int row, int col, int hitPoints, int damage, Side side) {
+        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+        // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
     }
 
     public double getX() {
@@ -69,6 +90,30 @@ public abstract class Entity implements Comparable<Entity>{
 
     public int getMaxHitPoints() {
         return MAX_HIT_POINTS;
+    }
+
+    public int getFootPrintSize() { // number of cells occupied by the entity
+        return (int) Math.ceil(getCollisionRadius() * 2);
+    } 
+
+    public double getCollisionRadius() {
+        return collisionRadius; 
+    }
+
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public double getMass() {
+        return GameData.getInstance().getEntityMass(getType());
+    }
+
+    public Point getSpeed() {
+        return DEFAULT_SPEED;
     }
 
     // setters
@@ -115,35 +160,11 @@ public abstract class Entity implements Comparable<Entity>{
         currentJ = (int) Math.floor(position.getX());
     }
 
-    public int getFootPrintSize() { // number of cells occupied by the entity
-        return (int) Math.ceil(getCollisionRadius() * 2);
-    } 
-
-    public double getCollisionRadius() {
-        return DEFAULT_COLLISION_RADIUS; // default radius
-    }
-
     public void setDamage(int damage) {
         hitPoints -= damage;
         if (hitPoints < 0) {
             hitPoints = 0;
         }
-    }
-
-    public int getHitPoints() {
-        return hitPoints;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public double getMass() {
-        return GameData.getInstance().getEntityMass(getType());
-    }
-
-    public Point getSpeed() {
-        return DEFAULT_SPEED;
     }
 
     @Override

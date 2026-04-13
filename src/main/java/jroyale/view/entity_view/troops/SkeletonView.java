@@ -121,7 +121,7 @@ public abstract class SkeletonView extends TroopView {
 
     @Override
     public EntityType getType() {
-        return EntityType.SKELETON;
+        return EntityType.SKELETONS;
     }
 
     // static methods

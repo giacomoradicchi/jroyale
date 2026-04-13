@@ -14,7 +14,7 @@ public final class GameData {
     private static final Map<EntityType, Double> MASS = Map.of(
         EntityType.MINIPEKKA, 4.0,
         EntityType.GIANT, 18.0,
-        EntityType.SKELETON, 1.0,
+        EntityType.SKELETONS, 1.0,
         EntityType.PEKKA, 18.0,
         EntityType.VALKYRIE, 5.0
     );
@@ -31,7 +31,7 @@ public final class GameData {
                 State.ATTACK, 10,
                 State.IDLE, 1
         ),
-        EntityType.SKELETON, Map.of(
+        EntityType.SKELETONS, Map.of(
                 State.MOVE, 8,
                 State.ATTACK, 4,
                 State.IDLE, 1

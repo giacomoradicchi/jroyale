@@ -10,7 +10,7 @@ public class Enums {
         // troops
         MINIPEKKA,
         GIANT,
-        SKELETON,
+        SKELETONS,
         SKELETON_ARMY,
         PEKKA,
         VALKYRIE,
