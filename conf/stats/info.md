@@ -48,8 +48,8 @@ This document explains the technical parameters used in the troop JSON files. Mo
     "name": "Mini-Pekka",
     "speed": "FAST",
     "meleeRange": "MEDIUM",
-    "collisionRadius": 0.45,
-    "loadTime": 1.6,
-    "hitPoints": 677,
-    "damage": 355
+    "collisionRadius": 0.67,
+    "loadTime": 1.67,
+    "hitPoints": 670,
+    "damage": 67
 }
