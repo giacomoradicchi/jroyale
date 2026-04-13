@@ -1,0 +1,11 @@
+{
+    "name": "Valkyrie",
+    "speed": "MEDIUM",
+    "meleeRange": "LONG",
+    "collisionRadius": 0.5,
+    "loadTime": 1.5,
+    "hitPoints": 600,
+    "damage": 200,
+    "elixirCost": 4
+}
+

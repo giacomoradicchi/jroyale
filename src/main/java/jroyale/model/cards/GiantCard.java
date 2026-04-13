@@ -11,13 +11,24 @@ public class GiantCard extends Card{
     private static final byte ELIXIR_COST = 5;
 
     private GiantCard() {
-        super(ELIXIR_COST, EntityType.GIANT);
+        super(EntityType.GIANT);
     }
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         Model.getInstance().addTroop(
-            new Giant(rowIndex, columnIndex, side)
+            new Giant(
+                rowIndex, 
+                columnIndex, 
+                stats.getName(), 
+                stats.getSpeed(), 
+                stats.getMeleeRange(), 
+                stats.getCollisionRadius(), 
+                stats.getLoadTime(), 
+                stats.getHitPoints(), 
+                stats.getDamage(), 
+                side
+            )
         );
     }
     

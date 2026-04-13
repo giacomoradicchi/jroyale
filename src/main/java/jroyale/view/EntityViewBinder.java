@@ -31,7 +31,7 @@ public class EntityViewBinder implements IEntityViewBinder{
         // troops
         entityBinder.put(EntityType.MINIPEKKA, MiniPekkaView.getInstance());
         entityBinder.put(EntityType.GIANT, GiantView.getInstance());
-        entityBinder.put(EntityType.SKELETON, SingleSkeletonView.getInstance());
+        entityBinder.put(EntityType.SKELETONS, SingleSkeletonView.getInstance());
         entityBinder.put(EntityType.SKELETON_ARMY, SkeletonArmyView.getInstance());
         entityBinder.put(EntityType.PEKKA, PekkaView.getInstance());
         entityBinder.put(EntityType.VALKYRIE, ValkyrieView.getInstance());

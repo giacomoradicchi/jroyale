@@ -7,12 +7,14 @@ import jroyale.utils.Enums.State;
 
 public abstract class MixedAttackerTroop extends Troop {
 
-    public MixedAttackerTroop(String name, double x, double y, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
-        super(name, x, y, healthPoints, damage, speedType, melee, side);
+   public MixedAttackerTroop(double x, double y, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public MixedAttackerTroop(String name, int n, int m, int healthPoints, int damage, Speed speedType, MeleeRange melee, Side side) {
-        super(name, n, m, healthPoints, damage, speedType, melee, side);
+    public MixedAttackerTroop(int row, int col, String name, Speed speedType, MeleeRange melee,
+        double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
+        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     @Override

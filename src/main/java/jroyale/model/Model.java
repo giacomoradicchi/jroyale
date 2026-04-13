@@ -31,6 +31,12 @@ public class Model implements IModel {
     
     private static final int MAP_ROWS = 32;
     private static final int MAP_COLS = 18;
+    private static final double TILE_SIZE = 1;
+
+    // logic coords explaination:
+    // for the X coords: since there are 18 cols, we will use a 
+    // coord-system whose origin is 0 and his head is 18-. X-coords will 
+    // be continue, so it has to be double.
     
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
@@ -39,11 +45,6 @@ public class Model implements IModel {
     private boolean[][] opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
     private Deck playerDeck;
-
-    // logic coords explaination:
-    // for the X coords: since there are 18 cols, we will use a 
-    // coord-system whose origin is 0 and his head is 18-. X-coords will 
-    // be continue, so it has to be double.
     
     
     private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
@@ -162,6 +163,11 @@ public class Model implements IModel {
     @Override
     public int getColsCount() {
         return MAP_COLS;    
+    }
+
+    @Override
+    public double getTileSize() {
+        return TILE_SIZE;
     }
 
     @Override

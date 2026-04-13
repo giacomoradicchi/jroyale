@@ -1,19 +1,22 @@
-package jroyale.model;
+package jroyale.model.cards;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jroyale.model.troops.Troop.MeleeRange;
+import jroyale.model.troops.Troop.Speed;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TroopStats {
+public class CardStats {
     
     @JsonProperty("name")
     private String name;
 
     @JsonProperty("speed")
-    private String speed;
+    private Speed speed;
 
     @JsonProperty("meleeRange")
-    private String meleeRange;
+    private MeleeRange meleeRange;
 
     @JsonProperty("collisionRadius")
     private double collisionRadius;
@@ -27,17 +30,20 @@ public class TroopStats {
     @JsonProperty("damage")
     private int damage;
 
-    public TroopStats() {}
+    @JsonProperty("elixirCost")
+    private byte elixirCost;
+
+    public CardStats() {}
 
     public String getName() {
         return name;
     }
 
-    public String getSpeed() {
+    public Speed getSpeed() {
         return speed;
     }
     
-    public String getMeleeRange() {
+    public MeleeRange getMeleeRange() {
         return meleeRange;
     }
 
@@ -57,16 +63,32 @@ public class TroopStats {
         return damage;
     }
 
+    public byte getElixirCost() {
+        return elixirCost;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     public void setSpeed(String speed) {
-        this.speed = speed;
+        if (speed == null) this.speed = Speed.MEDIUM; // Default
+        
+        try {
+            this.speed = Speed.valueOf(speed.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            this.speed = Speed.MEDIUM; // Default
+        }
     }
     
     public void setMeleeRange(String meleeRange) {
-        this.meleeRange = meleeRange;
+        if (meleeRange == null) this.meleeRange = MeleeRange.MEDIUM; // Default
+        
+        try {
+            this.meleeRange = MeleeRange.valueOf(meleeRange.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            this.meleeRange = MeleeRange.MEDIUM; // Default
+        }
     }
 
     public void setCollisionRadius(double collisionRadius) {
@@ -83,5 +105,9 @@ public class TroopStats {
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    public void setElixirCost(byte elixirCost) {
+        this.elixirCost = elixirCost;
     }
 }

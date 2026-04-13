@@ -6,6 +6,7 @@ import jroyale.controller.binders.CardBinder;
 import jroyale.model.Entity;
 import jroyale.model.Model;
 import jroyale.model.cards.Card;
+import jroyale.model.cards.CardStats;
 import jroyale.model.troops.Giant;
 import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Pekka;
@@ -14,7 +15,6 @@ import jroyale.model.troops.Troop;
 import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Config;
 import jroyale.utils.GameData;
-import jroyale.view.DeckView;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 
@@ -30,24 +30,35 @@ public class ControllerForModel implements IControllerForModel{
 
         MiniPekka.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
         Giant.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
-        Skeleton.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
+        Skeleton.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.SKELETONS));
         Pekka.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.PEKKA));
         Valkyrie.setTotalAnimationSteps(GameData.getInstance().getAnimationSteps(EntityType.VALKYRIE));
         
     }
 
-    private void setTroopsStats() {
-        System.out.println(Config.getInstance().getTroopStats(EntityType.MINIPEKKA).getDamage());
+    private void setCardsStats() {
+        for (EntityType type : EntityType.values()) {
+            // TODO: remove this
+            //if (type != EntityType.MINIPEKKA) continue;
+
+            Card card = CardBinder.getInstance().getCardInstance(type);
+            if (card == null) continue;
+
+            CardStats stats = Config.getInstance().getCardStats(type);
+
+            card.setStats(stats);
+        }
     }
 
 
     // instance methods
     @Override
     public void initModel() {
+        setCardsStats();
         Model.getInstance().init();
 
         initTroopsAnimationSteps();
-        setTroopsStats();
+        
     }
 
     @Override

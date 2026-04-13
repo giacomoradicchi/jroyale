@@ -11,13 +11,24 @@ public class ValkyrieCard extends Card{
     private static final byte ELIXIR_COST = 4;
 
     private ValkyrieCard() {
-        super(ELIXIR_COST, EntityType.VALKYRIE);
+        super(EntityType.VALKYRIE);
     }
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         Model.getInstance().addTroop(
-            new Valkyrie(rowIndex, columnIndex, side)
+            new Valkyrie(
+                rowIndex, 
+                columnIndex, 
+                stats.getName(), 
+                stats.getSpeed(), 
+                stats.getMeleeRange(), 
+                stats.getCollisionRadius(), 
+                stats.getLoadTime(), 
+                stats.getHitPoints(), 
+                stats.getDamage(), 
+                side
+            )
         );
     }
 

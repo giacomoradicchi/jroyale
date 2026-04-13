@@ -12,14 +12,25 @@ public class SkeletonCard extends Card {
     private static final byte SKELETONS_DROPPED = 3;
 
     private SkeletonCard() {
-        super(ELIXIR_COST, EntityType.SKELETON);
+        super(EntityType.SKELETONS);
     }
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         for (int i = 0; i < SKELETONS_DROPPED; i++)
             Model.getInstance().addTroop(
-                new Skeleton(rowIndex, columnIndex, side)
+                new Skeleton(
+                    rowIndex, 
+                    columnIndex, 
+                    stats.getName(), 
+                    stats.getSpeed(), 
+                    stats.getMeleeRange(), 
+                    stats.getCollisionRadius(), 
+                    stats.getLoadTime(), 
+                    stats.getHitPoints(), 
+                    stats.getDamage(), 
+                    side
+                )
             );
     }
 

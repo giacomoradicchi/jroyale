@@ -11,14 +11,26 @@ public class MiniPekkaCard extends Card {
     private static final byte ELIXIR_COST = 4;
 
     private MiniPekkaCard() {
-        super(ELIXIR_COST, EntityType.MINIPEKKA);
+        super(EntityType.MINIPEKKA);
     }
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         Model.getInstance().addTroop(
-            new MiniPekka(rowIndex, columnIndex, side)
+            new MiniPekka(
+                rowIndex, 
+                columnIndex, 
+                stats.getName(), 
+                stats.getSpeed(), 
+                stats.getMeleeRange(), 
+                stats.getCollisionRadius(), 
+                stats.getLoadTime(), 
+                stats.getHitPoints(), 
+                stats.getDamage(), 
+                side
+            )
         );
+
     }
 
     // static methods

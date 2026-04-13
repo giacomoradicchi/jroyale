@@ -11,13 +11,24 @@ public class PekkaCard extends Card{
     private static final byte ELIXIR_COST = 7;
 
     private PekkaCard() {
-        super(ELIXIR_COST, EntityType.PEKKA);
+        super(EntityType.PEKKA);
     }
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
         Model.getInstance().addTroop(
-            new Pekka(rowIndex, columnIndex, side)
+            new Pekka(
+                rowIndex, 
+                columnIndex, 
+                stats.getName(), 
+                stats.getSpeed(), 
+                stats.getMeleeRange(), 
+                stats.getCollisionRadius(), 
+                stats.getLoadTime(), 
+                stats.getHitPoints(), 
+                stats.getDamage(), 
+                side
+            )
         );
     }
 

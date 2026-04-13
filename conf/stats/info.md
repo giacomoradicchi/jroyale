@@ -40,6 +40,10 @@ This document explains the technical parameters used in the troop JSON files. Mo
 - **Description**: The amount of health points deducted from the target with a single hit. 
     - **Note**: To calculate **DPS** (Damage Per Second), use the formula: `damage / loadTime`.
 
+### `elixirCost`
+- **Type**: Byte 
+- **Description**: The elixir cost of the troop (from 0 to 10). 
+
 ---
 
 ## Example Snippet

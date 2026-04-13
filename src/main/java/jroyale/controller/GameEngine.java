@@ -52,10 +52,10 @@ public class GameEngine implements IGameEngine {
                 }
 
                 controllerForView.renderPlayerDeck(
-                    controllerForModel.getFirstHandPlayerCard().getType(), controllerForModel.getFirstHandPlayerCard().getElixirCost(),
-                    controllerForModel.getSecondHandPlayerCard().getType(), controllerForModel.getSecondHandPlayerCard().getElixirCost(),
-                    controllerForModel.getThirdHandPlayerCard().getType(), controllerForModel.getThirdHandPlayerCard().getElixirCost(),
-                    controllerForModel.getFourthHandPlayerCard().getType(), controllerForModel.getFourthHandPlayerCard().getElixirCost(),
+                    controllerForModel.getFirstHandPlayerCard().getType(), controllerForModel.getFirstHandPlayerCard().getCardStats().getElixirCost(),
+                    controllerForModel.getSecondHandPlayerCard().getType(), controllerForModel.getSecondHandPlayerCard().getCardStats().getElixirCost(),
+                    controllerForModel.getThirdHandPlayerCard().getType(), controllerForModel.getThirdHandPlayerCard().getCardStats().getElixirCost(),
+                    controllerForModel.getFourthHandPlayerCard().getType(), controllerForModel.getFourthHandPlayerCard().getCardStats().getElixirCost(),
                     controllerForModel.getPlayerElixirLeft(),
                     controllerForModel.getPlayerElixirChargeTimeProgress(),
                     controllerForModel.getMaxElixir()

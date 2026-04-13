@@ -27,18 +27,18 @@ public class CardBinder {
         // troops
         cardBinder.put(EntityType.MINIPEKKA, MiniPekkaCard.getInstance());
         cardBinder.put(EntityType.GIANT, GiantCard.getInstance());
-        cardBinder.put(EntityType.SKELETON, SkeletonCard.getInstance());
+        cardBinder.put(EntityType.SKELETONS, SkeletonCard.getInstance());
         cardBinder.put(EntityType.SKELETON_ARMY, SkeletonArmyCard.getInstance());
         cardBinder.put(EntityType.PEKKA, PekkaCard.getInstance());
         cardBinder.put(EntityType.VALKYRIE, ValkyrieCard.getInstance());
     }
 
     public Card getCardInstance(EntityType type) {
-        Card view = cardBinder.get(type);
-        if (view == null) {
+        Card card = cardBinder.get(type);
+        /* if (card == null) {
             throw new IllegalArgumentException("Couldn't find any Card associated with: " + type);
-        }
-        return view;
+        } */
+        return card;
     }
 
     public static CardBinder getInstance() {

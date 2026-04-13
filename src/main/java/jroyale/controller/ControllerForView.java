@@ -31,7 +31,7 @@ public class ControllerForView implements IControllerForView {
     private void initTroopsFramesPerDirection() {
         GiantView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.GIANT));
         MiniPekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.MINIPEKKA));
-        SkeletonView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.SKELETON));
+        SkeletonView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.SKELETONS));
         PekkaView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.PEKKA));
         ValkyrieView.setNumFramesPerDirection(GameData.getInstance().getAnimationSteps(EntityType.VALKYRIE));
     }
