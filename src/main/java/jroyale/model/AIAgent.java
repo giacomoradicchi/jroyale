@@ -86,13 +86,14 @@ public class AIAgent {
                 init(AgentDifficulty.STANDARD, deck);
                 break;
         }
+
+        //System.out.println("difficulty: " + this.difficulty);
     }
 
     public void init(AgentDifficulty difficulty, Deck deck) {
         this.action = AgentAction.IDLE;
         setDeck(deck);
-        //setIntelligence(difficulty); 
-        setIntelligence(AgentDifficulty.MASTER); 
+        setIntelligence(difficulty); 
         this.random = new Random();
     }
 
