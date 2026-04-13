@@ -4,8 +4,8 @@
     "meleeRange": "LONG",
     "collisionRadius": 0.5,
     "loadTime": 1.5,
-    "hitPoints": 600,
-    "damage": 200,
+    "hitPoints": 1800,
+    "damage": 250,
     "elixirCost": 4
 }
 
