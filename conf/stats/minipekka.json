@@ -3,8 +3,8 @@
     "speed": "FAST",
     "meleeRange": "MEDIUM",
     "collisionRadius": 0.45,
-    "loadTime": 1.6,
-    "hitPoints": 677,
-    "damage": 355,
+    "loadTime": 1.5,
+    "hitPoints": 1400,
+    "damage": 755,
     "elixirCost": 4
 }
