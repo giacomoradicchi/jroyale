@@ -38,8 +38,6 @@ public class ControllerForModel implements IControllerForModel{
 
     private void setCardsStats() {
         for (EntityType type : EntityType.values()) {
-            // TODO: remove this
-            //if (type != EntityType.MINIPEKKA) continue;
 
             Card card = CardBinder.getInstance().getCardInstance(type);
             if (card == null) continue;
