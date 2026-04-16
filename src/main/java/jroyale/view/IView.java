@@ -41,6 +41,8 @@ public interface IView {
 
     public void renderWorldShadow(double centreX, double centreY, double shadowRadius);
 
+    public void renderTimeLeft(int secondsLeft);
+
     public void startDragPlacementPreview();
 
     public void renderDragPlacementPreview(double centreX, double centreY);

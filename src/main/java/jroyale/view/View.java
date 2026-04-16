@@ -1,5 +1,8 @@
 package jroyale.view;
 
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -249,6 +252,11 @@ public class View implements IView {
         stage.getScene().setOnMouseReleased(event -> {
             processOnMouseReleased();
         });
+    }
+
+    @Override
+    public void renderTimeLeft(int secondsLeft) {
+        TimeLeftRenderer.getInstance().renderTimeLeft(secondsLeft);
     }
 
     @Override

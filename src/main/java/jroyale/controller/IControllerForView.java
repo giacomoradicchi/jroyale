@@ -42,6 +42,8 @@ public interface IControllerForView {
 
     public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
 
+    public void renderTimeLeft(int secondsLeft);
+
     public int getSelectedCol();
 
     public int getSelectedRow();

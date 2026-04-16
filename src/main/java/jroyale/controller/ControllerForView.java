@@ -88,6 +88,11 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
+    public void renderTimeLeft(int secondsLeft) {
+        view.renderTimeLeft(secondsLeft);
+    }
+
+    @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
         View.getInstance().fillPoint(centreX, centreY, size, color);
     }

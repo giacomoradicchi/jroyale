@@ -61,6 +61,7 @@ public class GameEngine implements IGameEngine {
                     controllerForModel.getMaxElixir()
                 );
 
+                controllerForView.renderTimeLeft(50);
             }
         };
 
@@ -75,7 +76,7 @@ public class GameEngine implements IGameEngine {
     // instance methods
     @Override
     public void start(@SuppressWarnings("exports") Stage stage) {
-        // saving instances so the access to them will be faster
+        // saving instances to avoid redundace
         controllerForView = ControllerForView.getInstance();
         controllerForModel = ControllerForModel.getInstance();
         
