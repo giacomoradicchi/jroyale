@@ -70,6 +70,11 @@ public class ControllerForModel implements IControllerForModel{
     }
 
     @Override
+    public boolean isGameOver() {
+        return Model.getInstance().isGameOver();
+    }
+
+    @Override
     public int getNumRowsArena() {
         return Model.getInstance().getRowsCount();
     }

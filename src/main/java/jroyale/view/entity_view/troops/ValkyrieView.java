@@ -125,11 +125,11 @@ public class ValkyrieView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
 
         if(state == State.ATTACK)
             // swirl rendering
-            View.getInstance().renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height);
+            View.getInstance().renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, 1);
     }
 
      @Override

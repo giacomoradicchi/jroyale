@@ -51,13 +51,14 @@ public class Model implements IModel {
     private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
     private List<Entity> playerEntities = new ArrayList<>();
     private List<Entity> opponentEntities = new ArrayList<>();
-    
+    private Tower playerKingTower, opponentKingTower;
 
-    private long lastTimeStamp;
+    private boolean gameOver = false;
 
     // time variables
     private long maxTimeNanoSec;
     private long accumulator;
+    private long lastTimeStamp;
 
 
     private Model() {}
@@ -126,8 +127,6 @@ public class Model implements IModel {
     @Override
     public void update(long now) {
 
-        if (accumulator >= maxTimeNanoSec) return;  // TODO: right now it just stop updating, make it update for less time
-
         long elapsed = getElapsed(now);
         accumulator += elapsed;
 
@@ -160,9 +159,25 @@ public class Model implements IModel {
             }
             System.out.println();
         }  */
+
         playerDeck.update(elapsed);
         AIAgent.getInstance().update(elapsed);
-        
+        checkGameOver();
+    }
+
+    private void checkGameOver() {
+        if (
+            accumulator >= maxTimeNanoSec               // 1. Time Exceeded
+        ||  playerKingTower.getHitPoints() == 0         // 2. Player tower destructed
+        ||  opponentKingTower.getHitPoints() == 0       // 3. Opponent tower destructed
+        ) {
+            gameOver = true;
+        }
+    }
+
+    @Override
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     @Override
@@ -398,11 +413,13 @@ public class Model implements IModel {
     }
 
     private void initTowers() {
-        addTower(new KingTower(Side.PLAYER));
+        playerKingTower = new KingTower(Side.PLAYER);
+        addTower(playerKingTower);
         addTower(new ArcerTower(Side.PLAYER, ArcerTower.LEFT));
         addTower(new ArcerTower(Side.PLAYER, ArcerTower.RIGHT));
 
-        addTower(new KingTower(Side.OPPONENT));
+        opponentKingTower = new KingTower(Side.OPPONENT);
+        addTower(opponentKingTower);
         addTower(new ArcerTower(Side.OPPONENT, ArcerTower.LEFT));
         addTower(new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT));   
     }

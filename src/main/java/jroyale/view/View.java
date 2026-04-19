@@ -1,8 +1,5 @@
 package jroyale.view;
 
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -36,6 +33,7 @@ public class View implements IView {
 
     // scale of the entire scene
     private double globalScale = 1.0;
+    private static final double MIN_GLOBAL_SCALE = 0.92;
 
     private View() {}
 
@@ -93,8 +91,21 @@ public class View implements IView {
 
         ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
+    }
 
-        //globalScale -= 0.0001;
+    @Override
+    public double getMinGlobalScale() {
+        return MIN_GLOBAL_SCALE;
+    }
+
+    @Override
+    public double getGlobalScale() {
+        return globalScale;
+    }
+
+    @Override
+    public void setGlobalScale(double globalScale) {
+        this.globalScale = Math.max(getMinGlobalScale(), globalScale);
     }
 
     @Override
@@ -142,13 +153,14 @@ public class View implements IView {
     //
 
     @Override
-    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height) {
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
         renderScreenImage(
             image, 
             fromWorldToScreenX(centerX), 
             fromWorldToScreenY(centerY), 
             width * globalScale, 
-            height * globalScale
+            height * globalScale, 
+            alpha
         );
     }
 
@@ -196,7 +208,9 @@ public class View implements IView {
     //
 
     @Override
-    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height) {
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
+        gc.save();
+        gc.setGlobalAlpha(alpha);
         gc.drawImage(
             image, 
             centerX - width / 2, 
@@ -204,6 +218,7 @@ public class View implements IView {
             width, 
             height
         );
+        gc.restore();
     }
 
     @Override
@@ -274,8 +289,8 @@ public class View implements IView {
     }
 
     @Override
-    public void renderTimeLeft(int secondsLeft) {
-        TimeLeftRenderer.getInstance().renderTimeLeft(secondsLeft);
+    public void renderTimeLeft(int secondsLeft, double alpha) {
+        TimeLeftRenderer.getInstance().renderTimeLeft(secondsLeft, alpha);
     }
 
     @Override
@@ -416,10 +431,11 @@ public class View implements IView {
     }
 
     @Override
-    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color) {
+    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double alpha) {
         gc.save();
         gc.setFont(font);
         gc.setFill(color);
+        gc.setGlobalAlpha(alpha);
 
         // alligned in center
         gc.setTextAlign(TextAlignment.CENTER);
@@ -430,11 +446,12 @@ public class View implements IView {
     }
 
     @Override
-    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth) {
+    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth, double alpha) {
         gc.save();
         gc.setFont(font);
         gc.setStroke(color);
         gc.setLineWidth(lineWidth);
+        gc.setGlobalAlpha(alpha);
 
         // alligned in center
         gc.setTextAlign(TextAlignment.CENTER);
@@ -445,8 +462,8 @@ public class View implements IView {
     }
 
     @Override
-    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
-        DeckView.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir);
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
+        DeckView.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
     }
 
     @Override

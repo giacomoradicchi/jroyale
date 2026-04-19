@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 import jroyale.model.Entity;
 import jroyale.utils.Config;
-import jroyale.utils.GameSettings;
 
 public class GameEngine implements IGameEngine {
     
@@ -25,7 +24,9 @@ public class GameEngine implements IGameEngine {
             @Override
             public void handle(long now) {
                 // update
-                controllerForModel.updateModel(now);
+                if (!controllerForModel.isGameOver())
+                    controllerForModel.updateModel(now);
+
                 controllerForView.updateView(now);
                 
                 // rendering
@@ -52,7 +53,7 @@ public class GameEngine implements IGameEngine {
                         e.getType()
                     );
                 }
-
+                
                 controllerForView.renderPlayerDeck(
                     controllerForModel.getFirstHandPlayerCard().getType(), controllerForModel.getFirstHandPlayerCard().getCardStats().getElixirCost(),
                     controllerForModel.getSecondHandPlayerCard().getType(), controllerForModel.getSecondHandPlayerCard().getCardStats().getElixirCost(),
@@ -64,6 +65,7 @@ public class GameEngine implements IGameEngine {
                 );
 
                 controllerForView.renderTimeLeft(controllerForModel.getTimeLeftSec());
+                
             }
         };
 

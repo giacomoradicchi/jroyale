@@ -12,6 +12,8 @@ public interface IControllerForModel {
 
     public void updateModel(long now);
 
+    public boolean isGameOver();
+
     public int getTimeLeftSec();
 
     public int getNumRowsArena();

@@ -10,7 +10,7 @@ public class TimeLeftRenderer {
 
     private TimeLeftRenderer() {}
 
-    public void renderTimeLeft(int secondsLeft) {
+    public void renderTimeLeft(int secondsLeft, double alpha) {
         if (secondsLeft <= 0) secondsLeft = 0;
         
         String timeLeft = fromSecToTimeString(secondsLeft);
@@ -25,12 +25,13 @@ public class TimeLeftRenderer {
         double boxHeight = canvasHeight * 0.05;
         double boxArcHeight = boxHeight;
         double boxArcWidth = boxHeight;
-        double alpha = 0.5;
+        double alphaBackGround = 0.5;
         double lineWidth = 4;
 
-        View.getInstance().fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, alpha, getTextFillColor(secondsLeft));
-        View.getInstance().strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth);
-        View.getInstance().fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft));
+        View.getInstance().fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, alphaBackGround * alpha, getTextFillColor(secondsLeft));
+
+        View.getInstance().strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
+        View.getInstance().fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
         if (secondsLeft > TIME_EXCEEDING_LIMIT_IN_SEC || secondsLeft == 0) return;
 
@@ -38,8 +39,8 @@ public class TimeLeftRenderer {
         centerY = View.getInstance().getScreenMapTopLeftCornerY() + View.getInstance().getScreenMapHeight()/2;
         textSize *= 2;
 
-        View.getInstance().strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth);
-        View.getInstance().fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft));
+        View.getInstance().strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
+        View.getInstance().fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
     }
 

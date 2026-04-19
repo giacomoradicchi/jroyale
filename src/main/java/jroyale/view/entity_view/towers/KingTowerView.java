@@ -39,7 +39,8 @@ public class KingTowerView extends TowerView {
             centreX, 
             centreY + Y_OFFSET, 
             img.getWidth() * getImageScale(), 
-            img.getHeight() * getImageScale()
+            img.getHeight() * getImageScale(),
+            1
         );
     }
 

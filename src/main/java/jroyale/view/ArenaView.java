@@ -97,7 +97,8 @@ public class ArenaView {
             canvasWidth * 0.5, 
             canvasHeight * 0.5 - 108 * (View.getInstance().getCanvasHeight() / 800), 
             getWidth() * SCALE * (View.getInstance().getCanvasWidth() / 449.6296296296296), 
-            getHeight() * SCALE * (View.getInstance().getCanvasHeight() / 800)
+            getHeight() * SCALE * (View.getInstance().getCanvasHeight() / 800),
+            1
         );  
 
         if (!debugMode) return;
