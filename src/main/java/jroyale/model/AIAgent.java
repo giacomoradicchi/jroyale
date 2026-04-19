@@ -68,7 +68,7 @@ public class AIAgent {
     private static final double ATTACK_DECISION_THRESHOLD = 0.75;       // it'll attack if intention >= attack threshold
 
     public void init(String difficulty, Deck deck) {
-        switch (difficulty.toUpperCase()) {
+        switch (difficulty.strip().toUpperCase()) {
             case "BASIC":
                 init(AgentDifficulty.BASIC, deck);
                 break;

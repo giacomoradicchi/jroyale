@@ -1,7 +1,6 @@
 package jroyale.model.cards;
 
 import jroyale.model.Model;
-import jroyale.model.troops.MiniPekka;
 import jroyale.model.troops.Skeleton;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -9,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class SkeletonArmyCard extends Card {
 
     private static SkeletonArmyCard instance;
-    private static final byte ELIXIR_COST = 3;
     private static final int ARMY_SIZE = 15;
 
     private SkeletonArmyCard() {
@@ -19,7 +17,7 @@ public class SkeletonArmyCard extends Card {
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        for (int i = 0; i < ARMY_SIZE; i++)
+        for (byte i = 0; i < stats.getUnitsAmount(); i++)
             Model.getInstance().addTroop(
                 new Skeleton(
                     rowIndex, 
@@ -27,6 +25,7 @@ public class SkeletonArmyCard extends Card {
                     stats.getName(), 
                     stats.getSpeed(), 
                     stats.getMeleeRange(), 
+                    stats.getMass(),
                     stats.getCollisionRadius(), 
                     stats.getLoadTime(), 
                     stats.getHitPoints(), 

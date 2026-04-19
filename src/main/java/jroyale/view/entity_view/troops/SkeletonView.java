@@ -19,9 +19,9 @@ public abstract class SkeletonView extends TroopView {
     private static final String HEADER_NAME_FILE = "chr_skeleton_sprite_";
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private final double SCALE = 0.45;
     private static final double shiftX = 0;
     private static final double shiftY = -4;
+    private static final double HEIGHT_IN_TILES = 1.2;
 
     // Sprite sheet base indices for different states and sides.
     // 
@@ -78,8 +78,8 @@ public abstract class SkeletonView extends TroopView {
         AnimationKey key = new AnimationKey(Side.PLAYER, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
-        double width = image.getWidth() * SCALE;
-        double height = image.getHeight() * SCALE;
+        double width = image.getWidth() * getImageScale();
+        double height = image.getHeight() * getImageScale();
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
@@ -91,7 +91,12 @@ public abstract class SkeletonView extends TroopView {
 
     @Override
     public double getSpritesHeight() {
-        return SCALE * SPRITES_HEIGHT;
+        return SPRITES_HEIGHT;
+    }
+
+    @Override
+    protected double getHeightInTiles() {
+        return HEIGHT_IN_TILES;
     }
 
     @Override

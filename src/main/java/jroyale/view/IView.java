@@ -27,9 +27,17 @@ public interface IView {
 
     public double getDy();
 
-    public double getMapTopLeftCornerX();
+    public double getWorldMapTopLeftCornerX();
 
-    public double getMapTopLeftCornerY();
+    public double getWorldMapTopLeftCornerY();
+
+    public double getScreenMapTopLeftCornerX();
+
+    public double getScreenMapTopLeftCornerY();
+
+    public double getScreenMapWidth();
+
+    public double getScreenMapHeight();
 
     public void renderWorldImage(Image image, double centerX, double centerY, double width, double height);
 

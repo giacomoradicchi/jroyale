@@ -13,8 +13,8 @@ public class KingTowerView extends TowerView {
 
     private static KingTowerView instance = null;
 
-    private final static double SCALE = 0.4;
-    private final static double Y_OFFSET = 6;
+    private final static double HEIGHT_IN_TILES = 5;
+    private final static double Y_OFFSET = 0;
 
     private static final String RELATIVE_PATH_TO_PLAYER_IMAGE = "player/king_tower.png";
     private static final String RELATIVE_PATH_TO_OPPONENT_IMAGE = "opponent/king_tower.png";
@@ -38,24 +38,37 @@ public class KingTowerView extends TowerView {
             img, 
             centreX, 
             centreY + Y_OFFSET, 
-            img.getWidth() * SCALE, 
-            img.getHeight() * SCALE
+            img.getWidth() * getImageScale(), 
+            img.getHeight() * getImageScale()
         );
     }
 
     @Override
     public double getSpritesHeight() {
-        return SCALE * SPRITE_HEIGHT;
+        return SPRITE_HEIGHT;
+    }
+
+    @Override
+    protected double getHeightInTiles() {
+        return HEIGHT_IN_TILES;
     }
 
     @Override
     public Image getPlayerTowerImage() {
-        return ImageUtils.enhanceOpacity(new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE)));
+        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE));
+        // TODO: farlo più robusto
+        temp = ImageUtils.crop(temp, 0, 0, (int) temp.getWidth(), (int) temp.getHeight() - 30);
+
+        return ImageUtils.enhanceOpacity(temp);
     }
 
     @Override
     public Image getOpponentTowerImage() {
-        return ImageUtils.enhanceOpacity(new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE)));
+        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE));
+        // TODO: farlo più robusto
+        temp = ImageUtils.crop(temp, 0, 0, (int) temp.getWidth(), (int) temp.getHeight() - 30);
+
+        return ImageUtils.enhanceOpacity(temp);
     }
 
     // static methods

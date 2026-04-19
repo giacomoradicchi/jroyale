@@ -1,8 +1,6 @@
 {
-    "name": "Giant",
     "speed": "SLOW",
     "meleeRange": "LONG",
-    "collisionRadius": 0.75,
     "loadTime": 1.5,
     "hitPoints": 4000,
     "damage": 250,

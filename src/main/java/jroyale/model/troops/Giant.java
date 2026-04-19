@@ -8,26 +8,19 @@ import jroyale.utils.Enums.State;
 
 public class Giant extends TowerAttackerTroop {
     
-    private static final String NAME = "Giant";
-    private static final Speed SPEED = Speed.SLOW;
-    private static final MeleeRange MELEE = MeleeRange.LONG;
     private static Map<State, Integer> totalAnimationSteps;
-    private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 10;
-    private static final long LOAD_TIME = (long) (1.5 * 1_000_000_000);
     private static final int HIT_FRAME = 7;
-    private static final int HITPOINTS = 1600;
-    private static final int DAMAGE = 300;
 
 
-    public Giant(double x, double y, String name, Speed speedType, MeleeRange melee,
+    public Giant(double x, double y, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(x, y, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Giant(int row, int col, String name, Speed speedType, MeleeRange melee,
+    public Giant(int row, int col, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(row, col, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     public static void setTotalAnimationSteps(Map<State, Integer> totalAnimationSteps) {
@@ -37,11 +30,6 @@ public class Giant extends TowerAttackerTroop {
     @Override
     public int getTotalAnimationSteps() {
         return totalAnimationSteps.get(state);
-    }
-
-    @Override
-    public double getCollisionRadius() {
-        return COLLISION_RADIUS;
     }
 
     @Override

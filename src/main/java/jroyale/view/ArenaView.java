@@ -3,6 +3,7 @@ package jroyale.view;
 import java.awt.geom.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class ArenaView {
 
@@ -17,19 +18,16 @@ public class ArenaView {
     private final static double NORMALIZED_SHIFT_Y = -72.0 / 800;
 
     private Image arenaImage;
-    private double canvasWidth, canvasHeight;
     private Rectangle2D mapBoundingBox;
     private double globalShiftY;
     private double dx, dy;
+    private int rows, cols;
     
 
     private ArenaView() {}
 
-    public void init(double canvasWidth, double canvasHeight, int numRows, int numCols) {
+    public void init(int numRows, int numCols) {
         arenaImage = new Image(ArenaView.class.getResourceAsStream(ARENA_RELATIVE_PATH));
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
-        
         initMapBoundingBox(numRows, numCols);
     }
 
@@ -53,7 +51,21 @@ public class ArenaView {
         return dy;
     }
 
+    public void update() {
+        calculateMapBoundingBox();
+        calculateDxDy();
+    }
+
     private void initMapBoundingBox(int numRows, int numCols) {
+        this.rows = numRows;
+        this.cols = numCols;
+        update();
+    }
+
+    private void calculateMapBoundingBox() {
+        double canvasWidth = View.getInstance().getCanvasWidth();
+        double canvasHeight = View.getInstance().getCanvasHeight();
+
         double mapWidth = NORMALIZED_MAP_WIDTH * canvasWidth;
         double mapHeight = NORMALIZED_MAP_HEIGHT * canvasHeight;
         globalShiftY = NORMALIZED_SHIFT_Y*canvasHeight; // map is not centered.
@@ -64,13 +76,11 @@ public class ArenaView {
             mapWidth,
             mapHeight
         );
-
-        calculateDxDy(numRows, numCols);
     }
 
-    private void calculateDxDy(int numRows, int numCols) {
-        this.dx = (float) mapBoundingBox.getWidth() / numCols;
-        this.dy = (float) mapBoundingBox.getHeight() / numRows;
+    private void calculateDxDy() {
+        this.dx = (float) mapBoundingBox.getWidth() / cols;
+        this.dy = (float) mapBoundingBox.getHeight() / rows;
     }
 
     public void renderArena() {
@@ -79,13 +89,15 @@ public class ArenaView {
 
     public void renderArena(boolean debugMode) {
 
+        double canvasWidth = View.getInstance().getCanvasWidth();
+        double canvasHeight = View.getInstance().getCanvasHeight();
 
         View.getInstance().renderWorldImage(
             arenaImage, 
             canvasWidth * 0.5, 
-            canvasHeight * 0.5 - 108, 
-            getWidth() * SCALE, 
-            getHeight() * SCALE
+            canvasHeight * 0.5 - 108 * (View.getInstance().getCanvasHeight() / 800), 
+            getWidth() * SCALE * (View.getInstance().getCanvasWidth() / 449.6296296296296), 
+            getHeight() * SCALE * (View.getInstance().getCanvasHeight() / 800)
         );  
 
         if (!debugMode) return;
@@ -123,14 +135,15 @@ public class ArenaView {
         return mapBoundingBox;
     }
 
-    private void renderGrid(GraphicsContext gc) {
-        /* gc.save();
+    private void renderGrid() {
+        /*
+        gc.save();
 
         gc.setGlobalAlpha(1);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
 
-        for (int j = 0; j <= NUM_COLS; j++) {
+        for (int j = 0; j <= View.getInstance().getNNUM_COLS; j++) {
             gc.strokeLine(
                 mapBoundingBox.getMinX() + j*dx, 
                 mapBoundingBox.getMinY(), 

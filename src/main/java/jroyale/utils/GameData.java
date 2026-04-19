@@ -11,13 +11,13 @@ public final class GameData {
 
     private GameData() {}
 
-    private static final Map<EntityType, Double> MASS = Map.of(
+    /* private static final Map<EntityType, Double> MASS = Map.of(
         EntityType.MINIPEKKA, 4.0,
         EntityType.GIANT, 18.0,
         EntityType.SKELETONS, 1.0,
         EntityType.PEKKA, 18.0,
         EntityType.VALKYRIE, 5.0
-    );
+    ); */
     
 
     private static final Map<EntityType, Map<State, Integer>> ANIMATIONS = Map.of(
@@ -54,9 +54,9 @@ public final class GameData {
         return ANIMATIONS.getOrDefault(type, Map.of(State.IDLE, 1));
     }
 
-    public double getEntityMass(EntityType type) {
+    /* public double getEntityMass(EntityType type) {
         return MASS.getOrDefault(type, Double.POSITIVE_INFINITY); // if it's not defined, its mass is infinite (it doesn't move during collision)
-    }
+    } */
 
     // static methods
 

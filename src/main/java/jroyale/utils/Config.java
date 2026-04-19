@@ -1,11 +1,14 @@
 package jroyale.utils;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jroyale.model.cards.CardStats;
 import jroyale.utils.Enums.EntityType;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -48,21 +51,57 @@ public class Config {
         loadCardStats(dir, "skeletons.json", EntityType.SKELETONS);
         loadCardStats(dir, "skeleton_army.json", EntityType.SKELETON_ARMY);
         
+        //
+        // developer reserved game stats 
+        //
+
+        
     }
 
     public String getDifficulty() {
         return settings.getDifficulty();
     }
 
+    public int getMaxTimeSec() {
+        return settings.getMaxTimeSec();
+    }
+
     private void loadCardStats(File dir, String name, EntityType type) {
         File file = new File(dir, name);
         if (!file.exists()) throw new IllegalArgumentException("File \"" + name + "\" in " + dir + "not found.");
 
+        CardStats stats = null;
+
+        // 1. loading default stats
+
         try {
-            allCardStats.put(type, mapper.readValue(file, CardStats.class));
+            stats = mapper.readValue(this.getClass().getResourceAsStream("/jroyale/conf/" + name), CardStats.class);
+        } catch (StreamReadException e) {
+            e.printStackTrace();
+        } catch (DatabindException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 2. loading user stats
+        
+        try {
+            CardStats userStats = mapper.readValue(file, CardStats.class);
+
+            // overwrite only editable stats
+            stats.setSpeed(userStats.getSpeed());
+            stats.setMeleeRange(userStats.getMeleeRange());
+            stats.setLoadTime(userStats.getLoadTime());
+            stats.setHitPoints(userStats.getHitPoints());
+            stats.setDamage(userStats.getDamage());
+            stats.setElixirCost(userStats.getElixirCost());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        allCardStats.put(type, stats);
     }
 
     public CardStats getCardStats(EntityType type) {

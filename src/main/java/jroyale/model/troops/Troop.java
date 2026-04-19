@@ -81,26 +81,15 @@ public abstract class Troop extends Entity {
 
     private boolean shouldMove, shouldAttack, shouldIdle;
 
-    /* 
-        "name": "Mini-Pekka",   no
-    "speed": "FAST",            no 
-    "meleeRange": "MEDIUM",     no
-    "collisionRadius": 0.45,    si
-    "loadTime": 1.6,            no
-    "hitPoints": 677,           si
-    "damage": 355,              si
-    "elixirCost": 4             no
-        */
-
-    public Troop(double x, double y, String name, Speed speedType, MeleeRange melee,
+    public Troop(double x, double y, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-            super(x, y, collisionRadius, hitPoints, damage, side);
+            super(x, y, mass, collisionRadius, hitPoints, damage, side);
             setTroopStats(name, speedType, melee, loadTime, hitPoints, damage);
     }
 
-    public Troop(int row, int col, String name, Speed speedType, MeleeRange melee,
+    public Troop(int row, int col, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-            super(row, col, collisionRadius, hitPoints, damage, side);
+            super(row, col, mass, collisionRadius, hitPoints, damage, side);
             setTroopStats(name, speedType, melee, loadTime, hitPoints, damage);
     }
 

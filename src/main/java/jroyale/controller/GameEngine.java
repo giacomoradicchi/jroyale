@@ -3,6 +3,8 @@ package jroyale.controller;
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 import jroyale.model.Entity;
+import jroyale.utils.Config;
+import jroyale.utils.GameSettings;
 
 public class GameEngine implements IGameEngine {
     
@@ -61,7 +63,7 @@ public class GameEngine implements IGameEngine {
                     controllerForModel.getMaxElixir()
                 );
 
-                controllerForView.renderTimeLeft(50);
+                controllerForView.renderTimeLeft(controllerForModel.getTimeLeftSec());
             }
         };
 
@@ -70,7 +72,7 @@ public class GameEngine implements IGameEngine {
 
     private void initGameLoop() {
         controllerForView.initView();
-        controllerForModel.initModel();
+        controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
     }
 
     // instance methods

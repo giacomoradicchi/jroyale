@@ -9,10 +9,10 @@ import jroyale.utils.Enums.State;
 public abstract class Tower extends Entity {
 
     
-    private static final double TOWER_COLLISION_RADIUS_FACTOR = 1.0; // just to make the collision radius slightly bigger
+    private static final double TOWER_MASS = Double.POSITIVE_INFINITY; // Tower must not move during collisions
 
     public Tower(double x, double y, int hitPoints, int damage, Side side) {
-        super(x, y, hitPoints, damage, side);
+        super(x, y, TOWER_MASS, hitPoints, damage, side);
     }
 
     public Tower(Point position, int hitPoints, int damage, Side side) {
@@ -42,7 +42,7 @@ public abstract class Tower extends Entity {
 
     @Override
     public double getCollisionRadius() {
-        return getFootPrintSize() * 0.5 * TOWER_COLLISION_RADIUS_FACTOR;
+        return getFootPrintSize() * 0.5;
     }
 
     @Override

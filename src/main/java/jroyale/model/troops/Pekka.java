@@ -8,36 +8,23 @@ import jroyale.utils.Enums.State;
 
 public class Pekka extends MixedAttackerTroop {
 
-    private static final String NAME = "Pekka";
-    private static final Speed SPEED = Speed.SLOW;
-    private static final MeleeRange MELEE = MeleeRange.MEDIUM;
     private static Map<State, Integer> totalAnimationSteps;
-    private static final double COLLISION_RADIUS = 0.75;
     private static final int FPS_ANIMATION = 12;
-    private static final long LOAD_TIME = (long) (1.8 * 1_000_000_000);
-
     private static final int HIT_FRAME = 5;
-    private static final int HITPOINTS = 1598;
-    private static final int DAMAGE = 355;
 
-    public Pekka(double x, double y, String name, Speed speedType, MeleeRange melee,
+    public Pekka(double x, double y, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(x, y, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Pekka(int row, int col, String name, Speed speedType, MeleeRange melee,
+    public Pekka(int row, int col, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(row, col, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     @Override
     protected int getHitFrame() {
         return HIT_FRAME;
-    }
-
-    @Override
-    public double getCollisionRadius() {
-        return COLLISION_RADIUS;
     }
 
     @Override

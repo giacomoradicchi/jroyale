@@ -1,0 +1,12 @@
+{
+    "name": "Giant",
+    "speed": "SLOW",
+    "meleeRange": "LONG",
+    "collisionRadius": 0.75,
+    "loadTime": 1.5,
+    "hitPoints": 4000,
+    "damage": 250,
+    "elixirCost": 5,
+    "units_amount": 1,
+    "mass": 18.0
+}

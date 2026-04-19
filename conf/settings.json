@@ -1,3 +1,4 @@
 {
-    "difficulty": "BASIC"
+    "difficulty": "BASIC",
+    "maxTimeSec": 130
 }

@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class SkeletonCard extends Card {
 
     private static SkeletonCard instance;
-    private static final byte ELIXIR_COST = 1;
     private static final byte SKELETONS_DROPPED = 3;
 
     private SkeletonCard() {
@@ -17,7 +16,8 @@ public class SkeletonCard extends Card {
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        for (int i = 0; i < SKELETONS_DROPPED; i++)
+
+        for (byte i = 0; i < stats.getUnitsAmount(); i++)
             Model.getInstance().addTroop(
                 new Skeleton(
                     rowIndex, 
@@ -25,13 +25,14 @@ public class SkeletonCard extends Card {
                     stats.getName(), 
                     stats.getSpeed(), 
                     stats.getMeleeRange(), 
+                    stats.getMass(),
                     stats.getCollisionRadius(), 
                     stats.getLoadTime(), 
                     stats.getHitPoints(), 
                     stats.getDamage(), 
                     side
                 )
-            );
+            ); 
     }
 
     // static methods

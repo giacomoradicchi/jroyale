@@ -1,0 +1,12 @@
+{
+    "name": "Skeletons",
+    "speed": "VERY_FAST",
+    "meleeRange": "SHORT",
+    "collisionRadius": 0.5,
+    "loadTime": 1.1,
+    "hitPoints": 50,
+    "damage": 50,
+    "elixirCost": 1,
+    "units_amount": 3,
+    "mass": 1.0
+}

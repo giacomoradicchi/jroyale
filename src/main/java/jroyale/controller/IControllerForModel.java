@@ -8,9 +8,11 @@ import jroyale.model.troops.Troop;
 
 public interface IControllerForModel {
 
-    public void initModel();
+    public void initModel(int maxTimeSec);
 
     public void updateModel(long now);
+
+    public int getTimeLeftSec();
 
     public int getNumRowsArena();
 

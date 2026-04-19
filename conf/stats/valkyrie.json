@@ -1,8 +1,6 @@
 {
-    "name": "Valkyrie",
     "speed": "MEDIUM",
     "meleeRange": "LONG",
-    "collisionRadius": 0.5,
     "loadTime": 1.5,
     "hitPoints": 1800,
     "damage": 250,

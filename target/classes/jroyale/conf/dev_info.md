@@ -49,11 +49,10 @@ This document explains the technical parameters used in the troop JSON files. Mo
 ## Example Snippet
 ```json
 {
-    "name": "Mini-Pekka",
     "speed": "FAST",
     "meleeRange": "MEDIUM",
-    "collisionRadius": 0.67,
     "loadTime": 1.67,
     "hitPoints": 670,
-    "damage": 67
+    "damage": 67,
+    "elixirCost": 6
 }

@@ -10,26 +10,18 @@ import jroyale.utils.Enums.State;
 
 public class Valkyrie extends MixedAttackerTroop{
 
-    private static final String NAME = "Valkyrie";
-    private static final Speed SPEED = Speed.MEDIUM;
-    private static final MeleeRange MELEE = MeleeRange.LONG;
     private static Map<State, Integer> totalAnimationSteps;
-    private static final double COLLISION_RADIUS = 0.5;
     private static final int FPS_ANIMATION = 15;
-    private static final long LOAD_TIME = (long) (1.5 * 1_000_000_000L);
-
-    private static final int HITPOINTS = 677; 
-    private static final int DAMAGE = 200;
     private static final int HIT_FRAME = 4;
 
-    public Valkyrie(double x, double y, String name, Speed speedType, MeleeRange melee,
+    public Valkyrie(double x, double y, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(x, y, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(x, y, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
-    public Valkyrie(int row, int col, String name, Speed speedType, MeleeRange melee,
+    public Valkyrie(int row, int col, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
-        super(row, col, name, speedType, melee, collisionRadius, loadTime, hitPoints, damage, side);
+        super(row, col, name, speedType, melee, mass, collisionRadius, loadTime, hitPoints, damage, side);
     }
 
     @Override
@@ -50,11 +42,6 @@ public class Valkyrie extends MixedAttackerTroop{
     @Override
     public int getTotalAnimationSteps() {
         return totalAnimationSteps.get(state);
-    }
-
-    @Override
-    public double getCollisionRadius() {
-        return COLLISION_RADIUS;
     }
 
     @Override 
