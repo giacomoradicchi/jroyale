@@ -43,7 +43,7 @@ public abstract class EntityView {
         renderEntity(centreX, centreY, angleDirection, currentFrame, state, side); 
 
         if (currentHealth < maxHealth)
-            renderHealth(currentHealth, maxHealth, side, centreX, centreY - getSpritesHeight() / 2);
+            renderHealth(currentHealth, maxHealth, side, centreX, centreY - getHeightInPixels() / 2);
     }
 
     private void renderHealth(int currentHealth, int maxHealth, Side side, double centerX, double centerY) {
@@ -92,11 +92,32 @@ public abstract class EntityView {
         View.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
     }
 
+    protected double getImageScale() {
+        /* 
+        hr = sprites height in pixels   (excluding outside transparent pixels)  -> SPRITES_HEIGHT
+        h  = sprites height in pixels   (including outside transparent pixels)  -> image.getHeight()
+        dy = tiles height in pixels                                             -> View.getInstance().getDy()
+        ht = troop height in tiles                                              -> HEIGHT_IN_TILES
+
+        formula:
+        hr * scale = ht * dy (the scale factor must satisfy this formula, so the height will be troop height in tiles * tiles height in pixels)
+        -> scale = (ht * dy) / hr
+         */
+
+        return getHeightInTiles() * View.getInstance().getDy() / getSpritesHeight();
+    }
+
+    private double getHeightInPixels() {    // height in pixel of troop (based on map proportion)
+        return getHeightInTiles() * View.getInstance().getDy();
+    }
+
     // abstract methods
 
     public abstract Image getSpellIcon();
 
     protected abstract void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state, Side side);
 
-    protected abstract double getSpritesHeight();
+    protected abstract double getSpritesHeight(); // height in pixel of the original sprites (unscaled) excluding transparent pixel not in bounds 
+
+    protected abstract double getHeightInTiles();
 }

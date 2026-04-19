@@ -28,11 +28,11 @@ public class ValkyrieView extends TroopView {
     
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private final double SCALE = 0.5;
     private static final double shiftX = 0;
     private static final double shiftY = -10;
     private static final double ALPHA_THRESHOLD = 0.5;
 
+    private static final double HEIGHT_IN_TILES = 2;
 
     // Sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 72;
@@ -119,8 +119,8 @@ public class ValkyrieView extends TroopView {
         AnimationKey key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
-        double width = image.getWidth() * SCALE;
-        double height = image.getHeight() * SCALE;
+        double width = image.getWidth() * getImageScale();
+        double height = image.getHeight() * getImageScale();
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
@@ -132,9 +132,14 @@ public class ValkyrieView extends TroopView {
             View.getInstance().renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height);
     }
 
-    @Override
+     @Override
     public double getSpritesHeight() {
-        return SCALE * SPRITES_HEIGHT;
+        return SPRITES_HEIGHT;
+    }
+
+    @Override
+    protected double getHeightInTiles() {
+        return HEIGHT_IN_TILES;
     }
 
     // static methods

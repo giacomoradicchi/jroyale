@@ -6,7 +6,6 @@ import java.util.Map;
 import jroyale.view.AnimationKey;
 import jroyale.view.Direction;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -22,6 +21,8 @@ public abstract class TroopView extends EntityView {
     protected final Image spellIcon;
     private static final int CORNER_RADIUS = 20; // pixels
     protected final Direction direction;
+    private static final double OPACITY_TOLERANCE = 0.5; // avoids all pixels whose alpha value is less than OPACITY_TOLERANCE
+    private static final int REFERENCE_DIRECTION = 8; // it will be used the last direction's sprite as reference to compute sprite's height
 
     // pattern for buffer initialization:
     protected static final String ATTACK_PATH = "attack/";
@@ -33,11 +34,17 @@ public abstract class TroopView extends EntityView {
     protected TroopView() {
         initAnimationBuffer();
         direction = new Direction();
-        SPRITES_HEIGHT = ImageUtils.getAlphaBoundingBox(animationBuffer.values().iterator().next().getFrame(0)).getHeight(); // absolute height (in pixels) of every sprite.
-        Image temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
+
+        // calculating sprite height in pixel excluding transparent ones.
+        Image temp = animationBuffer.get(new AnimationKey(Side.PLAYER, State.IDLE, REFERENCE_DIRECTION)).getFrame(0); 
+        SPRITES_HEIGHT = ImageUtils.getAlphaBoundingBox(temp, OPACITY_TOLERANCE).getHeight();
+
+        // setting spell icon
+        temp = ImageUtils.roundCorners(ImageUtils.cropToBoundingBox(getRawSpellIcon()), CORNER_RADIUS); // image will be centered by cropping it inside its Bounding Box.
         spellIcon = temp;
     }
 
+    
     @Override
     public Image getSpellIcon() {
         return spellIcon;

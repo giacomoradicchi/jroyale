@@ -51,12 +51,17 @@ public class ControllerForModel implements IControllerForModel{
 
     // instance methods
     @Override
-    public void initModel() {
+    public void initModel(int maxTimeSec) {
         setCardsStats();
-        Model.getInstance().init();
+        Model.getInstance().init(maxTimeSec);
 
         initTroopsAnimationSteps();
         
+    }
+
+    @Override
+    public int getTimeLeftSec() {
+        return Model.getInstance().getTimeLeftSec();
     }
 
     @Override

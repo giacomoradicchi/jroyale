@@ -1,8 +1,6 @@
 {
-    "name": "P.E.K.K.A.",
     "speed": "SLOW",
     "meleeRange": "MEDIUM",
-    "collisionRadius": 0.75,
     "loadTime": 1.7,
     "hitPoints": 3500,
     "damage": 800,

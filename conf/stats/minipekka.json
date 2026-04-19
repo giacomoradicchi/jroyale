@@ -1,8 +1,6 @@
 {
-    "name": "Mini-Pekka",
     "speed": "FAST",
     "meleeRange": "MEDIUM",
-    "collisionRadius": 0.45,
     "loadTime": 1.5,
     "hitPoints": 1400,
     "damage": 755,

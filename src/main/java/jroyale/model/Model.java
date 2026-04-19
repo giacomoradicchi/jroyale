@@ -55,11 +55,17 @@ public class Model implements IModel {
 
     private long lastTimeStamp;
 
+    // time variables
+    private long maxTimeNanoSec;
+    private long accumulator;
+
 
     private Model() {}
 
     @Override
-    public void init() {
+    public void init(int maxTimeSec) {
+        this.maxTimeNanoSec = maxTimeSec * 1_000_000_000L;
+
         initReachableTiles();
 
         for (int i = 0; i < MAP_ROWS; i++) {
@@ -119,7 +125,11 @@ public class Model implements IModel {
 
     @Override
     public void update(long now) {
+
+        if (accumulator >= maxTimeNanoSec) return;  // TODO: right now it just stop updating, make it update for less time
+
         long elapsed = getElapsed(now);
+        accumulator += elapsed;
 
         for (Entity e : playerEntities) {
             e.update(elapsed);
@@ -153,6 +163,11 @@ public class Model implements IModel {
         playerDeck.update(elapsed);
         AIAgent.getInstance().update(elapsed);
         
+    }
+
+    @Override
+    public int getTimeLeftSec() {
+        return (int) Math.max(0, (maxTimeNanoSec - accumulator)/1_000_000_000L);
     }
 
     @Override

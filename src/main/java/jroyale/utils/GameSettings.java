@@ -9,6 +9,9 @@ public class GameSettings {
     @JsonProperty("difficulty")
     private String difficulty;
 
+    @JsonProperty("maxTimeSec")
+    private int maxTimeSec;
+
     public GameSettings() {}
 
     public String getDifficulty() {
@@ -17,5 +20,13 @@ public class GameSettings {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public int getMaxTimeSec() {
+        return maxTimeSec;
+    }
+
+    public void setMaxTime(int maxTimeSec) {
+        this.maxTimeSec = maxTimeSec;
     }
 }

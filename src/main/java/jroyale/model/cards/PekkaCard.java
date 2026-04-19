@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class PekkaCard extends Card{
 
     private static PekkaCard instance;
-    private static final byte ELIXIR_COST = 7;
 
     private PekkaCard() {
         super(EntityType.PEKKA);
@@ -16,20 +15,22 @@ public class PekkaCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getInstance().addTroop(
-            new Pekka(
-                rowIndex, 
-                columnIndex, 
-                stats.getName(), 
-                stats.getSpeed(), 
-                stats.getMeleeRange(), 
-                stats.getCollisionRadius(), 
-                stats.getLoadTime(), 
-                stats.getHitPoints(), 
-                stats.getDamage(), 
-                side
-            )
-        );
+        for (byte i = 0; i < stats.getUnitsAmount(); i++)
+            Model.getInstance().addTroop(
+                new Pekka(
+                    rowIndex, 
+                    columnIndex, 
+                    stats.getName(), 
+                    stats.getSpeed(), 
+                    stats.getMeleeRange(), 
+                    stats.getMass(),
+                    stats.getCollisionRadius(), 
+                    stats.getLoadTime(), 
+                    stats.getHitPoints(), 
+                    stats.getDamage(), 
+                    side
+                )
+            );
     }
 
     // static methods

@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class GiantCard extends Card{
 
     private static GiantCard instance;
-    private static final byte ELIXIR_COST = 5;
 
     private GiantCard() {
         super(EntityType.GIANT);
@@ -16,20 +15,25 @@ public class GiantCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getInstance().addTroop(
-            new Giant(
-                rowIndex, 
-                columnIndex, 
-                stats.getName(), 
-                stats.getSpeed(), 
-                stats.getMeleeRange(), 
-                stats.getCollisionRadius(), 
-                stats.getLoadTime(), 
-                stats.getHitPoints(), 
-                stats.getDamage(), 
-                side
-            )
-        );
+
+        //System.out.println("Units: " + stats.getUnitsAmount() + ", " + getType());
+
+        for (byte i = 0; i < stats.getUnitsAmount(); i++)
+            Model.getInstance().addTroop(
+                new Giant(
+                    rowIndex, 
+                    columnIndex, 
+                    stats.getName(), 
+                    stats.getSpeed(), 
+                    stats.getMeleeRange(), 
+                    stats.getMass(),
+                    stats.getCollisionRadius(), 
+                    stats.getLoadTime(), 
+                    stats.getHitPoints(), 
+                    stats.getDamage(), 
+                    side
+                )
+            ); 
     }
     
     // static methods

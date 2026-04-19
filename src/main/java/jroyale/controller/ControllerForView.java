@@ -99,12 +99,12 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public double logicToGraphicX(double logicCoordX) {
-        return view.getMapTopLeftCornerX() + logicCoordX * view.getDx();
+        return view.getWorldMapTopLeftCornerX() + logicCoordX * view.getDx();
     }
 
     @Override
     public double logicToGraphicY(double logicCoordY) {
-        return view.getMapTopLeftCornerY() + logicCoordY * view.getDy();
+        return view.getWorldMapTopLeftCornerY() + logicCoordY * view.getDy();
     }
 
     @Override

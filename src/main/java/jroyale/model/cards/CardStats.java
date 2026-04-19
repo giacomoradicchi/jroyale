@@ -33,6 +33,14 @@ public class CardStats {
     @JsonProperty("elixirCost")
     private byte elixirCost;
 
+    private static final byte MIN_UNITS_AMOUNT = 1; // at least one entity has to be dropped.
+    private static final byte MAX_UNITS_AMOUNT = Byte.MAX_VALUE;
+    @JsonProperty("units_amount")
+    private byte unitsAmount = MIN_UNITS_AMOUNT;
+
+    @JsonProperty("mass")
+    private double mass;
+
     public CardStats() {}
 
     public String getName() {
@@ -67,6 +75,14 @@ public class CardStats {
         return elixirCost;
     }
 
+    public byte getUnitsAmount() {
+        return unitsAmount;
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -80,6 +96,10 @@ public class CardStats {
             this.speed = Speed.MEDIUM; // Default
         }
     }
+
+    public void setSpeed(Speed speed) {
+        this.speed = speed;
+    }
     
     public void setMeleeRange(String meleeRange) {
         if (meleeRange == null) this.meleeRange = MeleeRange.MEDIUM; // Default
@@ -89,6 +109,10 @@ public class CardStats {
         } catch (IllegalArgumentException e) {
             this.meleeRange = MeleeRange.MEDIUM; // Default
         }
+    }
+
+    public void setMeleeRange(MeleeRange meleeRange) {
+        this.meleeRange = meleeRange;
     }
 
     public void setCollisionRadius(double collisionRadius) {
@@ -109,5 +133,13 @@ public class CardStats {
 
     public void setElixirCost(byte elixirCost) {
         this.elixirCost = elixirCost;
+    }
+
+    public void setUnitsAmount(int unitsAmount) {
+        this.unitsAmount = (byte) Math.clamp(unitsAmount, MIN_UNITS_AMOUNT, MAX_UNITS_AMOUNT); 
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
     }
 }

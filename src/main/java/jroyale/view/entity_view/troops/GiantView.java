@@ -29,8 +29,8 @@ public class GiantView extends TroopView {
     
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private final double SCALE = 0.65;
-    private static final double shiftY = -20;
+    private static final double HEIGHT_IN_TILES = 3.5;
+    private static final double NORMALIZED_SHIFT_Y = -0.03;
 
     // Sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 0;
@@ -69,9 +69,11 @@ public class GiantView extends TroopView {
 
         AnimationKey key = new AnimationKey(baseSide, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
-        
-        double width = image.getWidth() * SCALE;
-        double height = image.getHeight() * SCALE;
+        double canvasHeight = View.getInstance().getCanvasHeight();
+        double scale = getImageScale();
+        double width = image.getWidth() * scale;
+        double height = image.getHeight() * scale;
+        double shiftY = NORMALIZED_SHIFT_Y * canvasHeight;
         int flipped = 0;
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
@@ -89,7 +91,12 @@ public class GiantView extends TroopView {
 
     @Override
     public double getSpritesHeight() {
-        return SCALE * SPRITES_HEIGHT;
+        return SPRITES_HEIGHT;
+    }
+
+    @Override
+    protected double getHeightInTiles() {
+        return HEIGHT_IN_TILES;
     }
     
 
@@ -152,7 +159,6 @@ public class GiantView extends TroopView {
     @Override
     protected Image transformImage(Image image) {
         Image temp = image;
-        temp = ImageUtils.enhanceOpacity(temp);
         // TODO: farlo più robusto
         temp = ImageUtils.crop(image, 0, 0, (int) temp.getWidth() - 30, (int) temp.getHeight());
         return ImageUtils.enhanceOpacity(temp, ALPHA_THRESHOLD);

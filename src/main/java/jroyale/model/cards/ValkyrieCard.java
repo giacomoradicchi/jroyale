@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class ValkyrieCard extends Card{
     
     private static ValkyrieCard instance;
-    private static final byte ELIXIR_COST = 4;
 
     private ValkyrieCard() {
         super(EntityType.VALKYRIE);
@@ -16,20 +15,22 @@ public class ValkyrieCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-        Model.getInstance().addTroop(
-            new Valkyrie(
-                rowIndex, 
-                columnIndex, 
-                stats.getName(), 
-                stats.getSpeed(), 
-                stats.getMeleeRange(), 
-                stats.getCollisionRadius(), 
-                stats.getLoadTime(), 
-                stats.getHitPoints(), 
-                stats.getDamage(), 
-                side
-            )
-        );
+        for (byte i = 0; i < stats.getUnitsAmount(); i++)
+            Model.getInstance().addTroop(
+                new Valkyrie(
+                    rowIndex, 
+                    columnIndex, 
+                    stats.getName(), 
+                    stats.getSpeed(), 
+                    stats.getMeleeRange(), 
+                    stats.getMass(),
+                    stats.getCollisionRadius(), 
+                    stats.getLoadTime(), 
+                    stats.getHitPoints(), 
+                    stats.getDamage(), 
+                    side
+                )
+            );
     }
 
     // static methods

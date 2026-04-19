@@ -7,9 +7,11 @@ import jroyale.model.cards.Card;
 
 public interface IModel {
 
-    public void init();
+    public void init(int maxTimeSec);
 
     public void update(long now);
+
+    public int getTimeLeftSec();
 
     public int getRowsCount();
 

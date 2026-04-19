@@ -21,6 +21,7 @@ public abstract class Entity implements Comparable<Entity>{
     private static final Point DEFAULT_SPEED = new Point(0, 0); // doesn't move
       
     private double collisionRadius;
+    private double mass;
     protected Point position;
     protected Side side;
     protected int currentAnimationIndex;
@@ -29,42 +30,43 @@ public abstract class Entity implements Comparable<Entity>{
     protected static final Point NO_DIRECTION = new Point(0, 0);
     
 
-    public Entity(double x, double y, double collisionRadius, int hitPoints, int damage, Side side) {
+    public Entity(double x, double y, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
         
         if (side != Side.PLAYER && side != Side.OPPONENT) {
             throw new IllegalArgumentException("Invalid argument side");
         }
         
         this.position = new Point(x, y);
+        this.mass = mass;
         this.side = side;
-        this.state = State.IDLE; // default state
+        this.state = State.IDLE; // initial state
         this.collisionRadius = collisionRadius;
         this.hitPoints = hitPoints;
         this.MAX_HIT_POINTS = hitPoints;
         this.damage = damage;
     }
 
-    public Entity(double x, double y, int hitPoints, int damage, Side side) {
-        this(x, y, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+    public Entity(double x, double y, double mass, int hitPoints, int damage, Side side) {
+        this(x, y, mass, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
     }
 
-    public Entity(Point position, double collisionRadius, int hitPoints, int damage, Side side) {
-        this(position.getX(), position.getY(), collisionRadius, hitPoints, damage, side);
+    public Entity(Point position, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
+        this(position.getX(), position.getY(), mass, collisionRadius, hitPoints, damage, side);
     }
 
-    public Entity(Point position, int hitPoints, int damage, Side side) {
-        this(position.getX(), position.getY(), DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+    public Entity(Point position, double mass, int hitPoints, int damage, Side side) {
+        this(position.getX(), position.getY(), mass, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
     }
 
     // costructors for when position is an integer (row and column)
 
-    public Entity(int row, int col, double collisionRadius, int hitPoints, int damage, Side side) {
-        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, collisionRadius, hitPoints, damage, side);
+    public Entity(int row, int col, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
+        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, mass, collisionRadius, hitPoints, damage, side);
         // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
     }
 
-    public Entity(int row, int col, int hitPoints, int damage, Side side) {
-        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+    public Entity(int row, int col, double mass, int hitPoints, int damage, Side side) {
+        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, mass, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
         // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
     }
 
@@ -109,7 +111,7 @@ public abstract class Entity implements Comparable<Entity>{
     }
 
     public double getMass() {
-        return GameData.getInstance().getEntityMass(getType());
+        return mass;
     }
 
     public Point getSpeed() {

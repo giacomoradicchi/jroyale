@@ -1,7 +1,5 @@
 package jroyale.model.cards;
 
-import jroyale.model.troops.Troop.MeleeRange;
-import jroyale.model.troops.Troop.Speed;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 

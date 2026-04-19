@@ -44,8 +44,6 @@ public class View implements IView {
     @Override
     public void init() {
         ArenaView.getInstance().init(
-            CANVAS_WIDTH,
-            CANVAS_HEIGHT,
             ControllerForView.getInstance().getNumRowsArena(),
             ControllerForView.getInstance().getNumColsArena()
         );
@@ -80,19 +78,20 @@ public class View implements IView {
 
     @Override
     public double getCanvasWidth() {
-        return CANVAS_WIDTH;
+        return root.getWidth();
     }
 
     @Override
     public double getCanvasHeight() {
-        return CANVAS_HEIGHT;
+        return root.getHeight();
     }
     
     @Override
     public void update(long now) {
         // clears canvas
-        gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);  
+        gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());  
 
+        ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
 
         //globalScale -= 0.0001;
@@ -109,12 +108,32 @@ public class View implements IView {
     }
 
     @Override
-    public double getMapTopLeftCornerX() {
+    public double getScreenMapTopLeftCornerX() {
+        return fromWorldToScreenX(ArenaView.getInstance().getMapBounds().getMinX());
+    }
+
+    @Override
+    public double getScreenMapTopLeftCornerY() {
+        return fromWorldToScreenY(ArenaView.getInstance().getMapBounds().getMinY());
+    }
+
+    @Override
+    public double getScreenMapWidth() {
+        return ArenaView.getInstance().getMapBounds().getWidth() * globalScale;
+    }
+
+    @Override
+    public double getScreenMapHeight() {
+        return ArenaView.getInstance().getMapBounds().getHeight() * globalScale;
+    }
+
+    @Override
+    public double getWorldMapTopLeftCornerX() {
         return ArenaView.getInstance().getMapBounds().getMinX();
     }
 
     @Override
-    public double getMapTopLeftCornerY() {
+    public double getWorldMapTopLeftCornerY() {
         return ArenaView.getInstance().getMapBounds().getMinY();
     }
 
@@ -284,13 +303,13 @@ public class View implements IView {
 
     private int getColFromMouseX(double mouseX) {
         return (int) Math.floor(
-            (mouseX - fromWorldToScreenX(getMapTopLeftCornerX())) / (getDx() * globalScale)
+            (mouseX - getScreenMapTopLeftCornerX()) / (getDx() * globalScale)
         ); 
     }
 
     private int getRowFromMouseY(double mouseY) {
         return (int) Math.floor(
-            (mouseY - fromWorldToScreenY(getMapTopLeftCornerY())) / (getDy() * globalScale)
+            (mouseY - getScreenMapTopLeftCornerY()) / (getDy() * globalScale)
         ); 
     }
 
