@@ -14,6 +14,18 @@ public interface IControllerForModel {
 
     public boolean isGameOver();
 
+    public boolean isPlayerKingTowerDestroyed();
+
+    public boolean isOpponentKingTowerDestroyed();
+
+    public boolean isPlayerLeftTowerDestroyed();
+
+    public boolean isOpponentLeftTowerDestroyed();
+
+    public boolean isPlayerRightTowerDestroyed();
+
+    public boolean isOpponentRightTowerDestroyed();
+
     public int getTimeLeftSec();
 
     public int getNumRowsArena();

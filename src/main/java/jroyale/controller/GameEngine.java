@@ -66,6 +66,9 @@ public class GameEngine implements IGameEngine {
 
                 controllerForView.renderTimeLeft(controllerForModel.getTimeLeftSec());
                 
+                if (controllerForModel.isGameOver()) {
+                    controllerForView.renderGameOver();
+                }
             }
         };
 

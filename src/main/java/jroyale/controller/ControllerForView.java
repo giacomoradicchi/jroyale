@@ -1,11 +1,14 @@
 package jroyale.controller;
 
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import jroyale.model.Model;
 import jroyale.utils.GameData;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.FontManager;
 import jroyale.view.IView;
 import jroyale.view.View;
 import jroyale.view.entity_view.troops.GiantView;
@@ -28,6 +31,7 @@ public class ControllerForView implements IControllerForView {
 
     private static final long FADE_OUT_DURATION_NANOSEC = 250_000_000L;
     private static final long ZOOM_OUT_DURATION_NANOSEC = 7_000_000_000L;
+    private static final double MIN_GLOBAL_SCALE = 0.92;
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
 
     private ControllerForView() {
@@ -80,15 +84,14 @@ public class ControllerForView implements IControllerForView {
 
     private void updateGlobalScale() {
         IView view = View.getInstance();
-        double minGlobalScale = view.getMinGlobalScale();
         // returns if has passed no time since game over or view.globalScale is already at its minimum
-        if (timePassedSinceGameOver == 0 || view.getGlobalScale() == minGlobalScale) return;
+        if (timePassedSinceGameOver == 0 || view.getGlobalScale() == MIN_GLOBAL_SCALE) return;
 
         // smooth change
 
         double timeRatio = (double) timePassedSinceGameOver / ZOOM_OUT_DURATION_NANOSEC;
         double smoothFactor = smoothnessFunction(timeRatio);
-        double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * minGlobalScale; // linear interpolation using smooth factor
+        double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * MIN_GLOBAL_SCALE; // linear interpolation using smooth factor
         view.setGlobalScale(globalScale);
     }
 
@@ -132,6 +135,48 @@ public class ControllerForView implements IControllerForView {
         double alpha = getAlphaBasedGameOver();
 
         if (alpha > 0) view.renderTimeLeft(secondsLeft, alpha);
+    }
+
+    @Override
+    public void renderGameOver() {
+        String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
+
+        view.fillScreenTextFromCenter(gameOverText, view.getCanvasWidth()/2, view.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
+        view.strokeScreenTextFromCenter(gameOverText, view.getCanvasWidth()/2, view.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
+    }
+
+    private String getGameOverText(String winText, String tieText, String lossText) {
+        IControllerForModel cfm = ControllerForModel.getInstance();
+        boolean playerKingTowerDestroyed = cfm.isPlayerKingTowerDestroyed();
+        boolean opponentKingTowerDestroyed = cfm.isOpponentKingTowerDestroyed();
+
+        // 1) edge case: both towers get destroyed at the same time
+        if (playerKingTowerDestroyed && opponentKingTowerDestroyed) return tieText;
+        
+        // 2) opponent tower is still standing while player one is destroyed 
+        if (playerKingTowerDestroyed) return lossText;
+        
+        // 3) player tower is still standing while opponent one is destroyed
+        if (opponentKingTowerDestroyed) return winText;
+
+        // 4) both towers are still standing
+        
+        byte playerTowerCount = 0;
+        if (cfm.isPlayerLeftTowerDestroyed()) playerTowerCount++;
+        if (cfm.isPlayerRightTowerDestroyed()) playerTowerCount++;
+
+        byte opponentTowerCount = 0;
+        if (cfm.isOpponentLeftTowerDestroyed()) opponentTowerCount++;
+        if (cfm.isOpponentRightTowerDestroyed()) opponentTowerCount++;
+
+        // 4.1) player has more destroyed towers than opponent (victory)
+        if (playerTowerCount > opponentTowerCount) return lossText;
+
+        // 4.2) opponent has more destroyed towers than player (loss)
+        if (playerTowerCount < opponentTowerCount) return winText;
+        
+        // 4.3) player has the same amount of destroyed towers as opponent (tie)
+        return tieText;
     }
 
     @Override
