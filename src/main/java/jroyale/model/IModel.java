@@ -12,6 +12,18 @@ public interface IModel {
     public void update(long now);
 
     public boolean isGameOver();
+    
+    public boolean isPlayerKingTowerDestroyed();
+
+    public boolean isOpponentKingTowerDestroyed();
+
+    public boolean isPlayerLeftTowerDestroyed();
+
+    public boolean isOpponentLeftTowerDestroyed();
+
+    public boolean isPlayerRightTowerDestroyed();
+
+    public boolean isOpponentRightTowerDestroyed();
 
     public int getTimeLeftSec();
 

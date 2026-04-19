@@ -75,6 +75,36 @@ public class ControllerForModel implements IControllerForModel{
     }
 
     @Override
+    public boolean isPlayerKingTowerDestroyed() {
+        return Model.getInstance().isPlayerKingTowerDestroyed();
+    }
+
+    @Override
+    public boolean isOpponentKingTowerDestroyed() {
+        return Model.getInstance().isOpponentKingTowerDestroyed();
+    }
+
+    @Override
+    public boolean isPlayerLeftTowerDestroyed() {
+        return Model.getInstance().isPlayerLeftTowerDestroyed();
+    }
+
+    @Override
+    public boolean isOpponentLeftTowerDestroyed() {
+        return Model.getInstance().isOpponentLeftTowerDestroyed();
+    }
+
+    @Override
+    public boolean isPlayerRightTowerDestroyed() {
+        return Model.getInstance().isPlayerRightTowerDestroyed();
+    }
+
+    @Override
+    public boolean isOpponentRightTowerDestroyed() {
+        return Model.getInstance().isOpponentRightTowerDestroyed();
+    }
+
+    @Override
     public int getNumRowsArena() {
         return Model.getInstance().getRowsCount();
     }

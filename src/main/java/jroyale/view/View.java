@@ -25,7 +25,7 @@ public class View implements IView {
     private static final double WH_RATIO = 607.0 / 1080;
 
     private static final double CANVAS_HEIGHT = 800;
-    private static final double CANVAS_WIDTH = CANVAS_HEIGHT * WH_RATIO;
+    private static final double CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
 
     private GraphicsContext gc;
     private Stage stage;
@@ -33,7 +33,6 @@ public class View implements IView {
 
     // scale of the entire scene
     private double globalScale = 1.0;
-    private static final double MIN_GLOBAL_SCALE = 0.92;
 
     private View() {}
 
@@ -94,18 +93,13 @@ public class View implements IView {
     }
 
     @Override
-    public double getMinGlobalScale() {
-        return MIN_GLOBAL_SCALE;
-    }
-
-    @Override
     public double getGlobalScale() {
         return globalScale;
     }
 
     @Override
     public void setGlobalScale(double globalScale) {
-        this.globalScale = Math.max(getMinGlobalScale(), globalScale);
+        this.globalScale = globalScale;
     }
 
     @Override

@@ -51,7 +51,8 @@ public class Model implements IModel {
     private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
     private List<Entity> playerEntities = new ArrayList<>();
     private List<Entity> opponentEntities = new ArrayList<>();
-    private Tower playerKingTower, opponentKingTower;
+    // towers
+    private Tower playerKingTower, opponentKingTower, playerLeftTower, opponentLeftTower, playerRightTower, opponentRightTower;
 
     private boolean gameOver = false;
 
@@ -166,10 +167,9 @@ public class Model implements IModel {
     }
 
     private void checkGameOver() {
-        if (
-            accumulator >= maxTimeNanoSec               // 1. Time Exceeded
-        ||  playerKingTower.getHitPoints() == 0         // 2. Player tower destructed
-        ||  opponentKingTower.getHitPoints() == 0       // 3. Opponent tower destructed
+        if (isTimeExceeded()
+        ||  isPlayerKingTowerDestroyed()
+        ||  isOpponentKingTowerDestroyed()
         ) {
             gameOver = true;
         }
@@ -178,6 +178,40 @@ public class Model implements IModel {
     @Override
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    private boolean isTimeExceeded() {
+        return accumulator >= maxTimeNanoSec;
+    }
+
+    @Override
+    public boolean isPlayerKingTowerDestroyed() {
+        return playerKingTower.getHitPoints() == 0;
+    }
+
+    @Override
+    public boolean isOpponentKingTowerDestroyed() {
+        return opponentKingTower.getHitPoints() == 0;
+    }
+
+    @Override
+    public boolean isPlayerLeftTowerDestroyed() {
+        return playerLeftTower.getHitPoints() == 0;
+    }
+
+    @Override
+    public boolean isOpponentLeftTowerDestroyed() {
+        return opponentLeftTower.getHitPoints() == 0;
+    }
+
+    @Override
+    public boolean isPlayerRightTowerDestroyed() {
+        return playerRightTower.getHitPoints() == 0;
+    }
+
+    @Override
+    public boolean isOpponentRightTowerDestroyed() {
+        return opponentRightTower.getHitPoints() == 0;
     }
 
     @Override
@@ -415,13 +449,17 @@ public class Model implements IModel {
     private void initTowers() {
         playerKingTower = new KingTower(Side.PLAYER);
         addTower(playerKingTower);
-        addTower(new ArcerTower(Side.PLAYER, ArcerTower.LEFT));
-        addTower(new ArcerTower(Side.PLAYER, ArcerTower.RIGHT));
+        playerLeftTower = new ArcerTower(Side.PLAYER, ArcerTower.LEFT);
+        addTower(playerLeftTower);
+        playerRightTower = new ArcerTower(Side.PLAYER, ArcerTower.RIGHT);
+        addTower(playerRightTower);
 
         opponentKingTower = new KingTower(Side.OPPONENT);
         addTower(opponentKingTower);
-        addTower(new ArcerTower(Side.OPPONENT, ArcerTower.LEFT));
-        addTower(new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT));   
+        opponentLeftTower = new ArcerTower(Side.OPPONENT, ArcerTower.LEFT);
+        addTower(opponentLeftTower);
+        opponentRightTower = new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT);
+        addTower(opponentRightTower);   
     }
 
     private void addTower(Tower tower) {

@@ -27,8 +27,6 @@ public interface IView {
 
     public double getDy();
 
-    public double getMinGlobalScale();
-
     public double getGlobalScale();
 
     public void setGlobalScale(double globalScale);

@@ -44,6 +44,8 @@ public interface IControllerForView {
 
     public void renderTimeLeft(int secondsLeft);
 
+    public void renderGameOver();
+    
     public int getSelectedCol();
 
     public int getSelectedRow();
