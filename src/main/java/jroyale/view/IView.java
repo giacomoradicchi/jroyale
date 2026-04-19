@@ -27,6 +27,12 @@ public interface IView {
 
     public double getDy();
 
+    public double getMinGlobalScale();
+
+    public double getGlobalScale();
+
+    public void setGlobalScale(double globalScale);
+
     public double getWorldMapTopLeftCornerX();
 
     public double getWorldMapTopLeftCornerY();
@@ -39,9 +45,9 @@ public interface IView {
 
     public double getScreenMapHeight();
 
-    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height);
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha);
 
-    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height);
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha);
 
     public void renderArena();
 
@@ -49,7 +55,7 @@ public interface IView {
 
     public void renderWorldShadow(double centreX, double centreY, double shadowRadius);
 
-    public void renderTimeLeft(int secondsLeft);
+    public void renderTimeLeft(int secondsLeft, double alpha);
 
     public void startDragPlacementPreview();
 
@@ -69,11 +75,11 @@ public interface IView {
 
     public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth);
 
-    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir);
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha);
 
-    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color);
+    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double alpha);
 
-    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth);
+    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth, double alpha);
 
     public void setSelectedCard(int cardIndex);
 

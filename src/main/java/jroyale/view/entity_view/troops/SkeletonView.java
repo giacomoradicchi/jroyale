@@ -86,7 +86,7 @@ public abstract class SkeletonView extends TroopView {
         
         
 
-        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
     }
 
     @Override

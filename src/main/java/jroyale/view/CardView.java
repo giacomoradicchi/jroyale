@@ -116,7 +116,7 @@ public class CardView extends StackPane {
         });
     }
 
-    public void render(Image icon, Image outline) {
+    public void render(Image icon, Image outline, double alpha) {
         if (!isVisible()) return;
 
         // Calculate the current visual center by summing Layout + Translate
@@ -127,10 +127,10 @@ public class CardView extends StackPane {
         
 
         // 1. Draw Icon
-        v.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight());
+        v.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
         
         // 2. Draw Outline/Frame
-        v.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight());
+        v.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
 
         // Debug: Red rect should perfectly align with the card's interactive area
         //v.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);

@@ -11,6 +11,8 @@ public interface IModel {
 
     public void update(long now);
 
+    public boolean isGameOver();
+
     public int getTimeLeftSec();
 
     public int getRowsCount();

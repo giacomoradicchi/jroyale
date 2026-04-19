@@ -22,6 +22,13 @@ public class ControllerForView implements IControllerForView {
 
     private int lastSelectedColumnIndex = -1;
     private int lastSelectedRowIndex = -1;
+    private long initialTimeGameOver = -1;
+    private long timePassedSinceGameOver;
+    private double initialGlobalScaleSinceGameOver;
+
+    private static final long FADE_OUT_DURATION_NANOSEC = 250_000_000L;
+    private static final long ZOOM_OUT_DURATION_NANOSEC = 7_000_000_000L;
+    private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
 
     private ControllerForView() {
         // empty
@@ -54,6 +61,39 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void updateView(long now) {
         view.update(now);
+
+        if (!ControllerForModel.getInstance().isGameOver()) return;
+
+        //
+        // game over
+        //
+
+        if (initialTimeGameOver == -1) {
+            initialTimeGameOver = now;
+            initialGlobalScaleSinceGameOver = View.getInstance().getGlobalScale();
+            resetLastSelectedTile();
+        }
+
+        timePassedSinceGameOver = now - initialTimeGameOver;
+        updateGlobalScale();
+    }
+
+    private void updateGlobalScale() {
+        IView view = View.getInstance();
+        double minGlobalScale = view.getMinGlobalScale();
+        // returns if has passed no time since game over or view.globalScale is already at its minimum
+        if (timePassedSinceGameOver == 0 || view.getGlobalScale() == minGlobalScale) return;
+
+        // smooth change
+
+        double timeRatio = (double) timePassedSinceGameOver / ZOOM_OUT_DURATION_NANOSEC;
+        double smoothFactor = smoothnessFunction(timeRatio);
+        double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * minGlobalScale; // linear interpolation using smooth factor
+        view.setGlobalScale(globalScale);
+    }
+
+    private boolean isGameOver() {
+        return initialTimeGameOver != -1;
     }
 
     @Override
@@ -89,7 +129,9 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderTimeLeft(int secondsLeft) {
-        view.renderTimeLeft(secondsLeft);
+        double alpha = getAlphaBasedGameOver();
+
+        if (alpha > 0) view.renderTimeLeft(secondsLeft, alpha);
     }
 
     @Override
@@ -109,7 +151,8 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void handleMouseSelectedTile(int row, int col) {
-
+        if (isGameOver()) return;
+        
         // 1. Valid Position 
         if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
             if (!isPositionValid()) View.getInstance().startDragPlacementPreview();
@@ -144,7 +187,6 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void handleMouseReleased() {
-        // TODO: drop selected troop
         resetLastSelectedTile();
         View.getInstance().stopDragPlacementPreview();
     }
@@ -156,7 +198,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public boolean shouldRenderDragPlacementPreview() {
-        return isPositionValid();
+        return !isGameOver() && isPositionValid();
     }
 
     @Override
@@ -166,7 +208,28 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
-        View.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir);
+        double alpha = getAlphaBasedGameOver();
+        if (alpha > 0) View.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
+    }
+
+    private double getAlphaBasedGameOver() {
+        // returns the alpha value based on time passed since game over
+        if (initialTimeGameOver == -1) return 1;
+
+        if (timePassedSinceGameOver >= FADE_OUT_DURATION_NANOSEC) return 0;
+
+        return smoothnessFunction((double) timePassedSinceGameOver / FADE_OUT_DURATION_NANOSEC);
+    }
+
+    private double smoothnessFunction(double x) {
+        // this function was built for x in [0, 1]
+
+        // edge cases
+        if (x <= 0) return 1;  
+        if (x >= 1) return 0;
+
+        // goes smoothly from 1 to 0 (linearly if SMOOTHNESS_CURVE = 1)
+        return 1.0 / (1.0 + Math.pow((1-x)/x, - Math.abs(SMOOTHNESS_CURVE))); 
     }
 
     private boolean isPositionValid() {
@@ -185,6 +248,8 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void setSelectedPlayerCard(int cardIndex) {
+        if (isGameOver()) return;
+
         ControllerForModel.getInstance().setSelectedPlayerCard(cardIndex);
     }
 

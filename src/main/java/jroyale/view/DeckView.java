@@ -43,20 +43,20 @@ public class DeckView {
         
     }
     
-    public void renderPlayerDeck(EntityType type1, byte elixirCost1, EntityType type2, byte elixirCost2, EntityType type3, byte elixirCost3, EntityType type4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
-        renderBackDeck();
+    public void renderPlayerDeck(EntityType type1, byte elixirCost1, EntityType type2, byte elixirCost2, EntityType type3, byte elixirCost3, EntityType type4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
+        renderBackDeck(alpha);
         
         cards[0].setType(type1).setElixirCost(elixirCost1);
         cards[1].setType(type2).setElixirCost(elixirCost2);
         cards[2].setType(type3).setElixirCost(elixirCost3);
         cards[3].setType(type4).setElixirCost(elixirCost4);
 
-        renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir);
+        renderElixirBar(elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
 
         // first render non selected card 
         for (int i = 0; i < cards.length; i++) {
             if (i != selectedCardIndex) {
-                cards[i].render(EntityViewBinder.getInstance().getViewInstance(cards[i].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+                cards[i].render(EntityViewBinder.getInstance().getViewInstance(cards[i].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL, alpha);
 
                 
                 double dropWidth = cards[0].getWidth() * 0.35;
@@ -64,7 +64,7 @@ public class DeckView {
                 double dropCenterX = cards[i].getLayoutX() + cards[i].getWidth()/2;
                 double dropCenterY = cards[i].getLayoutY() + cards[i].getHeight() - dropHeight/2;
 
-                renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[i].getElixirCost());
+                renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[i].getElixirCost(), alpha);
 
                 
 
@@ -74,14 +74,14 @@ public class DeckView {
         // then render selected card (has to be on top of the others)
         if (selectedCardIndex != -1 && cards[selectedCardIndex].isVisible()) {
 
-            cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL);
+            cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL, alpha);
 
             double dropWidth = cards[0].getWidth() * 0.35;
             double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
             double dropCenterX = cards[selectedCardIndex].getLayoutX() + cards[selectedCardIndex].getTranslateX() + cards[selectedCardIndex].getWidth()/2;
             double dropCenterY = cards[selectedCardIndex].getLayoutY() + cards[selectedCardIndex].getTranslateY() + cards[selectedCardIndex].getHeight() - dropHeight/2;
 
-            renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[selectedCardIndex].getElixirCost());
+            renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[selectedCardIndex].getElixirCost(), alpha);
 
             
         }
@@ -89,13 +89,14 @@ public class DeckView {
         
     }
 
-    private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir) {
+    private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir, double alpha) {
         View.getInstance().renderScreenImage(
             ELIXIR_DROP_IMAGE, 
             dropCenterX, 
             dropCenterY, 
             dropWidth, 
-            dropHeight
+            dropHeight, 
+            alpha
         ); 
 
         // render counter elixir
@@ -104,7 +105,8 @@ public class DeckView {
             dropCenterX, 
             dropCenterY, 
             FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
-            Color.WHITE
+            Color.WHITE, 
+            alpha
         );
 
         View.getInstance().strokeScreenTextFromCenter(
@@ -113,12 +115,13 @@ public class DeckView {
             dropCenterY, 
             FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
             Color.BLACK,
-            1
+            1,
+            alpha
         );
     }
 
 
-    private void renderElixirBar(byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
+    private void renderElixirBar(byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
         // elixir
         final double CANVAS_WIDTH = View.getInstance().getCanvasWidth();
         final double CANVAS_HEIGHT = View.getInstance().getCanvasHeight();
@@ -142,7 +145,7 @@ public class DeckView {
 
         // Draw the empty (background) health bar
         view.fillScreenRoundedRect(centerX, centerY, barWidth, barHeight,
-                barHeight / 2, barHeight / 2, 1, cFillDark);
+                barHeight / 2, barHeight / 2, alpha, cFillDark);
 
         // Calculate the filled portion width based on current health percentage
         double percentage   = (double) elixirLeft / maxElixir;
@@ -153,15 +156,15 @@ public class DeckView {
         
         double dx = 1.0 / maxElixir * barWidth;
         double elixirProgressWidth = dx * elixirChargeTimeProgress;
-        view.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, 1, PLAYER_FILL_PROGRESS);
+        view.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, alpha, PLAYER_FILL_PROGRESS);
 
         // Draw the filled (current elixir) portion of the bar
         view.fillScreenRoundedRect(ElixirBarCenterX, centerY, elixirWidth, barHeight,
-                barHeight / 2, barHeight / 2, 1, cFill);
+                barHeight / 2, barHeight / 2, alpha, cFill);
 
         // Draw the border around the full elixir bar
         view.strokeScreenRoundedRect(centerX, centerY, barWidth, barHeight,
-                barHeight / 2, barHeight / 2, 1.5, 1, cStroke);
+                barHeight / 2, barHeight / 2, 1.5, alpha, cStroke);
 
 
         for (int i = 1; i < maxElixir; i++) {
@@ -171,7 +174,7 @@ public class DeckView {
                 centerY - barHeight/2, 
                 x, 
                 centerY + barHeight/2, 
-                1, 
+                alpha, 
                 cStroke, 
                 1.5
             );
@@ -183,10 +186,10 @@ public class DeckView {
         double dropCenterX = centerX - barWidth/2;
         double dropCenterY = centerY;
 
-        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft);
+        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft, alpha);
     }
 
-    private void renderBackDeck() {
+    private void renderBackDeck(double alpha) {
 
         final double CANVAS_WIDTH = View.getInstance().getCanvasWidth();
         final double CANVAS_HEIGHT = View.getInstance().getCanvasHeight();
@@ -199,7 +202,8 @@ public class DeckView {
             CANVAS_WIDTH/2, 
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
             DECK_WIDTH, 
-            DECK_HEIGHT
+            DECK_HEIGHT,
+            alpha
         );
     }
 

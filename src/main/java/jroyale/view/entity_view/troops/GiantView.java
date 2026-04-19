@@ -78,13 +78,13 @@ public class GiantView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+        View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
             key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
-            View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height);
+            View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
         }
         
     }
