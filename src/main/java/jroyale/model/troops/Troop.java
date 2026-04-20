@@ -206,7 +206,10 @@ public abstract class Troop extends Entity {
     }
 
     protected boolean selectClosestEnemy() {
+
         Troop closestEnemy = EnemyTargetSelector.getInstance().getClosestEnemyInVisionRange(this);
+
+        
 
         if (closestEnemy == null) { // this means it was not found any enemy in the troop range
             return false;
@@ -296,57 +299,28 @@ public abstract class Troop extends Entity {
         double dy = position.getY() - other.getY();
         double currentDistance = Math.sqrt(dx * dx + dy * dy);
 
-        // Evitiamo divisioni per zero se le entità sono perfettamente sovrapposte
+        // avoiding zero divisions
         if (currentDistance == 0) return;
 
         double targetDistance = getCollisionRadius() + other.getCollisionRadius();
 
-        // Se non si stanno toccando, non fare nulla
+        // return if not touching
         if (currentDistance >= targetDistance) return;
 
-        // Di quanto dobbiamo spostarle in totale?
+        // overlap between circles
         double overlap = targetDistance - currentDistance;
 
-        // Normalizziamo il vettore direzione (dx, dy)
+        // normalizing direction vector
         double nx = dx / currentDistance;
         double ny = dy / currentDistance;
 
-        // Calcoliamo i pesi basati sulla massa
-        // Se interpFactor è 0.5, si muovono uguali. 
-        // Se la mia massa è enorme, interpFactor si avvicina a 0 (io non mi muovo, si muove l'altro)
+        // calculating weights based on mass
+        double thisMoveWeight = getMoveWeight(other.getMass());
+        if (thisMoveWeight == -1) return; // they both cannot move
 
-        double thisMoveWeight;  // Più l'altro è pesante, più mi muovo io
-        double otherMoveWeight;    // Più io sono pesante, più si muove l'altro
+        double otherMoveWeight = 1 - thisMoveWeight;
 
-        // 1. Gestione Masse Infinite (Immobili)
-        if (getMass() == Double.POSITIVE_INFINITY && other.getMass() == Double.POSITIVE_INFINITY) {
-            return; // Entrambi immobili, non si sposta nessuno
-        } else if (other.getMass() == Double.POSITIVE_INFINITY) {
-            thisMoveWeight = 1.0;
-            otherMoveWeight = 0.0;
-        } else if (getMass() == Double.POSITIVE_INFINITY) {
-            thisMoveWeight = 0.0;
-            otherMoveWeight = 1.0;
-        } else {
-            // 2. Calcolo basato sul Momentum
-            double thisP = getMass() * speed.magnitude();
-            double otherP = other.getMass() * other.getSpeed().magnitude();
-            double totalP = thisP + otherP;
-
-            if (totalP > 0) {
-                // Chi ha meno momentum subisce più spostamento
-                thisMoveWeight = otherP / totalP;
-                otherMoveWeight = thisP / totalP;
-            } else {
-                // 3. Fallback: Se entrambi sono fermi, usa solo la massa
-                double totalMass = getMass() + other.getMass();
-                thisMoveWeight = other.getMass() / totalMass;
-                otherMoveWeight = getMass() / totalMass;
-            }
-        }
-        
-
-        // Applichiamo lo spostamento
+        // appling shift
         this.shiftPosition(
             nx * overlap * thisMoveWeight,
             ny * overlap * thisMoveWeight
@@ -363,6 +337,33 @@ public abstract class Troop extends Entity {
 
         if (other instanceof Troop) 
             ((Troop) other).slideAlong(this, otherMoveWeight/2);
+    }
+
+    private double getMoveWeight(double otherMass) {
+        // returns a value in [0, 1] that represent the weight of this entity's mass in relation to otherMass 
+        // or -1 if they both shouldn't move (edge case)
+
+        // 1. both unmovable
+        if (getMass() == Double.POSITIVE_INFINITY && otherMass == Double.POSITIVE_INFINITY) {
+            return -1; 
+        } 
+
+        // 2. other is unmovable
+        if (otherMass == Double.POSITIVE_INFINITY) {
+            return 1.0; // max weight, other doesn't move
+        }
+        // 3. this is unmovable 
+        if (getMass() == Double.POSITIVE_INFINITY) {
+            return 0.0; // min weight, this doesn't move
+        } 
+        // 4. both moveable
+        double thisMass = getMass();
+        double totalMass = thisMass + otherMass;
+
+        if (totalMass > 0) return otherMass / totalMass;
+
+        // last case: they both have no mass, so their weight is the same
+        return 0.5;
     }
 
     private void setTangentSpeed(double dx, double dy, double turning_speed) {

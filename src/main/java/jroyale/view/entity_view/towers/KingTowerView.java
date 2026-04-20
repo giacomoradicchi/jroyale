@@ -65,7 +65,7 @@ public class KingTowerView extends TowerView {
 
     @Override
     public Image getOpponentTowerImage() {
-        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE));
+        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE));
         // TODO: farlo più robusto
         temp = ImageUtils.crop(temp, 0, 0, (int) temp.getWidth(), (int) temp.getHeight() - 30);
 

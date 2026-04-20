@@ -30,7 +30,7 @@ public class ControllerForView implements IControllerForView {
     private double initialGlobalScaleSinceGameOver;
 
     private static final long FADE_OUT_DURATION_NANOSEC = 250_000_000L;
-    private static final long ZOOM_OUT_DURATION_NANOSEC = 7_000_000_000L;
+    private static final long ZOOM_OUT_DURATION_NANOSEC = 2_000_000_000L;
     private static final double MIN_GLOBAL_SCALE = 0.92;
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
 

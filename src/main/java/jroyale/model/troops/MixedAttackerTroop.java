@@ -20,6 +20,7 @@ public abstract class MixedAttackerTroop extends Troop {
     @Override
     protected void updateTarget() {
         
+        // searching for a new target: first search a troop in range. if not found, go to the closest tower
         if (!selectClosestEnemy()) {
             selectClosestTower();
         }
