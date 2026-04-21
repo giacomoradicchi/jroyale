@@ -81,7 +81,6 @@ public abstract class MainGUI implements IMainGUI {
     }
 
     public void clearWindow() {
-        // clears canvas
         gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
     }
 
@@ -115,27 +114,27 @@ public abstract class MainGUI implements IMainGUI {
             (width, height) * globalScale as the dimension of the image.
     */
 
-    private double fromWorldToScreenX(double coordX) {
+    protected double fromWorldToScreenX(double coordX) {
         return centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(coordX));
     }
 
-    private double fromWorldToScreenY(double coordY) {
+    protected double fromWorldToScreenY(double coordY) {
         return centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(coordY));
     }
 
-    private double topLeftToCenterCanvasX(double coordX) {
+    protected double topLeftToCenterCanvasX(double coordX) {
         return coordX - getCanvasWidth()/2;
     }
 
-    private double topLeftToCenterCanvasY(double coordY) {
+    protected double topLeftToCenterCanvasY(double coordY) {
         return coordY - getCanvasHeight()/2;
     }
 
-    private double centerToTopLeftCanvasX(double coordX) {
+    protected double centerToTopLeftCanvasX(double coordX) {
         return coordX + getCanvasWidth()/2;
     }
 
-    private double centerToTopLeftCanvasY(double coordY) {
+    protected double centerToTopLeftCanvasY(double coordY) {
         return coordY + getCanvasHeight()/2;
     }
 

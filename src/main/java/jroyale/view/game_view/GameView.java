@@ -1,9 +1,19 @@
 package jroyale.view.game_view;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import jroyale.controller.ControllerForView;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.ArenaView;
+import jroyale.view.DeckView;
+import jroyale.view.DragPlacementPreview;
+import jroyale.view.EntityViewBinder;
 import jroyale.view.MainGUI;
+import jroyale.view.MouseManager;
+import jroyale.view.TimeLeftRenderer;
 
 public class GameView extends MainGUI implements IGameView {
     
@@ -11,7 +21,175 @@ public class GameView extends MainGUI implements IGameView {
 
     protected GameView() {}
 
+    // instance methods
+
+    @Override
+    public void init() {
+        ArenaView.getInstance().init(
+            ControllerForView.getInstance().getNumRowsArena(),
+            ControllerForView.getInstance().getNumColsArena()
+        );
+
+        EntityViewBinder.getInstance().init();
+        MouseManager.getInstance().init(stage.getScene());
+        DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
+    }
+
+    @Override
+    public void update(long now) {
+        clearWindow();
+        ArenaView.getInstance().update();
+        DragPlacementPreview.getInstance().update(now);
+    }
+
+    @Override
+    public double getDx() {
+        return ArenaView.getInstance().getDx();
+    }
+
+    @Override
+    public double getDy() {
+        return ArenaView.getInstance().getDy();
+    }
+
+    @Override
+    public double getScreenMapTopLeftCornerX() {
+        return fromWorldToScreenX(ArenaView.getInstance().getMapBounds().getMinX());
+    }
+
+    @Override
+    public double getScreenMapTopLeftCornerY() {
+        return fromWorldToScreenY(ArenaView.getInstance().getMapBounds().getMinY());
+    }
+
+    @Override
+    public double getScreenMapWidth() {
+        return ArenaView.getInstance().getMapBounds().getWidth() * globalScale;
+    }
+
+    @Override
+    public double getScreenMapHeight() {
+        return ArenaView.getInstance().getMapBounds().getHeight() * globalScale;
+    }
+
+    @Override
+    public double getWorldMapTopLeftCornerX() {
+        return ArenaView.getInstance().getMapBounds().getMinX();
+    }
+
+    @Override
+    public double getWorldMapTopLeftCornerY() {
+        return ArenaView.getInstance().getMapBounds().getMinY();
+    }
+
+    @Override
+    public void renderArena() {
+        ArenaView.getInstance().renderArena(false);
+    }
+
+    @Override
+    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
+        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side);
+    }
+
+    @Override
+    public void renderWorldShadow(double centerX, double centerY, double shadowRadius) {
+        renderScreenShadow(
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            shadowRadius * globalScale
+        );
+    }
+
+    private void renderScreenShadow(double centreX, double centreY, double shadowRadius) {
+        // Definiamo il gradiente radiale
+        gc.save();
+        RadialGradient gradient = new RadialGradient(
+            0,      // focusAngle
+            0,      // focusDistance
+            centreX, // centerX (coordinata assoluta sul canvas)
+            centreY, // centerY (coordinata assoluta sul canvas)
+            shadowRadius, // radius (metà del diametro)
+            false,  // proportional: false perché usiamo i pixel esatti
+            null,   // cycleMethod
+            new Stop(0, new Color(0, 0, 0, 0.7)),              // Centro opaco
+            new Stop(1, Color.TRANSPARENT)       // Bordo trasparente
+        );
+
+        gc.setFill(gradient);
+        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, shadowRadius*2, shadowRadius*2); // Disegna il cerchio
+        gc.restore();
+    }
+
+    @Override
+    public void renderTimeLeft(int secondsLeft, double alpha) {
+        TimeLeftRenderer.getInstance().renderTimeLeft(secondsLeft, alpha);
+    }
+
+    private int getColFromMouseX(double mouseX) {
+        return (int) Math.floor(
+            (mouseX - getScreenMapTopLeftCornerX()) / (getDx() * globalScale)
+        ); 
+    }
+
+    private int getRowFromMouseY(double mouseY) {
+        return (int) Math.floor(
+            (mouseY - getScreenMapTopLeftCornerY()) / (getDy() * globalScale)
+        ); 
+    }
+
+    @Override
+    public void startDragPlacementPreview() {
+        DeckView.getInstance().setVisibleSelectedCard(false);
+        DragPlacementPreview.getInstance().startAnimation();
+    }
+
+    @Override
+    public void renderDragPlacementPreview(double centreX, double centreY) {
+        DragPlacementPreview.getInstance().render(centreX, centreY);
+    }
+
+    @Override
+    public void stopDragPlacementPreview() {
+        DeckView.getInstance().setVisibleSelectedCard(true);
+        DragPlacementPreview.getInstance().stopAnimation();
+    }
+
+    @Override
+    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
+        DeckView.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
+    }
+
+    @Override
+    public void setSelectedCard(int cardIndex) {
+        ControllerForView.getInstance().setSelectedPlayerCard(cardIndex);
+    }
+
+    @Override
+    public void processOnMousePressed(double x, double y) {
+        ControllerForView.getInstance().handleMouseSelectedTile(
+            getRowFromMouseY(y),
+            getColFromMouseX(x)
+        );
+    }
+
+    @Override
+    public void processOnMouseDragged(double x, double y) {
+        ControllerForView.getInstance().handleMouseSelectedTile(
+            getRowFromMouseY(y),
+            getColFromMouseX(x)
+        );
+    }
+
+    @Override
+    public void processOnMouseReleased() {
+        ControllerForView.getInstance().dropSelectedPlayerCardOnLastMousePos();
+
+        ControllerForView.getInstance().handleMouseReleased();
+    }
+
     // static methods
+
     public static IGameView getInstance() {
         if (instance == null) {
             instance = new GameView();
@@ -20,138 +198,4 @@ public class GameView extends MainGUI implements IGameView {
         return instance;
     }
 
-    @Override
-    public void init() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'init'");
-    }
-
-    @Override
-    public void update(long now) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
-    @Override
-    public double getDx() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDx'");
-    }
-
-    @Override
-    public double getDy() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDy'");
-    }
-
-    @Override
-    public double getWorldMapTopLeftCornerX() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWorldMapTopLeftCornerX'");
-    }
-
-    @Override
-    public double getWorldMapTopLeftCornerY() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWorldMapTopLeftCornerY'");
-    }
-
-    @Override
-    public double getScreenMapTopLeftCornerX() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScreenMapTopLeftCornerX'");
-    }
-
-    @Override
-    public double getScreenMapTopLeftCornerY() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScreenMapTopLeftCornerY'");
-    }
-
-    @Override
-    public double getScreenMapWidth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScreenMapWidth'");
-    }
-
-    @Override
-    public double getScreenMapHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScreenMapHeight'");
-    }
-
-    @Override
-    public void renderArena() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderArena'");
-    }
-
-    @Override
-    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius,
-            double angleDirection, int currentFrame, State state, Side side, EntityType type) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderEntity'");
-    }
-
-    @Override
-    public void renderWorldShadow(double centreX, double centreY, double shadowRadius) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderWorldShadow'");
-    }
-
-    @Override
-    public void renderTimeLeft(int secondsLeft, double alpha) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderTimeLeft'");
-    }
-
-    @Override
-    public void startDragPlacementPreview() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startDragPlacementPreview'");
-    }
-
-    @Override
-    public void renderDragPlacementPreview(double centreX, double centreY) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderDragPlacementPreview'");
-    }
-
-    @Override
-    public void stopDragPlacementPreview() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stopDragPlacementPreview'");
-    }
-
-    @Override
-    public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2,
-            EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft,
-            double elixirChargeTimeProgress, byte maxElixir, double alpha) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'renderPlayerDeck'");
-    }
-
-    @Override
-    public void setSelectedCard(int cardIndex) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSelectedCard'");
-    }
-
-    @Override
-    public void processOnMousePressed(double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMousePressed'");
-    }
-
-    @Override
-    public void processOnMouseDragged(double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseDragged'");
-    }
-
-    @Override
-    public void processOnMouseReleased() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseReleased'");
-    }
 }
