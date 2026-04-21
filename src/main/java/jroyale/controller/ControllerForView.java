@@ -3,6 +3,7 @@ package jroyale.controller;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jroyale.utils.GameData;
+import jroyale.controller.binders.EntityViewBinder;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -57,14 +58,14 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void initView() {
+    public void initGameView() {
         initTroopsFramesPerDirection();
         gameView.init();
 
     }
 
     @Override
-    public void updateView(long now) {
+    public void updateGameView(long now) {
         gameView.update(now);
 
         if (!controllerForModel.isGameOver()) return;
@@ -127,7 +128,7 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state,
             Side side, EntityType type) {
-        gameView.renderEntity(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side, type);
+        gameView.renderEntity(EntityViewBinder.getInstance().getViewInstance(type), centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side);
     }
 
     @Override

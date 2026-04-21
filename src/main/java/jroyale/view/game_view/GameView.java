@@ -11,7 +11,7 @@ import jroyale.view.MainGUI;
 import jroyale.view.MouseManager;
 import jroyale.view.game_view.arena.ArenaView;
 import jroyale.view.game_view.deck.DeckView;
-import jroyale.view.game_view.entity_view.EntityViewBinder;
+import jroyale.view.game_view.entity_view.EntityView;
 import jroyale.view.game_view.ui.DragPlacementPreview;
 import jroyale.view.game_view.ui.TimeLeftRenderer;
 
@@ -30,7 +30,6 @@ public class GameView extends MainGUI implements IGameView {
             ControllerForView.getInstance().getNumColsArena()
         );
 
-        EntityViewBinder.getInstance().init();
         MouseManager.getInstance().init(stage.getScene());
         DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
     }
@@ -88,8 +87,8 @@ public class GameView extends MainGUI implements IGameView {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type) {
-        EntityViewBinder.getInstance().getViewInstance(type).render(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side);
+    public void renderEntity(EntityView entity, double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side) {
+        entity.render(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side);
     }
 
     @Override

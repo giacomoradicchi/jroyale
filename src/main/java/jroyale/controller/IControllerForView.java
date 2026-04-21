@@ -10,9 +10,9 @@ public interface IControllerForView {
     
     public void openWindow(Stage stage);
 
-    public void initView();
+    public void initGameView();
 
-    public void updateView(long now);
+    public void updateGameView(long now);
 
     public int getNumRowsArena();
 

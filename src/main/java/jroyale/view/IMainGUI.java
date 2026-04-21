@@ -10,6 +10,8 @@ public interface IMainGUI {
 
     public void openWindow(Stage stage);
 
+    public void closeWindow();
+
     public void init();
 
     public void update(long now);

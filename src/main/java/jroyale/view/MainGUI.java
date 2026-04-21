@@ -26,6 +26,7 @@ public abstract class MainGUI implements IMainGUI {
     // scale of the entire scene
     protected double globalScale = 1.0;
 
+    @Override
     public void openWindow(Stage stage) {
         Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         Pane root = new Pane(canvas);
@@ -38,6 +39,11 @@ public abstract class MainGUI implements IMainGUI {
         stage.setTitle("JRoyale");
         stage.show();
         handleMouseEvents();
+    }
+
+    @Override
+    public void closeWindow() {
+        stage.close();
     }
 
     private void handleMouseEvents() {

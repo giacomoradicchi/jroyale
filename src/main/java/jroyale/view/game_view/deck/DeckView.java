@@ -6,7 +6,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.view.FontManager;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
-import jroyale.view.game_view.entity_view.EntityViewBinder;
+import jroyale.controller.binders.EntityViewBinder;
 import jroyale.utils.ImageUtils;
 
 public class DeckView {

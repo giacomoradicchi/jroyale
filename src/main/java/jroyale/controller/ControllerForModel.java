@@ -56,7 +56,7 @@ public class ControllerForModel implements IControllerForModel{
         Model.getInstance().init(maxTimeSec);
 
         initTroopsAnimationSteps();
-        
+        CardBinder.getInstance();
     }
 
     @Override
