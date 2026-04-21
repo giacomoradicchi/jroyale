@@ -7,19 +7,19 @@ import jroyale.controller.ControllerForView;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.ArenaView;
-import jroyale.view.DeckView;
-import jroyale.view.DragPlacementPreview;
-import jroyale.view.EntityViewBinder;
 import jroyale.view.MainGUI;
 import jroyale.view.MouseManager;
-import jroyale.view.TimeLeftRenderer;
+import jroyale.view.game_view.arena.ArenaView;
+import jroyale.view.game_view.deck.DeckView;
+import jroyale.view.game_view.entity_view.EntityViewBinder;
+import jroyale.view.game_view.ui.DragPlacementPreview;
+import jroyale.view.game_view.ui.TimeLeftRenderer;
 
 public class GameView extends MainGUI implements IGameView {
     
     private static IGameView instance = null;
 
-    protected GameView() {}
+    private GameView() {}
 
     // instance methods
 

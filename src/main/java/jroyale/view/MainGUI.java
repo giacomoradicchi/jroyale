@@ -60,27 +60,32 @@ public abstract class MainGUI implements IMainGUI {
         });
     }
 
+    @Override
     public void addToRoot(Node node) {
         root.getChildren().add(node);
     }
 
+    @Override
     public int getCanvasWidth() {
         return CANVAS_WIDTH;
     }
 
+    @Override
     public int getCanvasHeight() {
         return CANVAS_HEIGHT;
     }
 
+    @Override
     public double getGlobalScale() {
         return globalScale;
     }
 
+    @Override
     public void setGlobalScale(double globalScale) {
         this.globalScale = globalScale;
     }
 
-    public void clearWindow() {
+    protected void clearWindow() {
         gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
     }
 
@@ -88,6 +93,7 @@ public abstract class MainGUI implements IMainGUI {
     // begin renderWorldImage methods:
     //
 
+    @Override
     public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
         renderScreenImage(
             image, 
@@ -142,6 +148,7 @@ public abstract class MainGUI implements IMainGUI {
     // end renderWorldImage methods:
     //
 
+    @Override
     public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
         gc.save();
         gc.setGlobalAlpha(alpha);
@@ -155,6 +162,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
         fillScreenRoundedRect(
             fromWorldToScreenX(centerX), 
@@ -168,6 +176,7 @@ public abstract class MainGUI implements IMainGUI {
         );
     }
 
+    @Override
     public void strokeWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
         strokeScreenRoundedRect(
             fromWorldToScreenX(centerX), 
@@ -182,6 +191,7 @@ public abstract class MainGUI implements IMainGUI {
         );
     }
 
+    @Override
     public void fillScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
         gc.save();
         gc.setGlobalAlpha(alpha);
@@ -197,6 +207,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void strokeScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
         gc.save();
         gc.setGlobalAlpha(alpha);
@@ -213,6 +224,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
         strokeScreenLine(
             fromWorldToScreenX(x1), 
@@ -225,6 +237,7 @@ public abstract class MainGUI implements IMainGUI {
         );
     }
 
+    @Override
     public void strokeScreenLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
         gc.save();
         gc.setGlobalAlpha(alpha);
@@ -234,6 +247,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double alpha) {
         gc.save();
         gc.setFont(font);
@@ -248,6 +262,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth, double alpha) {
         gc.save();
         gc.setFont(font);
@@ -263,6 +278,7 @@ public abstract class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
         gc.save();
 
@@ -279,18 +295,5 @@ public abstract class MainGUI implements IMainGUI {
         // restoring previous settings
         gc.restore();
     }
-
-
-    // abstract methods 
-    
-    public abstract void init();
-
-    public abstract void update(long now);
-    
-    public abstract void processOnMousePressed(double x, double y);
-
-    public abstract void processOnMouseDragged(double x, double y);
-    
-    public abstract void processOnMouseReleased();
     
 }
