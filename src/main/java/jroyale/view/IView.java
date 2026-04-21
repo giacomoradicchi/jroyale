@@ -23,13 +23,13 @@ public interface IView {
 
     public void addToRoot(Node node);
 
-    public double getDx();
-
-    public double getDy();
-
     public double getGlobalScale();
 
     public void setGlobalScale(double globalScale);
+
+    public double getDx();
+
+    public double getDy();
 
     public double getWorldMapTopLeftCornerX();
 

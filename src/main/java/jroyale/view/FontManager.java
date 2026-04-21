@@ -1,19 +1,29 @@
 package jroyale.view;
 
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class FontManager {
     
     private static FontManager instance = null;
 
+    private static final double REFERENCE_FONT_SIZE = 10;
+
     private Font regular, bold; 
+    private final double regularReferenceHeight, boldReferenceHeight;
 
-    private FontManager() {}
+    private FontManager() {
+        regular = Font.loadFont(getClass().getResourceAsStream("/jroyale/fonts/Clash_Regular.otf"), REFERENCE_FONT_SIZE);
+        bold = Font.loadFont(getClass().getResourceAsStream("/jroyale/fonts/Clash_Bold.otf"), REFERENCE_FONT_SIZE); 
 
-    public void init() {
-        regular = Font.loadFont(getClass().getResourceAsStream("/jroyale/fonts/Clash_Regular.otf"), 0);
-        bold = Font.loadFont(getClass().getResourceAsStream("/jroyale/fonts/Clash_Bold.otf"), 0); 
+        Text referenceText = new Text("A"); // it will be used as reference to compute font height
+        referenceText.setFont(regular);
+        regularReferenceHeight = referenceText.getBoundsInLocal().getHeight();
+
+        referenceText.setFont(bold);
+        boldReferenceHeight = referenceText.getBoundsInLocal().getHeight();
     }
+
 
     public Font getRegularFont(double size) {
         return Font.font(regular.getFamily(), size);
@@ -21,6 +31,14 @@ public class FontManager {
 
     public Font getBoldFont(double size) {
         return Font.font(bold.getFamily(), size);
+    }
+
+    public double getRegularFontSize(double targetHeight) {
+        return REFERENCE_FONT_SIZE * targetHeight / regularReferenceHeight;
+    }
+
+    public double getBoldFontSize(double targetHeight) {
+        return REFERENCE_FONT_SIZE * targetHeight / boldReferenceHeight;
     }
 
     // static methods

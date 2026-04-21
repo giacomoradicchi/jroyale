@@ -1,9 +1,7 @@
 package jroyale.controller;
 
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import jroyale.model.Model;
 import jroyale.utils.GameData;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
@@ -22,6 +20,7 @@ public class ControllerForView implements IControllerForView {
     private static ControllerForView instance;
 
     private IView view;
+    private IControllerForModel controllerForModel;
 
     private int lastSelectedColumnIndex = -1;
     private int lastSelectedRowIndex = -1;
@@ -52,6 +51,7 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void openWindow(Stage stage) {
         view = View.getInstance();
+        controllerForModel = ControllerForModel.getInstance();
         view.openWindow(stage);
     }
 
@@ -66,7 +66,7 @@ public class ControllerForView implements IControllerForView {
     public void updateView(long now) {
         view.update(now);
 
-        if (!ControllerForModel.getInstance().isGameOver()) return;
+        if (!controllerForModel.isGameOver()) return;
 
         //
         // game over
@@ -74,7 +74,7 @@ public class ControllerForView implements IControllerForView {
 
         if (initialTimeGameOver == -1) {
             initialTimeGameOver = now;
-            initialGlobalScaleSinceGameOver = View.getInstance().getGlobalScale();
+            initialGlobalScaleSinceGameOver = view.getGlobalScale();
             resetLastSelectedTile();
         }
 
@@ -83,7 +83,6 @@ public class ControllerForView implements IControllerForView {
     }
 
     private void updateGlobalScale() {
-        IView view = View.getInstance();
         // returns if has passed no time since game over or view.globalScale is already at its minimum
         if (timePassedSinceGameOver == 0 || view.getGlobalScale() == MIN_GLOBAL_SCALE) return;
 
@@ -101,12 +100,12 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public int getNumRowsArena() {
-        return ControllerForModel.getInstance().getNumRowsArena();
+        return controllerForModel.getNumRowsArena();
     }
 
     @Override
     public int getNumColsArena() {
-        return ControllerForModel.getInstance().getNumColsArena();
+        return controllerForModel.getNumColsArena();
     }
 
     @Override
@@ -146,9 +145,8 @@ public class ControllerForView implements IControllerForView {
     }
 
     private String getGameOverText(String winText, String tieText, String lossText) {
-        IControllerForModel cfm = ControllerForModel.getInstance();
-        boolean playerKingTowerDestroyed = cfm.isPlayerKingTowerDestroyed();
-        boolean opponentKingTowerDestroyed = cfm.isOpponentKingTowerDestroyed();
+        boolean playerKingTowerDestroyed = controllerForModel.isPlayerKingTowerDestroyed();
+        boolean opponentKingTowerDestroyed = controllerForModel.isOpponentKingTowerDestroyed();
 
         // 1) edge case: both towers get destroyed at the same time
         if (playerKingTowerDestroyed && opponentKingTowerDestroyed) return tieText;
@@ -162,12 +160,12 @@ public class ControllerForView implements IControllerForView {
         // 4) both towers are still standing
         
         byte playerTowerCount = 0;
-        if (cfm.isPlayerLeftTowerDestroyed()) playerTowerCount++;
-        if (cfm.isPlayerRightTowerDestroyed()) playerTowerCount++;
+        if (controllerForModel.isPlayerLeftTowerDestroyed()) playerTowerCount++;
+        if (controllerForModel.isPlayerRightTowerDestroyed()) playerTowerCount++;
 
         byte opponentTowerCount = 0;
-        if (cfm.isOpponentLeftTowerDestroyed()) opponentTowerCount++;
-        if (cfm.isOpponentRightTowerDestroyed()) opponentTowerCount++;
+        if (controllerForModel.isOpponentLeftTowerDestroyed()) opponentTowerCount++;
+        if (controllerForModel.isOpponentRightTowerDestroyed()) opponentTowerCount++;
 
         // 4.1) player has more destroyed towers than opponent (victory)
         if (playerTowerCount > opponentTowerCount) return lossText;
@@ -181,7 +179,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
-        View.getInstance().fillPoint(centreX, centreY, size, color);
+        view.fillPoint(centreX, centreY, size, color);
     }
 
     @Override
@@ -199,8 +197,8 @@ public class ControllerForView implements IControllerForView {
         if (isGameOver()) return;
         
         // 1. Valid Position 
-        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, col)) {
-            if (!isPositionValid()) View.getInstance().startDragPlacementPreview();
+        if (controllerForModel.isPlayerEntityDroppableOnTile(row, col)) {
+            if (!isPositionValid()) view.startDragPlacementPreview();
 
             lastSelectedColumnIndex = col;
             lastSelectedRowIndex = row;
@@ -209,22 +207,22 @@ public class ControllerForView implements IControllerForView {
         } 
         
         // 2. Position outside bounds
-        if(row < 0 || row >= ControllerForModel.getInstance().getNumRowsArena()
-               || col < 0 || col >= ControllerForModel.getInstance().getNumColsArena()) {
+        if(row < 0 || row >= controllerForModel.getNumRowsArena()
+               || col < 0 || col >= controllerForModel.getNumColsArena()) {
             resetLastSelectedTile();
-            View.getInstance().stopDragPlacementPreview();
+            view.stopDragPlacementPreview();
             return;
         }
 
         // 3. Position inside bounds but (row, col) not droppable
 
         // Tries the horizontal slide (based on previous row)
-        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(lastSelectedRowIndex, col)) {
+        if (controllerForModel.isPlayerEntityDroppableOnTile(lastSelectedRowIndex, col)) {
             lastSelectedColumnIndex = col;
         }
 
         // Tries the vertical slide (based on previous col)
-        if (ControllerForModel.getInstance().isPlayerEntityDroppableOnTile(row, lastSelectedColumnIndex)) {
+        if (controllerForModel.isPlayerEntityDroppableOnTile(row, lastSelectedColumnIndex)) {
             lastSelectedRowIndex = row;
         } 
         
@@ -233,7 +231,7 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void handleMouseReleased() {
         resetLastSelectedTile();
-        View.getInstance().stopDragPlacementPreview();
+        view.stopDragPlacementPreview();
     }
 
     private void resetLastSelectedTile() {
@@ -248,13 +246,13 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        View.getInstance().renderDragPlacementPreview(centreX, centreY);
+        view.renderDragPlacementPreview(centreX, centreY);
     }
 
     @Override
     public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
         double alpha = getAlphaBasedGameOver();
-        if (alpha > 0) View.getInstance().renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
+        if (alpha > 0) view.renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
     }
 
     private double getAlphaBasedGameOver() {
@@ -295,19 +293,19 @@ public class ControllerForView implements IControllerForView {
     public void setSelectedPlayerCard(int cardIndex) {
         if (isGameOver()) return;
 
-        ControllerForModel.getInstance().setSelectedPlayerCard(cardIndex);
+        controllerForModel.setSelectedPlayerCard(cardIndex);
     }
 
     @Override
     public void dropSelectedPlayerCardOnLastMousePos() {
         if (isPositionValid())
-            ControllerForModel.getInstance().dropSelectedPlayerCard(lastSelectedRowIndex, lastSelectedColumnIndex);
+            controllerForModel.dropSelectedPlayerCard(lastSelectedRowIndex, lastSelectedColumnIndex);
         
     }
 
     @Override
     public int getAvailableDeckCards() {
-        return ControllerForModel.getInstance().getAvailableDeckCards();
+        return controllerForModel.getAvailableDeckCards();
     }
 
     // static methods

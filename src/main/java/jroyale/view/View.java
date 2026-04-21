@@ -27,14 +27,14 @@ public class View implements IView {
     private static final double CANVAS_HEIGHT = 800;
     private static final double CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
 
-    private GraphicsContext gc;
-    private Stage stage;
-    private Pane root;
+    protected GraphicsContext gc;
+    protected Stage stage;
+    protected Pane root;
 
     // scale of the entire scene
-    private double globalScale = 1.0;
+    protected double globalScale = 1.0;
 
-    private View() {}
+    protected View() {}
 
     // instance methods
 
@@ -49,7 +49,6 @@ public class View implements IView {
         EntityViewBinder.getInstance().init();
         MouseManager.getInstance().init(stage.getScene());
         DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
-        FontManager.getInstance().init();
         handleMouseEvents();
     }
 
@@ -75,7 +74,7 @@ public class View implements IView {
 
     @Override
     public double getCanvasWidth() {
-        return root.getWidth();
+        return getCanvasHeight() * WH_RATIO;
     }
 
     @Override
@@ -182,19 +181,19 @@ public class View implements IView {
     }
 
     private double topLeftToCenterCanvasX(double coordX) {
-        return coordX - CANVAS_WIDTH/2;
+        return coordX - getCanvasWidth()/2;
     }
 
     private double topLeftToCenterCanvasY(double coordY) {
-        return coordY - CANVAS_HEIGHT/2;
+        return coordY - getCanvasHeight()/2;
     }
 
     private double centerToTopLeftCanvasX(double coordX) {
-        return coordX + CANVAS_WIDTH/2;
+        return coordX + getCanvasWidth()/2;
     }
 
     private double centerToTopLeftCanvasY(double coordY) {
-        return coordY + CANVAS_HEIGHT/2;
+        return coordY + getCanvasHeight()/2;
     }
 
     //
