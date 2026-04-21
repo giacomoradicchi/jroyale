@@ -1,4 +1,4 @@
-package jroyale.view;
+package jroyale.view.game_view.animations;
 /* package jroyale.view;
 
 public class Direction {

@@ -7,19 +7,20 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.FontManager;
-import jroyale.view.IView;
-import jroyale.view.View;
-import jroyale.view.entity_view.troops.GiantView;
-import jroyale.view.entity_view.troops.MiniPekkaView;
-import jroyale.view.entity_view.troops.PekkaView;
-import jroyale.view.entity_view.troops.SkeletonView;
-import jroyale.view.entity_view.troops.ValkyrieView;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
+import jroyale.view.game_view.entity_view.troops.GiantView;
+import jroyale.view.game_view.entity_view.troops.MiniPekkaView;
+import jroyale.view.game_view.entity_view.troops.PekkaView;
+import jroyale.view.game_view.entity_view.troops.SkeletonView;
+import jroyale.view.game_view.entity_view.troops.ValkyrieView;
 
 public class ControllerForView implements IControllerForView {
 
     private static ControllerForView instance;
 
-    private IView view;
+    private IGameView gameView;
+
     private IControllerForModel controllerForModel;
 
     private int lastSelectedColumnIndex = -1;
@@ -50,21 +51,21 @@ public class ControllerForView implements IControllerForView {
     
     @Override
     public void openWindow(Stage stage) {
-        view = View.getInstance();
+        gameView = GameView.getInstance();
         controllerForModel = ControllerForModel.getInstance();
-        view.openWindow(stage);
+        gameView.openWindow(stage);
     }
 
     @Override
     public void initView() {
         initTroopsFramesPerDirection();
-        view.init();
+        gameView.init();
 
     }
 
     @Override
     public void updateView(long now) {
-        view.update(now);
+        gameView.update(now);
 
         if (!controllerForModel.isGameOver()) return;
 
@@ -74,7 +75,7 @@ public class ControllerForView implements IControllerForView {
 
         if (initialTimeGameOver == -1) {
             initialTimeGameOver = now;
-            initialGlobalScaleSinceGameOver = view.getGlobalScale();
+            initialGlobalScaleSinceGameOver = gameView.getGlobalScale();
             resetLastSelectedTile();
         }
 
@@ -84,14 +85,14 @@ public class ControllerForView implements IControllerForView {
 
     private void updateGlobalScale() {
         // returns if has passed no time since game over or view.globalScale is already at its minimum
-        if (timePassedSinceGameOver == 0 || view.getGlobalScale() == MIN_GLOBAL_SCALE) return;
+        if (timePassedSinceGameOver == 0 || gameView.getGlobalScale() == MIN_GLOBAL_SCALE) return;
 
         // smooth change
 
         double timeRatio = (double) timePassedSinceGameOver / ZOOM_OUT_DURATION_NANOSEC;
         double smoothFactor = smoothnessFunction(timeRatio);
         double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * MIN_GLOBAL_SCALE; // linear interpolation using smooth factor
-        view.setGlobalScale(globalScale);
+        gameView.setGlobalScale(globalScale);
     }
 
     private boolean isGameOver() {
@@ -110,38 +111,38 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public double getDx() {
-        return view.getDx();
+        return gameView.getDx();
     }
 
     @Override
     public double getDy() {
-        return view.getDy();
+        return gameView.getDy();
     }
 
     @Override
     public void renderArena() {
-        view.renderArena();
+        gameView.renderArena();
     }
 
     @Override
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state,
             Side side, EntityType type) {
-        view.renderEntity(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side, type);
+        gameView.renderEntity(centreX, centreY, currentHealth, maxHealth, shadowRadius, angleDirection, currentFrame, state, side, type);
     }
 
     @Override
     public void renderTimeLeft(int secondsLeft) {
         double alpha = getAlphaBasedGameOver();
 
-        if (alpha > 0) view.renderTimeLeft(secondsLeft, alpha);
+        if (alpha > 0) gameView.renderTimeLeft(secondsLeft, alpha);
     }
 
     @Override
     public void renderGameOver() {
         String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
 
-        view.fillScreenTextFromCenter(gameOverText, view.getCanvasWidth()/2, view.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
-        view.strokeScreenTextFromCenter(gameOverText, view.getCanvasWidth()/2, view.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
+        gameView.fillScreenTextFromCenter(gameOverText, gameView.getCanvasWidth()/2, gameView.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
+        gameView.strokeScreenTextFromCenter(gameOverText, gameView.getCanvasWidth()/2, gameView.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
     }
 
     private String getGameOverText(String winText, String tieText, String lossText) {
@@ -179,17 +180,17 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
-        view.fillPoint(centreX, centreY, size, color);
+        gameView.fillPoint(centreX, centreY, size, color);
     }
 
     @Override
     public double logicToGraphicX(double logicCoordX) {
-        return view.getWorldMapTopLeftCornerX() + logicCoordX * view.getDx();
+        return gameView.getWorldMapTopLeftCornerX() + logicCoordX * gameView.getDx();
     }
 
     @Override
     public double logicToGraphicY(double logicCoordY) {
-        return view.getWorldMapTopLeftCornerY() + logicCoordY * view.getDy();
+        return gameView.getWorldMapTopLeftCornerY() + logicCoordY * gameView.getDy();
     }
 
     @Override
@@ -198,7 +199,7 @@ public class ControllerForView implements IControllerForView {
         
         // 1. Valid Position 
         if (controllerForModel.isPlayerEntityDroppableOnTile(row, col)) {
-            if (!isPositionValid()) view.startDragPlacementPreview();
+            if (!isPositionValid()) gameView.startDragPlacementPreview();
 
             lastSelectedColumnIndex = col;
             lastSelectedRowIndex = row;
@@ -210,7 +211,7 @@ public class ControllerForView implements IControllerForView {
         if(row < 0 || row >= controllerForModel.getNumRowsArena()
                || col < 0 || col >= controllerForModel.getNumColsArena()) {
             resetLastSelectedTile();
-            view.stopDragPlacementPreview();
+            gameView.stopDragPlacementPreview();
             return;
         }
 
@@ -231,7 +232,7 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void handleMouseReleased() {
         resetLastSelectedTile();
-        view.stopDragPlacementPreview();
+        gameView.stopDragPlacementPreview();
     }
 
     private void resetLastSelectedTile() {
@@ -246,13 +247,13 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderDragPlacementPreview(double centreX, double centreY) {
-        view.renderDragPlacementPreview(centreX, centreY);
+        gameView.renderDragPlacementPreview(centreX, centreY);
     }
 
     @Override
     public void renderPlayerDeck(EntityType card1, byte elixirCost1, EntityType card2, byte elixirCost2, EntityType card3, byte elixirCost3, EntityType card4, byte elixirCost4, byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir) {
         double alpha = getAlphaBasedGameOver();
-        if (alpha > 0) view.renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
+        if (alpha > 0) gameView.renderPlayerDeck(card1, elixirCost1, card2, elixirCost2, card3, elixirCost3, card4, elixirCost4, elixirLeft, elixirChargeTimeProgress, maxElixir, alpha);
     }
 
     private double getAlphaBasedGameOver() {

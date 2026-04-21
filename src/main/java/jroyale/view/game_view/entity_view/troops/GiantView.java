@@ -1,18 +1,17 @@
-package jroyale.view.entity_view.troops;
+package jroyale.view.game_view.entity_view.troops;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.image.Image;
-import jroyale.utils.GameData;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.AnimationKey;
-import jroyale.view.Direction;
-import jroyale.view.View;
-import jroyale.view.entity_view.EntityView;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
+import jroyale.view.game_view.animations.AnimationKey;
+import jroyale.view.game_view.animations.Direction;
+import jroyale.view.game_view.entity_view.EntityView;
 
 public class GiantView extends TroopView {
 
@@ -69,7 +68,8 @@ public class GiantView extends TroopView {
 
         AnimationKey key = new AnimationKey(baseSide, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
-        double canvasHeight = View.getInstance().getCanvasHeight();
+        IGameView view = GameView.getInstance();
+        double canvasHeight = view.getCanvasHeight();
         double scale = getImageScale();
         double width = image.getWidth() * scale;
         double height = image.getHeight() * scale;
@@ -78,13 +78,13 @@ public class GiantView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        view.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
             key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
-            View.getInstance().renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+            view.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
         }
         
     }

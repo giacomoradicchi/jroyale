@@ -1,4 +1,4 @@
-package jroyale.view.entity_view.troops;
+package jroyale.view.game_view.entity_view.troops;
 
 import java.util.Map;
 
@@ -7,9 +7,9 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.AnimationKey;
-import jroyale.view.Direction;
-import jroyale.view.View;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.animations.AnimationKey;
+import jroyale.view.game_view.animations.Direction;
 
 public abstract class SkeletonView extends TroopView {
 
@@ -86,7 +86,7 @@ public abstract class SkeletonView extends TroopView {
         
         
 
-        View.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        GameView.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
     }
 
     @Override

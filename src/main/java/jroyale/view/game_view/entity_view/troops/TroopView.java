@@ -1,16 +1,16 @@
-package jroyale.view.entity_view.troops;
+package jroyale.view.game_view.entity_view.troops;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import jroyale.view.AnimationKey;
-import jroyale.view.Direction;
 import javafx.scene.image.Image;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.SpriteAnimation;
-import jroyale.view.entity_view.EntityView;
+import jroyale.view.game_view.animations.AnimationKey;
+import jroyale.view.game_view.animations.Direction;
+import jroyale.view.game_view.animations.SpriteAnimation;
+import jroyale.view.game_view.entity_view.EntityView;
 
 public abstract class TroopView extends EntityView {
     

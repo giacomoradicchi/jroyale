@@ -1,8 +1,11 @@
-package jroyale.view;
+package jroyale.view.game_view.arena;
 
 import java.awt.geom.Rectangle2D;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 
 public class ArenaView {
 
@@ -62,8 +65,10 @@ public class ArenaView {
     }
 
     private void calculateMapBoundingBox() {
-        double canvasWidth = View.getInstance().getCanvasWidth();
-        double canvasHeight = View.getInstance().getCanvasHeight();
+        IGameView view = GameView.getInstance();
+
+        double canvasWidth = view.getCanvasWidth();
+        double canvasHeight = view.getCanvasHeight();
 
         double mapWidth = NORMALIZED_MAP_WIDTH * canvasWidth;
         double mapHeight = NORMALIZED_MAP_HEIGHT * canvasHeight;
@@ -88,15 +93,17 @@ public class ArenaView {
 
     public void renderArena(boolean debugMode) {
 
-        double canvasWidth = View.getInstance().getCanvasWidth();
-        double canvasHeight = View.getInstance().getCanvasHeight();
+        IGameView view = GameView.getInstance();
 
-        View.getInstance().renderWorldImage(
+        double canvasWidth = view.getCanvasWidth();
+        double canvasHeight = view.getCanvasHeight();
+
+        view.renderWorldImage(
             arenaImage, 
             canvasWidth * 0.5, 
-            canvasHeight * 0.5 - 108 * (View.getInstance().getCanvasHeight() / 800), 
-            getWidth() * SCALE * (View.getInstance().getCanvasWidth() / 449.6296296296296), 
-            getHeight() * SCALE * (View.getInstance().getCanvasHeight() / 800),
+            canvasHeight * 0.5 - 108 * (view.getCanvasHeight() / 800), 
+            getWidth() * SCALE * (view.getCanvasWidth() / 449.6296296296296), 
+            getHeight() * SCALE * (view.getCanvasHeight() / 800),
             1
         );  
 
@@ -135,8 +142,8 @@ public class ArenaView {
         return mapBoundingBox;
     }
 
-    private void renderGrid() {
-        /*
+    /*private void renderGrid() {
+        
         gc.save();
 
         gc.setGlobalAlpha(1);
@@ -161,8 +168,8 @@ public class ArenaView {
             );
         }
 
-        gc.restore(); */
-    }
+        gc.restore(); 
+    }*/
 
     // static methods
 

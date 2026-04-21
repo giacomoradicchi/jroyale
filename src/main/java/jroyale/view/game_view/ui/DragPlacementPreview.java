@@ -1,6 +1,8 @@
-package jroyale.view;
+package jroyale.view.game_view.ui;
 
 import javafx.scene.paint.Color;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 
 public class DragPlacementPreview {
 
@@ -24,26 +26,28 @@ public class DragPlacementPreview {
     
     public void render(double centreX, double centreY) {
 
+        IGameView view = GameView.getInstance();
+        
         // fill
-        View.getInstance().fillWorldRoundedRect(
+        view.fillWorldRoundedRect(
             centreX, 
             centreY, 
-            View.getInstance().getDx() * scaleAnimation, 
-            View.getInstance().getDy() * scaleAnimation, 
-            View.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
-            View.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
+            view.getDx() * scaleAnimation, 
+            view.getDy() * scaleAnimation, 
+            view.getDx() * CORNER_ROUNDNESS * scaleAnimation, 
+            view.getDy() * CORNER_ROUNDNESS * scaleAnimation,
             ALPHA_FILL, 
             FILL_COLOR
         );
 
         // outline
-        View.getInstance().strokeWorldRoundedRect(
+        view.strokeWorldRoundedRect(
             centreX, 
             centreY, 
-            View.getInstance().getDx() * scaleAnimation, 
-            View.getInstance().getDy() * scaleAnimation, 
-            View.getInstance().getDx() * CORNER_ROUNDNESS * scaleAnimation, 
-            View.getInstance().getDy() * CORNER_ROUNDNESS * scaleAnimation,
+            view.getDx() * scaleAnimation, 
+            view.getDy() * scaleAnimation, 
+            view.getDx() * CORNER_ROUNDNESS * scaleAnimation, 
+            view.getDy() * CORNER_ROUNDNESS * scaleAnimation,
             LINE_WIDTH,
             1.0, // fully visible 
             STROKE_COLOR

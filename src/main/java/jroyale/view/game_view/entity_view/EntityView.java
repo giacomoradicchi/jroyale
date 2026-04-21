@@ -1,4 +1,4 @@
-package jroyale.view.entity_view;
+package jroyale.view.game_view.entity_view;
 
 
 import javafx.scene.image.Image;
@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.IView;
-import jroyale.view.View;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 
 public abstract class EntityView {
 
@@ -48,7 +48,7 @@ public abstract class EntityView {
 
     private void renderHealth(int currentHealth, int maxHealth, Side side, double centerX, double centerY) {
         
-        IView view = View.getInstance();
+        IGameView view = GameView.getInstance();
 
         double rectWidth  = view.getDx() * HEALTH_BAR_WIDTH_MULTIPLIER;
         double rectHeight = view.getDy() * HEALTH_BAR_HEIGHT_MULTIPLIER;
@@ -89,7 +89,7 @@ public abstract class EntityView {
     }
 
     private void renderShadow(double centreX, double centreY, double shadowRadius) {
-        View.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
+        GameView.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
     }
 
     protected double getImageScale() {
@@ -104,11 +104,11 @@ public abstract class EntityView {
         -> scale = (ht * dy) / hr
          */
 
-        return getHeightInTiles() * View.getInstance().getDy() / getSpritesHeight();
+        return getHeightInTiles() * GameView.getInstance().getDy() / getSpritesHeight();
     }
 
     private double getHeightInPixels() {    // height in pixel of troop (based on map proportion)
-        return getHeightInTiles() * View.getInstance().getDy();
+        return getHeightInTiles() * GameView.getInstance().getDy();
     }
 
     // abstract methods

@@ -1,4 +1,4 @@
-package jroyale.view.entity_view.troops;
+package jroyale.view.game_view.entity_view.troops;
 
 import java.util.Map;
 
@@ -7,10 +7,10 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.AnimationKey;
-import jroyale.view.Direction;
-import jroyale.view.View;
-import jroyale.view.entity_view.EntityView;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.animations.AnimationKey;
+import jroyale.view.game_view.animations.Direction;
+import jroyale.view.game_view.entity_view.EntityView;
 
 public class MiniPekkaView extends TroopView {
 
@@ -55,7 +55,7 @@ public class MiniPekkaView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        View.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height, 1);
+        GameView.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height, 1);
     }
 
     @Override

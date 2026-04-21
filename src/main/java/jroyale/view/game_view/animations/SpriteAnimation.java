@@ -1,4 +1,4 @@
-package jroyale.view;
+package jroyale.view.game_view.animations;
 
 import java.util.ArrayList;
 import java.util.List;

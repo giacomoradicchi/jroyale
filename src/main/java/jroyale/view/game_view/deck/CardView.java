@@ -1,6 +1,7 @@
-package jroyale.view;
+package jroyale.view.game_view.deck;
 
 import javafx.util.Duration;
+
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
@@ -8,6 +9,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import jroyale.utils.Enums.EntityType;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.utils.Point;
 
 
@@ -55,7 +58,7 @@ public class CardView extends StackPane {
             this.setScaleY(SCALE_ON_CLICK);
 
             // send data to view:
-            View.getInstance().processOnMousePressed(
+            GameView.getInstance().processOnMousePressed(
                 e.getSceneX(), 
                 e.getSceneY()
             );
@@ -71,7 +74,7 @@ public class CardView extends StackPane {
             e.consume();
 
             // send data to view:
-            View.getInstance().processOnMouseDragged(
+            GameView.getInstance().processOnMouseDragged(
                 e.getSceneX(), 
                 e.getSceneY()
             );
@@ -80,7 +83,7 @@ public class CardView extends StackPane {
         this.setOnMouseReleased(e -> {
 
             // notify view:
-            View.getInstance().processOnMouseReleased();
+            GameView.getInstance().processOnMouseReleased();
 
             // Reset scale
             this.setScaleX(1.0);
@@ -123,17 +126,17 @@ public class CardView extends StackPane {
         double centerX = this.getLayoutX() + this.getTranslateX() + getWidth() / 2;
         double centerY = this.getLayoutY() + this.getTranslateY() + getWidth() / 2;
 
-        IView v = View.getInstance();
+        IGameView view = GameView.getInstance();
         
 
         // 1. Draw Icon
-        v.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        view.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
         
         // 2. Draw Outline/Frame
-        v.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        view.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
 
         // Debug: Red rect should perfectly align with the card's interactive area
-        //v.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);
+        //view.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);
     }
 
     private double getScaledWidth() {

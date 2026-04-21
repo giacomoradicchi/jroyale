@@ -1,7 +1,6 @@
-package jroyale.view;
+package jroyale.view.game_view.entity_view;
 
 import jroyale.utils.Enums.EntityType;
-import jroyale.view.entity_view.EntityView;
 
 public interface IEntityViewBinder {
     

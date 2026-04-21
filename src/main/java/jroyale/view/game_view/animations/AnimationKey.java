@@ -1,4 +1,4 @@
-package jroyale.view;
+package jroyale.view.game_view.animations;
 
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;

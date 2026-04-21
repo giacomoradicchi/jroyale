@@ -1,12 +1,12 @@
-package jroyale.view.entity_view.towers;
+package jroyale.view.game_view.entity_view.towers;
 
 import javafx.scene.image.Image;
 import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.View;
-import jroyale.view.entity_view.EntityView;
+import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.entity_view.EntityView;
 
 public class ArcherTowerView extends TowerView{
     
@@ -31,7 +31,7 @@ public class ArcherTowerView extends TowerView{
             Side side) {
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
-        View.getInstance().renderWorldImage(
+        GameView.getInstance().renderWorldImage(
             img, 
             centreX, 
             centreY, 

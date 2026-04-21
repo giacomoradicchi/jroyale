@@ -1,8 +1,8 @@
-package jroyale.view.entity_view.towers;
+package jroyale.view.game_view.entity_view.towers;
 
 import javafx.scene.image.Image;
 import jroyale.utils.ImageUtils;
-import jroyale.view.entity_view.EntityView;
+import jroyale.view.game_view.entity_view.EntityView;
 
 public abstract class TowerView extends EntityView {
     
