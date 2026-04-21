@@ -27,7 +27,7 @@ public class GameEngine implements IGameEngine {
                 if (!controllerForModel.isGameOver())
                     controllerForModel.updateModel(now);
 
-                controllerForView.updateView(now);
+                controllerForView.updateGameView(now);
                 
                 // rendering
                 controllerForView.renderArena();
@@ -76,13 +76,13 @@ public class GameEngine implements IGameEngine {
     }
 
     private void initGameLoop() {
-        controllerForView.initView();
         controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
+        controllerForView.initGameView();
     }
 
     // instance methods
     @Override
-    public void start(@SuppressWarnings("exports") Stage stage) {
+    public void start(Stage stage) {
         // saving instances to avoid redundace
         controllerForView = ControllerForView.getInstance();
         controllerForModel = ControllerForModel.getInstance();

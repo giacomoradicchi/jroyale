@@ -19,11 +19,6 @@ public class CardBinder {
     private final static Map<EntityType, Card> cardBinder = new EnumMap<>(EntityType.class);
 
     private CardBinder() {
-        init();
-    }
-
-    public void init() {
-        
         // troops
         cardBinder.put(EntityType.MINIPEKKA, MiniPekkaCard.getInstance());
         cardBinder.put(EntityType.GIANT, GiantCard.getInstance());
