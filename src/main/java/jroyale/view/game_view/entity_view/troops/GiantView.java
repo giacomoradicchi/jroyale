@@ -28,7 +28,7 @@ public class GiantView extends TroopView {
     
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private static final double HEIGHT_IN_TILES = 3.5;
+    private static final double HEIGHT_IN_TILES = 3.2;
     private static final double NORMALIZED_SHIFT_Y = -0.03;
 
     // Sprite sheet base indices for different states and sides

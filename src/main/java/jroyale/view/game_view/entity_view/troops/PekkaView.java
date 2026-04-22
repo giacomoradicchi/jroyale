@@ -27,7 +27,7 @@ public class PekkaView extends TroopView{
     private static final int NUM_INDEX_DIGITS = 3;
     private static final double shiftX = 0;
     private static final double shiftY = -25;
-    private static final double HEIGHT_IN_TILES = 3.5;
+    private static final double HEIGHT_IN_TILES = 2.8;
 
     // Sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 126;
