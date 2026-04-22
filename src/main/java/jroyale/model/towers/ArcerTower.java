@@ -20,7 +20,7 @@ public class ArcerTower extends Tower {
     public static final Point OPPONENT_RIGHT_TOWER_CENTRE = new Point(14.5, 6.5);
 
     
-    private static final int HITPOINTS = 1400;
+    private static final int HITPOINTS = 3052;
     private static final int DAMAGE = 0; // TODO: add damage
     
 
