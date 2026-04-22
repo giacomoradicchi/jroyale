@@ -37,8 +37,14 @@ public abstract class MainGUI implements IMainGUI {
 
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
-        stage.show();
+        
+        if (!stage.isShowing()) stage.show();
         handleMouseEvents();
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 
     @Override

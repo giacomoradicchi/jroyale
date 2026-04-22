@@ -10,6 +10,8 @@ public interface IMainGUI {
 
     public void openWindow(Stage stage);
 
+    public Stage getStage();
+
     public void closeWindow();
 
     public void init();
