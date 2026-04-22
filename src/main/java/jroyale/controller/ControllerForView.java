@@ -15,11 +15,14 @@ import jroyale.view.game_view.entity_view.troops.MiniPekkaView;
 import jroyale.view.game_view.entity_view.troops.PekkaView;
 import jroyale.view.game_view.entity_view.troops.SkeletonView;
 import jroyale.view.game_view.entity_view.troops.ValkyrieView;
+import jroyale.view.home_view.HomeView;
+import jroyale.view.home_view.IHomeView;
 
 public class ControllerForView implements IControllerForView {
 
     private static ControllerForView instance;
 
+    private IHomeView homeView;
     private IGameView gameView;
 
     private IControllerForModel controllerForModel;
@@ -36,7 +39,9 @@ public class ControllerForView implements IControllerForView {
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
 
     private ControllerForView() {
-        // empty
+        gameView = GameView.getInstance();
+        homeView = HomeView.getInstance();
+        controllerForModel = ControllerForModel.getInstance();
     }
 
     // private methods
@@ -51,16 +56,21 @@ public class ControllerForView implements IControllerForView {
     // instance methods
     
     @Override
-    public void openWindow(Stage stage) {
-        gameView = GameView.getInstance();
-        controllerForModel = ControllerForModel.getInstance();
-        gameView.openWindow(stage);
+    public void openHomeWindow(Stage stage) {
+        homeView.openWindow(stage);
+        homeView.init();
     }
 
     @Override
-    public void initGameView() {
+    public void startGame() {
+        gameView.openWindow(homeView.getStage());
+    }
+
+    @Override
+    public void initView() {
         initTroopsFramesPerDirection();
         gameView.init();
+
 
     }
 

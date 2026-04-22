@@ -8,9 +8,11 @@ import jroyale.utils.Enums.State;
 
 public interface IControllerForView {
     
-    public void openWindow(Stage stage);
+    public void openHomeWindow(Stage stage);
 
-    public void initGameView();
+    public void startGame();
+
+    public void initView();
 
     public void updateGameView(long now);
 
