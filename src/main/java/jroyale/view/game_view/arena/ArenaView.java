@@ -101,9 +101,9 @@ public class ArenaView {
         view.renderWorldImage(
             arenaImage, 
             canvasWidth * 0.5, 
-            canvasHeight * 0.5 - 108 * (view.getCanvasHeight() / 800), 
+            canvasHeight * 0.5 - 108 * (view.getCanvasHeight() / 800.0), 
             getWidth() * SCALE * (view.getCanvasWidth() / 449.6296296296296), 
-            getHeight() * SCALE * (view.getCanvasHeight() / 800),
+            getHeight() * SCALE * (view.getCanvasHeight() / 800.0),
             1
         );  
 

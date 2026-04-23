@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GameSettings {
+
+    private static final int MIN_TIME_SEC = 0;
     
     @JsonProperty("difficulty")
     private String difficulty;
@@ -44,6 +46,7 @@ public class GameSettings {
     }
 
     public void setMaxTime(int maxTimeSec) {
-        this.maxTimeSec = maxTimeSec;
+        if (maxTimeSec >= MIN_TIME_SEC) // cannot be less than MIN_TIME_SEC
+            this.maxTimeSec = maxTimeSec;
     }
 }
