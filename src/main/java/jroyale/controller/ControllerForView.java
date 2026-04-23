@@ -58,12 +58,20 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void openHomeWindow(Stage stage) {
         homeView.openWindow(stage);
-        homeView.init();
+
+        homeView.loadAsync().setOnSucceeded(e -> {
+            homeView.init();
+        });
     }
 
     @Override
     public void startGame() {
+        homeView.resetRoot();
         gameView.openWindow(homeView.getStage());
+
+        gameView.loadAsync().setOnSucceeded(e -> {
+            GameEngine.getInstance().startGameLoop();
+        });
     }
 
     @Override

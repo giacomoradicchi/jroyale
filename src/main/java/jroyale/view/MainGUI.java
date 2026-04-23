@@ -22,6 +22,8 @@ public abstract class MainGUI implements IMainGUI {
     private static final double NORMALIZED_LOGO_X = 0.5;
     private static final double NORMALIZED_LOGO_Y = 0.10;
     private static final double NORMALIZED_LOGO_WIDTH = 0.67;
+    private static final Image LOADING_BACKGROUND = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/loading_background.png"));
+    protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
 
     protected GraphicsContext gc;
     protected Stage stage;
@@ -82,26 +84,31 @@ public abstract class MainGUI implements IMainGUI {
     }
 
     @Override
+    public void resetRoot() {
+        root.getChildren().clear();
+    }
+
+    @Override
     public void init() {
-        renderLoadingScreen();
+        buildUI();
     }
 
     private void renderLoadingScreen() {
-        Image loadingBackground = new Image(getClass().getResourceAsStream("/jroyale/images/ui/loading_background.png"));
-        
+       
         double height = getCanvasHeight();
-        double width = loadingBackground.getWidth() * height / loadingBackground.getHeight(); 
-        renderScreenImage(loadingBackground, getCanvasWidth()/2, getCanvasHeight()/2, width, height, 1);
-
-        Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
+        double width = LOADING_BACKGROUND.getWidth() * height / LOADING_BACKGROUND.getHeight(); 
+        renderScreenImage(LOADING_BACKGROUND, getCanvasWidth()/2, getCanvasHeight()/2, width, height, 1);
+        
         width = getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
-        height = image.getHeight() / image.getWidth() * width;
-        renderScreenImage(image, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        height = LOGO.getHeight() / LOGO.getWidth() * width;
+        renderScreenImage(LOGO, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
         
     }
 
     // Restituisce il Task così chi chiama può sapere quando ha finito
     public Task<Void> loadAsync() {
+        renderLoadingScreen();
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
@@ -345,6 +352,8 @@ public abstract class MainGUI implements IMainGUI {
     }
 
     // abstract methods
-    public abstract void load();
+    protected abstract void load();
+
+    protected abstract void buildUI();
     
 }

@@ -8,6 +8,8 @@ public interface IGameEngine {
 
     public void startGame();
 
+    public void startGameLoop();
+
     public void stop();
 
     public void resume();

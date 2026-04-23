@@ -41,8 +41,6 @@ public class GameView extends MainGUI implements IGameView {
             ControllerForView.getInstance().getNumColsArena()
         );
 
-        MouseManager.getInstance().init(stage.getScene());
-        DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
 
         // loading sprites
         ArcherTowerView.getInstance();
@@ -53,6 +51,12 @@ public class GameView extends MainGUI implements IGameView {
         SingleSkeletonView.getInstance();
         SkeletonArmyView.getInstance();
         ValkyrieView.getInstance();
+    }
+
+    @Override
+    public void buildUI() {
+        MouseManager.getInstance().init(stage.getScene());
+        DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
     }
 
     @Override
