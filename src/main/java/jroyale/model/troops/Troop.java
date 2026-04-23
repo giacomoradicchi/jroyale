@@ -7,7 +7,6 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
-import jroyale.model.cards.CardStats;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -72,7 +71,7 @@ public abstract class Troop extends Entity {
     private static final int DIRECTION_BUFFER_SIZE = 4;
     private Point[] directionBuffer = new Point[DIRECTION_BUFFER_SIZE];
     private int bufferIndex = 0;
-    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
+    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
     protected boolean enemyHit, targetKilled;
 

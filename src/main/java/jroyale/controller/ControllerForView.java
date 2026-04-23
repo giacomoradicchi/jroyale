@@ -70,8 +70,6 @@ public class ControllerForView implements IControllerForView {
     public void initView() {
         initTroopsFramesPerDirection();
         gameView.init();
-
-
     }
 
     @Override

@@ -33,7 +33,7 @@ public class HomeView extends MainGUI implements IHomeView {
     private HomeView() {}
 
     @Override
-    public void init() {
+    public void load() {
         renderScreenImage(new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/home_background.jpg")), getCanvasWidth()/2, getCanvasHeight()/2, getCanvasWidth(), getCanvasHeight(), 1);
         
         Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));

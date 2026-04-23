@@ -1,5 +1,6 @@
 package jroyale.view;
 
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -15,6 +16,8 @@ public interface IMainGUI {
     public void closeWindow();
 
     public void init();
+
+    public Task<Void> loadAsync();
 
     public void update(long now);
 

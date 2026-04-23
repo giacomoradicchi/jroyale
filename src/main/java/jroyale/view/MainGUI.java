@@ -1,5 +1,6 @@
 package jroyale.view;
 
+import javafx.concurrent.Task;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -37,7 +38,7 @@ public abstract class MainGUI implements IMainGUI {
 
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
-        
+
         if (!stage.isShowing()) stage.show();
         handleMouseEvents();
     }
@@ -75,6 +76,27 @@ public abstract class MainGUI implements IMainGUI {
     @Override
     public void addToRoot(Node node) {
         root.getChildren().add(node);
+    }
+
+    @Override
+    public void init() {
+        Image loadingBackground = new Image(getClass().getResourceAsStream("/jroyale/images/ui/loading_background.png"));
+        double width = getCanvasWidth();
+        double height = loadingBackground.getHeight() * width / getCanvasHeight();
+        renderScreenImage(loadingBackground, getCanvasWidth()/2, getCanvasHeight()/2, width, height, 1);
+    }
+
+    // Restituisce il Task così chi chiama può sapere quando ha finito
+    public Task<Void> loadAsync() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                load();
+                return null;
+            }
+        };
+        new Thread(task, "sprite-loading-thread").start();
+        return task;
     }
 
     @Override
@@ -307,5 +329,8 @@ public abstract class MainGUI implements IMainGUI {
         // restoring previous settings
         gc.restore();
     }
+
+    // abstract methods
+    public abstract void load();
     
 }
