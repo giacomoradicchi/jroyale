@@ -23,6 +23,8 @@ public interface IMainGUI {
 
     public void addToRoot(Node node);
 
+    public void resetRoot();
+
     public int getCanvasWidth();
 
     public int getCanvasHeight();

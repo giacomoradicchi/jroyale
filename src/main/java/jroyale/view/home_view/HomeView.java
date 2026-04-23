@@ -27,24 +27,24 @@ public class HomeView extends MainGUI implements IHomeView {
     private static final double NORMALIZED_LOGO_X = 0.5;
     private static final double NORMALIZED_LOGO_Y = 0.15;
     private static final double NORMALIZED_LOGO_WIDTH = 0.67;
+    private static final Image HOME_BACKGROUND = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/home_background.jpg"));
+    private static final Image ARENA_SPRITE = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));
 
     private String difficulty;
 
     private HomeView() {}
 
     @Override
-    public void load() {
-        renderScreenImage(new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/home_background.jpg")), getCanvasWidth()/2, getCanvasHeight()/2, getCanvasWidth(), getCanvasHeight(), 1);
+    public void buildUI() {
+        renderScreenImage(HOME_BACKGROUND, getCanvasWidth()/2, getCanvasHeight()/2, getCanvasWidth(), getCanvasHeight(), 1);
         
-        Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));
         double width = getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
-        double height = image.getHeight() / image.getWidth() * width;
-        renderScreenImage(image, getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, 1);
+        double height = ARENA_SPRITE.getHeight() / ARENA_SPRITE.getWidth() * width;
+        renderScreenImage(ARENA_SPRITE, getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, 1);
 
-        image = new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
         width = getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
-        height = image.getHeight() / image.getWidth() * width;
-        renderScreenImage(image, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        height = LOGO.getHeight() / LOGO.getWidth() * width;
+        renderScreenImage(LOGO, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
         
         Button playButton = new Button("Gioca Partita");
         FontManager fontManager = FontManager.getInstance();
@@ -116,6 +116,11 @@ public class HomeView extends MainGUI implements IHomeView {
         difficultyBox.setFocusTraversable(false);
 
         addToRoot(difficultyBox);
+    }
+
+    @Override
+    public void load() {
+        // TODO
     }
 
     @Override

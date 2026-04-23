@@ -16,14 +16,12 @@ public class GameEngine implements IGameEngine {
     private GameEngine() {}
 
     // private methods
-    private void startGameLoop() {
+    @Override
+    public void startGameLoop() {
         
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                long wallTime = System.currentTimeMillis();
-                System.out.println("frame at wall=" + wallTime + " now=" + now);
-
 
                 // update
                 if (!controllerForModel.isGameOver())
@@ -100,7 +98,6 @@ public class GameEngine implements IGameEngine {
     public void startGame() {
         controllerForView.startGame();
         initGameLoop();
-        startGameLoop();
     }
 
     @Override
