@@ -7,6 +7,7 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
+import jroyale.model.towers.Tower;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -52,6 +53,12 @@ public abstract class Troop extends Entity {
         }
     }
 
+    private static final double DEFAULT_VISION_RANGE = 6;
+    private static final int DIRECTION_BUFFER_SIZE = 4;
+    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
+    private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
+    private static final Point TANGENT_VECTOR_2 = new Point(); //
+
     protected String name;
     protected Speed speedType;
     protected FrameManager frameManager;
@@ -59,26 +66,16 @@ public abstract class Troop extends Entity {
     protected double loadTime;
     protected int hitPoints;
     protected int damage;
-
-    private static final double DEFAULT_VISION_RANGE = 6;
-
-
     protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
     protected long elapsedIdleTime;
-
-    private static final int DIRECTION_BUFFER_SIZE = 4;
     private Point[] directionBuffer = new Point[DIRECTION_BUFFER_SIZE];
     private int bufferIndex = 0;
-    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
     private Point aimUnitVector; // buffer for aiming direction
     protected boolean enemyHit, targetKilled;
-
-    private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
-    private static final Point TANGENT_VECTOR_2 = new Point(); //
-
     private boolean shouldMove, shouldAttack, shouldIdle;
+    protected boolean isAttackingTower = false;
 
     public Troop(double x, double y, String name, Speed speedType, MeleeRange melee, double mass,
         double collisionRadius, double loadTime, int hitPoints, int damage, Side side) {
@@ -214,7 +211,9 @@ public abstract class Troop extends Entity {
             return false;
         }
 
+        
         target = closestEnemy;
+        
 
         return true;
     }
@@ -279,15 +278,21 @@ public abstract class Troop extends Entity {
     }
 
     protected void attackTarget() {
-        if (target != null)
-            target.setDamage(getDamage());
+        if (target == null) return;
+
+        target.setDamage(getDamage());
+
     }
 
     private void handleCollisions() {
         for (Entity other : CollisionManager.getInstance().getCollidingEntitiesWith(this)) {
             if (other == target && state == State.MOVE) {
                 shouldAttack = true;
+
+                if (target instanceof Tower) isAttackingTower = true;
             }
+
+            
 
             fixDistance(other);
         }

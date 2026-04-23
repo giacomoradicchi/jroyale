@@ -1,6 +1,5 @@
 package jroyale.model;
 
-import jroyale.utils.GameData;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;

@@ -17,7 +17,7 @@ public abstract class MainGUI implements IMainGUI {
 
     private static final double WH_RATIO = 607.0 / 1080;
 
-    private static final int CANVAS_HEIGHT = 500;
+    private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
     private static final double NORMALIZED_LOGO_X = 0.5;
     private static final double NORMALIZED_LOGO_Y = 0.10;
