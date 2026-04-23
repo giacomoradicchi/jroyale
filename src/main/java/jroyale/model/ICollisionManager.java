@@ -1,6 +1,5 @@
 package jroyale.model;
 
-import java.util.List;
 import java.util.Set;
 
 import jroyale.utils.Point;
@@ -14,7 +13,5 @@ public interface ICollisionManager {
     public Set<Entity> getCollidingEntitiesWith(Entity e);
     
     public Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY);
-
-    
 
 }

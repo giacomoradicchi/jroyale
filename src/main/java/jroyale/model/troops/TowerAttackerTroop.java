@@ -1,8 +1,6 @@
 package jroyale.model.troops;
 
-import jroyale.model.TowerTargetSelector;
 import jroyale.utils.Enums.Side;
-import jroyale.utils.Enums.State;
 
 public abstract class TowerAttackerTroop extends Troop {
 

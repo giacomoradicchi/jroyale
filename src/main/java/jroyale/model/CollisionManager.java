@@ -1,10 +1,8 @@
 package jroyale.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import jroyale.model.troops.Troop;
 import jroyale.utils.Circle;
 import jroyale.utils.Point;
 
