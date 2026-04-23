@@ -19,7 +19,24 @@ public class GameSettings {
     }
 
     public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
+        switch (difficulty.strip().toUpperCase()) {
+            case "BASIC":
+                this.difficulty = "BASIC";
+                break;
+            case "STANDARD":
+                this.difficulty = "STANDARD";
+                break;
+            case "EXPERT":
+                this.difficulty = "EXPERT";
+                break;
+            case "MASTER":
+                this.difficulty = "MASTER";
+                break;
+        
+            default:
+                return; // don't change anything if not valid
+        }
+        
     }
 
     public int getMaxTimeSec() {
