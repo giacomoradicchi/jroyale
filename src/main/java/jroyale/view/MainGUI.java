@@ -19,6 +19,9 @@ public abstract class MainGUI implements IMainGUI {
 
     private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
+    private static final double NORMALIZED_LOGO_X = 0.5;
+    private static final double NORMALIZED_LOGO_Y = 0.10;
+    private static final double NORMALIZED_LOGO_WIDTH = 0.67;
 
     protected GraphicsContext gc;
     protected Stage stage;
@@ -80,10 +83,21 @@ public abstract class MainGUI implements IMainGUI {
 
     @Override
     public void init() {
+        renderLoadingScreen();
+    }
+
+    private void renderLoadingScreen() {
         Image loadingBackground = new Image(getClass().getResourceAsStream("/jroyale/images/ui/loading_background.png"));
-        double width = getCanvasWidth();
-        double height = loadingBackground.getHeight() * width / getCanvasHeight();
+        
+        double height = getCanvasHeight();
+        double width = loadingBackground.getWidth() * height / loadingBackground.getHeight(); 
         renderScreenImage(loadingBackground, getCanvasWidth()/2, getCanvasHeight()/2, width, height, 1);
+
+        Image image = new Image(this.getClass().getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
+        width = getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
+        height = image.getHeight() / image.getWidth() * width;
+        renderScreenImage(image, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        
     }
 
     // Restituisce il Task così chi chiama può sapere quando ha finito
