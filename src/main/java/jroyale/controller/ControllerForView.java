@@ -1,6 +1,8 @@
 package jroyale.controller;
 
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import jroyale.utils.GameData;
 import jroyale.controller.binders.EntityViewBinder;
@@ -32,11 +34,15 @@ public class ControllerForView implements IControllerForView {
     private long initialTimeGameOver = -1;
     private long timePassedSinceGameOver;
     private double initialGlobalScaleSinceGameOver;
+    private boolean isHomeButtonVisible = false;    // it will be visible once game over
 
     private static final long FADE_OUT_DURATION_NANOSEC = 250_000_000L;
     private static final long ZOOM_OUT_DURATION_NANOSEC = 2_000_000_000L;
     private static final double MIN_GLOBAL_SCALE = 0.92;
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
+    private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
+    private static final double NORMALIZED_PLAYBUTTON_Y = 0.67;
+    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
 
     private ControllerForView() {
         gameView = GameView.getInstance();
@@ -98,6 +104,33 @@ public class ControllerForView implements IControllerForView {
 
         timePassedSinceGameOver = now - initialTimeGameOver;
         updateGlobalScale();
+
+        if (!isHomeButtonVisible && timePassedSinceGameOver >= ZOOM_OUT_DURATION_NANOSEC) {
+            showHomeButton();
+        }
+    }
+
+    private void showHomeButton() {
+        Button playButton = new Button("Home");
+        FontManager fontManager = FontManager.getInstance();
+        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * gameView.getCanvasHeight()));
+        playButton.setFont(font);
+        playButton.setStyle(
+            "-fx-background-color: #FFD700;" +
+            "-fx-background-radius: 15;" +
+            "-fx-border-radius: 15;" +
+            "-fx-border-color: #B8860B;" +
+            "-fx-border-width: 2;" +
+            "-fx-text-fill: #333333;"
+        );
+        playButton.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
+            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * gameView.getCanvasWidth() - newVal.getWidth()/2);
+            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gameView.getCanvasHeight() - newVal.getHeight()/2);
+        });
+        
+        playButton.setOnAction(e -> GameEngine.getInstance().goToHome());
+        
+        gameView.addToRoot(playButton);
     }
 
     private void updateGlobalScale() {
