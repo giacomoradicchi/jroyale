@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import jroyale.controller.ControllerForView;
+import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -12,6 +13,16 @@ import jroyale.view.MouseManager;
 import jroyale.view.game_view.arena.ArenaView;
 import jroyale.view.game_view.deck.DeckView;
 import jroyale.view.game_view.entity_view.EntityView;
+import jroyale.view.game_view.entity_view.towers.ArcherTowerView;
+import jroyale.view.game_view.entity_view.towers.KingTowerView;
+import jroyale.view.game_view.entity_view.troops.GiantView;
+import jroyale.view.game_view.entity_view.troops.MiniPekkaView;
+import jroyale.view.game_view.entity_view.troops.PekkaView;
+import jroyale.view.game_view.entity_view.troops.SingleSkeletonView;
+import jroyale.view.game_view.entity_view.troops.SkeletonArmyView;
+import jroyale.view.game_view.entity_view.troops.SkeletonView;
+import jroyale.view.game_view.entity_view.troops.TroopView;
+import jroyale.view.game_view.entity_view.troops.ValkyrieView;
 import jroyale.view.game_view.ui.DragPlacementPreview;
 import jroyale.view.game_view.ui.TimeLeftRenderer;
 
@@ -24,7 +35,7 @@ public class GameView extends MainGUI implements IGameView {
     // instance methods
 
     @Override
-    public void init() {
+    public void load() {
         ArenaView.getInstance().init(
             ControllerForView.getInstance().getNumRowsArena(),
             ControllerForView.getInstance().getNumColsArena()
@@ -32,11 +43,21 @@ public class GameView extends MainGUI implements IGameView {
 
         MouseManager.getInstance().init(stage.getScene());
         DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
+
+        // loading sprites
+        ArcherTowerView.getInstance();
+        KingTowerView.getInstance();
+        GiantView.getInstance();
+        MiniPekkaView.getInstance();
+        PekkaView.getInstance();
+        SingleSkeletonView.getInstance();
+        SkeletonArmyView.getInstance();
+        ValkyrieView.getInstance();
     }
 
     @Override
     public void update(long now) {
-        clearWindow();
+        //clearWindow();
         ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
     }

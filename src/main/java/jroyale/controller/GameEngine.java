@@ -17,12 +17,14 @@ public class GameEngine implements IGameEngine {
 
     // private methods
     private void startGameLoop() {
-        initGameLoop();
         
-
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                long wallTime = System.currentTimeMillis();
+                System.out.println("frame at wall=" + wallTime + " now=" + now);
+
+
                 // update
                 if (!controllerForModel.isGameOver())
                     controllerForModel.updateModel(now);
@@ -34,10 +36,10 @@ public class GameEngine implements IGameEngine {
 
                 if (controllerForView.shouldRenderDragPlacementPreview()) {
                     controllerForView.renderDragPlacementPreview(
-                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol() + 0.5),
-                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow() + 0.5)
+                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol()) + controllerForView.getDx()/2,
+                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow()) + controllerForView.getDy()/2
                     ); 
-                }
+                } 
 
                 for (Entity e : controllerForModel.getEntitiesOrderedByPosY()) {
                     controllerForView.renderEntity(
@@ -52,7 +54,7 @@ public class GameEngine implements IGameEngine {
                         e.getSide(),
                         e.getType()
                     );
-                }
+                }   
                 
                 controllerForView.renderPlayerDeck(
                     controllerForModel.getFirstHandPlayerCard().getType(), controllerForModel.getFirstHandPlayerCard().getCardStats().getElixirCost(),
@@ -68,7 +70,7 @@ public class GameEngine implements IGameEngine {
                 
                 if (controllerForModel.isGameOver()) {
                     controllerForView.renderGameOver();
-                }
+                } 
             }
         };
 
@@ -97,6 +99,7 @@ public class GameEngine implements IGameEngine {
     @Override
     public void startGame() {
         controllerForView.startGame();
+        initGameLoop();
         startGameLoop();
     }
 
