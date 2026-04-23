@@ -3,7 +3,6 @@ package jroyale.view.home_view;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import jroyale.controller.GameEngine;
 import jroyale.utils.Config;
@@ -69,7 +68,7 @@ public class HomeView extends MainGUI implements IHomeView {
             playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * getCanvasHeight() - newVal.getHeight()/2);
         });
         
-        playButton.setOnAction(e -> GameEngine.getInstance().startGame());
+        playButton.setOnAction(e -> GameEngine.getInstance().initGame());
         
         addToRoot(playButton);
 

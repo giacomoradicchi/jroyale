@@ -6,7 +6,7 @@ public interface IGameEngine {
 
     public void start(Stage stage);
 
-    public void startGame();
+    public void initGame();
 
     public void startGameLoop();
 

@@ -16,7 +16,6 @@ import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Config;
 import jroyale.utils.GameData;
 import jroyale.utils.Enums.EntityType;
-import jroyale.utils.Enums.Side;
 
 public class ControllerForModel implements IControllerForModel{
 

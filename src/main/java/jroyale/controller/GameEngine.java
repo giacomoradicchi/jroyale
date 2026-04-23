@@ -95,7 +95,7 @@ public class GameEngine implements IGameEngine {
     }   
 
     @Override
-    public void startGame() {
+    public void initGame() {
         controllerForView.startGame();
         initGameLoop();
     }
