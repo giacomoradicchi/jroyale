@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import jroyale.controller.ControllerForView;
-import jroyale.model.troops.Valkyrie;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -20,8 +19,6 @@ import jroyale.view.game_view.entity_view.troops.MiniPekkaView;
 import jroyale.view.game_view.entity_view.troops.PekkaView;
 import jroyale.view.game_view.entity_view.troops.SingleSkeletonView;
 import jroyale.view.game_view.entity_view.troops.SkeletonArmyView;
-import jroyale.view.game_view.entity_view.troops.SkeletonView;
-import jroyale.view.game_view.entity_view.troops.TroopView;
 import jroyale.view.game_view.entity_view.troops.ValkyrieView;
 import jroyale.view.game_view.ui.DragPlacementPreview;
 import jroyale.view.game_view.ui.TimeLeftRenderer;
@@ -36,12 +33,6 @@ public class GameView extends MainGUI implements IGameView {
 
     @Override
     public void load() {
-        ArenaView.getInstance().init(
-            ControllerForView.getInstance().getNumRowsArena(),
-            ControllerForView.getInstance().getNumColsArena()
-        );
-
-
         // loading sprites
         ArcherTowerView.getInstance();
         KingTowerView.getInstance();
@@ -55,13 +46,17 @@ public class GameView extends MainGUI implements IGameView {
 
     @Override
     public void buildUI() {
+        ArenaView.getInstance().init(
+            ControllerForView.getInstance().getNumRowsArena(),
+            ControllerForView.getInstance().getNumColsArena()
+        );
         MouseManager.getInstance().init(stage.getScene());
         DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
     }
 
     @Override
     public void update(long now) {
-        //clearWindow();
+        clearWindow();
         ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
     }

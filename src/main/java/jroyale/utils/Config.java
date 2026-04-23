@@ -9,7 +9,6 @@ import jroyale.utils.Enums.EntityType;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,59 +22,72 @@ public class Config {
     private final Map<EntityType, CardStats> allCardStats = new HashMap<>();
 
     private Config() {
-        
-        // builds path (works for every SO)
-        Path configPath = Paths.get("conf", "settings.json"); // under /conf/settings.json (relative path)
-
-        try {
-            settings = mapper.readValue(configPath.toFile(), GameSettings.class);
-
-        } catch (Exception e) {
-            settings = new GameSettings();
-            settings.setDifficulty("STANDARD");
-            
-            // TODO: load default json 
-        } 
-
-        //
-        // game stats loading
-        //
-
-        File dir = new File("conf/stats/");
-
-        // loading file 
-        loadCardStats(dir, "minipekka.json", EntityType.MINIPEKKA);
-        loadCardStats(dir, "giant.json", EntityType.GIANT);
-        loadCardStats(dir, "valkyrie.json", EntityType.VALKYRIE);
-        loadCardStats(dir, "pekka.json", EntityType.PEKKA);
-        loadCardStats(dir, "skeletons.json", EntityType.SKELETONS);
-        loadCardStats(dir, "skeleton_army.json", EntityType.SKELETON_ARMY);
-        
-        //
-        // developer reserved game stats 
-        //
-
-        
+        loadSettings();
+        loadAllCardsStats();
     }
 
     public String getDifficulty() {
         return settings.getDifficulty();
     }
 
+    public void setDifficulty(String difficulty) {
+        settings.setDifficulty(difficulty);
+    }
+
     public int getMaxTimeSec() {
         return settings.getMaxTimeSec();
     }
 
-    private void loadCardStats(File dir, String name, EntityType type) {
-        File file = new File(dir, name);
-        if (!file.exists()) throw new IllegalArgumentException("File \"" + name + "\" in " + dir + "not found.");
+    private void loadSettings() {
+        // 1. loading default settings
 
+        
+        try {
+            // getResourceAsStream uses "/" as separator no matter the SO
+            settings = mapper.readValue(this.getClass().getResourceAsStream("/jroyale/conf/default_settings.json"), GameSettings.class);
+        } catch (StreamReadException e) {
+            e.printStackTrace();
+        } catch (DatabindException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 2. loading (eventual) user settings
+
+        // works for every SO
+        File userSettingsFile = Paths.get("conf", "settings.json").toFile();
+
+        try {
+            // overwrites it if correct
+            settings = mapper.readValue(userSettingsFile, GameSettings.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+    }
+
+    private void loadAllCardsStats() {
+        File dir = Paths.get("conf", "stats").toFile();
+
+        // loading stats
+        loadCardStats(dir, "minipekka.json", EntityType.MINIPEKKA);
+        loadCardStats(dir, "giant.json", EntityType.GIANT);
+        loadCardStats(dir, "valkyrie.json", EntityType.VALKYRIE);
+        loadCardStats(dir, "pekka.json", EntityType.PEKKA);
+        loadCardStats(dir, "skeletons.json", EntityType.SKELETONS);
+        loadCardStats(dir, "skeleton_army.json", EntityType.SKELETON_ARMY);
+    }
+
+    private void loadCardStats(File dir, String name, EntityType type) {
+        
         CardStats stats = null;
 
         // 1. loading default stats
-
+ 
+        
         try {
-            stats = mapper.readValue(this.getClass().getResourceAsStream("/jroyale/conf/" + name), CardStats.class);
+            // getResourceAsStream uses "/" as separator no matter the SO
+            stats = mapper.readValue(this.getClass().getResourceAsStream("/jroyale/conf/default_stats/" + name), CardStats.class);
         } catch (StreamReadException e) {
             e.printStackTrace();
         } catch (DatabindException e) {
@@ -85,11 +97,14 @@ public class Config {
         }
 
         // 2. loading user stats
+        File file = new File(dir, name);
+        if (!file.exists()) throw new IllegalArgumentException("File \"" + name + "\" in " + dir + "not found.");
+
         
         try {
             CardStats userStats = mapper.readValue(file, CardStats.class);
 
-            // overwrite only editable stats
+            // overwrites only editable stats
             stats.setSpeed(userStats.getSpeed());
             stats.setMeleeRange(userStats.getMeleeRange());
             stats.setLoadTime(userStats.getLoadTime());
