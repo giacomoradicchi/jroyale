@@ -16,6 +16,8 @@ public interface IControllerForView {
 
     public void updateGameView(long now);
 
+    public void goToHome();
+
     public int getNumRowsArena();
 
     public int getNumColsArena();

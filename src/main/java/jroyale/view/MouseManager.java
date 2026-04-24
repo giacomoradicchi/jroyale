@@ -8,8 +8,8 @@ public class MouseManager implements IMouseManager{
     private static MouseManager instance = null;
 
     private boolean mousePressed = false, mouseReleased = false;
-    private Point initialMousePosition = new Point(-1, -1); // mouse position when mouse is first pressed
-    private Point lastMousePosition = new Point(-1, -1);; // last mouse position when mouse is dragged 
+    private Point initialMousePosition = new Point(-1, -1);     // mouse position when mouse is first pressed
+    private Point lastMousePosition = new Point(-1, -1);;       // last mouse position when mouse is dragged 
 
     private MouseManager() {} 
 
@@ -24,7 +24,7 @@ public class MouseManager implements IMouseManager{
         });
 
         scene.setOnMouseDragged(event -> {
-            double x = event.getSceneX(); // coordinata rispetto alla scena
+            double x = event.getSceneX(); 
             double y = event.getSceneY();
             lastMousePosition.setPoint(x, y);
         });
@@ -35,10 +35,10 @@ public class MouseManager implements IMouseManager{
         });
     }
 
-    @Override
+    /* @Override
     public boolean isMousePressed() {
         return mousePressed;
-    } 
+    }  */
 
     @Override
     public boolean isMouseReleased() {

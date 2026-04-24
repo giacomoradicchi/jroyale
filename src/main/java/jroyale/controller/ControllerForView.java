@@ -41,7 +41,7 @@ public class ControllerForView implements IControllerForView {
     private static final double MIN_GLOBAL_SCALE = 0.92;
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
     private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
-    private static final double NORMALIZED_PLAYBUTTON_Y = 0.67;
+    private static final double NORMALIZED_PLAYBUTTON_Y = 0.8;
     private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
 
     private ControllerForView() {
@@ -72,8 +72,10 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void startGame() {
-        homeView.resetRoot();
-        gameView.openWindow(homeView.getStage());
+        //homeView.resetRoot();
+        //gameView.openWindow(homeView.getStage());
+        gameView.switchContext(homeView);
+        
 
         gameView.loadAsync().setOnSucceeded(e -> {
             GameEngine.getInstance().startGameLoop();
@@ -84,6 +86,12 @@ public class ControllerForView implements IControllerForView {
     public void initView() {
         initTroopsFramesPerDirection();
         gameView.init();
+    }
+
+    @Override
+    public void goToHome() {
+        gameView.resetRoot();
+        openHomeWindow(gameView.getStage());
     }
 
     @Override
@@ -107,6 +115,7 @@ public class ControllerForView implements IControllerForView {
 
         if (!isHomeButtonVisible && timePassedSinceGameOver >= ZOOM_OUT_DURATION_NANOSEC) {
             showHomeButton();
+            isHomeButtonVisible = true;
         }
     }
 
@@ -128,7 +137,10 @@ public class ControllerForView implements IControllerForView {
             playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gameView.getCanvasHeight() - newVal.getHeight()/2);
         });
         
-        playButton.setOnAction(e -> GameEngine.getInstance().goToHome());
+        playButton.setOnAction(e -> {
+            isHomeButtonVisible = false;
+            GameEngine.getInstance().goToHome();
+        });
         
         gameView.addToRoot(playButton);
     }
