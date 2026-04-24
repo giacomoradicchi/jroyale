@@ -75,10 +75,6 @@ public class GameEngine implements IGameEngine {
         gameLoop.start();
     }
 
-    private void startHome() {
-        //controllerForView.
-    }
-
     private void initGameLoop() {
         controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
         controllerForView.initView();
@@ -101,6 +97,12 @@ public class GameEngine implements IGameEngine {
     }
 
     @Override
+    public void goToHome() {
+        controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
+        controllerForView.goToHome();
+    }
+
+    @Override
     public void stop() {
         gameLoop.stop();
     }
@@ -118,4 +120,5 @@ public class GameEngine implements IGameEngine {
 
         return instance;
     }
+
 }

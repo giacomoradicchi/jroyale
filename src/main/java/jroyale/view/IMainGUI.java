@@ -11,6 +11,8 @@ public interface IMainGUI {
 
     public void openWindow(Stage stage);
 
+    public void switchContext(IMainGUI gui);
+
     public Stage getStage();
 
     public void closeWindow();

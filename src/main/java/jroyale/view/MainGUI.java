@@ -13,7 +13,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public abstract class MainGUI implements IMainGUI {
+public class MainGUI implements IMainGUI {
+
+    private static MainGUI instance = null;
 
     private static final double WH_RATIO = 607.0 / 1080;
 
@@ -32,8 +34,11 @@ public abstract class MainGUI implements IMainGUI {
     // scale of the entire scene
     protected double globalScale = 1.0;
 
+    private MainGUI() {}
+
     @Override
     public void openWindow(Stage stage) {
+        
         Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         Pane root = new Pane(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -49,6 +54,20 @@ public abstract class MainGUI implements IMainGUI {
     }
 
     @Override
+    public void switchContext(IMainGUI oldGUI) {
+        MainGUI gui = (MainGUI) oldGUI;
+
+        Node canvas = gui.root.getChildren().get(0);
+        gui.resetRoot();
+        gui.root.getChildren().add(canvas);
+        this.root = gui.root;
+        this.stage = gui.getStage();
+        this.gc = gui.gc;
+        handleMouseEvents();
+        
+    }
+
+    @Override
     public Stage getStage() {
         return stage;
     }
@@ -59,11 +78,16 @@ public abstract class MainGUI implements IMainGUI {
     }
 
     private void handleMouseEvents() {
+        System.out.println("handleMouseEvents chiamato da: " + this.getClass().getSimpleName());
+    System.out.println("stage: " + stage);
+    System.out.println("scene: " + (stage != null ? stage.getScene() : "stage null"));
+
         stage.getScene().setOnMousePressed(event -> {
             processOnMousePressed(
                 event.getSceneX(), 
                 event.getSceneY()
             );
+            System.out.println("choir");
         });
 
         stage.getScene().setOnMouseDragged(event -> {
@@ -81,11 +105,13 @@ public abstract class MainGUI implements IMainGUI {
     @Override
     public void addToRoot(Node node) {
         root.getChildren().add(node);
+        root.getChildren().forEach(n -> System.out.println(n.getClass().getSimpleName() + " mouseTransparent: " + n.isMouseTransparent()));
+        System.out.println("\n");
     }
 
     @Override
     public void resetRoot() {
-        root.getChildren().clear();
+        this.root.getChildren().clear();
     }
 
     @Override
@@ -349,6 +375,15 @@ public abstract class MainGUI implements IMainGUI {
 
         // restoring previous settings
         gc.restore();
+    }
+
+    // static methods
+    public static IMainGUI getInstance() {
+        if (instance == null) {
+            instance = new MainGUI();
+        }
+
+        return instance;
     }
 
     // abstract methods

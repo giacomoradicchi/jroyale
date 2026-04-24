@@ -6,7 +6,7 @@ public interface IMouseManager {
     
     public void init(Scene scene);
 
-    public boolean isMousePressed();
+    //public boolean isMousePressed();
 
     public boolean isMouseReleased();
 

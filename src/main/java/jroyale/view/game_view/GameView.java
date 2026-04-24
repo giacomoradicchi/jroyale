@@ -136,7 +136,7 @@ public class GameView extends MainGUI implements IGameView {
         );
 
         gc.setFill(gradient);
-        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, shadowRadius*2, shadowRadius*2); // Disegna il cerchio
+        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, 2 * shadowRadius, 2 * shadowRadius); 
         gc.restore();
     }
 
