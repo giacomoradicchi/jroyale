@@ -17,6 +17,7 @@ public class GameEngine implements IGameEngine {
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                
 
                 // update
                 if (!controllerForModel.isGameOver())
@@ -85,12 +86,7 @@ public class GameEngine implements IGameEngine {
         controllerForView.openWindow(stage);
         controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
         controllerForView.initView();
-    }   
-
-    @Override
-    public void initGame() {
-        
-    }
+    } 
 
     @Override
     public void goToHome() {

@@ -105,10 +105,14 @@ public class Model implements IModel {
 
     @Override
     public void reset() {
+        System.out.println("reset ora");
         renderOrderEntities.clear();
         toRemoveEntities.clear();
         playerEntities.clear();
         opponentEntities.clear();
+        gameOver = false;
+        accumulator = 0;
+        lastTimeStamp = 0;
         init(maxTimeNanoSec);
     }
 
@@ -185,6 +189,8 @@ public class Model implements IModel {
         ||  isOpponentKingTowerDestroyed()
         ) {
             gameOver = true;
+            System.out.println(isTimeExceeded() + " " + isPlayerKingTowerDestroyed() + " " + isOpponentKingTowerDestroyed());
+            System.out.println(accumulator);
         }
     }
 

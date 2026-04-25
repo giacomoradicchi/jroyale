@@ -5,7 +5,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import jroyale.controller.ControllerForView;
-import jroyale.controller.GameEngine;
 import jroyale.utils.Config;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
@@ -17,15 +16,15 @@ public class HomeView extends View implements IHomeView {
     private static HomeView instance = null;
 
     // static constant
-    private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
-    private static final double NORMALIZED_PLAYBUTTON_Y = 0.67;
-    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
-    private static final double NORMALIZED_DIFFICULTY_BOX_X = 0.5;
-    private static final double NORMALIZED_DIFFICULTY_BOX_Y = NORMALIZED_PLAYBUTTON_Y + 2*NORMALIZED_PLAYBUTTON_TEXT_HEIGHT;
-    private static final double NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT = 0.04;
     private static final double NORMALIZED_ARENA_SPRITE_X = 0.5;
     private static final double NORMALIZED_ARENA_SPRITE_Y = 0.37;
     private static final double NORMALIZED_ARENA_SPRITE_WIDTH = 0.5;
+    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
+    private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
+    private static final double NORMALIZED_PLAYBUTTON_Y = 0.67;
+    private static final double NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT = 0.025;
+    private static final double NORMALIZED_DIFFICULTY_BOX_X = 0.5;
+    private static final double NORMALIZED_DIFFICULTY_BOX_Y = NORMALIZED_PLAYBUTTON_Y + 2*NORMALIZED_PLAYBUTTON_TEXT_HEIGHT;
     private static final double NORMALIZED_LOGO_X = 0.5;
     private static final double NORMALIZED_LOGO_Y = 0.15;
     private static final double NORMALIZED_LOGO_WIDTH = 0.67;
@@ -113,8 +112,8 @@ public class HomeView extends View implements IHomeView {
             "-fx-border-radius: 15;" +
             "-fx-border-color: #1595e4;" +
             "-fx-border-width: 2;" +
-            "-fx-font-family: '" + fontManager.getBoldFont(NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT).getFamily() + "';" +
-            "-fx-font-size: 20px;" +
+            "-fx-font-family: '" + fontManager.getBoldFont(0).getFamily() + "';" +
+            "-fx-font-size: " + (int) fontManager.getBoldFontSize(NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT * gui.getCanvasHeight()) + "px;" + 
             "-fx-text-fill: #333333;"
         );
 

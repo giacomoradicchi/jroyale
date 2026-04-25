@@ -15,9 +15,10 @@ public class TimeLeftRenderer {
     private TimeLeftRenderer() {}
 
     public void renderTimeLeft(int secondsLeft, double alpha) {
-        if (secondsLeft <= 0) secondsLeft = 0;
         
-        String timeLeft = fromSecToTimeString(secondsLeft);
+        if (secondsLeft < 0) secondsLeft = 0;
+        
+        String timeLeft = fromSecToTimeString(secondsLeft + 1); // adding + 1 so it will be displayed values starting from 1 instead of 0
 
         IGameView view = GameView.getInstance();
         IMainGUI gui = view.getGUI();
@@ -40,7 +41,7 @@ public class TimeLeftRenderer {
         gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
         gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
-        if (secondsLeft > TIME_EXCEEDING_LIMIT_IN_SEC || secondsLeft == 0) return;
+        if (secondsLeft >= TIME_EXCEEDING_LIMIT_IN_SEC) return;
 
         centerX = view.getScreenMapTopLeftCornerX() + view.getScreenMapWidth()/2;
         centerY = view.getScreenMapTopLeftCornerY() + view.getScreenMapHeight()/2;
