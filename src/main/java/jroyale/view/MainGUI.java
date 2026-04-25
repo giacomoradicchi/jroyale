@@ -53,22 +53,8 @@ public class MainGUI implements IMainGUI {
     }
 
     @Override
-    public void switchContext(IMainGUI oldGUI) {
-        MainGUI gui = (MainGUI) oldGUI;
-
-        Node canvas = gui.root.getChildren().get(0);
-        gui.resetRoot();
-        gui.root.getChildren().add(canvas);
-        this.root = gui.root;
-        this.stage = gui.getStage();
-        this.gc = gui.gc;
-        handleMouseEvents();
-        
-    }
-
-    @Override
-    public Stage getStage() {
-        return stage;
+    public void setView(IView view) {
+        this.view = view;
     }
 
     @Override
@@ -104,22 +90,22 @@ public class MainGUI implements IMainGUI {
     @Override
     public void addToRoot(Node node) {
         root.getChildren().add(node);
-        root.getChildren().forEach(n -> System.out.println(n.getClass().getSimpleName() + " mouseTransparent: " + n.isMouseTransparent()));
-        System.out.println("\n");
+        //root.getChildren().forEach(n -> System.out.println(n.getClass().getSimpleName() + " mouseTransparent: " + n.isMouseTransparent()));
+        //System.out.println("\n");
     }
 
     @Override
-    public void resetRoot() {
+    public void resetNodes() {
         // removes every node except canvas (first one)
         Node canvas = this.root.getChildren().getFirst();
         this.root.getChildren().clear();
         root.getChildren().add(canvas);
     }
 
-    @Override
+    /* @Override
     public void init() {
         //buildUI();
-    }
+    } */
 
     /* private void renderLoadingScreen() {
        
