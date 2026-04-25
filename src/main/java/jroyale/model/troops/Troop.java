@@ -55,7 +55,7 @@ public abstract class Troop extends Entity {
 
     private static final double DEFAULT_VISION_RANGE = 6;
     private static final int DIRECTION_BUFFER_SIZE = 4;
-    private static final double TURNING_SPEED = 0.5; // 0: doesn't turn, 1: turns instantly
+    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
 

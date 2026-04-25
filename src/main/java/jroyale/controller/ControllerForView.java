@@ -42,7 +42,7 @@ public class ControllerForView implements IControllerForView {
     private static final double MIN_GLOBAL_SCALE = 0.92;
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
     private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
-    private static final double NORMALIZED_PLAYBUTTON_Y = 0.8;
+    private static final double NORMALIZED_PLAYBUTTON_Y = 0.85;
     private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
 
     private ControllerForView() {
@@ -88,9 +88,16 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void goToHome() {
-        initialTimeGameOver = -1;
+        reset();
         gameView.getGUI().setView(homeView);
         homeView.init();
+    }
+
+    private void reset() {
+        initialTimeGameOver = -1;
+        gameView.getGUI().setGlobalScale(initialGlobalScaleSinceGameOver);
+        isHomeButtonVisible = false;
+        gameView.getGUI().resetNodes();
     }
 
     @Override
@@ -139,8 +146,6 @@ public class ControllerForView implements IControllerForView {
         });
         
         playButton.setOnAction(e -> {
-            isHomeButtonVisible = false;
-            gameView.getGUI().resetNodes();
             GameEngine.getInstance().goToHome();
         });
         
