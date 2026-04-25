@@ -13,12 +13,7 @@ public class GameEngine implements IGameEngine {
     private IControllerForView controllerForView;
     private AnimationTimer gameLoop;
 
-    private GameEngine() {}
-
-    // private methods
-    @Override
-    public void startGameLoop() {
-        
+    private GameEngine() {
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -72,6 +67,11 @@ public class GameEngine implements IGameEngine {
             }
         };
 
+    }
+
+    // private methods
+    @Override
+    public void startGameLoop() {
         gameLoop.start();
     }
 
@@ -94,8 +94,9 @@ public class GameEngine implements IGameEngine {
 
     @Override
     public void goToHome() {
-        controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
+        controllerForModel.resetModel();
         controllerForView.goToHome();
+        stop();
     }
 
     @Override

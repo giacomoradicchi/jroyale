@@ -74,6 +74,11 @@ public class ControllerForModel implements IControllerForModel{
     }
 
     @Override
+    public void resetModel() {
+        Model.getInstance().reset();
+    }
+
+    @Override
     public boolean isPlayerKingTowerDestroyed() {
         return Model.getInstance().isPlayerKingTowerDestroyed();
     }

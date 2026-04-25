@@ -140,6 +140,7 @@ public class ControllerForView implements IControllerForView {
         
         playButton.setOnAction(e -> {
             isHomeButtonVisible = false;
+            gameView.getGUI().resetNodes();
             GameEngine.getInstance().goToHome();
         });
         
