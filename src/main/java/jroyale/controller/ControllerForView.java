@@ -10,6 +10,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.FontManager;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.entity_view.troops.GiantView;
@@ -63,23 +64,27 @@ public class ControllerForView implements IControllerForView {
     
     @Override
     public void openHomeWindow(Stage stage) {
-        homeView.openWindow(stage);
+        homeView.getGUI().openWindow(stage);
+        homeView.init();
+
+        /* homeView.openWindow(stage);
 
         homeView.loadAsync().setOnSucceeded(e -> {
             homeView.init();
-        });
+        }); */
     }
 
     @Override
     public void startGame() {
         //homeView.resetRoot();
         //gameView.openWindow(homeView.getStage());
-        gameView.switchContext(homeView);
+        //gameView.switchContext(homeView);
         
-
+        gameView.init();
+        /* 
         gameView.loadAsync().setOnSucceeded(e -> {
             GameEngine.getInstance().startGameLoop();
-        });
+        }); */
     }
 
     @Override
@@ -90,8 +95,8 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void goToHome() {
-        gameView.resetRoot();
-        openHomeWindow(gameView.getStage());
+        //gameView.resetRoot();
+        //openHomeWindow(gameView.getStage());
     }
 
     @Override
@@ -106,7 +111,7 @@ public class ControllerForView implements IControllerForView {
 
         if (initialTimeGameOver == -1) {
             initialTimeGameOver = now;
-            initialGlobalScaleSinceGameOver = gameView.getGlobalScale();
+            initialGlobalScaleSinceGameOver = gameView.getGUI().getGlobalScale();
             resetLastSelectedTile();
         }
 
@@ -120,9 +125,11 @@ public class ControllerForView implements IControllerForView {
     }
 
     private void showHomeButton() {
+        IMainGUI gui = gameView.getGUI();
+
         Button playButton = new Button("Home");
         FontManager fontManager = FontManager.getInstance();
-        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * gameView.getCanvasHeight()));
+        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * gui.getCanvasHeight()));
         playButton.setFont(font);
         playButton.setStyle(
             "-fx-background-color: #FFD700;" +
@@ -133,8 +140,8 @@ public class ControllerForView implements IControllerForView {
             "-fx-text-fill: #333333;"
         );
         playButton.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * gameView.getCanvasWidth() - newVal.getWidth()/2);
-            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gameView.getCanvasHeight() - newVal.getHeight()/2);
+            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * gui.getCanvasWidth() - newVal.getWidth()/2);
+            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gui.getCanvasHeight() - newVal.getHeight()/2);
         });
         
         playButton.setOnAction(e -> {
@@ -142,19 +149,20 @@ public class ControllerForView implements IControllerForView {
             GameEngine.getInstance().goToHome();
         });
         
-        gameView.addToRoot(playButton);
+        gui.addToRoot(playButton);
     }
 
     private void updateGlobalScale() {
+        IMainGUI gui = gameView.getGUI();
         // returns if has passed no time since game over or view.globalScale is already at its minimum
-        if (timePassedSinceGameOver == 0 || gameView.getGlobalScale() == MIN_GLOBAL_SCALE) return;
+        if (timePassedSinceGameOver == 0 || gui.getGlobalScale() == MIN_GLOBAL_SCALE) return;
 
         // smooth change
 
         double timeRatio = (double) timePassedSinceGameOver / ZOOM_OUT_DURATION_NANOSEC;
         double smoothFactor = smoothnessFunction(timeRatio);
         double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * MIN_GLOBAL_SCALE; // linear interpolation using smooth factor
-        gameView.setGlobalScale(globalScale);
+        gui.setGlobalScale(globalScale);
     }
 
     private boolean isGameOver() {
@@ -201,10 +209,11 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void renderGameOver() {
+        IMainGUI gui = gameView.getGUI();
         String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
 
-        gameView.fillScreenTextFromCenter(gameOverText, gameView.getCanvasWidth()/2, gameView.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
-        gameView.strokeScreenTextFromCenter(gameOverText, gameView.getCanvasWidth()/2, gameView.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
+        gui.fillScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
+        gui.strokeScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
     }
 
     private String getGameOverText(String winText, String tieText, String lossText) {
@@ -242,7 +251,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void fillPoint(double centreX, double centreY, int size, Color color) {
-        gameView.fillPoint(centreX, centreY, size, color);
+        gameView.getGUI().fillPoint(centreX, centreY, size, color);
     }
 
     @Override

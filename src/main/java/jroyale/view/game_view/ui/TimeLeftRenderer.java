@@ -2,6 +2,7 @@ package jroyale.view.game_view.ui;
 
 import javafx.scene.paint.Color;
 import jroyale.view.FontManager;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
@@ -19,9 +20,10 @@ public class TimeLeftRenderer {
         String timeLeft = fromSecToTimeString(secondsLeft);
 
         IGameView view = GameView.getInstance();
+        IMainGUI gui = view.getGUI();
 
-        double canvasWidth = view.getCanvasWidth();
-        double canvasHeight = view.getCanvasHeight();
+        double canvasWidth = gui.getCanvasWidth();
+        double canvasHeight = gui.getCanvasHeight();
 
         double textSize = canvasWidth * 0.05;
         double centerX = canvasWidth * 9.0/10;
@@ -33,10 +35,10 @@ public class TimeLeftRenderer {
         double alphaBackGround = 0.5;
         double lineWidth = 4;
 
-        view.fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, alphaBackGround * alpha, getTextFillColor(secondsLeft));
+        gui.fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, alphaBackGround * alpha, getTextFillColor(secondsLeft));
 
-        view.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
-        view.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
+        gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
+        gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
         if (secondsLeft > TIME_EXCEEDING_LIMIT_IN_SEC || secondsLeft == 0) return;
 
@@ -44,8 +46,8 @@ public class TimeLeftRenderer {
         centerY = view.getScreenMapTopLeftCornerY() + view.getScreenMapHeight()/2;
         textSize *= 2;
 
-        view.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
-        view.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
+        gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
+        gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
     }
 

@@ -7,6 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
@@ -128,11 +129,13 @@ public class ValkyrieView extends TroopView {
             flipped = 1;
 
         IGameView view = GameView.getInstance();
-        view.renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        IMainGUI gui = view.getGUI();
+
+        gui.renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
 
         if(state == State.ATTACK)
             // swirl rendering
-            view.renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, 1);
+            gui.renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, 1);
     }
 
      @Override
