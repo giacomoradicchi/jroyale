@@ -1,12 +1,8 @@
 package jroyale.view;
 
-import javafx.concurrent.Task;
-
 public interface IView {
 
     public void init();
-    
-    //public Task<Void> loadAsync();
 
     public void update(long now);
     

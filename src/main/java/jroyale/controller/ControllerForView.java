@@ -63,40 +63,34 @@ public class ControllerForView implements IControllerForView {
     // instance methods
     
     @Override
-    public void openHomeWindow(Stage stage) {
+    public void openWindow(Stage stage) {
+        // starts with home
         homeView.getGUI().openWindow(stage);
+        homeView.getGUI().setView(homeView);
         homeView.init();
-
-        /* homeView.openWindow(stage);
-
-        homeView.loadAsync().setOnSucceeded(e -> {
-            homeView.init();
-        }); */
     }
 
     @Override
-    public void startGame() {
-        //homeView.resetRoot();
-        //gameView.openWindow(homeView.getStage());
-        //gameView.switchContext(homeView);
-        
+    public void initGameView() {
         gameView.init();
-        /* 
-        gameView.loadAsync().setOnSucceeded(e -> {
-            GameEngine.getInstance().startGameLoop();
-        }); */
+    }
+
+    @Override
+    public void startGameLoop() {
+        gameView.getGUI().setView(gameView);
+        GameEngine.getInstance().startGameLoop();
     }
 
     @Override
     public void initView() {
         initTroopsFramesPerDirection();
-        gameView.init();
     }
 
     @Override
     public void goToHome() {
-        //gameView.resetRoot();
-        //openHomeWindow(gameView.getStage());
+        initialTimeGameOver = -1;
+        gameView.getGUI().setView(homeView);
+        homeView.init();
     }
 
     @Override
@@ -108,11 +102,11 @@ public class ControllerForView implements IControllerForView {
         //
         // game over
         //
+        resetLastSelectedTile();
 
         if (initialTimeGameOver == -1) {
             initialTimeGameOver = now;
             initialGlobalScaleSinceGameOver = gameView.getGUI().getGlobalScale();
-            resetLastSelectedTile();
         }
 
         timePassedSinceGameOver = now - initialTimeGameOver;
@@ -163,7 +157,7 @@ public class ControllerForView implements IControllerForView {
         double smoothFactor = smoothnessFunction(timeRatio);
         double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * MIN_GLOBAL_SCALE; // linear interpolation using smooth factor
         gui.setGlobalScale(globalScale);
-    }
+    } 
 
     private boolean isGameOver() {
         return initialTimeGameOver != -1;

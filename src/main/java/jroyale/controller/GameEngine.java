@@ -75,11 +75,6 @@ public class GameEngine implements IGameEngine {
         gameLoop.start();
     }
 
-    private void initGameLoop() {
-        controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
-        controllerForView.initView();
-    }
-
     // instance methods
     @Override
     public void start(Stage stage) {
@@ -87,13 +82,14 @@ public class GameEngine implements IGameEngine {
         controllerForView = ControllerForView.getInstance();
         controllerForModel = ControllerForModel.getInstance();
         
-        controllerForView.openHomeWindow(stage);
+        controllerForView.openWindow(stage);
+        controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
+        controllerForView.initView();
     }   
 
     @Override
     public void initGame() {
-        controllerForView.startGame();
-        initGameLoop();
+        
     }
 
     @Override

@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
+import jroyale.controller.ControllerForView;
 import jroyale.controller.GameEngine;
 import jroyale.utils.Config;
 import jroyale.view.FontManager;
@@ -45,8 +46,7 @@ public class HomeView extends View implements IHomeView {
         this.arenaSprite = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));
     }
 
-    @Override
-    protected void buildUI() {
+    private void buildUI() {
         gui.renderScreenImage(homeBackground, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gui.getCanvasWidth(), gui.getCanvasHeight(), 1);
         
         double width = gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
@@ -75,8 +75,8 @@ public class HomeView extends View implements IHomeView {
         });
         
         playButton.setOnAction(e -> {
-            gui.resetRoot();
-            GameEngine.getInstance().initGame();
+            gui.resetNodes();
+            ControllerForView.getInstance().initGameView();
         });
         
         gui.addToRoot(playButton);
@@ -133,23 +133,28 @@ public class HomeView extends View implements IHomeView {
     }
 
     @Override
+    protected void onLoadFinished() {
+        buildUI();
+    }
+
+    @Override
     public void update(long now) {
-        // TODO
+        // empty
     }
 
     @Override
     public void processOnMousePressed(double x, double y) {
-        GameEngine.getInstance().initGame();
+        // empty
     }
 
     @Override
     public void processOnMouseDragged(double x, double y) {
-        // TODO
+        // empty
     }
 
     @Override
     public void processOnMouseReleased() {
-        // TODO
+        // empty
     }
 
     // static methods

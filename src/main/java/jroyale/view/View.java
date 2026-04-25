@@ -12,11 +12,14 @@ public abstract class View implements IView {
 
     protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
 
+    
 
     @Override
     public void init() {
+        // first it loads sprites on another thread with loadAsync, then onLoadFinished is called 
         loadAsync().setOnSucceeded(e -> {
-            buildUI();
+            onLoadFinished();
+            System.out.println("Finished loading, class:" + getClass());
         });
     }
 
@@ -46,7 +49,9 @@ public abstract class View implements IView {
         return task;
     }
 
+    // since it runs on another thread, it is prohibited to execute JavaFX methods in here. 
     protected abstract void loadSprites();
 
-    protected abstract void buildUI();
+    // now JavaFX methods can be executed (runs on main JavaFX thread). 
+    protected abstract void onLoadFinished();
 }
