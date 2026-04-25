@@ -66,7 +66,11 @@ public class Model implements IModel {
 
     @Override
     public void init(int maxTimeSec) {
-        this.maxTimeNanoSec = maxTimeSec * 1_000_000_000L;
+        init(maxTimeSec * 1_000_000_000L);
+    }
+
+    private void init(long maxTimeNanoSec) {
+        this.maxTimeNanoSec = maxTimeNanoSec;
 
         initReachableTiles();
 
@@ -97,6 +101,15 @@ public class Model implements IModel {
             PekkaCard.getInstance(),
             ValkyrieCard.getInstance()
         }));
+    }
+
+    @Override
+    public void reset() {
+        renderOrderEntities.clear();
+        toRemoveEntities.clear();
+        playerEntities.clear();
+        opponentEntities.clear();
+        init(maxTimeNanoSec);
     }
 
     @Override

@@ -14,6 +14,8 @@ public interface IControllerForModel {
 
     public boolean isGameOver();
 
+    public void resetModel();
+
     public boolean isPlayerKingTowerDestroyed();
 
     public boolean isOpponentKingTowerDestroyed();

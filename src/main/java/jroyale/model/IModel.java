@@ -12,6 +12,8 @@ public interface IModel {
     public void update(long now);
 
     public boolean isGameOver();
+
+    public void reset();
     
     public boolean isPlayerKingTowerDestroyed();
 
