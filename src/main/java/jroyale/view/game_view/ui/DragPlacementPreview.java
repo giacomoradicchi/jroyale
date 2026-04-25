@@ -1,6 +1,7 @@
 package jroyale.view.game_view.ui;
 
 import javafx.scene.paint.Color;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
@@ -27,9 +28,10 @@ public class DragPlacementPreview {
     public void render(double centreX, double centreY) {
 
         IGameView view = GameView.getInstance();
+        IMainGUI gui = view.getGUI();
         
         // fill
-        view.fillWorldRoundedRect(
+        gui.fillWorldRoundedRect(
             centreX, 
             centreY, 
             view.getDx() * scaleAnimation, 
@@ -41,7 +43,7 @@ public class DragPlacementPreview {
         );
 
         // outline
-        view.strokeWorldRoundedRect(
+        gui.strokeWorldRoundedRect(
             centreX, 
             centreY, 
             view.getDx() * scaleAnimation, 

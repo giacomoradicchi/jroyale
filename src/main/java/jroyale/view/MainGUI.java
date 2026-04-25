@@ -1,6 +1,5 @@
 package jroyale.view;
 
-import javafx.concurrent.Task;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,6 +8,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -21,15 +22,13 @@ public class MainGUI implements IMainGUI {
 
     private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
-    private static final double NORMALIZED_LOGO_X = 0.5;
-    private static final double NORMALIZED_LOGO_Y = 0.10;
-    private static final double NORMALIZED_LOGO_WIDTH = 0.67;
-    private static final Image LOADING_BACKGROUND = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/loading_background.png"));
-    protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
+    
+    private GraphicsContext gc;
+    private Stage stage;
+    private Pane root;
 
-    protected GraphicsContext gc;
-    protected Stage stage;
-    protected Pane root;
+    // current view
+    private IView view;
 
     // scale of the entire scene
     protected double globalScale = 1.0;
@@ -83,7 +82,7 @@ public class MainGUI implements IMainGUI {
     System.out.println("scene: " + (stage != null ? stage.getScene() : "stage null"));
 
         stage.getScene().setOnMousePressed(event -> {
-            processOnMousePressed(
+            view.processOnMousePressed(
                 event.getSceneX(), 
                 event.getSceneY()
             );
@@ -91,14 +90,14 @@ public class MainGUI implements IMainGUI {
         });
 
         stage.getScene().setOnMouseDragged(event -> {
-            processOnMouseDragged(
+            view.processOnMouseDragged(
                 event.getSceneX(), 
                 event.getSceneY()
             );
         });
 
         stage.getScene().setOnMouseReleased(event -> {
-            processOnMouseReleased();
+            view.processOnMouseReleased();
         });
     }
 
@@ -111,15 +110,18 @@ public class MainGUI implements IMainGUI {
 
     @Override
     public void resetRoot() {
+        // removes every node except canvas (first one)
+        Node canvas = this.root.getChildren().getFirst();
         this.root.getChildren().clear();
+        root.getChildren().add(canvas);
     }
 
     @Override
     public void init() {
-        buildUI();
+        //buildUI();
     }
 
-    private void renderLoadingScreen() {
+    /* private void renderLoadingScreen() {
        
         double height = getCanvasHeight();
         double width = LOADING_BACKGROUND.getWidth() * height / LOADING_BACKGROUND.getHeight(); 
@@ -129,10 +131,10 @@ public class MainGUI implements IMainGUI {
         height = LOGO.getHeight() / LOGO.getWidth() * width;
         renderScreenImage(LOGO, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
         
-    }
+    } */
 
     // Restituisce il Task così chi chiama può sapere quando ha finito
-    public Task<Void> loadAsync() {
+    /* public Task<Void> loadAsync() {
         renderLoadingScreen();
 
         Task<Void> task = new Task<>() {
@@ -144,7 +146,7 @@ public class MainGUI implements IMainGUI {
         };
         new Thread(task, "sprite-loading-thread").start();
         return task;
-    }
+    } */
 
     @Override
     public int getCanvasWidth() {
@@ -166,7 +168,8 @@ public class MainGUI implements IMainGUI {
         this.globalScale = globalScale;
     }
 
-    protected void clearWindow() {
+    @Override
+    public void clearWindow() {
         gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
     }
 
@@ -201,11 +204,13 @@ public class MainGUI implements IMainGUI {
             (width, height) * globalScale as the dimension of the image.
     */
 
-    protected double fromWorldToScreenX(double coordX) {
+    @Override
+    public double fromWorldToScreenX(double coordX) {
         return centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(coordX));
     }
 
-    protected double fromWorldToScreenY(double coordY) {
+    @Override
+    public double fromWorldToScreenY(double coordY) {
         return centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(coordY));
     }
 
@@ -242,6 +247,37 @@ public class MainGUI implements IMainGUI {
         );
         gc.restore();
     }
+
+    @Override
+    public void renderWorldShadow(double centerX, double centerY, double shadowRadius) {
+        renderScreenShadow(
+            fromWorldToScreenX(centerX), 
+            fromWorldToScreenY(centerY), 
+            shadowRadius * globalScale
+        );
+    }
+
+    @Override
+    public void renderScreenShadow(double centreX, double centreY, double shadowRadius) {
+        // Definiamo il gradiente radiale
+        gc.save();
+        RadialGradient gradient = new RadialGradient(
+            0,      // focusAngle
+            0,      // focusDistance
+            centreX, // centerX (coordinata assoluta sul canvas)
+            centreY, // centerY (coordinata assoluta sul canvas)
+            shadowRadius, // radius (metà del diametro)
+            false,  // proportional: false perché usiamo i pixel esatti
+            null,   // cycleMethod
+            new Stop(0, new Color(0, 0, 0, 0.7)),              // Centro opaco
+            new Stop(1, Color.TRANSPARENT)       // Bordo trasparente
+        );
+
+        gc.setFill(gradient);
+        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, 2 * shadowRadius, 2 * shadowRadius); 
+        gc.restore();
+    }
+
 
     @Override
     public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
@@ -386,9 +422,40 @@ public class MainGUI implements IMainGUI {
         return instance;
     }
 
-    // abstract methods
-    protected abstract void load();
+    /* 
+    @Override
+    public Task<Void> loadAsync() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'loadAsync'");
+    }
 
-    protected abstract void buildUI();
+    @Override
+    public void update(long now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void processOnMousePressed(double x, double y) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'processOnMousePressed'");
+    }
+
+    @Override
+    public void processOnMouseDragged(double x, double y) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseDragged'");
+    }
+
+    @Override
+    public void processOnMouseReleased() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseReleased'");
+    } */
+
+    // abstract methods
+    //protected abstract void load();
+
+    //protected abstract void buildUI();
     
 }

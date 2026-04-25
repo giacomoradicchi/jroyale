@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
@@ -49,6 +50,7 @@ public abstract class EntityView {
     private void renderHealth(int currentHealth, int maxHealth, Side side, double centerX, double centerY) {
         
         IGameView view = GameView.getInstance();
+        IMainGUI gui = view.getGUI();
 
         double rectWidth  = view.getDx() * HEALTH_BAR_WIDTH_MULTIPLIER;
         double rectHeight = view.getDy() * HEALTH_BAR_HEIGHT_MULTIPLIER;
@@ -69,7 +71,7 @@ public abstract class EntityView {
         }
 
         // Draw the empty (background) health bar
-        view.fillWorldRoundedRect(centerX, centerY + shiftY, rectWidth, rectHeight,
+        gui.fillWorldRoundedRect(centerX, centerY + shiftY, rectWidth, rectHeight,
                 ARC_X, ARC_Y, BACKGROUND_ALPHA, cFill);
 
         // Calculate the filled portion width based on current health percentage
@@ -80,16 +82,16 @@ public abstract class EntityView {
         double healthBarCenterX = centerX - rectWidth / 2 + healthWidth / 2;
 
         // Draw the filled (current health) portion of the bar
-        view.fillWorldRoundedRect(healthBarCenterX, centerY + shiftY, healthWidth, rectHeight,
+        gui.fillWorldRoundedRect(healthBarCenterX, centerY + shiftY, healthWidth, rectHeight,
                 ARC_X, ARC_Y, ALPHA, cFillDark);
 
         // Draw the border around the full health bar
-        view.strokeWorldRoundedRect(centerX, centerY + shiftY, rectWidth, rectHeight,
+        gui.strokeWorldRoundedRect(centerX, centerY + shiftY, rectWidth, rectHeight,
                 rectHeight / 2, rectHeight / 2, BORDER_STROKE_LINE_WIDTH, ALPHA, cStroke);
     }
 
     private void renderShadow(double centreX, double centreY, double shadowRadius) {
-        GameView.getInstance().renderWorldShadow(centreX, centreY, shadowRadius);
+        GameView.getInstance().getGUI().renderWorldShadow(centreX, centreY, shadowRadius);
     }
 
     protected double getImageScale() {

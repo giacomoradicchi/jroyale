@@ -19,9 +19,9 @@ public interface IMainGUI {
 
     public void init();
 
-    public Task<Void> loadAsync();
+    //public Task<Void> loadAsync();
 
-    public void update(long now);
+    //public void update(long now);
 
     public void addToRoot(Node node);
 
@@ -35,9 +35,19 @@ public interface IMainGUI {
 
     public void setGlobalScale(double globalScale);
 
+    public double fromWorldToScreenX(double worldX);
+
+    public double fromWorldToScreenY(double worldY);
+
+    public void clearWindow();
+
     public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha);
 
     public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha);
+
+    public void renderWorldShadow(double centerX, double centerY, double shadowRadius);
+
+    public void renderScreenShadow(double centreX, double centreY, double shadowRadius);
         
     public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color);
         
@@ -57,9 +67,9 @@ public interface IMainGUI {
 
     public void fillPoint(double centreX, double centreY, int size, Color color);
     
-    public void processOnMousePressed(double x, double y);
+    //public void processOnMousePressed(double x, double y);
 
-    public void processOnMouseDragged(double x, double y);
+    //public void processOnMouseDragged(double x, double y);
     
-    public void processOnMouseReleased();
+    //public void processOnMouseReleased();
 }

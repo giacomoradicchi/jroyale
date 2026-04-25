@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import jroyale.utils.Enums.EntityType;
 import jroyale.view.FontManager;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.controller.binders.EntityViewBinder;
@@ -42,7 +43,7 @@ public class DeckView {
         initCardsView();
 
         for (int i = 0; i < numCards; i++) {
-            GameView.getInstance().addToRoot(cards[i]);
+            GameView.getInstance().getGUI().addToRoot(cards[i]);
         }
         
     }
@@ -94,9 +95,9 @@ public class DeckView {
     }
 
     private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir, double alpha) {
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
 
-        view.renderScreenImage(
+        gui.renderScreenImage(
             ELIXIR_DROP_IMAGE, 
             dropCenterX, 
             dropCenterY, 
@@ -106,7 +107,7 @@ public class DeckView {
         ); 
 
         // render counter elixir
-        view.fillScreenTextFromCenter(
+        gui.fillScreenTextFromCenter(
             String.valueOf(elixir), 
             dropCenterX, 
             dropCenterY, 
@@ -115,7 +116,7 @@ public class DeckView {
             alpha
         );
 
-        view.strokeScreenTextFromCenter(
+        gui.strokeScreenTextFromCenter(
             String.valueOf(elixir), 
             dropCenterX, 
             dropCenterY, 
@@ -129,10 +130,10 @@ public class DeckView {
 
     private void renderElixirBar(byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
 
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
         // elixir
-        final double CANVAS_WIDTH = view.getCanvasWidth();
-        final double CANVAS_HEIGHT = view.getCanvasHeight();
+        final double CANVAS_WIDTH = gui.getCanvasWidth();
+        final double CANVAS_HEIGHT = gui.getCanvasHeight();
 
         final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
@@ -150,7 +151,7 @@ public class DeckView {
         cFillDark = PLAYER_FILL_DARK;
 
         // Draw the empty (background) health bar
-        view.fillScreenRoundedRect(centerX, centerY, barWidth, barHeight,
+        gui.fillScreenRoundedRect(centerX, centerY, barWidth, barHeight,
                 barHeight / 2, barHeight / 2, alpha, cFillDark);
 
         // Calculate the filled portion width based on current health percentage
@@ -162,20 +163,20 @@ public class DeckView {
         
         double dx = 1.0 / maxElixir * barWidth;
         double elixirProgressWidth = dx * elixirChargeTimeProgress;
-        view.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, alpha, PLAYER_FILL_PROGRESS);
+        gui.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, alpha, PLAYER_FILL_PROGRESS);
 
         // Draw the filled (current elixir) portion of the bar
-        view.fillScreenRoundedRect(ElixirBarCenterX, centerY, elixirWidth, barHeight,
+        gui.fillScreenRoundedRect(ElixirBarCenterX, centerY, elixirWidth, barHeight,
                 barHeight / 2, barHeight / 2, alpha, cFill);
 
         // Draw the border around the full elixir bar
-        view.strokeScreenRoundedRect(centerX, centerY, barWidth, barHeight,
+        gui.strokeScreenRoundedRect(centerX, centerY, barWidth, barHeight,
                 barHeight / 2, barHeight / 2, 1.5, alpha, cStroke);
 
 
         for (int i = 1; i < maxElixir; i++) {
             double x = centerX - barWidth / 2 + i * dx;
-            view.strokeScreenLine(
+            gui.strokeScreenLine(
                 x, 
                 centerY - barHeight/2, 
                 x, 
@@ -197,15 +198,15 @@ public class DeckView {
 
     private void renderBackDeck(double alpha) {
 
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
 
-        final double CANVAS_WIDTH = view.getCanvasWidth();
-        final double CANVAS_HEIGHT = view.getCanvasHeight();
+        final double CANVAS_WIDTH = gui.getCanvasWidth();
+        final double CANVAS_HEIGHT = gui.getCanvasHeight();
 
         final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
 
-        view.renderScreenImage(
+        gui.renderScreenImage(
             DECK_IMAGE, 
             CANVAS_WIDTH/2, 
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
@@ -217,12 +218,12 @@ public class DeckView {
 
     private void initCardsView() {
 
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
 
-        final double CANVAS_WIDTH = view.getCanvasWidth();
-        final double CANVAS_HEIGHT = view.getCanvasHeight();
+        final double CANVAS_WIDTH = gui.getCanvasWidth();
+        final double CANVAS_HEIGHT = gui.getCanvasHeight();
 
-        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * view.getCanvasWidth();
+        final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * gui.getCanvasWidth();
         final double RIGHT_SIDE_DECK_WIDTH = DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * DECK_WIDTH;
 
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();

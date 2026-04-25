@@ -3,10 +3,10 @@ package jroyale.view.game_view;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.IMainGUI;
+import jroyale.view.IView;
 import jroyale.view.game_view.entity_view.EntityView;
 
-public interface IGameView extends IMainGUI {
+public interface IGameView extends IView {
 
     public double getDx();
 
@@ -27,8 +27,6 @@ public interface IGameView extends IMainGUI {
     public void renderArena();
 
     public void renderEntity(EntityView entity, double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side);
-
-    public void renderWorldShadow(double centreX, double centreY, double shadowRadius);
 
     public void renderTimeLeft(int secondsLeft, double alpha);
 

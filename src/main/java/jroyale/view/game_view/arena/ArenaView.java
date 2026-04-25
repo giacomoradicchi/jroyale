@@ -4,6 +4,7 @@ import java.awt.geom.Rectangle2D;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
@@ -65,10 +66,10 @@ public class ArenaView {
     }
 
     private void calculateMapBoundingBox() {
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
 
-        double canvasWidth = view.getCanvasWidth();
-        double canvasHeight = view.getCanvasHeight();
+        double canvasWidth = gui.getCanvasWidth();
+        double canvasHeight = gui.getCanvasHeight();
 
         double mapWidth = NORMALIZED_MAP_WIDTH * canvasWidth;
         double mapHeight = NORMALIZED_MAP_HEIGHT * canvasHeight;
@@ -93,17 +94,17 @@ public class ArenaView {
 
     public void renderArena(boolean debugMode) {
 
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
 
-        double canvasWidth = view.getCanvasWidth();
-        double canvasHeight = view.getCanvasHeight();
+        double canvasWidth = gui.getCanvasWidth();
+        double canvasHeight = gui.getCanvasHeight();
 
-        view.renderWorldImage(
+        gui.renderWorldImage(
             arenaImage, 
             canvasWidth * 0.5, 
-            canvasHeight * 0.5 - 108 * (view.getCanvasHeight() / 800.0), 
-            getWidth() * SCALE * (view.getCanvasWidth() / 449.6296296296296), 
-            getHeight() * SCALE * (view.getCanvasHeight() / 800.0),
+            canvasHeight * 0.5 - 108 * (gui.getCanvasHeight() / 800.0), 
+            getWidth() * SCALE * (gui.getCanvasWidth() / 449.6296296296296), 
+            getHeight() * SCALE * (gui.getCanvasHeight() / 800.0),
             1
         );  
 

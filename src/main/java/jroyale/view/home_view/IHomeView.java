@@ -1,8 +1,8 @@
 package jroyale.view.home_view;
 
-import jroyale.view.IMainGUI;
+import jroyale.view.IView;
 
-public interface IHomeView extends IMainGUI {
+public interface IHomeView extends IView {
 
     
 

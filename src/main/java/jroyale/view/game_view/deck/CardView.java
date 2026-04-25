@@ -9,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import jroyale.utils.Enums.EntityType;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.utils.Point;
@@ -126,14 +127,14 @@ public class CardView extends StackPane {
         double centerX = this.getLayoutX() + this.getTranslateX() + getWidth() / 2;
         double centerY = this.getLayoutY() + this.getTranslateY() + getWidth() / 2;
 
-        IGameView view = GameView.getInstance();
+        IMainGUI gui = GameView.getInstance().getGUI();
         
 
         // 1. Draw Icon
-        view.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        gui.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
         
         // 2. Draw Outline/Frame
-        view.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        gui.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
 
         // Debug: Red rect should perfectly align with the card's interactive area
         //view.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);

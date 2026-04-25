@@ -7,6 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
@@ -68,8 +69,10 @@ public class GiantView extends TroopView {
 
         AnimationKey key = new AnimationKey(baseSide, state, direction.fromAngle(angleDirection));
         Image image = animationBuffer.get(key).getFrame(currentFrame);
-        IGameView view = GameView.getInstance();
-        double canvasHeight = view.getCanvasHeight();
+        
+        IMainGUI gui = GameView.getInstance().getGUI();
+
+        double canvasHeight = gui.getCanvasHeight();
         double scale = getImageScale();
         double width = image.getWidth() * scale;
         double height = image.getHeight() * scale;
@@ -78,13 +81,13 @@ public class GiantView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        view.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
             key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
-            view.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+            gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
         }
         
     }

@@ -34,7 +34,7 @@ public class KingTowerView extends TowerView {
 
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
-        GameView.getInstance().renderWorldImage(
+        GameView.getInstance().getGUI().renderWorldImage(
             img, 
             centreX, 
             centreY + Y_OFFSET, 

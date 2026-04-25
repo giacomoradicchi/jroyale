@@ -116,7 +116,7 @@ public class PekkaView extends TroopView{
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        GameView.getInstance().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        GameView.getInstance().getGUI().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
     }
 
     @Override

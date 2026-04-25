@@ -31,7 +31,7 @@ public class ArcherTowerView extends TowerView{
             Side side) {
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
-        GameView.getInstance().renderWorldImage(
+        GameView.getInstance().getGUI().renderWorldImage(
             img, 
             centreX, 
             centreY, 

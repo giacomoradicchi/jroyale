@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Main extends Application {
     
     @Override
-    public void start(@SuppressWarnings("exports") Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException {
         GameEngine.getInstance().start(stage);
     }
 

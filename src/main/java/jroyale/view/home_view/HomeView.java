@@ -7,9 +7,11 @@ import javafx.scene.text.Font;
 import jroyale.controller.GameEngine;
 import jroyale.utils.Config;
 import jroyale.view.FontManager;
+import jroyale.view.IMainGUI;
 import jroyale.view.MainGUI;
+import jroyale.view.View;
 
-public class HomeView extends MainGUI implements IHomeView {
+public class HomeView extends View implements IHomeView {
 
     private static HomeView instance = null;
 
@@ -31,29 +33,33 @@ public class HomeView extends MainGUI implements IHomeView {
     private Image homeBackground;
     private Image arenaSprite;
 
-    private HomeView() {}
+    private final IMainGUI gui;
+
+    private HomeView() {
+        this.gui = MainGUI.getInstance();
+    }
 
     @Override
-    public void load() {
+    protected void loadSprites() {
         this.homeBackground = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/home_background.jpg"));
         this.arenaSprite = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));
     }
 
     @Override
-    public void buildUI() {
-        renderScreenImage(homeBackground, getCanvasWidth()/2, getCanvasHeight()/2, getCanvasWidth(), getCanvasHeight(), 1);
+    protected void buildUI() {
+        gui.renderScreenImage(homeBackground, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gui.getCanvasWidth(), gui.getCanvasHeight(), 1);
         
-        double width = getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
+        double width = gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
         double height = arenaSprite.getHeight() / arenaSprite.getWidth() * width;
-        renderScreenImage(arenaSprite, getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, 1);
+        gui.renderScreenImage(arenaSprite, gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, gui.getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, 1);
 
-        width = getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
+        width = gui.getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
         height = LOGO.getHeight() / LOGO.getWidth() * width;
-        renderScreenImage(LOGO, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
         
         Button playButton = new Button("Gioca Partita");
         FontManager fontManager = FontManager.getInstance();
-        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * getCanvasHeight()));
+        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * gui.getCanvasHeight()));
         playButton.setFont(font);
         playButton.setStyle(
             "-fx-background-color: #FFD700;" +
@@ -64,13 +70,16 @@ public class HomeView extends MainGUI implements IHomeView {
             "-fx-text-fill: #333333;"
         );
         playButton.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * getCanvasWidth() - newVal.getWidth()/2);
-            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * getCanvasHeight() - newVal.getHeight()/2);
+            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * gui.getCanvasWidth() - newVal.getWidth()/2);
+            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gui.getCanvasHeight() - newVal.getHeight()/2);
         });
         
-        playButton.setOnAction(e -> GameEngine.getInstance().initGame());
+        playButton.setOnAction(e -> {
+            gui.resetRoot();
+            GameEngine.getInstance().initGame();
+        });
         
-        addToRoot(playButton);
+        gui.addToRoot(playButton);
 
         ComboBox<String> difficultyBox = new ComboBox<>();
         difficultyBox.getItems().addAll("Basic", "Standard", "Expert", "Master");
@@ -110,8 +119,8 @@ public class HomeView extends MainGUI implements IHomeView {
         );
 
         difficultyBox.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            difficultyBox.setLayoutX(NORMALIZED_DIFFICULTY_BOX_X * getCanvasWidth() - newVal.getWidth()/2);
-            difficultyBox.setLayoutY(NORMALIZED_DIFFICULTY_BOX_Y * getCanvasHeight() - newVal.getHeight()/2); 
+            difficultyBox.setLayoutX(NORMALIZED_DIFFICULTY_BOX_X * gui.getCanvasWidth() - newVal.getWidth()/2);
+            difficultyBox.setLayoutY(NORMALIZED_DIFFICULTY_BOX_Y * gui.getCanvasHeight() - newVal.getHeight()/2); 
         });
 
         difficultyBox.setOnAction(e -> {
@@ -120,7 +129,7 @@ public class HomeView extends MainGUI implements IHomeView {
         });
         difficultyBox.setFocusTraversable(false);
 
-        addToRoot(difficultyBox);
+        gui.addToRoot(difficultyBox);
     }
 
     @Override
@@ -130,7 +139,7 @@ public class HomeView extends MainGUI implements IHomeView {
 
     @Override
     public void processOnMousePressed(double x, double y) {
-        // TODO
+        GameEngine.getInstance().initGame();
     }
 
     @Override
@@ -150,6 +159,11 @@ public class HomeView extends MainGUI implements IHomeView {
         }
 
         return instance;
+    }
+
+    @Override
+    public IMainGUI getGUI() {
+        return gui;
     }
     
 }

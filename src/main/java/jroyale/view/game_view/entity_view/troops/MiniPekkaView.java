@@ -55,7 +55,7 @@ public class MiniPekkaView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        GameView.getInstance().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height, 1);
+        GameView.getInstance().getGUI().renderWorldImage(image, centreX, centreY, Math.pow(-1, flipped) * width, height, 1);
     }
 
     @Override
