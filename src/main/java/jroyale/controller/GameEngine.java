@@ -74,8 +74,7 @@ public class GameEngine implements IGameEngine {
     @Override
     public void startGameLoop() {
         controllerForModel.initModel(Config.getInstance().getMaxTimeSec());
-        controllerForView.initView();
-        
+
         gameLoop.start();
     }
 
@@ -87,6 +86,7 @@ public class GameEngine implements IGameEngine {
         controllerForModel = ControllerForModel.getInstance();
         
         controllerForView.openWindow(stage);
+        controllerForView.initView();
     } 
 
     @Override
