@@ -38,6 +38,8 @@ public class TowerTargetSelector {
         double minDistance = Double.POSITIVE_INFINITY;
 
         for (Tower tower : targets) {
+            if (tower.getHitPoints() == 0) continue; // this means the target is dead
+
             double distance = Point.distance(e.getX(), e.getY(), tower.getX(), tower.getY());
 
             if (distance < minDistance) {

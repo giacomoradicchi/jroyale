@@ -223,7 +223,8 @@ public abstract class Troop extends Entity {
     protected boolean selectClosestTower() {
         Tower possibleTargetTower = TowerTargetSelector.getClosestEnemyTower(this);
 
-        if (target == null) {
+        // target has to change if current target is null or dead
+        if (target == null || target.getHitPoints() == 0) { 
             // set move state and reset others  
             target = possibleTargetTower;
             shouldMove = true;
@@ -231,13 +232,15 @@ public abstract class Troop extends Entity {
             shouldIdle = false;
             enemyHit = true;
             return true;
-        }
+        } 
+
+        // current target not null and not dead
 
         double distanceWithTarget = Point.distance(
             getX(), 
             getY(), 
-            possibleTargetTower.getX(), 
-            possibleTargetTower.getY()
+            target.getX(), 
+            target.getY()
         );
 
         double distanceWithPossibleTower = Point.distance(
