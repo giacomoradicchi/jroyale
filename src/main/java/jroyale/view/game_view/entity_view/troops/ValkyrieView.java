@@ -131,11 +131,11 @@ public class ValkyrieView extends TroopView {
         IGameView view = GameView.getInstance();
         IMainGUI gui = view.getGUI();
 
-        gui.renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        gui.renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, false, 1);
 
         if(state == State.ATTACK)
             // swirl rendering
-            gui.renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, 1);
+            gui.renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, false, 1);
     }
 
      @Override

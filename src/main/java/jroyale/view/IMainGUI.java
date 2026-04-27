@@ -32,9 +32,9 @@ public interface IMainGUI {
 
     public void clearWindow();
 
-    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha);
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha);
 
-    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha);
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha);
 
     public void renderWorldShadow(double centerX, double centerY, double shadowRadius);
 
@@ -58,9 +58,5 @@ public interface IMainGUI {
 
     public void fillPoint(double centreX, double centreY, int size, Color color);
     
-    //public void processOnMousePressed(double x, double y);
-
-    //public void processOnMouseDragged(double x, double y);
-    
-    //public void processOnMouseReleased();
+    public void fillScreenCircularProgress(double centreX, double centreY, double radius, double progress);
 }

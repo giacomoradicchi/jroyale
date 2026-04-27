@@ -11,6 +11,13 @@ public class TimeLeftRenderer {
 
     private static final int RUNNING_OUT_TIME_LIMIT_IN_SEC = 60;
     private static final int TIME_EXCEEDING_LIMIT_IN_SEC = 10;
+    private static final double NORMALIZED_TEXT_SIZE = 0.05;
+    private static final double NORMALIZED_CENTER_X = 9.0/10;
+    private static final double NORMALIZED_CENTER_Y = 1.0/25;
+    private static final double NORMALIZED_BOX_WIDTH = 0.167;
+    private static final double NORMALIZED_BOX_HEIGHT = 0.05;
+    private static final double NORMALIZED_LINE_WIDTH = 0.01;
+    private static final double ALPHA_BACKGROUND = 0.5;
 
     private TimeLeftRenderer() {}
 
@@ -26,17 +33,16 @@ public class TimeLeftRenderer {
         double canvasWidth = gui.getCanvasWidth();
         double canvasHeight = gui.getCanvasHeight();
 
-        double textSize = canvasWidth * 0.05;
-        double centerX = canvasWidth * 9.0/10;
-        double centerY = canvasHeight * 1.0/25;
-        double boxWidth = canvasWidth * 0.167;
-        double boxHeight = canvasHeight * 0.05;
+        double textSize = canvasWidth * NORMALIZED_TEXT_SIZE;
+        double centerX = canvasWidth * NORMALIZED_CENTER_X;
+        double centerY = canvasHeight * NORMALIZED_CENTER_Y;
+        double boxWidth = canvasWidth * NORMALIZED_BOX_WIDTH;
+        double boxHeight = canvasHeight * NORMALIZED_BOX_HEIGHT;
         double boxArcHeight = boxHeight;
         double boxArcWidth = boxHeight;
-        double alphaBackGround = 0.5;
-        double lineWidth = 4;
+        double lineWidth = canvasWidth * NORMALIZED_LINE_WIDTH;
 
-        gui.fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, alphaBackGround * alpha, getTextFillColor(secondsLeft));
+        gui.fillScreenRoundedRect(centerX, centerY, boxWidth, boxHeight, boxArcWidth, boxArcHeight, ALPHA_BACKGROUND * alpha, getTextFillColor(secondsLeft));
 
         gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
         gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);

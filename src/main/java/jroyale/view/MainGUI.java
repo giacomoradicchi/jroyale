@@ -5,11 +5,13 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -22,6 +24,12 @@ public class MainGUI implements IMainGUI {
 
     private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
+    private static final ColorAdjust MONOCHROME_EFFECT = new ColorAdjust();
+    private static final double PROGRESS_CIRCLE_START_ARC = 90;
+    private static final double PROGRESS_CIRCLE_MAX_EXTENT = -360;
+    private static final double PROGRESS_CIRCLE_ALPHA = 0.5;
+    private static final Color PROGRESS_CIRCLE_COLOR = Color.WHITE;
+    
     
     private GraphicsContext gc;
     private Stage stage;
@@ -33,7 +41,11 @@ public class MainGUI implements IMainGUI {
     // scale of the entire scene
     protected double globalScale = 1.0;
 
-    private MainGUI() {}
+    private MainGUI() {
+        MONOCHROME_EFFECT.setSaturation(-1); // if applied, image will be rendered in black and white
+        MONOCHROME_EFFECT.setContrast(-0.2); 
+        MONOCHROME_EFFECT.setBrightness(-0.4); // if applied, image will be rendered in black and white
+    }
 
     @Override
     public void openWindow(Stage stage) {
@@ -164,13 +176,14 @@ public class MainGUI implements IMainGUI {
     //
 
     @Override
-    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
+    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha) {
         renderScreenImage(
             image, 
             fromWorldToScreenX(centerX), 
             fromWorldToScreenY(centerY), 
             width * globalScale, 
             height * globalScale, 
+            monochrome,
             alpha
         );
     }
@@ -221,9 +234,12 @@ public class MainGUI implements IMainGUI {
     //
 
     @Override
-    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, double alpha) {
+    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha) {
         gc.save();
         gc.setGlobalAlpha(alpha);
+
+        if (monochrome) gc.setEffect(MONOCHROME_EFFECT);
+
         gc.drawImage(
             image, 
             centerX - width / 2, 
@@ -231,6 +247,7 @@ public class MainGUI implements IMainGUI {
             width, 
             height
         );
+
         gc.restore();
     }
 
@@ -399,6 +416,19 @@ public class MainGUI implements IMainGUI {
         gc.restore();
     }
 
+    @Override
+    public void fillScreenCircularProgress(double centreX, double centreY, double radius, double progress) {
+        
+        double diameter = radius * 2;
+        double arcExtent = progress * PROGRESS_CIRCLE_MAX_EXTENT; 
+
+        gc.save();
+        gc.setGlobalAlpha(PROGRESS_CIRCLE_ALPHA);
+        gc.setFill(PROGRESS_CIRCLE_COLOR);
+        gc.fillArc(centreX - radius, centreY - radius, diameter, diameter, PROGRESS_CIRCLE_START_ARC, arcExtent, ArcType.ROUND);
+        gc.restore();
+    }
+
     // static methods
     public static IMainGUI getInstance() {
         if (instance == null) {
@@ -406,42 +436,5 @@ public class MainGUI implements IMainGUI {
         }
 
         return instance;
-    }
-
-    /* 
-    @Override
-    public Task<Void> loadAsync() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadAsync'");
-    }
-
-    @Override
-    public void update(long now) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
-    @Override
-    public void processOnMousePressed(double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMousePressed'");
-    }
-
-    @Override
-    public void processOnMouseDragged(double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseDragged'");
-    }
-
-    @Override
-    public void processOnMouseReleased() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processOnMouseReleased'");
-    } */
-
-    // abstract methods
-    //protected abstract void load();
-
-    //protected abstract void buildUI();
-    
+    }    
 }

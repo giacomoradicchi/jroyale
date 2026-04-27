@@ -27,6 +27,7 @@ public class DeckView {
     private static final double NORMALIZED_DECK_WIDTH = 0.9;
     private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 1); // arbitrary width decision
     private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
+    private static final double NORMALIZED_DROP_WIDTH = 0.35;
 
     private static final Color PLAYER_STROKE_COLOR = Color.rgb(250, 199, 250);
     private static final Color PLAYER_FILL_DARK = Color.rgb(81, 30, 81); 
@@ -61,40 +62,33 @@ public class DeckView {
         // first render non selected card 
         for (int i = 0; i < cards.length; i++) {
             if (i != selectedCardIndex) {
-                cards[i].render(EntityViewBinder.getInstance().getViewInstance(cards[i].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL, alpha);
-
-                
-                double dropWidth = cards[0].getWidth() * 0.35;
-                double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
-                double dropCenterX = cards[i].getLayoutX() + cards[i].getWidth()/2;
-                double dropCenterY = cards[i].getLayoutY() + cards[i].getHeight() - dropHeight/2;
-
-                renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[i].getElixirCost(), alpha);
-
-                
-
+                renderCardWithElixir(cards[i], elixirLeft, elixirChargeTimeProgress, alpha);
             }
         }
 
         // then render selected card (has to be on top of the others)
         if (selectedCardIndex != -1 && cards[selectedCardIndex].isVisible()) {
-
-            cards[selectedCardIndex].render(EntityViewBinder.getInstance().getViewInstance(cards[selectedCardIndex].getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL, alpha);
-
-            double dropWidth = cards[0].getWidth() * 0.35;
-            double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
-            double dropCenterX = cards[selectedCardIndex].getLayoutX() + cards[selectedCardIndex].getTranslateX() + cards[selectedCardIndex].getWidth()/2;
-            double dropCenterY = cards[selectedCardIndex].getLayoutY() + cards[selectedCardIndex].getTranslateY() + cards[selectedCardIndex].getHeight() - dropHeight/2;
-
-            renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, cards[selectedCardIndex].getElixirCost(), alpha);
-
-            
+            renderCardWithElixir(cards[selectedCardIndex], elixirLeft, elixirChargeTimeProgress, alpha);
         }
 
         
     }
 
-    private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir, double alpha) {
+    private void renderCardWithElixir(CardView card, byte elixirLeft, double elixirChargeTimeProgress, double alpha) {
+        
+        card.render(EntityViewBinder.getInstance().getViewInstance(card.getType()).getSpellIcon(), OUTLINE_DEFAULT_SPELL, (elixirLeft + elixirChargeTimeProgress) / card.getElixirCost(), alpha);
+
+        
+        double dropWidth = card.getWidth() * NORMALIZED_DROP_WIDTH;
+        double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
+        double dropCenterX = card.getTopLeftX() + card.getWidth()/2;
+        double dropCenterY = card.getTopLeftY() + card.getHeight() - dropHeight/2;
+
+        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, card.getElixirCost(), false, alpha);
+
+    }
+
+    private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir, boolean monochrome, double alpha) {
         IMainGUI gui = GameView.getInstance().getGUI();
 
         gui.renderScreenImage(
@@ -103,6 +97,7 @@ public class DeckView {
             dropCenterY, 
             dropWidth, 
             dropHeight, 
+            monochrome,
             alpha
         ); 
 
@@ -193,7 +188,7 @@ public class DeckView {
         double dropCenterX = centerX - barWidth/2;
         double dropCenterY = centerY;
 
-        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft, alpha);
+        renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft, false, alpha);
     }
 
     private void renderBackDeck(double alpha) {
@@ -212,6 +207,7 @@ public class DeckView {
             CANVAS_HEIGHT - DECK_HEIGHT/2, 
             DECK_WIDTH, 
             DECK_HEIGHT,
+            false,
             alpha
         );
     }

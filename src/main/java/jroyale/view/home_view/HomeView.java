@@ -46,15 +46,15 @@ public class HomeView extends View implements IHomeView {
     }
 
     private void buildUI() {
-        gui.renderScreenImage(homeBackground, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gui.getCanvasWidth(), gui.getCanvasHeight(), 1);
+        gui.renderScreenImage(homeBackground, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gui.getCanvasWidth(), gui.getCanvasHeight(), false, 1);
         
         double width = gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
         double height = arenaSprite.getHeight() / arenaSprite.getWidth() * width;
-        gui.renderScreenImage(arenaSprite, gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, gui.getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, 1);
+        gui.renderScreenImage(arenaSprite, gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, gui.getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, false, 1);
 
         width = gui.getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
         height = LOGO.getHeight() / LOGO.getWidth() * width;
-        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, false, 1);
         
         Button playButton = new Button("Gioca Partita");
         FontManager fontManager = FontManager.getInstance();

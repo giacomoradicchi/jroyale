@@ -37,6 +37,7 @@ public class ArcherTowerView extends TowerView{
             centreY, 
             img.getWidth() * getImageScale(), 
             img.getHeight() * getImageScale(),
+            false,
             1
         );
     }

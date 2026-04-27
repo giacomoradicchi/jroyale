@@ -27,11 +27,11 @@ public abstract class View implements IView {
         IMainGUI gui = getGUI();
         double height = gui.getCanvasHeight();
         double width = LOADING_BACKGROUND.getWidth() * height / LOADING_BACKGROUND.getHeight(); 
-        gui.renderScreenImage(LOADING_BACKGROUND, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, width, height, 1);
+        gui.renderScreenImage(LOADING_BACKGROUND, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, width, height, false, 1);
         
         width = gui.getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
         height = LOGO.getHeight() / LOGO.getWidth() * width;
-        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
+        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, false, 1);
         
     }
 

@@ -9,7 +9,6 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
-import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
 import jroyale.view.game_view.entity_view.EntityView;
@@ -81,13 +80,13 @@ public class GiantView extends TroopView {
         if (Direction.hasToFlip(angleDirection)) 
             flipped = 1;
 
-        gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+        gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, false, 1);
 
         if (state != State.MOVE && side == Side.OPPONENT) {
             key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
             image = animationBuffer.get(key).getFrame(currentFrame);
 
-            gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, 1);
+            gui.renderWorldImage(image, centreX, centreY + shiftY, Math.pow(-1, flipped) * width, height, false, 1);
         }
         
     }
