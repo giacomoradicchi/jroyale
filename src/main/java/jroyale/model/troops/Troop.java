@@ -1,5 +1,7 @@
 package jroyale.model.troops; 
 
+import java.awt.geom.Point2D;
+
 import jroyale.model.ArenaData;
 import jroyale.model.CollisionManager;
 import jroyale.model.EnemyTargetSelector;
@@ -219,18 +221,45 @@ public abstract class Troop extends Entity {
     }
 
     protected boolean selectClosestTower() {
-        if (target != null && target.getHitPoints() == 0) { 
-            target = TowerTargetSelector.getClosestEnemyTower(this);
-            
+        Tower possibleTargetTower = TowerTargetSelector.getClosestEnemyTower(this);
+
+        if (target == null) {
             // set move state and reset others  
+            target = possibleTargetTower;
             shouldMove = true;
             shouldAttack = false;
             shouldIdle = false;
             enemyHit = true;
-
             return true;
         }
-        return false;
+
+        double distanceWithTarget = Point.distance(
+            getX(), 
+            getY(), 
+            possibleTargetTower.getX(), 
+            possibleTargetTower.getY()
+        );
+
+        double distanceWithPossibleTower = Point.distance(
+            getX(), 
+            getY(), 
+            possibleTargetTower.getX(), 
+            possibleTargetTower.getY()
+        );
+
+        if (distanceWithTarget <= distanceWithPossibleTower) {
+            // doesn't update target if current target is closer 
+            return false;
+        }
+            
+        // set move state and reset others  
+        target = possibleTargetTower;
+        shouldMove = true;
+        shouldAttack = false;
+        shouldIdle = false;
+        enemyHit = true;
+
+        return true;
     }
 
     private void handleMoveState() {
