@@ -109,8 +109,7 @@ public class AIAgent {
     public void update(long elapsed) {
         deck.update(elapsed);
 
-        System.out.println(difficulty);
-        System.out.println(deck.getElixir());
+        //System.out.println("elixir left: " + deck.getElixir());
 
         switch (action) {
             case AgentAction.ATTACK:
@@ -142,14 +141,88 @@ public class AIAgent {
     private void handleDefence() {
         // TODO: defence logic
 
-        System.out.println("defense.");
+        System.out.print("defense. Should defend on ");
+        if (shouldDefendOnRight()) {
+            System.out.println("right.");
+        } else {
+            System.out.println("left.");
+        }
         deck.selectCard(0);
+
+        int row = 5;
+        int col;
+        if (shouldDefendOnRight()) {
+            col = 14;
+        } else {
+            col = 5;
+        }
         if (deck.isSelectedCardDroppable())
-            deck.dropSelectedCard(5, 5, Side.OPPONENT);
+            deck.dropSelectedCard(row, col, Side.OPPONENT);
 
         
         // reset to idle
         action = AgentAction.IDLE;
+    }
+
+    private boolean shouldDefendOnRight() {
+
+        // 0 -> should defend on left
+        // 1 -> should defend on right
+
+        double AIPresenceRight;         // from 0 to 1. 0 -> AI is mainly on the right, so it should defend on left. 1 -> viceversa
+        double AITowerHealthRight;      // from 0 to 1. 0 -> right tower has more hitpoints than the left one, so it should defend on left. 1 -> viceversa
+        double playerPresenceRight;     // from 0 to 1. 0 -> there's more player (enemy) troops in the left, so we should defend on left. 1 -> viceversa
+
+        // 1. decision based on AI hit points
+        int leftAIHitPoints = 0;
+        int rightAIHitPoints = 0;
+
+        IModel model = Model.getInstance();
+        for (Entity e : model.getOpponentEntities()) {
+            if (e.getX() < model.getTileSize() * model.getColsCount() / 2) { // left side of the field
+                leftAIHitPoints += e.getHitPoints();
+            } else {
+                rightAIHitPoints += e.getHitPoints();
+            }
+        }
+
+        if (leftAIHitPoints == 0 && rightAIHitPoints == 0) {
+            AIPresenceRight = NEUTRAL_PROBABILITY;
+        } else {
+            AIPresenceRight = (double) leftAIHitPoints / (leftAIHitPoints + rightAIHitPoints);
+        }
+
+        // 2. decision based on tower health
+        int leftAITowerHitPoints = model.getOpponentLeftTower().getHitPoints();
+        int rightAITowerHitPoints = model.getOpponentRightTower().getHitPoints();
+        
+        if (leftAITowerHitPoints == 0 && rightAITowerHitPoints == 0) {
+            AITowerHealthRight = NEUTRAL_PROBABILITY;
+        } else {
+            AITowerHealthRight = (double) leftAITowerHitPoints / (leftAITowerHitPoints + rightAITowerHitPoints);
+        }
+
+        // 3. decision based on player weighted hit points
+        double leftPlayerHitPoints = 0;
+        double rightPlayerHitPoints = 0;
+        double mapHeight = model.getTileSize() * model.getRowsCount();
+
+        for (Entity e : model.getPlayerEntities()) {
+            double weight = (1 - e.getY()/mapHeight); // the closer to ai towers, the higher the weight
+
+            if (e.getX() < model.getTileSize() * model.getColsCount() / 2) { // left side of the field
+                leftPlayerHitPoints += e.getDamage() * weight;
+            } else {
+                rightPlayerHitPoints += e.getDamage() * weight;
+            }
+        }
+
+        playerPresenceRight = rightPlayerHitPoints / (leftPlayerHitPoints + rightPlayerHitPoints);
+
+        // 4. final mean:
+        double shouldDefendOnRight = (AIPresenceRight + AITowerHealthRight + playerPresenceRight)/3;
+
+        return shouldDefendOnRight > NEUTRAL_PROBABILITY;
     }
 
     private void handleIdle(long elapsed) {

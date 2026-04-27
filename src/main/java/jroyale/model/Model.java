@@ -538,6 +538,21 @@ public class Model implements IModel {
 
     }
 
+    @Override
+    public Tower getOpponentKingTower() {
+        return opponentKingTower;
+    }
+
+    @Override
+    public Tower getOpponentLeftTower() {
+        return opponentLeftTower;
+    }
+
+    @Override
+    public Tower getOpponentRightTower() {
+        return opponentRightTower;
+    }
+
     // static methods
 
     public static IModel getInstance() {
