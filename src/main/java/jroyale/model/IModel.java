@@ -4,6 +4,7 @@ import java.util.List;
 
 import jroyale.model.troops.Troop;
 import jroyale.model.cards.Card;
+import jroyale.model.cards.Deck;
 
 public interface IModel {
 
@@ -71,6 +72,5 @@ public interface IModel {
 
     public double getPlayerElixirChargeTimeProgress();
 
-    // just for debugging:
     public boolean[][] getReachableTiles();
 }

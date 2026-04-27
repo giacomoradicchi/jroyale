@@ -84,23 +84,27 @@ public class HomeView extends View implements IHomeView {
         difficultyBox.getItems().addAll("Basic", "Standard", "Expert", "Master");
 
         if (difficulty == null) {
-            switch (Config.getInstance().getDifficulty().strip().toUpperCase()) {
-                case "BASIC":
-                    difficulty = "Basic";
-                    break;
-                case "STANDARD":
-                    difficulty = "Standard";
-                    break;
-                case "EXPERT":
-                    difficulty = "Expert";
-                    break;
-                case "MASTER":
-                    difficulty = "Master";
-                    break;
-            
-                default:
-                    difficulty = "Standard";
-                    break;
+            String confDifficulty = Config.getInstance().getDifficulty();
+            if (confDifficulty == null) difficulty = "Standard";
+            else {
+                switch (confDifficulty.strip().toUpperCase()) {
+                    case "BASIC":
+                        difficulty = "Basic";
+                        break;
+                    case "STANDARD":
+                        difficulty = "Standard";
+                        break;
+                    case "EXPERT":
+                        difficulty = "Expert";
+                        break;
+                    case "MASTER":
+                        difficulty = "Master";
+                        break;
+                
+                    default:
+                        difficulty = "Standard";
+                        break;
+                }
             }
         }
 

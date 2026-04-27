@@ -109,6 +109,9 @@ public class AIAgent {
     public void update(long elapsed) {
         deck.update(elapsed);
 
+        System.out.println(difficulty);
+        System.out.println(deck.getElixir());
+
         switch (action) {
             case AgentAction.ATTACK:
                 handleAttack();
@@ -182,6 +185,10 @@ public class AIAgent {
         }
 
         attackProbability /= totalAIHitPoints.length;
+
+        if (deck.getElixir() == Deck.getMaxElixir()) {
+            attackProbability = 1;
+        }
         
         double proactivity = difficulty.getProactivity();
 
