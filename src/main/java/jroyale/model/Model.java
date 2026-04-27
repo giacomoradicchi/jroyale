@@ -533,7 +533,9 @@ public class Model implements IModel {
     }
 
     private void initAIAgent(Deck deck) {
+        System.out.println(Config.getInstance().getDifficulty());
         AIAgent.getInstance().init(Config.getInstance().getDifficulty(), deck);
+
     }
 
     // static methods
