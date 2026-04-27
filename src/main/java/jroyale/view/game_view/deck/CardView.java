@@ -11,7 +11,6 @@ import javafx.scene.shape.Rectangle;
 import jroyale.utils.Enums.EntityType;
 import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
-import jroyale.view.game_view.IGameView;
 import jroyale.utils.Point;
 
 
@@ -24,6 +23,7 @@ public class CardView extends StackPane {
 
     private final static int ANIMATION_TIME_MILLIS = 150;
     private final static double SCALE_ON_CLICK = 1.05;
+    private final static double NORMALIZED_CIRCULAR_PROGRESS_SIZE = 0.25;
 
     public CardView(double x, double y, double width, double height) {
         this.startingPos = new Point(x, y);
@@ -120,21 +120,40 @@ public class CardView extends StackPane {
         });
     }
 
-    public void render(Image icon, Image outline, double alpha) {
+    public double getTopLeftX() {
+        return this.getLayoutX() + this.getTranslateX();
+    }
+
+    public double getTopLeftY() {
+        return this.getLayoutY() + this.getTranslateY();
+    }
+
+    public void render(Image icon, Image outline, double progress, double alpha) {
         if (!isVisible()) return;
 
         // Calculate the current visual center by summing Layout + Translate
-        double centerX = this.getLayoutX() + this.getTranslateX() + getWidth() / 2;
-        double centerY = this.getLayoutY() + this.getTranslateY() + getWidth() / 2;
+        double centerX = getTopLeftX() + getWidth() / 2;
+        double centerY = getTopLeftY() + getWidth() / 2;
 
         IMainGUI gui = GameView.getInstance().getGUI();
         
+        if (progress < 0) progress = 0; // progress has to be in [0, 1]. if is >= 1 then it's available
 
         // 1. Draw Icon
-        gui.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        boolean monochrome = progress < 1; // renders monochrome if < 1 (so it's not available)
+        gui.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), monochrome, alpha);
+
+        // 2. Draw Progress
+        if (progress < 1)
+            gui.fillScreenCircularProgress(
+                centerX, 
+                centerY, 
+                getWidth() * NORMALIZED_CIRCULAR_PROGRESS_SIZE,
+                progress
+            );
         
-        // 2. Draw Outline/Frame
-        gui.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), alpha);
+        // 3. Draw Outline/Frame
+        gui.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), false, alpha);
 
         // Debug: Red rect should perfectly align with the card's interactive area
         //view.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);
