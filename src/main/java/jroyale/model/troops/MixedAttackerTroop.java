@@ -17,15 +17,13 @@ public abstract class MixedAttackerTroop extends Troop {
 
     @Override
     protected void updateTarget() {
-        
-        
-
         if (target != null && target.getHitPoints() == 0 && target instanceof Tower) {
             isAttackingTower = false;
         }
 
         // searching for a new target if it's not attacking a tower: first search a troop in range. if not found, go to the closest tower
-        if (!isAttackingTower && !selectClosestEnemy()) {
+        if (!isAttackingTower) {
+            selectClosestEnemy();
             selectClosestTower();
         } 
     }
