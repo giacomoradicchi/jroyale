@@ -1,7 +1,5 @@
 package jroyale.model.troops; 
 
-import java.awt.geom.Point2D;
-
 import jroyale.model.ArenaData;
 import jroyale.model.CollisionManager;
 import jroyale.model.EnemyTargetSelector;
@@ -57,7 +55,7 @@ public abstract class Troop extends Entity {
 
     private static final double DEFAULT_VISION_RANGE = 6;
     private static final int DIRECTION_BUFFER_SIZE = 4;
-    private static final double TURNING_SPEED = 0.3; // 0: doesn't turn, 1: turns instantly
+    private static final double TURNING_SPEED = 0.4; // 0: doesn't turn, 1: turns instantly
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
 
@@ -221,7 +219,7 @@ public abstract class Troop extends Entity {
     }
 
     protected boolean selectClosestTower() {
-        Tower possibleTargetTower = TowerTargetSelector.getClosestEnemyTower(this);
+        Tower possibleTargetTower = TowerTargetSelector.getInstance().getClosestEnemyTower(this);
 
         // target has to change if current target is null or dead
         if (target == null || target.getHitPoints() == 0) { 
@@ -324,7 +322,6 @@ public abstract class Troop extends Entity {
                 if (target instanceof Tower) isAttackingTower = true;
             }
 
-            
 
             fixDistance(other);
         }
@@ -483,7 +480,7 @@ public abstract class Troop extends Entity {
     }
 
     private void initTarget() {
-        target = TowerTargetSelector.getClosestEnemyTower(this);
+        target = TowerTargetSelector.getInstance().getClosestEnemyTower(this);
     }
 
     private void initDirectionBuffer() {

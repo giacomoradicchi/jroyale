@@ -33,7 +33,6 @@ public class Config {
     public void setDifficulty(String difficulty) {
         
         settings.setDifficulty(difficulty);
-        System.out.println("new difficulty: " + getDifficulty());
     }
 
     public int getMaxTimeSec() {

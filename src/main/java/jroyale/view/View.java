@@ -19,7 +19,6 @@ public abstract class View implements IView {
         // first it loads sprites on another thread with loadAsync, then onLoadFinished is called 
         loadAsync().setOnSucceeded(e -> {
             onLoadFinished();
-            System.out.println("Finished loading, class:" + getClass());
         });
     }
 

@@ -105,7 +105,6 @@ public class Model implements IModel {
 
     @Override
     public void reset() {
-        System.out.println("reset ora");
         renderOrderEntities.clear();
         toRemoveEntities.clear();
         playerEntities.clear();
@@ -113,7 +112,14 @@ public class Model implements IModel {
         gameOver = false;
         accumulator = 0;
         lastTimeStamp = 0;
-        init(maxTimeNanoSec);
+        TowerTargetSelector.getInstance().reset();
+        map = new Tile[MAP_ROWS][MAP_COLS];
+        playerKingTower = null;
+        opponentDroppableTiles = null;
+        playerLeftTower = null;
+        playerRightTower = null;
+        opponentLeftTower = null;
+        opponentRightTower = null;
     }
 
     @Override
@@ -189,8 +195,6 @@ public class Model implements IModel {
         ||  isOpponentKingTowerDestroyed()
         ) {
             gameOver = true;
-            System.out.println(isTimeExceeded() + " " + isPlayerKingTowerDestroyed() + " " + isOpponentKingTowerDestroyed());
-            System.out.println(accumulator);
         }
     }
 
@@ -483,7 +487,7 @@ public class Model implements IModel {
 
     private void addTower(Tower tower) {
         addEntity(tower);
-        TowerTargetSelector.addTower(tower);
+        TowerTargetSelector.getInstance().addTower(tower);
     }
 
     private void initReachableTiles() {
@@ -533,7 +537,6 @@ public class Model implements IModel {
     }
 
     private void initAIAgent(Deck deck) {
-        System.out.println(Config.getInstance().getDifficulty());
         AIAgent.getInstance().init(Config.getInstance().getDifficulty(), deck);
 
     }

@@ -60,8 +60,8 @@ public class AIAgent {
 
     private static final long MIN_IDLE_TIME = 500_000_000L;             // in nanosec
     private static final long MAX_IDLE_TIME = 10_000_000_000L;          // in nanosec
-    private static final double MAX_POLYNOMIAL_DEGREE = 1.5;            // max polinomial degree of proactivity function
-    private static final double MIN_POLYNOMIAL_DEGREE = 0.5;            // max polinomial degree of proactivity function
+    private static final double MAX_POLYNOMIAL_DEGREE = 1.75;            // max polinomial degree of proactivity function
+    private static final double MIN_POLYNOMIAL_DEGREE = 0.25;            // max polinomial degree of proactivity function
     private static final double MAX_NOISE_STDEV = 0.2;                  // the higher the greater noise
     private static final double NEUTRAL_PROBABILITY = 0.5;          
     private static final double DEFENCE_DECISION_THRESHOLD = 0.35;      // it'll defend if intention <= defence threshold

@@ -26,7 +26,7 @@ public abstract class Tower extends Entity {
 
     @Override
     public void onDelete() {
-        TowerTargetSelector.removeTower(this);
+        TowerTargetSelector.getInstance().removeTower(this);
         // TODO: implement distruction animations on towers
     }
 
