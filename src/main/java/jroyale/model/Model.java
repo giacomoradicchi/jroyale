@@ -13,7 +13,7 @@ import jroyale.model.cards.PekkaCard;
 import jroyale.model.cards.SkeletonArmyCard;
 import jroyale.model.cards.SkeletonCard;
 import jroyale.model.cards.ValkyrieCard;
-import jroyale.model.towers.ArcerTower;
+import jroyale.model.towers.ArcherTower;
 import jroyale.model.towers.KingTower;
 import jroyale.model.towers.Tower;
 import jroyale.model.troops.Troop;
@@ -32,6 +32,7 @@ public class Model implements IModel {
     private static final int MAP_ROWS = 32;
     private static final int MAP_COLS = 18;
     private static final double TILE_SIZE = 1;
+    private static final double NORMALIZED_DROP_LIMIT = 1.0/3; // when an archer tower gets destroyed, the enemy is able to drop his troops closer to enemy's towers
 
     // logic coords explaination:
     // for the X coords: since there are 18 cols, we will use a 
@@ -114,6 +115,8 @@ public class Model implements IModel {
         lastTimeStamp = 0;
         TowerTargetSelector.getInstance().reset();
         map = new Tile[MAP_ROWS][MAP_COLS];
+        playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
+        opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
         playerKingTower = null;
         opponentDroppableTiles = null;
         playerLeftTower = null;
@@ -146,6 +149,14 @@ public class Model implements IModel {
             return false;
         
         return playerDroppableTiles[i][j];
+    }
+
+    @Override
+    public boolean isOpponentEntityDroppableOnTile(int i, int j) {
+        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+            return false;
+        
+        return opponentDroppableTiles[i][j];
     }
 
     @Override
@@ -400,6 +411,64 @@ public class Model implements IModel {
             playerEntities.remove(e);
         else 
             opponentEntities.remove(e);
+
+        if (e instanceof ArcherTower) {
+            updateDroppableTiles((ArcherTower) e);
+        }
+    }
+
+    private void updateDroppableTiles(ArcherTower tower) {
+        if (tower.getSide() == Side.OPPONENT) {
+            updatePlayerDroppableTiles(tower);
+        } else {
+            updateOpponentDroppableTiles(tower);
+        }
+    }
+
+    private void updatePlayerDroppableTiles(ArcherTower opponentTower) {
+        int cols = getColsCount();
+        int rows = getRowsCount();
+        int startI = (int) Math.ceil(rows * NORMALIZED_DROP_LIMIT);
+        int endI = rows;
+
+        int startJ;
+        int endJ;
+        if (opponentTower.getCurrentJ() < cols/2) {
+            startJ = 0;
+            endJ = cols/2;
+        } else {
+            endJ = cols;
+            startJ = endJ/2;
+        }
+
+        for (int i = startI; i < endI; i++) {
+            for (int j = startJ; j < endJ; j++) {
+                playerDroppableTiles[i][j] = reachableTiles[i][j];
+            }
+        }
+    }
+
+    private void updateOpponentDroppableTiles(ArcherTower opponentTower) {
+        int cols = getColsCount();
+        int rows = getRowsCount();
+        int startI = 0;
+        int endI = (int) Math.floor(rows * (1-NORMALIZED_DROP_LIMIT));
+
+        int startJ;
+        int endJ;
+        if (opponentTower.getCurrentJ() < cols/2) {
+            startJ = 0;
+            endJ = cols/2;
+        } else {
+            endJ = cols;
+            startJ = endJ/2;
+        }
+
+        for (int i = startI; i < endI; i++) {
+            for (int j = startJ; j < endJ; j++) {
+                opponentDroppableTiles[i][j] = reachableTiles[i][j];
+            }
+        }
     }
 
     private void addEntity(Entity e) {
@@ -472,16 +541,16 @@ public class Model implements IModel {
     private void initTowers() {
         playerKingTower = new KingTower(Side.PLAYER);
         addTower(playerKingTower);
-        playerLeftTower = new ArcerTower(Side.PLAYER, ArcerTower.LEFT);
+        playerLeftTower = new ArcherTower(Side.PLAYER, ArcherTower.LEFT);
         addTower(playerLeftTower);
-        playerRightTower = new ArcerTower(Side.PLAYER, ArcerTower.RIGHT);
+        playerRightTower = new ArcherTower(Side.PLAYER, ArcherTower.RIGHT);
         addTower(playerRightTower);
 
         opponentKingTower = new KingTower(Side.OPPONENT);
         addTower(opponentKingTower);
-        opponentLeftTower = new ArcerTower(Side.OPPONENT, ArcerTower.LEFT);
+        opponentLeftTower = new ArcherTower(Side.OPPONENT, ArcherTower.LEFT);
         addTower(opponentLeftTower);
-        opponentRightTower = new ArcerTower(Side.OPPONENT, ArcerTower.RIGHT);
+        opponentRightTower = new ArcherTower(Side.OPPONENT, ArcherTower.RIGHT);
         addTower(opponentRightTower);   
     }
 
@@ -528,8 +597,17 @@ public class Model implements IModel {
     private void initDroppableTiles() {
         // every opponent tower are not damaged
 
-        int start = (int) Math.floor(ArenaData.LEFT_BRIDGE_START_POS.getY());
-        for (int i = start; i < MAP_ROWS; i++) {
+        int mid = (int) Math.floor(ArenaData.LEFT_BRIDGE_START_POS.getY());
+
+        // init opponent droppable tiles 
+        for (int i = 0; i < mid; i++) {
+            for (int j = 0; j < MAP_COLS; j++) {
+                opponentDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
+            }
+        }
+        
+        // init player droppable tiles
+        for (int i = mid; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
             }

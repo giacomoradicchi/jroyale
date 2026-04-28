@@ -62,6 +62,8 @@ public interface IModel {
 
     public boolean isPlayerEntityDroppableOnTile(int i, int j);
 
+    public boolean isOpponentEntityDroppableOnTile(int i, int j);
+
     public boolean[][] getPlayerDroppableTiles();
 
     public byte getPlayerElixirLeft();

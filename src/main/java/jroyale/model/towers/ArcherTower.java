@@ -5,7 +5,7 @@ import jroyale.utils.Point;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 
-public class ArcerTower extends Tower {
+public class ArcherTower extends Tower {
 
     public static final byte LEFT = 0;
     public static final byte RIGHT = 1;
@@ -24,7 +24,7 @@ public class ArcerTower extends Tower {
     private static final int DAMAGE = 0; // TODO: add damage
     
 
-    public ArcerTower(Side side, byte location) {
+    public ArcherTower(Side side, byte location) {
         super(getArcherPosition(side, location), HITPOINTS, DAMAGE, side);
     }
 
