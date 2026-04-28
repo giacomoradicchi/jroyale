@@ -8,25 +8,29 @@ import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 
 public class TowerTargetSelector {
-    
-    private static List<Tower> playerTowers = new ArrayList<>();
-    private static List<Tower> opponentTowers = new ArrayList<>();
 
-    public static void addTower(Tower tower) {
+    private static TowerTargetSelector instance = null;
+    
+    private List<Tower> playerTowers = new ArrayList<>();
+    private List<Tower> opponentTowers = new ArrayList<>();
+
+    private TowerTargetSelector() {}
+
+    public void addTower(Tower tower) {
         if (tower.getSide() == Side.PLAYER) 
             playerTowers.add(tower);
         else 
             opponentTowers.add(tower);
     } 
 
-    public static void removeTower(Tower tower) {
+    public void removeTower(Tower tower) {
         if (tower.getSide() == Side.PLAYER) 
             playerTowers.remove(tower);
         else 
             opponentTowers.remove(tower);
     }
 
-    public static Tower getClosestEnemyTower(Entity e) {
+    public Tower getClosestEnemyTower(Entity e) {
         List<Tower> targets;
 
         if (e.getSide() == Side.PLAYER) 
@@ -50,4 +54,19 @@ public class TowerTargetSelector {
 
         return closest;
     }
+
+    public void reset() {
+        playerTowers.clear();
+        opponentTowers.clear();
+    }
+
+    // static methods
+    public static TowerTargetSelector getInstance() {
+        if (instance == null) {
+            instance = new TowerTargetSelector();
+        }
+        return instance;
+    }
+
+
 }

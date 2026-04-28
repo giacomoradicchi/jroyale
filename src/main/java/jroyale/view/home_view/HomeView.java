@@ -83,32 +83,9 @@ public class HomeView extends View implements IHomeView {
         ComboBox<String> difficultyBox = new ComboBox<>();
         difficultyBox.getItems().addAll("Basic", "Standard", "Expert", "Master");
 
-        if (difficulty == null) {
-            String confDifficulty = Config.getInstance().getDifficulty();
-            if (confDifficulty == null) difficulty = "Standard";
-            else {
-                switch (confDifficulty.strip().toUpperCase()) {
-                    case "BASIC":
-                        difficulty = "Basic";
-                        break;
-                    case "STANDARD":
-                        difficulty = "Standard";
-                        break;
-                    case "EXPERT":
-                        difficulty = "Expert";
-                        break;
-                    case "MASTER":
-                        difficulty = "Master";
-                        break;
-                
-                    default:
-                        difficulty = "Standard";
-                        break;
-                }
-            }
-        }
+        if (difficulty == null) setConfigDifficulty();
 
-        difficultyBox.setValue(difficulty); // default value
+        difficultyBox.setValue(difficulty);
 
         difficultyBox.setStyle(
             "-fx-background-color: #0095ff;" +
@@ -133,6 +110,36 @@ public class HomeView extends View implements IHomeView {
         difficultyBox.setFocusTraversable(false);
 
         gui.addToRoot(difficultyBox);
+    }
+
+    private void setConfigDifficulty() {
+        String confDifficulty = Config.getInstance().getDifficulty();
+        if (confDifficulty == null) {
+            confDifficulty = "STANDARD";
+            Config.getInstance().setDifficulty(confDifficulty);
+            difficulty = "Standard";
+            return;
+        } 
+
+        switch (confDifficulty.strip().toUpperCase()) {
+            case "BASIC":
+                difficulty = "Basic";
+                break;
+            case "STANDARD":
+                difficulty = "Standard";
+                break;
+            case "EXPERT":
+                difficulty = "Expert";
+                break;
+            case "MASTER":
+                difficulty = "Master";
+                break;
+        
+            default:
+                difficulty = "Standard";
+                break;
+        }
+        
     }
 
     @Override

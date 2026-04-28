@@ -75,16 +75,11 @@ public class MainGUI implements IMainGUI {
     }
 
     private void handleMouseEvents() {
-        System.out.println("handleMouseEvents chiamato da: " + this.getClass().getSimpleName());
-    System.out.println("stage: " + stage);
-    System.out.println("scene: " + (stage != null ? stage.getScene() : "stage null"));
-
         stage.getScene().setOnMousePressed(event -> {
             view.processOnMousePressed(
                 event.getSceneX(), 
                 event.getSceneY()
             );
-            System.out.println("choir");
         });
 
         stage.getScene().setOnMouseDragged(event -> {
@@ -102,8 +97,6 @@ public class MainGUI implements IMainGUI {
     @Override
     public void addToRoot(Node node) {
         root.getChildren().add(node);
-        //root.getChildren().forEach(n -> System.out.println(n.getClass().getSimpleName() + " mouseTransparent: " + n.isMouseTransparent()));
-        //System.out.println("\n");
     }
 
     @Override
@@ -113,38 +106,6 @@ public class MainGUI implements IMainGUI {
         this.root.getChildren().clear();
         root.getChildren().add(canvas);
     }
-
-    /* @Override
-    public void init() {
-        //buildUI();
-    } */
-
-    /* private void renderLoadingScreen() {
-       
-        double height = getCanvasHeight();
-        double width = LOADING_BACKGROUND.getWidth() * height / LOADING_BACKGROUND.getHeight(); 
-        renderScreenImage(LOADING_BACKGROUND, getCanvasWidth()/2, getCanvasHeight()/2, width, height, 1);
-        
-        width = getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
-        height = LOGO.getHeight() / LOGO.getWidth() * width;
-        renderScreenImage(LOGO, getCanvasWidth() * NORMALIZED_LOGO_X, getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, 1);
-        
-    } */
-
-    // Restituisce il Task così chi chiama può sapere quando ha finito
-    /* public Task<Void> loadAsync() {
-        renderLoadingScreen();
-
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                load();
-                return null;
-            }
-        };
-        new Thread(task, "sprite-loading-thread").start();
-        return task;
-    } */
 
     @Override
     public int getCanvasWidth() {
