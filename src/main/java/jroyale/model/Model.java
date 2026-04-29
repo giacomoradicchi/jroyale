@@ -24,21 +24,24 @@ public class Model implements IModel {
 
     private static Model instance;
 
-    // 32x18 is the map size, each Tile 
-    // has its own List where character are inserted based on
-    // their position (so the collision algoritm will be much
-    // more efficient)
-    
+    // map dimension constants
     private static final int MAP_ROWS = 32;
     private static final int MAP_COLS = 18;
     private static final double TILE_SIZE = 1;
-    private static final double NORMALIZED_DROP_LIMIT = 1.0/3; // when an archer tower gets destroyed, the enemy is able to drop his troops closer to enemy's towers
-
-    // logic coords explaination:
-    // for the X coords: since there are 18 cols, we will use a 
-    // coord-system whose origin is 0 and his head is 18-. X-coords will 
-    // be continue, so it has to be double.
     
+    // drop logic and tile constants
+    private static final double NORMALIZED_DROP_LIMIT = 1.0/3;
+    private static final int UNREACHABLE_CORNER_SIZE = 4;
+    private static final int BRIDGE_START_OFFSET = 2;
+    private static final int BRIDGE_END_OFFSET = 4;
+    private static final int MAP_HALF_DIVISOR = 2;
+    
+    // time conversion constants
+    private static final long NANOS_PER_SECOND = 1_000_000_000L;
+    private static final int ZERO_VALUE = 0;
+    private static final long INITIAL_ACCUMULATOR = 0L;
+    private static final long INITIAL_TIMESTAMP = 0L;
+
     private Tile[][] map = new Tile[MAP_ROWS][MAP_COLS];
     private final boolean[][] reachableTiles = new boolean[MAP_ROWS][MAP_COLS];
 
@@ -47,11 +50,11 @@ public class Model implements IModel {
 
     private Deck playerDeck;
     
-    
     private final List<Entity> renderOrderEntities = new ArrayList<>(); // buffer for rendering
-    private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove (when they die / get destroied)
+    private final List<Entity> toRemoveEntities = new ArrayList<>(); // buffer for entities to remove
     private List<Entity> playerEntities = new ArrayList<>();
     private List<Entity> opponentEntities = new ArrayList<>();
+    
     // towers
     private Tower playerKingTower, opponentKingTower, playerLeftTower, opponentLeftTower, playerRightTower, opponentRightTower;
 
@@ -62,12 +65,11 @@ public class Model implements IModel {
     private long accumulator;
     private long lastTimeStamp;
 
-
     private Model() {}
 
     @Override
     public void init(int maxTimeSec) {
-        init(maxTimeSec * 1_000_000_000L);
+        init(maxTimeSec * NANOS_PER_SECOND);
     }
 
     private void init(long maxTimeNanoSec) {
@@ -91,8 +93,6 @@ public class Model implements IModel {
             ValkyrieCard.getInstance()
         });
 
-        System.out.println("opponentDroppableTiles is null?: " + opponentDroppableTiles == null);
-
         initTowers();
         initDroppableTiles();
 
@@ -113,8 +113,8 @@ public class Model implements IModel {
         playerEntities.clear();
         opponentEntities.clear();
         gameOver = false;
-        accumulator = 0;
-        lastTimeStamp = 0;
+        accumulator = INITIAL_ACCUMULATOR;
+        lastTimeStamp = INITIAL_TIMESTAMP;
         TowerTargetSelector.getInstance().reset();
         map = new Tile[MAP_ROWS][MAP_COLS];
         playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
@@ -133,7 +133,7 @@ public class Model implements IModel {
 
     @Override
     public boolean isTileReachable(int i, int j) {
-        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+        if (i < ZERO_VALUE || i >= MAP_ROWS || j < ZERO_VALUE || j >= MAP_COLS)
             return false;
         
         return reachableTiles[i][j];
@@ -141,7 +141,7 @@ public class Model implements IModel {
 
     @Override
     public boolean isPlayerEntityDroppableOnTile(int i, int j) {
-        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+        if (i < ZERO_VALUE || i >= MAP_ROWS || j < ZERO_VALUE || j >= MAP_COLS)
             return false;
         
         return playerDroppableTiles[i][j];
@@ -149,7 +149,7 @@ public class Model implements IModel {
 
     @Override
     public boolean isOpponentEntityDroppableOnTile(int i, int j) {
-        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS)
+        if (i < ZERO_VALUE || i >= MAP_ROWS || j < ZERO_VALUE || j >= MAP_COLS)
             return false;
         
         return opponentDroppableTiles[i][j];
@@ -157,7 +157,6 @@ public class Model implements IModel {
 
     @Override
     public void update(long now) {
-
         long elapsed = getElapsed(now);
         accumulator += elapsed;
 
@@ -171,36 +170,13 @@ public class Model implements IModel {
 
         updateMap();
 
-        // for debugging:
-        /* for (int i = 0; i < MAP_ROWS; i++) {
-            for (int j = 0; j < MAP_COLS; j++) {
-                System.out.print("| ");
-                if (reachableTiles[i][j]) {
-                    if (isTileOccupied(i, j)) {
-                        System.out.print(map[i][j].getEntities().size());
-                    } else {
-                        System.out.print(" ");
-                    }
-                    
-                }
-                    
-                else 
-                    System.out.print("-");
-                System.out.print(" |");
-            }
-            System.out.println();
-        }  */
-
         playerDeck.update(elapsed);
         AIAgent.getInstance().update(elapsed);
         checkGameOver();
     }
 
     private void checkGameOver() {
-        if (isTimeExceeded()
-        ||  isPlayerKingTowerDestroyed()
-        ||  isOpponentKingTowerDestroyed()
-        ) {
+        if (isTimeExceeded() || isPlayerKingTowerDestroyed() || isOpponentKingTowerDestroyed()) {
             gameOver = true;
         }
     }
@@ -216,37 +192,37 @@ public class Model implements IModel {
 
     @Override
     public boolean isPlayerKingTowerDestroyed() {
-        return playerKingTower.getHitPoints() == 0;
+        return playerKingTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public boolean isOpponentKingTowerDestroyed() {
-        return opponentKingTower.getHitPoints() == 0;
+        return opponentKingTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public boolean isPlayerLeftTowerDestroyed() {
-        return playerLeftTower.getHitPoints() == 0;
+        return playerLeftTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public boolean isOpponentLeftTowerDestroyed() {
-        return opponentLeftTower.getHitPoints() == 0;
+        return opponentLeftTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public boolean isPlayerRightTowerDestroyed() {
-        return playerRightTower.getHitPoints() == 0;
+        return playerRightTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public boolean isOpponentRightTowerDestroyed() {
-        return opponentRightTower.getHitPoints() == 0;
+        return opponentRightTower.getHitPoints() == ZERO_VALUE;
     }
 
     @Override
     public int getTimeLeftSec() {
-        return (int) Math.max(0, (maxTimeNanoSec - accumulator)/1_000_000_000L);
+        return (int) Math.max(ZERO_VALUE, (maxTimeNanoSec - accumulator) / NANOS_PER_SECOND);
     }
 
     @Override
@@ -278,7 +254,6 @@ public class Model implements IModel {
     public void dropPlayerCard(int row, int col) {
         if (playerDeck.isSelectedCardDroppable()) 
             playerDeck.dropSelectedCard(row, col, Side.PLAYER);
-        
     }
 
     @Override
@@ -288,21 +263,15 @@ public class Model implements IModel {
     }
 
     private void sortRenderOrderEntities() {
-        // this method has to be called for each frame, because order might change fast
-
-        // clears renderOrderTroops buffer and puts every troop entry
         renderOrderEntities.clear();
         renderOrderEntities.addAll(playerEntities);
         renderOrderEntities.addAll(opponentEntities);
-
-        Collections.sort(renderOrderEntities); // sorting based on Y pos (sorting is 
-        // based on double Y coords, not on column; otherwise a simple for loop 
-        // scan for j = 0..COLS-1 would have been sufficient)
+        Collections.sort(renderOrderEntities); 
     }
 
     @Override
     public List<Entity> getEntitiesOnTile(int i, int j) {
-        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS || !reachableTiles[i][j])
+        if (i < ZERO_VALUE || i >= MAP_ROWS || j < ZERO_VALUE || j >= MAP_COLS || !reachableTiles[i][j])
             return new ArrayList<>();
         
         return map[i][j].getEntities();
@@ -338,12 +307,10 @@ public class Model implements IModel {
         return playerDeck.getCurrentFourthCard();
     }
 
-    
     @Override
     public byte getPlayerElixirLeft() {
         return playerDeck.getElixir();
     }
-
 
     @Override
     public byte getMaxElixir() {
@@ -360,10 +327,6 @@ public class Model implements IModel {
         return playerDeck.getChargeTimeProgress();
     }
 
-    // 
-    // PRIVATE METHODS
-    //
-
     private void updateMap() {
         updateMap(playerEntities);
         updateMap(opponentEntities);
@@ -371,25 +334,16 @@ public class Model implements IModel {
 
     private void updateMap(List<Entity> entities) {
         Iterator<Entity> itEntities = entities.iterator();
-
         toRemoveEntities.clear();
 
         while (itEntities.hasNext()) {
             Entity e = itEntities.next();
-
-            if (e.getHitPoints() == 0) {
-                // means it's dead / destroied
+            if (e.getHitPoints() == ZERO_VALUE) {
                 toRemoveEntities.add(e);
             }
-
-            if (e.isOutsideTile()) { // when an entity is moving, his position change, so it might go outside his tile:
-                // in that case, it has to be displaced from the previous tile to the newest.
-
-                // remove entity from the sorrounding cells.
+            if (e.isOutsideTile()) { 
                 removeEntityFromMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
-                // updating entity tile position
                 e.updateCurrentTile();
-                // adding entity to new tiles
                 addEntityToMap(e, e.getCurrentI(), e.getCurrentJ(), e.getFootPrintSize());
             }
         }
@@ -429,12 +383,12 @@ public class Model implements IModel {
 
         int startJ;
         int endJ;
-        if (opponentTower.getCurrentJ() < cols/2) {
-            startJ = 0;
-            endJ = cols/2;
+        if (opponentTower.getCurrentJ() < cols / MAP_HALF_DIVISOR) {
+            startJ = ZERO_VALUE;
+            endJ = cols / MAP_HALF_DIVISOR;
         } else {
             endJ = cols;
-            startJ = endJ/2;
+            startJ = endJ / MAP_HALF_DIVISOR;
         }
 
         for (int i = startI; i < endI; i++) {
@@ -447,17 +401,17 @@ public class Model implements IModel {
     private void updateOpponentDroppableTiles(ArcherTower opponentTower) {
         int cols = getColsCount();
         int rows = getRowsCount();
-        int startI = 0;
-        int endI = (int) Math.floor(rows * (1-NORMALIZED_DROP_LIMIT));
+        int startI = ZERO_VALUE;
+        int endI = (int) Math.floor(rows * (1.0 - NORMALIZED_DROP_LIMIT));
 
         int startJ;
         int endJ;
-        if (opponentTower.getCurrentJ() < cols/2) {
-            startJ = 0;
-            endJ = cols/2;
+        if (opponentTower.getCurrentJ() < cols / MAP_HALF_DIVISOR) {
+            startJ = ZERO_VALUE;
+            endJ = cols / MAP_HALF_DIVISOR;
         } else {
             endJ = cols;
-            startJ = endJ/2;
+            startJ = endJ / MAP_HALF_DIVISOR;
         }
 
         for (int i = startI; i < endI; i++) {
@@ -472,8 +426,7 @@ public class Model implements IModel {
         int j = (int) Math.floor(e.getX());
 
         if (!reachableTiles[i][j]) 
-            throw new IllegalArgumentException("Unable to drop " + e.getClass().getSimpleName() + " in [" +  i + ", " + j + "]: this part of the map is unreachable.");
-        
+            throw new IllegalArgumentException("Unable to drop entity in unreachable area.");
         
         addEntityToMap(e, i, j, e.getFootPrintSize());
         e.updateCurrentTile();
@@ -485,49 +438,42 @@ public class Model implements IModel {
     }
 
     private void addEntityToMap(Entity e, int centreI, int centreJ, int footprintSize) {
-        int offsetI = centreI - footprintSize/2;
-        int offsetJ = centreJ - footprintSize/2;
+        int offsetI = centreI - footprintSize / MAP_HALF_DIVISOR;
+        int offsetJ = centreJ - footprintSize / MAP_HALF_DIVISOR;
 
-        // this method works also for entities whose footprint is grather than 1 (e.g. Towers).
-        // it adds entity also on the sorrounding cells that are close to (centreI, centreJ) based on
-        // footprintSize
         for (int i = 0; i < footprintSize; i++) {
             for (int j = 0; j < footprintSize; j++) {
-                if (0 <= offsetI + i && offsetI + i < MAP_ROWS 
-                    && 0 <= offsetJ + j && offsetJ + j < MAP_COLS
-                 && reachableTiles[offsetI + i][offsetJ + j]) 
-                    map[offsetI + i][offsetJ + j].addEntity(e);
+                int finalI = offsetI + i;
+                int finalJ = offsetJ + j;
+                if (0 <= finalI && finalI < MAP_ROWS && 0 <= finalJ && finalJ < MAP_COLS && reachableTiles[finalI][finalJ]) 
+                    map[finalI][finalJ].addEntity(e);
             }
         }
     }
 
     private void removeEntityFromMap(Entity e, int centreI, int centreJ, int footprintSize) {
-        int offsetI = centreI - footprintSize/2;
-        int offsetJ = centreJ - footprintSize/2;
+        int offsetI = centreI - footprintSize / MAP_HALF_DIVISOR;
+        int offsetJ = centreJ - footprintSize / MAP_HALF_DIVISOR;
 
-        // this method works also for entities whose footprint is grather than 1 (e.g. Towers).
-        // it adds entity also on the sorrounding cells that are close to (centreI, centreJ) based on
-        // footprintSize
         for (int i = 0; i < footprintSize; i++) {
             for (int j = 0; j < footprintSize; j++) {
-                if (0 <= offsetI + i && offsetI + i < MAP_ROWS 
-                    && 0 <= offsetJ + j && offsetJ + j < MAP_COLS
-                 && reachableTiles[offsetI + i][offsetJ + j]) 
-                    map[offsetI + i][offsetJ + j].removeEntity(e);
+                int finalI = offsetI + i;
+                int finalJ = offsetJ + j;
+                if (0 <= finalI && finalI < MAP_ROWS && 0 <= finalJ && finalJ < MAP_COLS && reachableTiles[finalI][finalJ]) 
+                    map[finalI][finalJ].removeEntity(e);
             }
         }
     }
 
     private boolean isTileOccupied(int i, int j) {
-        if (i < 0 || i >= MAP_ROWS || j < 0 || j >= MAP_COLS || !reachableTiles[i][j])
-            throw new IllegalArgumentException("Tile [" + i + ", " + j + "] is unreachable.");
-            
+        if (i < ZERO_VALUE || i >= MAP_ROWS || j < ZERO_VALUE || j >= MAP_COLS || !reachableTiles[i][j])
+            throw new IllegalArgumentException("Tile unreachable.");
         return map[i][j].isOccupied();
     }
 
     private long getElapsed(long now) {
-        long elapsed = 0;
-        if (lastTimeStamp != 0) {
+        long elapsed = ZERO_VALUE;
+        if (lastTimeStamp != INITIAL_TIMESTAMP) {
             elapsed = now - lastTimeStamp;
         } 
         lastTimeStamp = now;
@@ -561,50 +507,37 @@ public class Model implements IModel {
                 this.reachableTiles[i][j] = true;
             }
         }
-        // removing unreachable tiles:
-        // first 4 cells and last 4 cells in the first row and the last row
-        // will be unreachable by players.
 
-        for (int j = 0; j < 4; j++) {
-            this.reachableTiles[0][j] = false;
-            this.reachableTiles[MAP_ROWS-1][j] = false;
-        }
-        for (int j = 0; j < 4; j++) {
-            this.reachableTiles[0][MAP_COLS - 1 - j] = false;
+        for (int j = 0; j < UNREACHABLE_CORNER_SIZE; j++) {
+            this.reachableTiles[ZERO_VALUE][j] = false;
+            this.reachableTiles[MAP_ROWS - 1][j] = false;
+            this.reachableTiles[ZERO_VALUE][MAP_COLS - 1 - j] = false;
             this.reachableTiles[MAP_ROWS - 1][MAP_COLS - 1 - j] = false;
         }
 
-        // also some of the cells in the middle won't be reachable:
-
+        int midRow = MAP_ROWS / MAP_HALF_DIVISOR;
         for (int j = 0; j < MAP_COLS; j++) {
-            this.reachableTiles[MAP_ROWS/2 - 1][j] = false;
-            this.reachableTiles[MAP_ROWS/2][j] = false;
+            this.reachableTiles[midRow - 1][j] = false;
+            this.reachableTiles[midRow][j] = false;
         }
 
-        for (int j = 2; j <= 4; j++) {
-            this.reachableTiles[MAP_ROWS/2 - 1][j] = true;
-            this.reachableTiles[MAP_ROWS/2][j] = true;
-
-            this.reachableTiles[MAP_ROWS/2 - 1][MAP_COLS - 1 - j] = true;
-            this.reachableTiles[MAP_ROWS/2][MAP_COLS - 1 - j] = true;
+        for (int j = BRIDGE_START_OFFSET; j <= BRIDGE_END_OFFSET; j++) {
+            this.reachableTiles[midRow - 1][j] = true;
+            this.reachableTiles[midRow][j] = true;
+            this.reachableTiles[midRow - 1][MAP_COLS - 1 - j] = true;
+            this.reachableTiles[midRow][MAP_COLS - 1 - j] = true;
         }
     }
 
     private void initDroppableTiles() {
-        // every opponent tower are not damaged
-
         int mid = (int) Math.floor(ArenaData.LEFT_BRIDGE_START_POS.getY());
 
-        System.out.println("opponentDroppableTiles is null?: " + (opponentDroppableTiles == null));
-
-        // init opponent droppable tiles 
         for (int i = 0; i < mid; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 opponentDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
             }
         }
         
-        // init player droppable tiles
         for (int i = mid; i < MAP_ROWS; i++) {
             for (int j = 0; j < MAP_COLS; j++) {
                 playerDroppableTiles[i][j] = reachableTiles[i][j] && !isTileOccupied(i, j);
@@ -614,25 +547,22 @@ public class Model implements IModel {
 
     private void initAIAgent(Deck deck) {
         AIAgent.getInstance().init(Config.getInstance().getDifficulty(), deck);
-
     }
 
     @Override
-    public Tower getOpponentKingTower() {
-        return opponentKingTower;
+    public Tower getOpponentKingTower() { 
+        return opponentKingTower; 
     }
 
     @Override
-    public Tower getOpponentLeftTower() {
-        return opponentLeftTower;
+    public Tower getOpponentLeftTower() { 
+        return opponentLeftTower; 
     }
 
     @Override
-    public Tower getOpponentRightTower() {
-        return opponentRightTower;
+    public Tower getOpponentRightTower() { 
+        return opponentRightTower; 
     }
-
-    // static methods
 
     public static IModel getInstance() {
         if (instance == null) {

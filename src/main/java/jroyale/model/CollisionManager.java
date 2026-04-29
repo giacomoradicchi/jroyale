@@ -98,8 +98,6 @@ public class CollisionManager implements ICollisionManager{
         // getting list of sorrounding entities that might collide with entity e
         Set<Entity> possibleEntities = getPossibleCollidingEntities(e);
 
-        //System.out.println(possibleEntities.size());
-
         if (possibleEntities.size() == 0) { // no entities found
             
             return possibleEntities;

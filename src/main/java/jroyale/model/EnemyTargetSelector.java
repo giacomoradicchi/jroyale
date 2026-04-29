@@ -11,6 +11,19 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
     private static EnemyTargetSelector instance = null;
 
     private static final Set<Troop> enemyBuffer = new HashSet<>(); // enemy buffer to avoid new constructor for each call.
+    
+    // factor to convert radius to diameter
+    private static final int DIAMETER_FACTOR = 2;
+    // factor used to ensure an odd number for the search grid
+    private static final int ODD_CONVERSION_FACTOR = 2;
+    // adjustment value to obtain an odd number
+    private static final int ODD_ADJUSTMENT = 1;
+    // divisor used to center the search window on the troop
+    private static final int CENTER_DIVISOR = 2;
+    // minimum size for the search bounds
+    private static final int MIN_BOUNDS_SIZE = 1;
+    // value representing an empty collection size
+    private static final int EMPTY_SIZE = 0;
 
     private EnemyTargetSelector() {}
 
@@ -23,12 +36,13 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
         int troopI = troop.getCurrentI();
         int troopJ = troop.getCurrentJ();
         double radiusRange = troop.getVisionRange(); 
-        int boundsSize = (int) Math.max(1, Math.ceil(radiusRange * 2)) * 2 - 1; // bounds size is ceil(diameter)
+        // bounds size is ceil(diameter)
+        int boundsSize = (int) Math.max(MIN_BOUNDS_SIZE, Math.ceil(radiusRange * DIAMETER_FACTOR)) * ODD_CONVERSION_FACTOR - ODD_ADJUSTMENT; 
 
         /* boundsSize has to be always odd. the central cell of the 
         (boundsize x boundsize) matrix contains the troop */
-        int startI = troopI - boundsSize/2;
-        int startJ = troopJ - boundsSize/2;
+        int startI = troopI - boundsSize / CENTER_DIVISOR;
+        int startJ = troopJ - boundsSize / CENTER_DIVISOR;
         int endI = startI + boundsSize;
         int endJ = startJ + boundsSize;
 
@@ -53,7 +67,7 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
             }
         }
 
-        if (enemyBuffer.size() == 0) return null; // not a single enemy found in vision range.
+        if (enemyBuffer.size() == EMPTY_SIZE) return null; // not a single enemy found in vision range.
 
         // step 2: find the closest enemy in vision range
         double minDistance = Double.MAX_VALUE;
@@ -83,12 +97,13 @@ public class EnemyTargetSelector implements IEnemyTargetSelector{
         int troopI = troop.getCurrentI();
         int troopJ = troop.getCurrentJ();
         double radiusRange = troop.getMeleeRange(); 
-        int boundsSize = (int) Math.max(1, Math.ceil(radiusRange * 2)) * 2 - 1; // bounds size is ceil(diameter)
+        // bounds size is ceil(diameter)
+        int boundsSize = (int) Math.max(MIN_BOUNDS_SIZE, Math.ceil(radiusRange * DIAMETER_FACTOR)) * ODD_CONVERSION_FACTOR - ODD_ADJUSTMENT; 
 
         /* boundsSize has to be always odd. the central cell of the 
         (boundsize x boundsize) matrix contains the troop */
-        int startI = troopI - boundsSize/2;
-        int startJ = troopJ - boundsSize/2;
+        int startI = troopI - boundsSize / CENTER_DIVISOR;
+        int startJ = troopJ - boundsSize / CENTER_DIVISOR;
         int endI = startI + boundsSize;
         int endJ = startJ + boundsSize;
 

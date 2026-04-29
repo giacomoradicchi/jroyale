@@ -7,7 +7,6 @@ public class FrameManager {
     private long accumulator; // it will increase for each frame by elapsed
     private Entity entity; // entity on which it will be changed currentFrame
     
-
     public FrameManager(Entity e) {
         this.entity = e;
         ELAPSED_BETWEEN_FRAMES = getElapsedBetweenFrames(e.getFPSAnimation());
