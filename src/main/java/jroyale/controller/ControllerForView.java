@@ -43,7 +43,12 @@ public class ControllerForView implements IControllerForView {
     private static final double SMOOTHNESS_CURVE = 2; // defines how smoothly the curve will go from 1 to 0
     private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
     private static final double NORMALIZED_PLAYBUTTON_Y = 0.85;
-    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
+    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT  = 0.05;
+    private static final double GAME_OVER_FONT_SIZE  = 50;
+    private static final double GAME_OVER_STROKE_WIDTH  = 3;
+    private static final double GAME_OVER_ALPHA  = 1;
+    private static final Color  GAME_OVER_TEXT_COLOR = Color.ALICEBLUE;
+    private static final Color  GAME_OVER_STROKE_COLOR = Color.BLACK;
 
     private ControllerForView() {
         gameView = GameView.getInstance();
@@ -158,14 +163,13 @@ public class ControllerForView implements IControllerForView {
         if (timePassedSinceGameOver == 0 || gui.getGlobalScale() == MIN_GLOBAL_SCALE) return;
 
         // smooth change
-
         double timeRatio = (double) timePassedSinceGameOver / ZOOM_OUT_DURATION_NANOSEC;
         double smoothFactor = smoothnessFunction(timeRatio);
         double globalScale = smoothFactor * initialGlobalScaleSinceGameOver + (1 - smoothFactor) * MIN_GLOBAL_SCALE; // linear interpolation using smooth factor
         gui.setGlobalScale(globalScale);
     } 
 
-    private boolean isGameOver() {
+    private boolean hasGameOverAnimationStarted() {
         return initialTimeGameOver != -1;
     }
 
@@ -211,9 +215,10 @@ public class ControllerForView implements IControllerForView {
     public void renderGameOver() {
         IMainGUI gui = gameView.getGUI();
         String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
+        Font gameOverFont = FontManager.getInstance().getBoldFont(GAME_OVER_FONT_SIZE);
 
-        gui.fillScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.ALICEBLUE, 1);
-        gui.strokeScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, FontManager.getInstance().getBoldFont(50), Color.BLACK, 3, 1);
+        gui.fillScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_TEXT_COLOR, GAME_OVER_ALPHA);
+        gui.strokeScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_STROKE_COLOR, GAME_OVER_STROKE_WIDTH, GAME_OVER_ALPHA);
     }
 
     private String getGameOverText(String winText, String tieText, String lossText) {
@@ -239,10 +244,10 @@ public class ControllerForView implements IControllerForView {
         if (controllerForModel.isOpponentLeftTowerDestroyed()) opponentTowerCount++;
         if (controllerForModel.isOpponentRightTowerDestroyed()) opponentTowerCount++;
 
-        // 4.1) player has more destroyed towers than opponent (victory)
+        // 4.1) player has more destroyed towers than opponent → loss
         if (playerTowerCount > opponentTowerCount) return lossText;
 
-        // 4.2) opponent has more destroyed towers than player (loss)
+        // 4.2) opponent has more destroyed towers than player → win
         if (playerTowerCount < opponentTowerCount) return winText;
         
         // 4.3) player has the same amount of destroyed towers as opponent (tie)
@@ -266,7 +271,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void handleMouseSelectedTile(int row, int col) {
-        if (isGameOver()) return;
+        if (hasGameOverAnimationStarted()) return;
         
         // 1. Valid Position 
         if (controllerForModel.isPlayerEntityDroppableOnTile(row, col)) {
@@ -313,7 +318,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public boolean shouldRenderDragPlacementPreview() {
-        return !isGameOver() && isPositionValid();
+        return !hasGameOverAnimationStarted() && isPositionValid();
     }
 
     @Override
@@ -363,7 +368,7 @@ public class ControllerForView implements IControllerForView {
 
     @Override
     public void setSelectedPlayerCard(int cardIndex) {
-        if (isGameOver()) return;
+        if (hasGameOverAnimationStarted()) return;
 
         controllerForModel.setSelectedPlayerCard(cardIndex);
     }
