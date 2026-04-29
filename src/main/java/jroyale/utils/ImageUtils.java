@@ -10,22 +10,12 @@ import javafx.scene.paint.Color;
 public class ImageUtils {
 
     private static final double DEFAULT_ALPHA_THRESHOLD = 0.1; // threshold = 10% of alpha channel
-    /**
-     * Computes bounding box of visible pixels (alpha channel is not 0)
-     * @param img original image (RGBA)
-     * @return bounding box of the image
-     */
+    
     public static Rectangle2D getAlphaBoundingBox(Image img) {
         // default opacityTolerance is 0 
         return getAlphaBoundingBox(img, 0); 
     }
 
-    /**
-     * Computes bounding box of pixels whose opacity levels are higher than a certain value
-     * @param img original image (RGBA)
-     * @param opacityTolerance value between 0.0 - 1.0, pixels whose alpha level is <= opacityTolerance will be skipped.
-     * @return bounding box of the image
-     */
     public static Rectangle2D getAlphaBoundingBox(Image img, double opacityTolerance) {
         PixelReader reader = img.getPixelReader();
         int width = (int) img.getWidth();
@@ -66,11 +56,6 @@ public class ImageUtils {
         );
     }
 
-    /**
-     * Removes alpha channel from an image, making it all opaque.
-     * @param img original image (RGBA)
-     * @return new image RGB opaque
-     */
     public static Image makeOpaque(Image img) {
         int width = (int) img.getWidth();
         int height = (int) img.getHeight();

@@ -1,14 +1,24 @@
 package jroyale.utils;
 
 public class Point {
+    
+    // mathematical and default constants
+    private static final double DEFAULT_COORDINATE = 0.0;
+    private static final double ZERO_MAGNITUDE = 0.0;
+    private static final double DEGREES_TO_RADIANS_FACTOR = Math.PI / 180.0;
+    private static final int POWER_OF_TWO = 2;
+
     private double x;
     private double y;
 
-    public Point() {} // empty constructor
+    public Point() {
+        this.x = DEFAULT_COORDINATE;
+        this.y = DEFAULT_COORDINATE;
+    }
 
-    public Point(double x,double y){
-        this.x=x;
-        this.y=y;
+    public Point(double x, double y){
+        this.x = x;
+        this.y = y;
     }
 
     public Point(Point p){
@@ -32,21 +42,19 @@ public class Point {
     }
 
     public Point setPoint(double x, double y){
-        this.x=x;
-        this.y=y;
-
+        this.x = x;
+        this.y = y;
         return this;
     }
 
     public Point setPoint(Point p){
-        this.x=p.x;
-        this.y=p.y;
-
+        this.x = p.x;
+        this.y = p.y;
         return this;
     }
 
     public boolean isZeroVector() {
-        return x == 0 && y == 0;
+        return x == DEFAULT_COORDINATE && y == DEFAULT_COORDINATE;
     }
 
     public Point add(Point p){
@@ -77,7 +85,6 @@ public class Point {
         return this;
     }
 
-
     public double distance(Point p){
         return distance(p.getX(), p.getY(), getX(), getY());
     }
@@ -87,13 +94,13 @@ public class Point {
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {
-        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+        return Math.sqrt(Math.pow(x1 - x2, POWER_OF_TWO) + Math.pow(y1 - y2, POWER_OF_TWO));
     }
 
     public Point normalize(){
-        double magnitude = Math.sqrt(x * x + y * y);
-        if (magnitude == 0) {
-            return new Point(0, 0);
+        double magnitude = magnitude();
+        if (magnitude == ZERO_MAGNITUDE) {
+            return new Point(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
         }
         x /= magnitude;
         y /= magnitude;
@@ -116,12 +123,12 @@ public class Point {
 
     // rotate through point (0,0)
     public Point rotate(double degrees) {
-        double magnitude = magnitude();
-        double angle = Math.atan2(getY(), getX());
-        angle += degrees * Math.PI / 180.0;
+        double currentMagnitude = magnitude();
+        double currentAngle = Math.atan2(getY(), getX());
+        currentAngle += degrees * DEGREES_TO_RADIANS_FACTOR;
 
-        x = magnitude * Math.cos(angle);
-        y = magnitude * Math.sin(angle);
+        x = currentMagnitude * Math.cos(currentAngle);
+        y = currentMagnitude * Math.sin(currentAngle);
         return this;
     } 
 
@@ -133,10 +140,15 @@ public class Point {
         return getX() * x + getY() * y;
     }
 
-    public boolean equals(Point p) {
-        return (getX() == p.getX()) && (getY() == p.getY());
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Point)) return false;
+        Point p = (Point) obj;
+        return Double.compare(p.getX(), getX()) == 0 && Double.compare(p.getY(), getY()) == 0;
     }
 
+    @Override
     public String toString() {
         return "[x: " + x + ", y: " + y + "]";
     }

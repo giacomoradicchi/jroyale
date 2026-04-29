@@ -18,6 +18,17 @@ public abstract class Entity implements Comparable<Entity>{
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
     private static final int DEFAULT_ANIMATION_STEPS = 1; // by default, entity has no animations.
     private static final Point DEFAULT_SPEED = new Point(0, 0); // doesn't move
+    
+    // divisor used to center the entity inside a tile
+    private static final int CENTER_DIVISOR = 2;
+    // factor used to calculate the diameter from the radius
+    private static final int DIAMETER_FACTOR = 2;
+    // minimum value for hit points
+    private static final int MIN_HIT_POINTS = 0;
+    // index representing the first frame of an animation
+    private static final int START_FRAME_INDEX = 0;
+    // value used to reset the animation index
+    private static final int RESET_ANIMATION_INDEX = 0;
       
     private double collisionRadius;
     private double mass;
@@ -60,13 +71,13 @@ public abstract class Entity implements Comparable<Entity>{
     // costructors for when position is an integer (row and column)
 
     public Entity(int row, int col, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
-        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, mass, collisionRadius, hitPoints, damage, side);
-        // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
+        this(col + Model.getInstance().getTileSize() / CENTER_DIVISOR, row + Model.getInstance().getTileSize() / CENTER_DIVISOR, mass, collisionRadius, hitPoints, damage, side);
+        // adding half tile size so it will be centered inside tile instead of top left corner.
     }
 
     public Entity(int row, int col, double mass, int hitPoints, int damage, Side side) {
-        this(col + Model.getInstance().getTileSize()/2, row + Model.getInstance().getTileSize()/2, mass, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
-        // adding + Model.getInstance().getTileSize()/2 so it will be centered inside tile instead of top left corner.
+        this(col + Model.getInstance().getTileSize() / CENTER_DIVISOR, row + Model.getInstance().getTileSize() / CENTER_DIVISOR, mass, DEFAULT_COLLISION_RADIUS, hitPoints, damage, side);
+        // adding half tile size so it will be centered inside tile instead of top left corner.
     }
 
     public double getX() {
@@ -94,7 +105,7 @@ public abstract class Entity implements Comparable<Entity>{
     }
 
     public int getFootPrintSize() { // number of cells occupied by the entity
-        return (int) Math.ceil(getCollisionRadius() * 2);
+        return (int) Math.ceil(getCollisionRadius() * DIAMETER_FACTOR);
     } 
 
     public double getCollisionRadius() {
@@ -163,8 +174,8 @@ public abstract class Entity implements Comparable<Entity>{
 
     public void setDamage(int damage) {
         hitPoints -= damage;
-        if (hitPoints < 0) {
-            hitPoints = 0;
+        if (hitPoints < MIN_HIT_POINTS) {
+            hitPoints = MIN_HIT_POINTS;
         }
     }
 
@@ -191,7 +202,7 @@ public abstract class Entity implements Comparable<Entity>{
 
     public void goToNextFrame() {
         currentAnimationIndex = (currentAnimationIndex + 1) % getTotalAnimationSteps();
-        if (currentAnimationIndex == 0) {
+        if (currentAnimationIndex == START_FRAME_INDEX) {
             animationCompleted = true;
         }
     }
@@ -212,7 +223,7 @@ public abstract class Entity implements Comparable<Entity>{
         if (this.state == newState) return;
         
         state = newState;
-        currentAnimationIndex = 0;
+        currentAnimationIndex = RESET_ANIMATION_INDEX;
         animationCompleted = false;
     }
 
