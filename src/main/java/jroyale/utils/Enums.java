@@ -4,17 +4,26 @@ public class Enums {
 
     public enum EntityType {
         // towers
-        KING_TOWER,
-        ARCHER_TOWER,
+        KING_TOWER(false),
+        ARCHER_TOWER(false),
 
         // troops
-        MINIPEKKA,
-        GIANT,
-        SKELETONS,
-        SKELETON_ARMY,
-        PEKKA,
-        VALKYRIE,
-        KNIGHT
+        MINIPEKKA(true),
+        GIANT(false),
+        SKELETONS(true),
+        SKELETON_ARMY(true),
+        PEKKA(true),
+        VALKYRIE(true);
+
+        private boolean canDefend;
+
+        private EntityType(boolean canDefend) {
+            this.canDefend = canDefend;
+        }
+
+        public boolean canDefend() {
+            return canDefend;
+        }
     }
 
     public enum Side {

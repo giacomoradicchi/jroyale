@@ -91,6 +91,8 @@ public class Model implements IModel {
             ValkyrieCard.getInstance()
         });
 
+        System.out.println("opponentDroppableTiles is null?: " + opponentDroppableTiles == null);
+
         initTowers();
         initDroppableTiles();
 
@@ -117,12 +119,6 @@ public class Model implements IModel {
         map = new Tile[MAP_ROWS][MAP_COLS];
         playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
         opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
-        playerKingTower = null;
-        opponentDroppableTiles = null;
-        playerLeftTower = null;
-        playerRightTower = null;
-        opponentLeftTower = null;
-        opponentRightTower = null;
     }
 
     @Override
@@ -598,6 +594,8 @@ public class Model implements IModel {
         // every opponent tower are not damaged
 
         int mid = (int) Math.floor(ArenaData.LEFT_BRIDGE_START_POS.getY());
+
+        System.out.println("opponentDroppableTiles is null?: " + (opponentDroppableTiles == null));
 
         // init opponent droppable tiles 
         for (int i = 0; i < mid; i++) {
