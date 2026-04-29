@@ -30,8 +30,8 @@ public class GameEngine implements IGameEngine {
 
                 if (controllerForView.shouldRenderDragPlacementPreview()) {
                     controllerForView.renderDragPlacementPreview(
-                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol()) + controllerForView.getDx()/2,
-                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow()) + controllerForView.getDy()/2
+                        controllerForView.logicToGraphicX(controllerForView.getSelectedCol()) + controllerForView.getDx() / 2,
+                        controllerForView.logicToGraphicY(controllerForView.getSelectedRow()) + controllerForView.getDy() / 2
                     ); 
                 } 
 

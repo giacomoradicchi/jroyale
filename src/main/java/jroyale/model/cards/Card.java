@@ -5,15 +5,6 @@ import jroyale.utils.Enums.Side;
 
 public abstract class Card {
     
-    /* private String name;
-    private Speed speed;
-    private MeleeRange meleeRange;
-    private double collisionRadius;
-    private double loadTime;
-    private int hitPoints;
-    private int damage;
-    private byte elixirCost;
-    private final EntityType TYPE; */
     protected CardStats stats;
     private final EntityType TYPE;
 
@@ -21,14 +12,12 @@ public abstract class Card {
         this.TYPE = type;
     }
 
-    // Setters
-
+    // setters
     public void setStats(CardStats stats) {
         this.stats = stats;
     }
 
-    // Getters
-
+    // getters
     public CardStats getCardStats() {
         return stats;
     }

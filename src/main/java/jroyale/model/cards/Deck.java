@@ -14,18 +14,36 @@ public class Deck {
 
     private static final int MAX_NUM_CARDS = 8;
     private static final int MAX_ELIXIR = 10; 
+    // initial amount of elixir when the deck is created
+    private static final byte INITIAL_ELIXIR = 3;
+    // factor to convert seconds to nanoseconds
+    private static final long NANOS_IN_SECOND = 1_000_000_000L;
+    // default speed for elixir charging
+    private static final double DEFAULT_SPEED = 1.0;
+    // range limits for progress clamping
+    private static final double MIN_PROGRESS = 0.0;
+    private static final double MAX_PROGRESS = 1.0;
+    // value used to reset the accumulator
+    private static final long RESET_ACCUMULATOR_VALUE = 0;
+    // index constants for specific card positions
+    private static final int FIRST_CARD_INDEX = 0;
+    private static final int SECOND_CARD_INDEX = 1;
+    private static final int THIRD_CARD_INDEX = 2;
+    private static final int FOURTH_CARD_INDEX = 3;
+    // index used to pick a card from the shuffled buffer
+    private static final int PICK_FROM_BUFFER_INDEX = 0;
 
     private final List<Card> cardBuffer = new ArrayList<>(); // to avoid new constructor whenever replaceCard() and initAvailableCards() is called.
     
     private final Card[] availableCards = new Card[AVAILABLE_CARDS_SIZE]; // player/opponent will choose between those cards.
     private Set<Card> deck = new HashSet<>(); // using Set data structure to avoid duplicates.
-    private byte elixirLeft = 3; 
+    private byte elixirLeft = INITIAL_ELIXIR; 
     private int selectedCardIndex;
 
     private long accumulator; // it will increase for each frame by elapsed
     private static final double DEFAULT_ELISIR_CHARGE_TIME_SEC = 3;
-    private static final double DEFAULT_ELISIR_CHARGE_TIME_NANOSEC = DEFAULT_ELISIR_CHARGE_TIME_SEC * 1_000_000_000L;
-    private static double chargeTimeSpeed = 1.0;
+    private static final double DEFAULT_ELISIR_CHARGE_TIME_NANOSEC = DEFAULT_ELISIR_CHARGE_TIME_SEC * NANOS_IN_SECOND;
+    private static double chargeTimeSpeed = DEFAULT_SPEED;
 
     public Deck(Card[] deckCards) {
         int numCards = deckCards.length;
@@ -75,7 +93,7 @@ public class Deck {
 
     private void resetAccumulator() {
         if (elixirLeft == MAX_ELIXIR) {
-            accumulator = 0;
+            accumulator = RESET_ACCUMULATOR_VALUE;
         } else {
             accumulator -= getChargeTimeNanoSec();
         }
@@ -86,7 +104,7 @@ public class Deck {
     }
 
     public double getChargeTimeProgress() {
-        return Math.clamp((double) (accumulator) / getChargeTimeNanoSec(), 0, 1); // between 0 and 1
+        return Math.clamp((double) (accumulator) / getChargeTimeNanoSec(), MIN_PROGRESS, MAX_PROGRESS); // between 0 and 1
     }
 
     public void selectCard(int index) {
@@ -117,19 +135,19 @@ public class Deck {
     }
 
     public Card getCurrentFirstCard() {
-        return availableCards[0];
+        return availableCards[FIRST_CARD_INDEX];
     }
 
     public Card getCurrentSecondCard() {
-        return availableCards[1];
+        return availableCards[SECOND_CARD_INDEX];
     }
 
     public Card getCurrentThirdCard() {
-        return availableCards[2];
+        return availableCards[THIRD_CARD_INDEX];
     }
 
     public Card getCurrentFourthCard() {
-        return availableCards[3];
+        return availableCards[FOURTH_CARD_INDEX];
     }
 
     public Card getCurrentCard(int index) {
@@ -147,7 +165,7 @@ public class Deck {
         }
         Collections.shuffle(cardBuffer);
 
-        availableCards[selectedCardIndex] = cardBuffer.get(0);
+        availableCards[selectedCardIndex] = cardBuffer.get(PICK_FROM_BUFFER_INDEX);
     }
 
     private void initAvailableCards() {
