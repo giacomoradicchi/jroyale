@@ -1,12 +1,9 @@
 package jroyale.view.game_view.arena;
 
 import java.awt.geom.Rectangle2D;
-
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
-import jroyale.view.game_view.IGameView;
 
 public class ArenaView {
 
@@ -14,18 +11,28 @@ public class ArenaView {
 
     private final static String ARENA_RELATIVE_PATH = "/jroyale/images/arenas/IMG_6164.PNG";
 
-    // Arena Config values found empirically through testing
-    private final static double SCALE = 0.417; //0.417 // initial scale factor of the image
-    private final static double NORMALIZED_MAP_WIDTH = 1 - 2*(32 / (800 * 607.0 / 1080)); 
-    private final static double NORMALIZED_MAP_HEIGHT = 552.0 / 800;
-    private final static double NORMALIZED_SHIFT_Y = -72.0 / 800;
+    // base reference values for normalization
+    private final static double REF_CANVAS_WIDTH = 449.6296296296296;
+    private final static double REF_CANVAS_HEIGHT = 800.0;
+    private final static double REF_IMG_WIDTH = 1080.0;
+    
+    // empirical arena config values
+    private final static double BASE_SCALE = 0.417; 
+    private final static double MAP_PADDING_OFFSET = 32.0;
+    private final static double CENTER_DIVISOR = 2.0;
+    private final static double ARENA_Y_OFFSET_FACTOR = 108.0;
+    private final static double FULL_OPACITY = 1.0;
+
+    // normalized map constants
+    private final static double NORMALIZED_MAP_WIDTH = 1.0 - 2.0 * (MAP_PADDING_OFFSET / (REF_CANVAS_HEIGHT * 607.0 / REF_IMG_WIDTH)); 
+    private final static double NORMALIZED_MAP_HEIGHT = 552.0 / REF_CANVAS_HEIGHT;
+    private final static double NORMALIZED_SHIFT_Y = -72.0 / REF_CANVAS_HEIGHT;
 
     private Image arenaImage;
     private Rectangle2D mapBoundingBox;
     private double globalShiftY;
     private double dx, dy;
     private int rows, cols;
-    
 
     private ArenaView() {}
 
@@ -73,19 +80,19 @@ public class ArenaView {
 
         double mapWidth = NORMALIZED_MAP_WIDTH * canvasWidth;
         double mapHeight = NORMALIZED_MAP_HEIGHT * canvasHeight;
-        globalShiftY = NORMALIZED_SHIFT_Y*canvasHeight; // map is not centered.
+        globalShiftY = NORMALIZED_SHIFT_Y * canvasHeight; // map is not centered vertically
 
         mapBoundingBox = new Rectangle2D.Double(
-            (canvasWidth - mapWidth) / 2,
-            (canvasHeight - mapHeight) / 2 + globalShiftY,
+            (canvasWidth - mapWidth) / CENTER_DIVISOR,
+            (canvasHeight - mapHeight) / CENTER_DIVISOR + globalShiftY,
             mapWidth,
             mapHeight
         );
     }
 
     private void calculateDxDy() {
-        this.dx = (float) mapBoundingBox.getWidth() / cols;
-        this.dy = (float) mapBoundingBox.getHeight() / rows;
+        this.dx = mapBoundingBox.getWidth() / cols;
+        this.dy = mapBoundingBox.getHeight() / rows;
     }
 
     public void renderArena() {
@@ -93,94 +100,40 @@ public class ArenaView {
     } 
 
     public void renderArena(boolean debugMode) {
-
         IMainGUI gui = GameView.getInstance().getGUI();
 
         double canvasWidth = gui.getCanvasWidth();
         double canvasHeight = gui.getCanvasHeight();
 
+        // calculate dynamic scaling based on current canvas size compared to reference
+        double widthScale = canvasWidth / REF_CANVAS_WIDTH;
+        double heightScale = canvasHeight / REF_CANVAS_HEIGHT;
+        double verticalOffset = ARENA_Y_OFFSET_FACTOR * heightScale;
+
         gui.renderWorldImage(
             arenaImage, 
-            canvasWidth * 0.5, 
-            canvasHeight * 0.5 - 108 * (gui.getCanvasHeight() / 800.0), 
-            getWidth() * SCALE * (gui.getCanvasWidth() / 449.6296296296296), 
-            getHeight() * SCALE * (gui.getCanvasHeight() / 800.0),
+            canvasWidth / CENTER_DIVISOR, 
+            (canvasHeight / CENTER_DIVISOR) - verticalOffset, 
+            getWidth() * BASE_SCALE * widthScale, 
+            getHeight() * BASE_SCALE * heightScale,
             false,
-            1
+            FULL_OPACITY
         );  
 
-        if (!debugMode) return;
-        System.out.println("Width " + canvasWidth);
-        System.out.println("Height " + canvasHeight);
-        
-
-        //renderGrid(gc);
-    } 
-
-    public void renderCells(GraphicsContext gc, boolean[][] cells) {
-
-        /* renderGrid(gc);
-
-        // drawing only reachable tiles:
-        gc.save();
-        gc.setFill(Color.GREEN);
-        gc.setGlobalAlpha(0.25);
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                if (cells[i][j]) {
-                    gc.fillRect(
-                        mapBoundingBox.getMinX() + j*dx, 
-                        mapBoundingBox.getMinY() + i*dy, 
-                        dx, 
-                        dy
-                    );
-                }
-            }
+        if (debugMode) {
+            System.out.println("Debug -> Canvas size: " + canvasWidth + "x" + canvasHeight);
         }
-        gc.restore(); */
-    }
+    } 
 
     public Rectangle2D getMapBounds() {
         return mapBoundingBox;
     }
 
-    /*private void renderGrid() {
-        
-        gc.save();
-
-        gc.setGlobalAlpha(1);
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(2);
-
-        for (int j = 0; j <= View.getInstance().getNNUM_COLS; j++) {
-            gc.strokeLine(
-                mapBoundingBox.getMinX() + j*dx, 
-                mapBoundingBox.getMinY(), 
-                mapBoundingBox.getMinX() + j*dx, 
-                mapBoundingBox.getMaxY()
-            );
-        }
-
-        for (int i = 0; i <= NUM_ROWS; i++) {
-            gc.strokeLine(
-                mapBoundingBox.getMinX(), 
-                mapBoundingBox.getMinY() + i*dy, 
-                mapBoundingBox.getMaxX(), 
-                mapBoundingBox.getMinY() + i*dy
-            );
-        }
-
-        gc.restore(); 
-    }*/
-
     // static methods
-
     public static ArenaView getInstance() {
         if (instance == null) {
             instance = new ArenaView();
         }
-
         return instance;
     }
-
 }

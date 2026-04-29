@@ -6,7 +6,6 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
-import jroyale.view.game_view.IGameView;
 import jroyale.controller.binders.EntityViewBinder;
 import jroyale.utils.ImageUtils;
 
@@ -26,8 +25,28 @@ public class DeckView {
     private static final int NUM_CARDS = 4;
     private static final double NORMALIZED_DECK_WIDTH = 0.9;
     private static final double NORMALIZED_CARD_WIDTH = 1.0 / (NUM_CARDS + 1); // arbitrary width decision
-    private static final double NORMALIZED_CARD_HEIGHT = 0.45; // 45% of deck height
+    private static final double NORMALIZED_CARD_HEIGHT = 0.4; // NORMALIZED_CARD_HEIGHT% of deck height
     private static final double NORMALIZED_DROP_WIDTH = 0.35;
+
+    // --- CONSTANTS REPLACING MAGIC NUMBERS ---
+    private static final double PERCENTAGE_FULL = 1.0;
+    private static final double PERCENTAGE_HALF = 0.5;
+    private static final double DIVISOR_CENTER = 2.0;
+    private static final double ZERO_VALUE = 0.0;
+
+    private static final double DECK_Y_OFFSET_FACTOR = 0.15;
+    private static final double BAR_WIDTH_FACTOR = 0.85;
+    private static final double BAR_HEIGHT_FACTOR = 0.10;
+
+    private static final double STROKE_THICKNESS = 1.5;
+    private static final double STROKE_THICKNESS_THIN = 1.0;
+
+    private static final double ELIXIR_DROP_SCALE_FACTOR = 2.5;
+    private static final double FONT_SIZE_MULTIPLIER = 0.6;
+
+    private static final int DENOMINATOR_OFFSET = 2;
+    private static final double SPACING_FACTOR = 4.0 / 3.0;
+    // -----------------------------------------
 
     private static final Color PLAYER_STROKE_COLOR = Color.rgb(250, 199, 250);
     private static final Color PLAYER_FILL_DARK = Color.rgb(81, 30, 81); 
@@ -81,8 +100,8 @@ public class DeckView {
         
         double dropWidth = card.getWidth() * NORMALIZED_DROP_WIDTH;
         double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
-        double dropCenterX = card.getTopLeftX() + card.getWidth()/2;
-        double dropCenterY = card.getTopLeftY() + card.getHeight() - dropHeight/2;
+        double dropCenterX = card.getTopLeftX() + card.getWidth() / DIVISOR_CENTER;
+        double dropCenterY = card.getTopLeftY() + card.getHeight() - dropHeight / DIVISOR_CENTER;
 
         renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, card.getElixirCost(), false, alpha);
 
@@ -106,7 +125,7 @@ public class DeckView {
             String.valueOf(elixir), 
             dropCenterX, 
             dropCenterY, 
-            FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
+            FontManager.getInstance().getRegularFont(dropWidth * FONT_SIZE_MULTIPLIER), 
             Color.WHITE, 
             alpha
         );
@@ -115,9 +134,9 @@ public class DeckView {
             String.valueOf(elixir), 
             dropCenterX, 
             dropCenterY, 
-            FontManager.getInstance().getRegularFont(dropWidth * 0.6), 
+            FontManager.getInstance().getRegularFont(dropWidth * FONT_SIZE_MULTIPLIER), 
             Color.BLACK,
-            1,
+            STROKE_THICKNESS_THIN,
             alpha
         );
     }
@@ -133,10 +152,10 @@ public class DeckView {
         final double DECK_WIDTH = NORMALIZED_DECK_WIDTH * CANVAS_WIDTH ;
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
 
-        final double centerX = CANVAS_WIDTH/2 + (1.0 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH)*DECK_WIDTH/2;
-        final double centerY = CANVAS_HEIGHT - DECK_HEIGHT * 0.15;
-        final double barWidth = DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * 0.85;
-        final double barHeight = DECK_HEIGHT * 0.10;
+        final double centerX = CANVAS_WIDTH / DIVISOR_CENTER + (PERCENTAGE_FULL - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH) * DECK_WIDTH / DIVISOR_CENTER;
+        final double centerY = CANVAS_HEIGHT - DECK_HEIGHT * DECK_Y_OFFSET_FACTOR;
+        final double barWidth = DECK_WIDTH * DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * BAR_WIDTH_FACTOR;
+        final double barHeight = DECK_HEIGHT * BAR_HEIGHT_FACTOR;
 
         
         Color cFill, cStroke;
@@ -147,45 +166,45 @@ public class DeckView {
 
         // Draw the empty (background) health bar
         gui.fillScreenRoundedRect(centerX, centerY, barWidth, barHeight,
-                barHeight / 2, barHeight / 2, alpha, cFillDark);
+                barHeight / DIVISOR_CENTER, barHeight / DIVISOR_CENTER, alpha, cFillDark);
 
         // Calculate the filled portion width based on current health percentage
         double percentage   = (double) elixirLeft / maxElixir;
         double elixirWidth  = barWidth * percentage;
 
         // Align the filled bar to the left edge of the background bar
-        double ElixirBarCenterX = centerX - barWidth / 2 + elixirWidth / 2;
+        double ElixirBarCenterX = centerX - barWidth / DIVISOR_CENTER + elixirWidth / DIVISOR_CENTER;
         
-        double dx = 1.0 / maxElixir * barWidth;
+        double dx = PERCENTAGE_FULL / maxElixir * barWidth;
         double elixirProgressWidth = dx * elixirChargeTimeProgress;
-        gui.fillScreenRoundedRect(centerX - barWidth / 2 + elixirWidth + elixirProgressWidth/2, centerY, elixirProgressWidth, barHeight, 0, 0, alpha, PLAYER_FILL_PROGRESS);
+        gui.fillScreenRoundedRect(centerX - barWidth / DIVISOR_CENTER + elixirWidth + elixirProgressWidth / DIVISOR_CENTER, centerY, elixirProgressWidth, barHeight, ZERO_VALUE, ZERO_VALUE, alpha, PLAYER_FILL_PROGRESS);
 
         // Draw the filled (current elixir) portion of the bar
         gui.fillScreenRoundedRect(ElixirBarCenterX, centerY, elixirWidth, barHeight,
-                barHeight / 2, barHeight / 2, alpha, cFill);
+                barHeight / DIVISOR_CENTER, barHeight / DIVISOR_CENTER, alpha, cFill);
 
         // Draw the border around the full elixir bar
         gui.strokeScreenRoundedRect(centerX, centerY, barWidth, barHeight,
-                barHeight / 2, barHeight / 2, 1.5, alpha, cStroke);
+                barHeight / DIVISOR_CENTER, barHeight / DIVISOR_CENTER, STROKE_THICKNESS, alpha, cStroke);
 
 
         for (int i = 1; i < maxElixir; i++) {
-            double x = centerX - barWidth / 2 + i * dx;
+            double x = centerX - barWidth / DIVISOR_CENTER + i * dx;
             gui.strokeScreenLine(
                 x, 
-                centerY - barHeight/2, 
+                centerY - barHeight / DIVISOR_CENTER, 
                 x, 
-                centerY + barHeight/2, 
+                centerY + barHeight / DIVISOR_CENTER, 
                 alpha, 
                 cStroke, 
-                1.5
+                STROKE_THICKNESS
             );
         }
 
         // render drop elixir 
-        double dropWidth = barHeight * 2.5;
+        double dropWidth = barHeight * ELIXIR_DROP_SCALE_FACTOR;
         double dropHeight = ELIXIR_DROP_IMAGE.getHeight() * dropWidth / ELIXIR_DROP_IMAGE.getWidth();
-        double dropCenterX = centerX - barWidth/2;
+        double dropCenterX = centerX - barWidth / DIVISOR_CENTER;
         double dropCenterY = centerY;
 
         renderElixirDrop(dropCenterX, dropCenterY, dropWidth, dropHeight, elixirLeft, false, alpha);
@@ -203,8 +222,8 @@ public class DeckView {
 
         gui.renderScreenImage(
             DECK_IMAGE, 
-            CANVAS_WIDTH/2, 
-            CANVAS_HEIGHT - DECK_HEIGHT/2, 
+            CANVAS_WIDTH / DIVISOR_CENTER, 
+            CANVAS_HEIGHT - DECK_HEIGHT / DIVISOR_CENTER, 
             DECK_WIDTH, 
             DECK_HEIGHT,
             false,
@@ -223,14 +242,14 @@ public class DeckView {
         final double RIGHT_SIDE_DECK_WIDTH = DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH * DECK_WIDTH;
 
         final double DECK_HEIGHT = DECK_WIDTH * DECK_IMAGE.getHeight() / DECK_IMAGE.getWidth();
-        final double Y_CENTER = CANVAS_HEIGHT - (1 - NORMALIZED_CARD_HEIGHT) * DECK_HEIGHT; 
+        final double Y_CENTER = CANVAS_HEIGHT - (PERCENTAGE_FULL - NORMALIZED_CARD_HEIGHT) * DECK_HEIGHT; 
 
-        final double OFFSET_X = CANVAS_WIDTH/2 + (0.5 - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH) * DECK_WIDTH ; 
+        final double OFFSET_X = CANVAS_WIDTH / DIVISOR_CENTER + (PERCENTAGE_HALF - DECKS_RIGHT_SIDE_PERCENTAGE_WIDTH) * DECK_WIDTH ; 
 
         final double X_CENTERS[] = new double[cards.length];
 
         for (int i = 0; i < cards.length; i++) {
-            X_CENTERS[i] = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + 2) * (1 + 4.0/3 * i) + OFFSET_X;
+            X_CENTERS[i] = RIGHT_SIDE_DECK_WIDTH / (NUM_CARDS + DENOMINATOR_OFFSET) * (PERCENTAGE_FULL + SPACING_FACTOR * i) + OFFSET_X;
         }
 
         // based on arbitrary choice: card width has to be 1/6 of width 
