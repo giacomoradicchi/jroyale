@@ -20,42 +20,52 @@ public class MainGUI implements IMainGUI {
 
     private static MainGUI instance = null;
 
+    // canvas settings
     private static final double WH_RATIO = 607.0 / 1080;
-
     private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = (int) (CANVAS_HEIGHT * WH_RATIO);
+
+    // coordinate system
+    private static final double WORLD_CENTER_OFFSET = 0.5;
+
+    // image effects
     private static final ColorAdjust MONOCHROME_EFFECT = new ColorAdjust();
-    private static final double PROGRESS_CIRCLE_START_ARC = 90;
-    private static final double PROGRESS_CIRCLE_MAX_EXTENT = -360;
+
+    // opacity / effects
     private static final double PROGRESS_CIRCLE_ALPHA = 0.5;
-    private static final Color PROGRESS_CIRCLE_COLOR = Color.WHITE;
-    
-    
+
+    // progress circle
+    private static final double PROGRESS_START_ANGLE = 90;
+    private static final double PROGRESS_FULL_ARC = -360;
+    private static final Color PROGRESS_COLOR = Color.WHITE;
+
+    // shadow
+    private static final double SHADOW_OPACITY = 0.7;
+    private static final Color GRADIENT_COLOR = new Color(0, 0, 0, SHADOW_OPACITY);
+    private static final Stop FIRST_STOP = new Stop(0, GRADIENT_COLOR);
+    private static final Stop LAST_STOP = new Stop(1, Color.TRANSPARENT);
+
     private GraphicsContext gc;
     private Stage stage;
     private Pane root;
 
-    // current view
     private IView view;
 
-    // scale of the entire scene
     protected double globalScale = 1.0;
 
     private MainGUI() {
-        MONOCHROME_EFFECT.setSaturation(-1); // if applied, image will be rendered in black and white
-        MONOCHROME_EFFECT.setContrast(-0.2); 
-        MONOCHROME_EFFECT.setBrightness(-0.4); // if applied, image will be rendered in black and white
+        MONOCHROME_EFFECT.setSaturation(-1);
+        MONOCHROME_EFFECT.setContrast(-0.2);
+        MONOCHROME_EFFECT.setBrightness(-0.4);
     }
 
     @Override
     public void openWindow(Stage stage) {
-        
         Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-        Pane root = new Pane(canvas);
-        gc = canvas.getGraphicsContext2D();
+        this.root = new Pane(canvas);
+        this.gc = canvas.getGraphicsContext2D();
 
         this.stage = stage;
-        this.root = root;
 
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
@@ -75,23 +85,17 @@ public class MainGUI implements IMainGUI {
     }
 
     private void handleMouseEvents() {
-        stage.getScene().setOnMousePressed(event -> {
-            view.processOnMousePressed(
-                event.getSceneX(), 
-                event.getSceneY()
-            );
-        });
+        stage.getScene().setOnMousePressed(e ->
+            view.processOnMousePressed(e.getSceneX(), e.getSceneY())
+        );
 
-        stage.getScene().setOnMouseDragged(event -> {
-            view.processOnMouseDragged(
-                event.getSceneX(), 
-                event.getSceneY()
-            );
-        });
+        stage.getScene().setOnMouseDragged(e ->
+            view.processOnMouseDragged(e.getSceneX(), e.getSceneY())
+        );
 
-        stage.getScene().setOnMouseReleased(event -> {
-            view.processOnMouseReleased();
-        });
+        stage.getScene().setOnMouseReleased(e ->
+            view.processOnMouseReleased()
+        );
     }
 
     @Override
@@ -101,9 +105,8 @@ public class MainGUI implements IMainGUI {
 
     @Override
     public void resetNodes() {
-        // removes every node except canvas (first one)
-        Node canvas = this.root.getChildren().getFirst();
-        this.root.getChildren().clear();
+        Node canvas = root.getChildren().getFirst();
+        root.getChildren().clear();
         root.getChildren().add(canvas);
     }
 
@@ -129,83 +132,84 @@ public class MainGUI implements IMainGUI {
 
     @Override
     public void clearWindow() {
-        gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
+        gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 
-    //
-    // begin renderWorldImage methods:
-    //
+    // ---------------------------
+    // world transform utilities
+    // ---------------------------
 
     @Override
-    public void renderWorldImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha) {
+    public double fromWorldToScreenX(double x) {
+        return centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(x));
+    }
+
+    @Override
+    public double fromWorldToScreenY(double y) {
+        return centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(y));
+    }
+
+    private double topLeftToCenterCanvasX(double x) {
+        return x - CANVAS_WIDTH * WORLD_CENTER_OFFSET;
+    }
+
+    private double topLeftToCenterCanvasY(double y) {
+        return y - CANVAS_HEIGHT * WORLD_CENTER_OFFSET;
+    }
+
+    private double centerToTopLeftCanvasX(double x) {
+        return x + CANVAS_WIDTH * WORLD_CENTER_OFFSET;
+    }
+
+    private double centerToTopLeftCanvasY(double y) {
+        return y + CANVAS_HEIGHT * WORLD_CENTER_OFFSET;
+    }
+
+    // ---------------------------
+    // rendering
+    // ---------------------------
+
+    @Override
+    public void renderWorldImage(
+            Image image,
+            double centerX,
+            double centerY,
+            double width,
+            double height,
+            boolean monochrome,
+            double alpha
+    ) {
         renderScreenImage(
-            image, 
-            fromWorldToScreenX(centerX), 
-            fromWorldToScreenY(centerY), 
-            width * globalScale, 
-            height * globalScale, 
+            image,
+            fromWorldToScreenX(centerX),
+            fromWorldToScreenY(centerY),
+            width * globalScale,
+            height * globalScale,
             monochrome,
             alpha
         );
     }
 
-    /* 
-        The transformed Center C' is computated by doing this operations in sequence:
-
-        1) The point C = (centerX, centerY) is related to canvas top left corner, 
-            so it has to be transformed on a new Point C' related to canvas center.
-            C' = C - (WIDTH/2, HEIGHT/2)
-        2) C' can now be scaled based on globalScale:
-            C' = C' * globalScale
-        3) Now it's necessary to go back to canvas top left corner system to render correctly
-            the image:
-            C' = C' + (WIDTH/2, HEIGHT/2)
-        4) Simply use the renderScreenImage methon with C' as a center and 
-            (width, height) * globalScale as the dimension of the image.
-    */
-
     @Override
-    public double fromWorldToScreenX(double coordX) {
-        return centerToTopLeftCanvasX(globalScale * topLeftToCenterCanvasX(coordX));
-    }
-
-    @Override
-    public double fromWorldToScreenY(double coordY) {
-        return centerToTopLeftCanvasY(globalScale * topLeftToCenterCanvasY(coordY));
-    }
-
-    protected double topLeftToCenterCanvasX(double coordX) {
-        return coordX - getCanvasWidth()/2;
-    }
-
-    protected double topLeftToCenterCanvasY(double coordY) {
-        return coordY - getCanvasHeight()/2;
-    }
-
-    protected double centerToTopLeftCanvasX(double coordX) {
-        return coordX + getCanvasWidth()/2;
-    }
-
-    protected double centerToTopLeftCanvasY(double coordY) {
-        return coordY + getCanvasHeight()/2;
-    }
-
-    //
-    // end renderWorldImage methods:
-    //
-
-    @Override
-    public void renderScreenImage(Image image, double centerX, double centerY, double width, double height, boolean monochrome, double alpha) {
+    public void renderScreenImage(
+            Image image,
+            double centerX,
+            double centerY,
+            double width,
+            double height,
+            boolean monochrome,
+            double alpha
+    ) {
         gc.save();
         gc.setGlobalAlpha(alpha);
 
         if (monochrome) gc.setEffect(MONOCHROME_EFFECT);
 
         gc.drawImage(
-            image, 
-            centerX - width / 2, 
+            image,
+            centerX - width / 2,
             centerY - height / 2,
-            width, 
+            width,
             height
         );
 
@@ -213,189 +217,251 @@ public class MainGUI implements IMainGUI {
     }
 
     @Override
-    public void renderWorldShadow(double centerX, double centerY, double shadowRadius) {
+    public void renderWorldShadow(double x, double y, double radius) {
         renderScreenShadow(
-            fromWorldToScreenX(centerX), 
-            fromWorldToScreenY(centerY), 
-            shadowRadius * globalScale
+            fromWorldToScreenX(x),
+            fromWorldToScreenY(y),
+            radius * globalScale
         );
     }
 
     @Override
-    public void renderScreenShadow(double centreX, double centreY, double shadowRadius) {
-        // Definiamo il gradiente radiale
+    public void renderScreenShadow(double x, double y, double radius) {
         gc.save();
-        RadialGradient gradient = new RadialGradient(
-            0,      // focusAngle
-            0,      // focusDistance
-            centreX, // centerX (coordinata assoluta sul canvas)
-            centreY, // centerY (coordinata assoluta sul canvas)
-            shadowRadius, // radius (metà del diametro)
-            false,  // proportional: false perché usiamo i pixel esatti
-            null,   // cycleMethod
-            new Stop(0, new Color(0, 0, 0, 0.7)),              // Centro opaco
-            new Stop(1, Color.TRANSPARENT)       // Bordo trasparente
-        );
 
+        RadialGradient gradient = new RadialGradient(
+            0,
+            0,
+            x,
+            y,
+            radius,
+            false,
+            null,
+            FIRST_STOP,
+            LAST_STOP
+        );
+        
         gc.setFill(gradient);
-        gc.fillOval(centreX - shadowRadius, centreY - shadowRadius, 2 * shadowRadius, 2 * shadowRadius); 
+        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+
         gc.restore();
     }
 
-
     @Override
-    public void fillWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
+    public void fillWorldRoundedRect(
+            double x, double y,
+            double w, double h,
+            double aw, double ah,
+            double alpha,
+            Color color
+    ) {
         fillScreenRoundedRect(
-            fromWorldToScreenX(centerX), 
-            fromWorldToScreenY(centerY), 
-            width * globalScale, 
-            height * globalScale, 
-            arcWidth * globalScale, 
-            arcHeight * globalScale, 
-            alpha, 
+            fromWorldToScreenX(x),
+            fromWorldToScreenY(y),
+            w * globalScale,
+            h * globalScale,
+            aw * globalScale,
+            ah * globalScale,
+            alpha,
             color
         );
     }
 
     @Override
-    public void strokeWorldRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
+    public void strokeWorldRoundedRect(
+            double x, double y,
+            double w, double h,
+            double aw, double ah,
+            double lw,
+            double alpha,
+            Color color
+    ) {
         strokeScreenRoundedRect(
-            fromWorldToScreenX(centerX), 
-            fromWorldToScreenY(centerY), 
-            width * globalScale, 
-            height * globalScale, 
-            arcWidth * globalScale, 
-            arcHeight * globalScale, 
-            lineWidth * globalScale, 
-            alpha, 
+            fromWorldToScreenX(x),
+            fromWorldToScreenY(y),
+            w * globalScale,
+            h * globalScale,
+            aw * globalScale,
+            ah * globalScale,
+            lw * globalScale,
+            alpha,
             color
         );
     }
 
     @Override
-    public void fillScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double alpha, Color color) {
+    public void fillScreenRoundedRect(
+            double x, double y,
+            double w, double h,
+            double aw, double ah,
+            double alpha,
+            Color color
+    ) {
         gc.save();
         gc.setGlobalAlpha(alpha);
         gc.setFill(color);
+
         gc.fillRoundRect(
-            centerX - width/2, 
-            centerY - height/2, 
-            width, 
-            height, 
-            arcWidth, 
-            arcHeight
+            x - w / 2,
+            y - h / 2,
+            w,
+            h,
+            aw,
+            ah
         );
+
         gc.restore();
     }
 
     @Override
-    public void strokeScreenRoundedRect(double centerX, double centerY, double width, double height, double arcWidth, double arcHeight, double lineWidth, double alpha, Color color) {
+    public void strokeScreenRoundedRect(
+            double x, double y,
+            double w, double h,
+            double aw, double ah,
+            double lw,
+            double alpha,
+            Color color
+    ) {
         gc.save();
         gc.setGlobalAlpha(alpha);
         gc.setStroke(color);
-        gc.setLineWidth(lineWidth);
+        gc.setLineWidth(lw);
+
         gc.strokeRoundRect(
-            centerX - width/2, 
-            centerY - height/2, 
-            width, 
-            height, 
-            arcWidth, 
-            arcHeight
+            x - w / 2,
+            y - h / 2,
+            w,
+            h,
+            aw,
+            ah
         );
+
         gc.restore();
     }
 
     @Override
-    public void strokeWorldLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
+    public void strokeWorldLine(
+            double x1, double y1,
+            double x2, double y2,
+            double alpha,
+            Color color,
+            double width
+    ) {
         strokeScreenLine(
-            fromWorldToScreenX(x1), 
+            fromWorldToScreenX(x1),
             fromWorldToScreenY(y1),
-            fromWorldToScreenX(x2), 
+            fromWorldToScreenX(x2),
             fromWorldToScreenY(y2),
-            alpha, 
-            color, 
-            lineWidth * globalScale
+            alpha,
+            color,
+            width * globalScale
         );
     }
 
     @Override
-    public void strokeScreenLine(double x1, double y1, double x2, double y2, double alpha, Color color, double lineWidth) {
+    public void strokeScreenLine(
+            double x1, double y1,
+            double x2, double y2,
+            double alpha,
+            Color color,
+            double width
+    ) {
         gc.save();
         gc.setGlobalAlpha(alpha);
         gc.setStroke(color);
-        gc.setLineWidth(lineWidth);
+        gc.setLineWidth(width);
         gc.strokeLine(x1, y1, x2, y2);
         gc.restore();
     }
 
     @Override
-    public void fillScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double alpha) {
+    public void fillScreenTextFromCenter(
+            String text,
+            double x,
+            double y,
+            Font font,
+            Color color,
+            double alpha
+    ) {
         gc.save();
         gc.setFont(font);
         gc.setFill(color);
         gc.setGlobalAlpha(alpha);
 
-        // alligned in center
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
 
-        gc.fillText(text, centerX, centerY);
+        gc.fillText(text, x, y);
         gc.restore();
     }
 
     @Override
-    public void strokeScreenTextFromCenter(String text, double centerX, double centerY, Font font, Color color, double lineWidth, double alpha) {
+    public void strokeScreenTextFromCenter(
+            String text,
+            double x,
+            double y,
+            Font font,
+            Color color,
+            double width,
+            double alpha
+    ) {
         gc.save();
         gc.setFont(font);
         gc.setStroke(color);
-        gc.setLineWidth(lineWidth);
+        gc.setLineWidth(width);
         gc.setGlobalAlpha(alpha);
 
-        // alligned in center
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
 
-        gc.strokeText(text, centerX, centerY);
+        gc.strokeText(text, x, y);
         gc.restore();
     }
 
     @Override
-    public void fillPoint(double centreX, double centreY, int size, Color color) {
+    public void fillPoint(double x, double y, int size, Color color) {
         gc.save();
-
         gc.setFill(color);
-        gc.setGlobalAlpha(1);
 
         gc.fillOval(
-            centreX - size/2, 
-            centreY - size/2,
-            size, 
+            x - size / 2,
+            y - size / 2,
+            size,
             size
         );
 
-        // restoring previous settings
         gc.restore();
     }
 
     @Override
-    public void fillScreenCircularProgress(double centreX, double centreY, double radius, double progress) {
-        
-        double diameter = radius * 2;
-        double arcExtent = progress * PROGRESS_CIRCLE_MAX_EXTENT; 
+    public void fillScreenCircularProgress(
+            double x,
+            double y,
+            double radius,
+            double progress
+    ) {
+        double extent = progress * PROGRESS_FULL_ARC;
 
         gc.save();
         gc.setGlobalAlpha(PROGRESS_CIRCLE_ALPHA);
-        gc.setFill(PROGRESS_CIRCLE_COLOR);
-        gc.fillArc(centreX - radius, centreY - radius, diameter, diameter, PROGRESS_CIRCLE_START_ARC, arcExtent, ArcType.ROUND);
+        gc.setFill(PROGRESS_COLOR);
+
+        gc.fillArc(
+            x - radius,
+            y - radius,
+            radius * 2,
+            radius * 2,
+            PROGRESS_START_ANGLE,
+            extent,
+            ArcType.ROUND
+        );
+
         gc.restore();
     }
 
-    // static methods
+    // static
     public static IMainGUI getInstance() {
-        if (instance == null) {
-            instance = new MainGUI();
-        }
-
+        if (instance == null) instance = new MainGUI();
         return instance;
-    }    
+    }
 }

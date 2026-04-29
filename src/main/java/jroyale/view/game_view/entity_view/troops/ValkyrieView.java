@@ -20,23 +20,46 @@ public class ValkyrieView extends TroopView {
 
     private static Map<State, Integer> numFramesPerDirection;
 
-    private static final Image RAW_SPELL_ICON = new Image(ValkyrieView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/valkyrie.png"));
+    private static final Image RAW_SPELL_ICON = new Image(
+        ValkyrieView.class.getResourceAsStream(
+            TROOPS_PATH_RELATIVE_TO_RESOURCE + "spellIcon/valkyrie.png"
+        )
+    );
 
     private static final String TROOP_PATH = "valkyrie/";
     private static final String HEADER_NAME_FILE = "chr_valkyrie_sprite_";
 
-    private static final String SWIRL_RELATIVE_PATH = "valkyrie/attack/swirl/chr_valkyrie_sprite.png";
-    private static final Image SWIRL_IMAGE = new Image(ValkyrieView.class.getResourceAsStream(TROOPS_PATH_RELATIVE_TO_RESOURCE + SWIRL_RELATIVE_PATH));
-    
+    private static final String SWIRL_RELATIVE_PATH =
+        "valkyrie/attack/swirl/chr_valkyrie_sprite.png";
+
+    private static final Image SWIRL_IMAGE = new Image(
+        ValkyrieView.class.getResourceAsStream(
+            TROOPS_PATH_RELATIVE_TO_RESOURCE + SWIRL_RELATIVE_PATH
+        )
+    );
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private static final double shiftX = 0;
-    private static final double shiftY = -10;
-    private static final double ALPHA_THRESHOLD = 0.5;
 
+    private static final double SHIFT_X = 0;
+    private static final double SHIFT_Y = -10;
+    private static final double ALPHA_THRESHOLD = 0.5;
     private static final double HEIGHT_IN_TILES = 2;
 
-    // Sprite sheet base indices for different states and sides
+    // render layer depth
+    private static final int RENDER_LAYER = 1;
+
+    // crop offset from right
+    private static final int RIGHT_CROP_PIXELS = 20;
+
+    private static final int CROP_START_X = 0;
+    private static final int CROP_START_Y = 0;
+
+    private static final int NOT_FLIPPED = 0;
+    private static final int FLIPPED = 1;
+
+    private static final int OPACITY_MULTIPLIER = 1;
+
+    // sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 72;
     private static final int OPPONENT_IDLE_BASE_INDEX = 153;
     private static final int PLAYER_MOVE_BASE_INDEX = 0;
@@ -104,10 +127,22 @@ public class ValkyrieView extends TroopView {
     @Override
     protected Image transformImage(Image image) {
         Image temp = image;
+
         temp = ImageUtils.enhanceOpacity(temp);
-        // TODO: farlo più robusto
-        temp = ImageUtils.crop(image, 0, 0, (int) temp.getWidth() - 20, (int) temp.getHeight());
-        return ImageUtils.enhanceOpacity(temp, 1*ALPHA_THRESHOLD);
+
+        // crop transparent pixels from right
+        temp = ImageUtils.crop(
+            image,
+            CROP_START_X,
+            CROP_START_Y,
+            (int) temp.getWidth() - RIGHT_CROP_PIXELS,
+            (int) temp.getHeight()
+        );
+
+        return ImageUtils.enhanceOpacity(
+            temp,
+            OPACITY_MULTIPLIER * ALPHA_THRESHOLD
+        );
     }
 
     @Override
@@ -116,29 +151,58 @@ public class ValkyrieView extends TroopView {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
-            Side side) {
-        AnimationKey key = new AnimationKey(side, state, direction.fromAngle(angleDirection));
+    public void renderEntity(
+            double centreX,
+            double centreY,
+            double angleDirection,
+            int currentFrame,
+            State state,
+            Side side
+    ) {
+        AnimationKey key = new AnimationKey(
+            side,
+            state,
+            direction.fromAngle(angleDirection)
+        );
+
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
         double width = image.getWidth() * getImageScale();
         double height = image.getHeight() * getImageScale();
 
-        int flipped = 0;
-        if (Direction.hasToFlip(angleDirection)) 
-            flipped = 1;
+        int flipped = NOT_FLIPPED;
+        if (Direction.hasToFlip(angleDirection)) {
+            flipped = FLIPPED;
+        }
 
         IGameView view = GameView.getInstance();
         IMainGUI gui = view.getGUI();
 
-        gui.renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, false, 1);
+        gui.renderWorldImage(
+            image,
+            centreX + SHIFT_X,
+            centreY + SHIFT_Y,
+            Math.pow(-1, flipped) * width,
+            height,
+            false,
+            RENDER_LAYER
+        );
 
-        if(state == State.ATTACK)
+        if (state == State.ATTACK) {
             // swirl rendering
-            gui.renderWorldImage(SWIRL_IMAGE, centreX + shiftX, centreY + shiftY, width, height, false, 1);
+            gui.renderWorldImage(
+                SWIRL_IMAGE,
+                centreX + SHIFT_X,
+                centreY + SHIFT_Y,
+                width,
+                height,
+                false,
+                RENDER_LAYER
+            );
+        }
     }
 
-     @Override
+    @Override
     public double getSpritesHeight() {
         return SPRITES_HEIGHT;
     }
@@ -157,8 +221,9 @@ public class ValkyrieView extends TroopView {
         return instance;
     }
 
-    public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
+    public static void setNumFramesPerDirection(
+            Map<State, Integer> numFramesPerDirection
+    ) {
         ValkyrieView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
     }
-    
 }

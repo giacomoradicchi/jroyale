@@ -19,15 +19,22 @@ public abstract class SkeletonView extends TroopView {
     private static final String HEADER_NAME_FILE = "chr_skeleton_sprite_";
 
     private static final int NUM_INDEX_DIGITS = 3;
-    private static final double shiftX = 0;
-    private static final double shiftY = -4;
+
+    private static final double SHIFT_X = 0;
+    private static final double SHIFT_Y = -4;
     private static final double HEIGHT_IN_TILES = 1.2;
 
-    // Sprite sheet base indices for different states and sides.
-    // 
-    // skeleton has the same png's for both player and opponent, so it will always drawned 
-    // the player side anyways. 
-    // That's why opponent base indexes are set to -1.
+    // render layer depth
+    private static final int RENDER_LAYER = 1;
+
+    private static final int NOT_FLIPPED = 0;
+    private static final int FLIPPED = 1;
+
+    // sprite sheet base indices for different states and sides
+    //
+    // skeleton has the same pngs for both player and opponent,
+    // so it will always use the player side.
+    // opponent base indexes are set to -1 for this reason.
 
     private static final int PLAYER_IDLE_BASE_INDEX = 72;
     private static final int OPPONENT_IDLE_BASE_INDEX = -1;
@@ -35,7 +42,6 @@ public abstract class SkeletonView extends TroopView {
     private static final int OPPONENT_MOVE_BASE_INDEX = -1;
     private static final int PLAYER_ATTACK_BASE_INDEX = 81;
     private static final int OPPONENT_ATTACK_BASE_INDEX = -1;
-
 
     // instance methods
 
@@ -70,22 +76,41 @@ public abstract class SkeletonView extends TroopView {
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame,
-            State state, Side side) {
-        
-        // skeleton has the same png's for both player and opponent, so it will always drawned 
-        // the player side anyways.
-        AnimationKey key = new AnimationKey(Side.PLAYER, state, direction.fromAngle(angleDirection));
+    public void renderEntity(
+            double centreX,
+            double centreY,
+            double angleDirection,
+            int currentFrame,
+            State state,
+            Side side
+    ) {
+        // skeleton has the same pngs for both player and opponent,
+        // so it always renders using player animations
+        AnimationKey key = new AnimationKey(
+            Side.PLAYER,
+            state,
+            direction.fromAngle(angleDirection)
+        );
+
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
         double width = image.getWidth() * getImageScale();
         double height = image.getHeight() * getImageScale();
-        int flipped = 0;
-        if (Direction.hasToFlip(angleDirection)) 
-            flipped = 1;
-        
-        
-        GameView.getInstance().getGUI().renderWorldImage(image, centreX + shiftX, centreY + shiftY, Math.pow(-1, flipped) * width, height, false, 1);
+
+        int flipped = NOT_FLIPPED;
+        if (Direction.hasToFlip(angleDirection)) {
+            flipped = FLIPPED;
+        }
+
+        GameView.getInstance().getGUI().renderWorldImage(
+            image,
+            centreX + SHIFT_X,
+            centreY + SHIFT_Y,
+            Math.pow(-1, flipped) * width,
+            height,
+            false,
+            RENDER_LAYER
+        );
     }
 
     @Override
@@ -110,7 +135,7 @@ public abstract class SkeletonView extends TroopView {
 
     @Override
     protected String getHeaderNamePath() {
-        return HEADER_NAME_FILE; 
+        return HEADER_NAME_FILE;
     }
 
     @Override
@@ -130,9 +155,9 @@ public abstract class SkeletonView extends TroopView {
 
     // static methods
 
-    
-    public static void setNumFramesPerDirection(Map<State, Integer> numFramesPerDirection) {
+    public static void setNumFramesPerDirection(
+            Map<State, Integer> numFramesPerDirection
+    ) {
         SkeletonView.numFramesPerDirection = Map.copyOf(numFramesPerDirection);
     }
-
 }

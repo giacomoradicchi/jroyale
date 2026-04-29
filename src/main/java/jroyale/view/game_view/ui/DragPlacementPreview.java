@@ -10,7 +10,8 @@ public class DragPlacementPreview {
     private static DragPlacementPreview instance = null;
 
     private static final double ALPHA_FILL = 0.5;
-    private static final double LINE_WIDTH = 4;
+    private static final double ALPHA_STROKE = 1.0;
+    private static final double NORMALIZED_LINE_WIDTH = 0.009;
     private static final double CORNER_ROUNDNESS = 0.5;
     private static final Color FILL_COLOR = Color.TEAL;
     private static final Color STROKE_COLOR = Color.WHITE;
@@ -50,56 +51,10 @@ public class DragPlacementPreview {
             view.getDy() * scaleAnimation, 
             view.getDx() * CORNER_ROUNDNESS * scaleAnimation, 
             view.getDy() * CORNER_ROUNDNESS * scaleAnimation,
-            LINE_WIDTH,
-            1.0, // fully visible 
+            NORMALIZED_LINE_WIDTH * gui.getCanvasWidth(),
+            ALPHA_STROKE,
             STROKE_COLOR
         );
-
-        /* 
-        gc.setGlobalAlpha(1); // back to full opacity
-        gc.setStroke(STROKE_COLOR);
-        gc.setLineWidth(DEFAULT_LINEWIDTH * globalScale);
-        gc.strokeRoundRect(
-            centreX - dx/2 * scaleAnimation, 
-            centreY - dy/2 * scaleAnimation, 
-            dx * scaleAnimation, 
-            dy * scaleAnimation, 
-            dx * CORNER_ROUNDNESS * scaleAnimation, 
-            dy * CORNER_ROUNDNESS * scaleAnimation
-        );
-        
-        gc.save();
-
-        if (t0 == 0) t0 = now;
-        
-        double scaleAnimation = getScaleAnimation(now);
-
-        // fill
-        gc.setGlobalAlpha(ALPHA_FILL);
-        gc.setFill(FILL_COLOR);
-        gc.fillRoundRect(
-            centreX - dx/2 * scaleAnimation, 
-            centreY - dy/2 * scaleAnimation, 
-            dx * scaleAnimation, 
-            dy * scaleAnimation, 
-            dx * CORNER_ROUNDNESS * scaleAnimation, 
-            dy * CORNER_ROUNDNESS * scaleAnimation
-        );
-
-        // outline
-        gc.setGlobalAlpha(1); // back to full opacity
-        gc.setStroke(STROKE_COLOR);
-        gc.setLineWidth(DEFAULT_LINEWIDTH * globalScale);
-        gc.strokeRoundRect(
-            centreX - dx/2 * scaleAnimation, 
-            centreY - dy/2 * scaleAnimation, 
-            dx * scaleAnimation, 
-            dy * scaleAnimation, 
-            dx * CORNER_ROUNDNESS * scaleAnimation, 
-            dy * CORNER_ROUNDNESS * scaleAnimation
-        );
-
-        gc.restore(); */
     }
 
     private double getScaleAnimation() {

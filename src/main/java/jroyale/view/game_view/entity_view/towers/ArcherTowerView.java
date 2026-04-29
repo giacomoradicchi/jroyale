@@ -8,11 +8,20 @@ import jroyale.utils.Enums.State;
 import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.entity_view.EntityView;
 
-public class ArcherTowerView extends TowerView{
+public class ArcherTowerView extends TowerView {
     
     private static ArcherTowerView instance = null;
 
-    private final static double HEIGHT_IN_TILES = 4.5;
+    private static final double HEIGHT_IN_TILES = 4.5;
+
+    // image crop offset from bottom
+    private static final int BOTTOM_CROP_PIXELS = 30;
+
+    // render layer depth
+    private static final int RENDER_LAYER = 1;
+
+    private static final int CROP_START_X = 0;
+    private static final int CROP_START_Y = 0;
 
     private static final String RELATIVE_PATH_TO_PLAYER_IMAGE = "player/archer_tower.png";
     private static final String RELATIVE_PATH_TO_OPPONENT_IMAGE = "opponent/archer_tower.png";
@@ -27,18 +36,24 @@ public class ArcherTowerView extends TowerView{
     }
 
     @Override
-    public void renderEntity(double centreX, double centreY, double angleDirection, int currentFrame, State state,
-            Side side) {
+    public void renderEntity(
+            double centreX,
+            double centreY,
+            double angleDirection,
+            int currentFrame,
+            State state,
+            Side side
+    ) {
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
         GameView.getInstance().getGUI().renderWorldImage(
-            img, 
-            centreX, 
-            centreY, 
-            img.getWidth() * getImageScale(), 
+            img,
+            centreX,
+            centreY,
+            img.getWidth() * getImageScale(),
             img.getHeight() * getImageScale(),
             false,
-            1
+            RENDER_LAYER
         );
     }
 
@@ -54,22 +69,44 @@ public class ArcherTowerView extends TowerView{
 
     @Override
     public Image getPlayerTowerImage() {
-        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE));
-        // TODO: farlo più robusto
-        temp = ImageUtils.crop(temp, 0, 0, (int) temp.getWidth(), (int) temp.getHeight() - 30);
+        Image temp = new Image(
+            this.getClass().getResourceAsStream(
+                TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_PLAYER_IMAGE
+            )
+        );
+
+        // crop transparent pixels from bottom
+        temp = ImageUtils.crop(
+            temp,
+            CROP_START_X,
+            CROP_START_Y,
+            (int) temp.getWidth(),
+            (int) temp.getHeight() - BOTTOM_CROP_PIXELS
+        );
 
         return ImageUtils.enhanceOpacity(temp);
     }
 
     @Override
     public Image getOpponentTowerImage() {
-        Image temp = new Image(this.getClass().getResourceAsStream(TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE));
-        // TODO: farlo più robusto
-        temp = ImageUtils.crop(temp, 0, 0, (int) temp.getWidth(), (int) temp.getHeight() - 30);
-        
+        Image temp = new Image(
+            this.getClass().getResourceAsStream(
+                TOWER_PATH_RELATIVE_TO_RESOURCE + RELATIVE_PATH_TO_OPPONENT_IMAGE
+            )
+        );
+
+        // crop transparent pixels from bottom
+        temp = ImageUtils.crop(
+            temp,
+            CROP_START_X,
+            CROP_START_Y,
+            (int) temp.getWidth(),
+            (int) temp.getHeight() - BOTTOM_CROP_PIXELS
+        );
+
         return ImageUtils.enhanceOpacity(temp);
     }
-    
+
     // static methods
 
     public static EntityView getInstance() {
