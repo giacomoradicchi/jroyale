@@ -58,6 +58,25 @@ public abstract class Troop extends Entity {
     private static final double TURNING_SPEED = 0.4; // 0: doesn't turn, 1: turns instantly
     private static final Point TANGENT_VECTOR_1 = new Point(); // variable buffers to avoid new constructor for every frame in setTangentSpeed() method
     private static final Point TANGENT_VECTOR_2 = new Point(); //
+    // conversion factor for seconds to nanoseconds
+    private static final long NANOS_PER_SECOND = 1_000_000_000L;
+    // conversion factor for minutes to seconds
+    private static final double SECONDS_PER_MINUTE = 60.0;
+    // angle used for tangent vector rotation
+    private static final int TANGENT_ROTATION_ANGLE = 90;
+    // indicator for cases where both entities are unmovable
+    private static final double UNMOVABLE_MASS_INDICATOR = -1.0;
+    // movement weight constants
+    private static final double MAX_MOVE_WEIGHT = 1.0;
+    private static final double MIN_MOVE_WEIGHT = 0.0;
+    private static final double EQUAL_MASS_WEIGHT = 0.5;
+    // divisor used to reduce turning speed during sliding
+    private static final int SLIDE_TURNING_REDUCTION = 2;
+    // divisor used to find the horizontal center of the arena
+    private static final double ARENA_CENTER_DIVISOR = 2.0;
+    // initial y directions for aiming
+    private static final int PLAYER_INITIAL_AIM_Y = -1;
+    private static final int OPPONENT_INITIAL_AIM_Y = 1;
 
     protected String name;
     protected Speed speedType;
@@ -127,7 +146,7 @@ public abstract class Troop extends Entity {
 
     protected long getLoadTimeNanoSec(){
         // nanosec in Idle state before attacking again
-        return (long) (loadTime * 1_000_000_000L); 
+        return (long) (loadTime * NANOS_PER_SECOND); 
     } 
 
     @Override
@@ -351,9 +370,9 @@ public abstract class Troop extends Entity {
 
         // calculating weights based on mass
         double thisMoveWeight = getMoveWeight(other.getMass());
-        if (thisMoveWeight == -1) return; // they both cannot move
+        if (thisMoveWeight == UNMOVABLE_MASS_INDICATOR) return; // they both cannot move
 
-        double otherMoveWeight = 1 - thisMoveWeight;
+        double otherMoveWeight = MAX_MOVE_WEIGHT - thisMoveWeight;
 
         // appling shift
         this.shiftPosition(
@@ -368,10 +387,10 @@ public abstract class Troop extends Entity {
             
 
         if (state == State.MOVE) 
-            slideAlong(other, thisMoveWeight/2);
+            slideAlong(other, thisMoveWeight / SLIDE_TURNING_REDUCTION);
 
         if (other instanceof Troop) 
-            ((Troop) other).slideAlong(this, otherMoveWeight/2);
+            ((Troop) other).slideAlong(this, otherMoveWeight / SLIDE_TURNING_REDUCTION);
     }
 
     private double getMoveWeight(double otherMass) {
@@ -380,16 +399,16 @@ public abstract class Troop extends Entity {
 
         // 1. both unmovable
         if (getMass() == Double.POSITIVE_INFINITY && otherMass == Double.POSITIVE_INFINITY) {
-            return -1; 
+            return UNMOVABLE_MASS_INDICATOR; 
         } 
 
         // 2. other is unmovable
         if (otherMass == Double.POSITIVE_INFINITY) {
-            return 1.0; // max weight, other doesn't move
+            return MAX_MOVE_WEIGHT; // max weight, other doesn't move
         }
         // 3. this is unmovable 
         if (getMass() == Double.POSITIVE_INFINITY) {
-            return 0.0; // min weight, this doesn't move
+            return MIN_MOVE_WEIGHT; // min weight, this doesn't move
         } 
         // 4. both moveable
         double thisMass = getMass();
@@ -398,12 +417,12 @@ public abstract class Troop extends Entity {
         if (totalMass > 0) return otherMass / totalMass;
 
         // last case: they both have no mass, so their weight is the same
-        return 0.5;
+        return EQUAL_MASS_WEIGHT;
     }
 
     private void setTangentSpeed(double dx, double dy, double turning_speed) {
         // getting the two vectors that are tangent to the entities (they are opposite)
-        TANGENT_VECTOR_1.setPoint(dx, dy).normalize().multiply(speed.magnitude()).rotate(90);
+        TANGENT_VECTOR_1.setPoint(dx, dy).normalize().multiply(speed.magnitude()).rotate(TANGENT_ROTATION_ANGLE);
         TANGENT_VECTOR_2.setPoint(TANGENT_VECTOR_1).multiply(-1);
         
         // these 2 vectors have the same magnitude as vector speed
@@ -439,7 +458,7 @@ public abstract class Troop extends Entity {
 
     private double getAbsoluteSpeed(long elapsed) {
         // elapsed is in nanosec (10^(-9) sec) and speed is in tiles/minutes, so the speed in tiles/ns will be:
-        return elapsed / 1_000_000_000.0 * speedType.getTilesPerMinute() / 60.0 ;
+        return elapsed / (double) NANOS_PER_SECOND * speedType.getTilesPerMinute() / SECONDS_PER_MINUTE ;
     }
 
     private void setAimUnitVector(double targetX, double targetY) {
@@ -474,7 +493,7 @@ public abstract class Troop extends Entity {
     }
 
     private void initSpeed() {
-        this.aimUnitVector = side == Side.PLAYER ? new Point(0, -1) : new Point(0, +1); // nord or sud based on side
+        this.aimUnitVector = side == Side.PLAYER ? new Point(0, PLAYER_INITIAL_AIM_Y) : new Point(0, OPPONENT_INITIAL_AIM_Y); // nord or sud based on side
         fixPathTroughBridge();
         initDirectionBuffer();
         this.speed = new Point(aimUnitVector);
@@ -512,8 +531,7 @@ public abstract class Troop extends Entity {
         double rightBridgeEndX = ArenaData.RIGHT_BRIDGE_END_POS.getX();
 
 
-        /* 
-        going from south to north:
+        /* going from south to north:
 
         ***************
         ***************
@@ -529,7 +547,7 @@ public abstract class Troop extends Entity {
 
 
         if (troopY > bridgeStartY && targetY <= bridgeStartY) { 
-            targetX = (troopX < Model.getInstance().getColsCount() / 2.0) ? leftBridgeStartX : rightBridgeStartX;
+            targetX = (troopX < Model.getInstance().getColsCount() / ARENA_CENTER_DIVISOR) ? leftBridgeStartX : rightBridgeStartX;
             targetY = bridgeStartY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY < bridgeEndY) {
@@ -538,8 +556,7 @@ public abstract class Troop extends Entity {
         }
 
 
-        /* 
-        going from north to south:
+        /* going from north to south:
 
         (troopX, troopY)
                |
@@ -555,7 +572,7 @@ public abstract class Troop extends Entity {
         */
 
         else if (troopY < bridgeEndY && targetY >= bridgeEndY) {
-            targetX = (troopX < Model.getInstance().getColsCount() / 2.0) ? leftBridgeEndX : rightBridgeEndX;
+            targetX = (troopX < Model.getInstance().getColsCount() / ARENA_CENTER_DIVISOR) ? leftBridgeEndX : rightBridgeEndX;
             targetY = bridgeEndY; 
         } else if (bridgeEndY < troopY && troopY < bridgeStartY 
         && targetY > bridgeStartY) {

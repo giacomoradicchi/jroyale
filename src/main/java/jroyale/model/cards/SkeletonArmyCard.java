@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class SkeletonArmyCard extends Card {
 
     private static SkeletonArmyCard instance;
-    private static final int ARMY_SIZE = 15;
 
     private SkeletonArmyCard() {
         super(EntityType.SKELETON_ARMY);

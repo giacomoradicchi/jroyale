@@ -15,7 +15,6 @@ public class MiniPekkaCard extends Card {
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-
         for (byte i = 0; i < stats.getUnitsAmount(); i++)
             Model.getInstance().addTroop(
                 new MiniPekka(
@@ -32,7 +31,6 @@ public class MiniPekkaCard extends Card {
                     side
                 )
             );
-
     }
 
     // static methods

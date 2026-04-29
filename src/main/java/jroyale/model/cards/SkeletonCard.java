@@ -8,7 +8,6 @@ import jroyale.utils.Enums.Side;
 public class SkeletonCard extends Card {
 
     private static SkeletonCard instance;
-    private static final byte SKELETONS_DROPPED = 3;
 
     private SkeletonCard() {
         super(EntityType.SKELETONS);
@@ -16,7 +15,6 @@ public class SkeletonCard extends Card {
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-
         for (byte i = 0; i < stats.getUnitsAmount(); i++)
             Model.getInstance().addTroop(
                 new Skeleton(

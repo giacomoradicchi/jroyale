@@ -21,7 +21,7 @@ public class ArcherTower extends Tower {
 
     
     private static final int HITPOINTS = 3052;
-    private static final int DAMAGE = 0; // TODO: add damage
+    private static final int DAMAGE = 0; 
     
 
     public ArcherTower(Side side, byte location) {

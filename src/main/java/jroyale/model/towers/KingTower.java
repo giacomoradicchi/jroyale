@@ -12,7 +12,7 @@ public class KingTower extends Tower {
     public static final Point OPPONENT_KING_TOWER_CENTRE = new Point(9, 3);
     
     private static final int HITPOINTS = 4824;
-    private static final int DAMAGE = 0; // TODO: add damage
+    private static final int DAMAGE = 0; 
 
     public KingTower(Side side) {
         super(
