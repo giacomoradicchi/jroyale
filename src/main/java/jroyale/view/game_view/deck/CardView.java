@@ -1,7 +1,6 @@
 package jroyale.view.game_view.deck;
 
 import javafx.util.Duration;
-
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
@@ -13,7 +12,6 @@ import jroyale.view.IMainGUI;
 import jroyale.view.game_view.GameView;
 import jroyale.utils.Point;
 
-
 public class CardView extends StackPane {
     
     private final Point startingPos;
@@ -21,22 +19,30 @@ public class CardView extends StackPane {
     private EntityType type;
     private byte elixirCost;
 
+    // animation and feedback constants
     private final static int ANIMATION_TIME_MILLIS = 150;
     private final static double SCALE_ON_CLICK = 1.05;
+    private final static double SCALE_DEFAULT = 1.0;
     private final static double NORMALIZED_CIRCULAR_PROGRESS_SIZE = 0.25;
+    
+    // coordinate and state constants
+    private final static double CENTER_DIVISOR = 2.0;
+    private final static double RESET_TRANSLATE = 0.0;
+    private final static double MIN_PROGRESS = 0.0;
+    private final static double MAX_PROGRESS = 1.0;
 
     public CardView(double x, double y, double width, double height) {
         this.startingPos = new Point(x, y);
 
-        // Initial positioning (centered on the provided coordinates)
-        this.setLayoutX(x - width / 2);
-        this.setLayoutY(y - height / 2);
+        // initial positioning (centered on the provided coordinates)
+        this.setLayoutX(x - width / CENTER_DIVISOR);
+        this.setLayoutY(y - height / CENTER_DIVISOR);
 
-        // Interactive Hitbox: transparent rectangle to capture mouse events
+        // interactive hitbox: transparent rectangle to capture mouse events
         Rectangle hitbox = new Rectangle(width, height, Color.TRANSPARENT);
         this.getChildren().add(hitbox);
         
-        // Ensure the pane itself is clickable even where transparent
+        // ensure the pane itself is clickable even where transparent
         this.setPickOnBounds(true);
 
         setupEvents();
@@ -44,74 +50,54 @@ public class CardView extends StackPane {
 
     private void setupEvents() {
         this.setOnMousePressed(e -> {
-
             DeckView.getInstance().setSelectedCard(this);
 
-            // Store the click location RELATIVE to the card's top-left corner
-            // to prevent the card from "snapping" its corner to the mouse cursor.
+            // store the click location relative to the card's top-left corner
             dragOffset.setPoint(e.getX(), e.getY());
             
-            // Bring this node to the front of the parent container
             this.toFront();
             
-            // Subtle visual feedback: scale up when picked up
+            // visual feedback
             this.setScaleX(SCALE_ON_CLICK);
             this.setScaleY(SCALE_ON_CLICK);
 
-            // send data to view:
-            GameView.getInstance().processOnMousePressed(
-                e.getSceneX(), 
-                e.getSceneY()
-            );
-            
+            GameView.getInstance().processOnMousePressed(e.getSceneX(), e.getSceneY());
             e.consume();
-
         });
 
         this.setOnMouseDragged(e -> {
-            // Update node position based on scene coordinates minus the initial offset
             this.setLayoutX(e.getSceneX() - dragOffset.getX());
             this.setLayoutY(e.getSceneY() - dragOffset.getY());
+            
+            GameView.getInstance().processOnMouseDragged(e.getSceneX(), e.getSceneY());
             e.consume();
-
-            // send data to view:
-            GameView.getInstance().processOnMouseDragged(
-                e.getSceneX(), 
-                e.getSceneY()
-            );
         });
 
         this.setOnMouseReleased(e -> {
-
-            // notify view:
             GameView.getInstance().processOnMouseReleased();
 
-            // Reset scale
-            this.setScaleX(1.0);
-            this.setScaleY(1.0);
+            // reset scale
+            this.setScaleX(SCALE_DEFAULT);
+            this.setScaleY(SCALE_DEFAULT);
 
-            // Calculate the distance between current layout and original starting position
-            double targetX = startingPos.getX() - getScaledWidth() / 2;
-            double targetY = startingPos.getY() - getScaledHeight() / 2;
+            // calculate the target position (original starting position)
+            double targetX = startingPos.getX() - getScaledWidth() / CENTER_DIVISOR;
+            double targetY = startingPos.getY() - getScaledHeight() / CENTER_DIVISOR;
             
             double deltaX = targetX - this.getLayoutX();
             double deltaY = targetY - this.getLayoutY();
 
-            // Create a smooth return transition
+            // smooth return transition
             TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATION_TIME_MILLIS), this);
-            tt.setFromX(0);
-            tt.setFromY(0);
+            tt.setFromX(RESET_TRANSLATE);
+            tt.setFromY(RESET_TRANSLATE);
             tt.setToX(deltaX);
             tt.setToY(deltaY);
-            
-            // EASE_OUT makes the movement start fast and slow down at the end
             tt.setInterpolator(Interpolator.EASE_OUT);
             
             tt.setOnFinished(ev -> {
-                // Once the animation finishes, reset translate properties
-                // and commit the final position to the layout properties.
-                this.setTranslateX(0);
-                this.setTranslateY(0);
+                this.setTranslateX(RESET_TRANSLATE);
+                this.setTranslateY(RESET_TRANSLATE);
                 this.setLayoutX(targetX);
                 this.setLayoutY(targetY);
             });
@@ -131,32 +117,31 @@ public class CardView extends StackPane {
     public void render(Image icon, Image outline, double progress, double alpha) {
         if (!isVisible()) return;
 
-        // Calculate the current visual center by summing Layout + Translate
-        double centerX = getTopLeftX() + getWidth() / 2;
-        double centerY = getTopLeftY() + getWidth() / 2;
+        // calculate the current visual center
+        double centerX = getTopLeftX() + getWidth() / CENTER_DIVISOR;
+        double centerY = getTopLeftY() + getHeight() / CENTER_DIVISOR;
 
         IMainGUI gui = GameView.getInstance().getGUI();
         
-        if (progress < 0) progress = 0; // progress has to be in [0, 1]. if is >= 1 then it's available
+        // ensure progress is within bounds
+        double currentProgress = Math.max(MIN_PROGRESS, progress);
 
-        // 1. Draw Icon
-        boolean monochrome = progress < 1; // renders monochrome if < 1 (so it's not available)
-        gui.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), monochrome, alpha);
+        // 1. draw icon
+        boolean isLocked = currentProgress < MAX_PROGRESS;
+        gui.renderScreenImage(icon, centerX, centerY, getScaledWidth(), getScaledHeight(), isLocked, alpha);
 
-        // 2. Draw Progress
-        if (progress < 1)
+        // 2. draw progress overlay if not ready
+        if (isLocked) {
             gui.fillScreenCircularProgress(
                 centerX, 
                 centerY, 
                 getWidth() * NORMALIZED_CIRCULAR_PROGRESS_SIZE,
-                progress
+                currentProgress
             );
+        }
         
-        // 3. Draw Outline/Frame
+        // 3. draw frame
         gui.renderScreenImage(outline, centerX, centerY, getScaledWidth(), getScaledHeight(), false, alpha);
-
-        // Debug: Red rect should perfectly align with the card's interactive area
-        //view.fillScreenRoundedRect(centerX, centerY, getScaledWidth(), getScaledHeight(), 0, 0, 0.5, Color.RED);
     }
 
     private double getScaledWidth() {
@@ -172,8 +157,9 @@ public class CardView extends StackPane {
     }
 
     public CardView setType(EntityType type) {
-        if (type != this.type) this.type = type;
-
+        if (type != this.type) {
+            this.type = type;
+        }
         return this;
     }
 
@@ -182,11 +168,9 @@ public class CardView extends StackPane {
     }
 
     public CardView setElixirCost(byte elixirCost) {
-        if (elixirCost != this.elixirCost) this.elixirCost = elixirCost;
-
+        if (elixirCost != this.elixirCost) {
+            this.elixirCost = elixirCost;
+        }
         return this;
     }
-
-    
-
 }
