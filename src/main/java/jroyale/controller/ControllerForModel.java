@@ -4,6 +4,7 @@ import java.util.List;
 
 import jroyale.controller.binders.CardBinder;
 import jroyale.model.Entity;
+import jroyale.model.IModel;
 import jroyale.model.Model;
 import jroyale.model.cards.Card;
 import jroyale.model.cards.CardStats;
@@ -20,6 +21,7 @@ import jroyale.utils.Enums.EntityType;
 public class ControllerForModel implements IControllerForModel{
 
     private static ControllerForModel instance = null;
+    private final IModel model = Model.getInstance();
 
     private ControllerForModel() {}
 
@@ -52,7 +54,7 @@ public class ControllerForModel implements IControllerForModel{
     @Override
     public void initModel(int maxTimeSec) {
         setCardsStats();
-        Model.getInstance().init(maxTimeSec);
+        model.init(maxTimeSec);
 
         initTroopsAnimationSteps();
         CardBinder.getInstance();
@@ -60,127 +62,127 @@ public class ControllerForModel implements IControllerForModel{
 
     @Override
     public int getTimeLeftSec() {
-        return Model.getInstance().getTimeLeftSec();
+        return model.getTimeLeftSec();
     }
 
     @Override
     public void updateModel(long now) {
-        Model.getInstance().update(now);
+        model.update(now);
     }
 
     @Override
     public boolean isGameOver() {
-        return Model.getInstance().isGameOver();
+        return model.isGameOver();
     }
 
     @Override
     public void resetModel() {
-        Model.getInstance().reset();
+        model.reset();
     }
 
     @Override
     public boolean isPlayerKingTowerDestroyed() {
-        return Model.getInstance().isPlayerKingTowerDestroyed();
+        return model.isPlayerKingTowerDestroyed();
     }
 
     @Override
     public boolean isOpponentKingTowerDestroyed() {
-        return Model.getInstance().isOpponentKingTowerDestroyed();
+        return model.isOpponentKingTowerDestroyed();
     }
 
     @Override
     public boolean isPlayerLeftTowerDestroyed() {
-        return Model.getInstance().isPlayerLeftTowerDestroyed();
+        return model.isPlayerLeftTowerDestroyed();
     }
 
     @Override
     public boolean isOpponentLeftTowerDestroyed() {
-        return Model.getInstance().isOpponentLeftTowerDestroyed();
+        return model.isOpponentLeftTowerDestroyed();
     }
 
     @Override
     public boolean isPlayerRightTowerDestroyed() {
-        return Model.getInstance().isPlayerRightTowerDestroyed();
+        return model.isPlayerRightTowerDestroyed();
     }
 
     @Override
     public boolean isOpponentRightTowerDestroyed() {
-        return Model.getInstance().isOpponentRightTowerDestroyed();
+        return model.isOpponentRightTowerDestroyed();
     }
 
     @Override
     public int getNumRowsArena() {
-        return Model.getInstance().getRowsCount();
+        return model.getRowsCount();
     }
 
     @Override
     public int getNumColsArena() {
-        return Model.getInstance().getColsCount();
+        return model.getColsCount();
     }
 
     @Override
     public List<Entity> getEntitiesOrderedByPosY() {
-        return Model.getInstance().getEntitiesOrderedByPosY();
+        return model.getEntitiesOrderedByPosY();
     }
 
     @Override
     public void addTroop(Troop troop) {
-        Model.getInstance().addTroop(troop);
+        model.addTroop(troop);
     }
 
     @Override
     public void setSelectedPlayerCard(int cardIndex) {
-        Model.getInstance().setSelectedCard(cardIndex);
+        model.setSelectedCard(cardIndex);
     }
 
     @Override
     public void dropSelectedPlayerCard(int row, int col) {
-        Model.getInstance().dropPlayerCard(row, col);
+        model.dropPlayerCard(row, col);
     }
 
     @Override
     public boolean isPlayerEntityDroppableOnTile(int row, int col) {
-        return Model.getInstance().isPlayerEntityDroppableOnTile(row, col);
+        return model.isPlayerEntityDroppableOnTile(row, col);
     }
 
     @Override
     public Card getFirstHandPlayerCard() {
-        return Model.getInstance().getFirstHandPlayerCard();
+        return model.getFirstHandPlayerCard();
     }
 
     @Override
     public Card getSecondHandPlayerCard() {
-        return Model.getInstance().getSecondHandPlayerCard();
+        return model.getSecondHandPlayerCard();
     }
 
     @Override
     public Card getThirdHandPlayerCard() {
-        return Model.getInstance().getThirdHandPlayerCard();
+        return model.getThirdHandPlayerCard();
     }
 
     @Override
     public Card getFourthHandPlayerCard() {
-        return Model.getInstance().getFourthHandPlayerCard();
+        return model.getFourthHandPlayerCard();
     }
 
     @Override
     public byte getPlayerElixirLeft() {
-        return Model.getInstance().getPlayerElixirLeft();
+        return model.getPlayerElixirLeft();
     }
 
     @Override
     public byte getMaxElixir() {
-        return Model.getInstance().getMaxElixir();
+        return model.getMaxElixir();
     }
 
     @Override
     public int getAvailableDeckCards() {
-        return Model.getInstance().getAvailableDeckCards();
+        return model.getAvailableDeckCards();
     }
 
     @Override
     public double getPlayerElixirChargeTimeProgress() {
-        return Model.getInstance().getPlayerElixirChargeTimeProgress();
+        return model.getPlayerElixirChargeTimeProgress();
     }
 
     // static methods
