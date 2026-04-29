@@ -27,7 +27,6 @@ public abstract class Tower extends Entity {
     @Override
     public void onDelete() {
         TowerTargetSelector.getInstance().removeTower(this);
-        // TODO: implement distruction animations on towers
     }
 
     @Override
@@ -42,12 +41,12 @@ public abstract class Tower extends Entity {
 
     @Override
     public double getCollisionRadius() {
-        return getFootPrintSize() * 0.5;
+        return getFootPrintSize()/2.0; // half footPrintSize
     }
 
     @Override
     public int getFPSAnimation() {
-        return 0; // TODO
+        return 0;
     }
 
 }

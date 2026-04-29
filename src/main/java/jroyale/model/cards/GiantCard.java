@@ -15,9 +15,6 @@ public class GiantCard extends Card{
 
     @Override
     public void dropCardIntoModel(int rowIndex, int columnIndex, Side side) {
-
-        //System.out.println("Units: " + stats.getUnitsAmount() + ", " + getType());
-
         for (byte i = 0; i < stats.getUnitsAmount(); i++)
             Model.getInstance().addTroop(
                 new Giant(
