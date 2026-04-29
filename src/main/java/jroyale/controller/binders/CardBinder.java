@@ -30,9 +30,7 @@ public class CardBinder {
 
     public Card getCardInstance(EntityType type) {
         Card card = cardBinder.get(type);
-        /* if (card == null) {
-            throw new IllegalArgumentException("Couldn't find any Card associated with: " + type);
-        } */
+        
         return card;
     }
 
