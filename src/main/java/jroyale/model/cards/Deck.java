@@ -132,6 +132,12 @@ public class Deck {
         return availableCards[3];
     }
 
+    public Card getCurrentCard(int index) {
+        if (index < 0 || index >= MAX_NUM_CARDS) throw new IllegalArgumentException("Index invalid.");
+
+        return availableCards[index];
+    }
+
     private void replaceCard() {
         cardBuffer.clear();
         cardBuffer.addAll(deck);

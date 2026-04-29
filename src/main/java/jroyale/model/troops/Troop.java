@@ -220,6 +220,8 @@ public abstract class Troop extends Entity {
 
     protected boolean selectClosestTower() {
         Tower possibleTargetTower = TowerTargetSelector.getInstance().getClosestEnemyTower(this);
+        
+        if (possibleTargetTower == null) return false;
 
         // target has to change if current target is null or dead
         if (target == null || target.getHitPoints() == 0) { 
