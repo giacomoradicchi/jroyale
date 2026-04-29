@@ -88,12 +88,12 @@ public class CardStats {
     }
 
     public void setSpeed(String speed) {
-        if (speed == null) this.speed = Speed.MEDIUM; // Default
+        if (speed == null) this.speed = Speed.MEDIUM; // default
         
         try {
             this.speed = Speed.valueOf(speed.toUpperCase().trim());
         } catch (IllegalArgumentException e) {
-            this.speed = Speed.MEDIUM; // Default
+            this.speed = Speed.MEDIUM; // default
         }
     }
 
@@ -102,12 +102,12 @@ public class CardStats {
     }
     
     public void setMeleeRange(String meleeRange) {
-        if (meleeRange == null) this.meleeRange = MeleeRange.MEDIUM; // Default
+        if (meleeRange == null) this.meleeRange = MeleeRange.MEDIUM; // default
         
         try {
             this.meleeRange = MeleeRange.valueOf(meleeRange.toUpperCase().trim());
         } catch (IllegalArgumentException e) {
-            this.meleeRange = MeleeRange.MEDIUM; // Default
+            this.meleeRange = MeleeRange.MEDIUM; // default
         }
     }
 
