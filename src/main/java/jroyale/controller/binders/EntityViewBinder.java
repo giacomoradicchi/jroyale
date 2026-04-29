@@ -36,9 +36,7 @@ public class EntityViewBinder {
 
     public EntityView getViewInstance(EntityType type) {
         EntityView view = entityBinder.get(type);
-        if (view == null) {
-            throw new IllegalArgumentException("Couldn't find any EntityView associated with: " + type);
-        }
+        
         return view;
     }
 
