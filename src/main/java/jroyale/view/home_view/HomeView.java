@@ -15,21 +15,63 @@ public class HomeView extends View implements IHomeView {
 
     private static HomeView instance = null;
 
-    // static constant
+    // normalized positions and sizes
+
     private static final double NORMALIZED_ARENA_SPRITE_X = 0.5;
     private static final double NORMALIZED_ARENA_SPRITE_Y = 0.37;
     private static final double NORMALIZED_ARENA_SPRITE_WIDTH = 0.5;
-    private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT = 0.05;
-    private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
-    private static final double NORMALIZED_PLAYBUTTON_Y = 0.67;
+
+    private static final double NORMALIZED_PLAY_BUTTON_TEXT_HEIGHT = 0.05;
+    private static final double NORMALIZED_PLAY_BUTTON_X = 0.5;
+    private static final double NORMALIZED_PLAY_BUTTON_Y = 0.67;
+
     private static final double NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT = 0.025;
     private static final double NORMALIZED_DIFFICULTY_BOX_X = 0.5;
-    private static final double NORMALIZED_DIFFICULTY_BOX_Y = NORMALIZED_PLAYBUTTON_Y + 2*NORMALIZED_PLAYBUTTON_TEXT_HEIGHT;
+    private static final double NORMALIZED_DIFFICULTY_BOX_Y =
+        NORMALIZED_PLAY_BUTTON_Y
+        + 2 * NORMALIZED_PLAY_BUTTON_TEXT_HEIGHT;
+
     private static final double NORMALIZED_LOGO_X = 0.5;
     private static final double NORMALIZED_LOGO_Y = 0.15;
     private static final double NORMALIZED_LOGO_WIDTH = 0.67;
-    
+
+    // render layer depth
+
+    private static final int RENDER_LAYER = 1;
+
+    // style constants
+
+    private static final int BORDER_RADIUS = 15;
+    private static final int BORDER_WIDTH = 2;
+
+    private static final String DEFAULT_CONFIG_DIFFICULTY = "STANDARD";
+    private static final String DEFAULT_UI_DIFFICULTY = "Standard";
+
+    private static final String PLAY_BUTTON_TEXT = "Gioca Partita";
+
+    private static final String DIFFICULTY_BASIC = "Basic";
+    private static final String DIFFICULTY_STANDARD = "Standard";
+    private static final String DIFFICULTY_EXPERT = "Expert";
+    private static final String DIFFICULTY_MASTER = "Master";
+
+    private static final String PLAY_BUTTON_STYLE =
+        "-fx-background-color: #FFD700;" +
+        "-fx-background-radius: " + BORDER_RADIUS + ";" +
+        "-fx-border-radius: " + BORDER_RADIUS + ";" +
+        "-fx-border-color: #B8860B;" +
+        "-fx-border-width: " + BORDER_WIDTH + ";" +
+        "-fx-text-fill: #333333;";
+
+    private static final String DIFFICULTY_BOX_BASE_STYLE =
+        "-fx-background-color: #0095ff;" +
+        "-fx-background-radius: " + BORDER_RADIUS + ";" +
+        "-fx-border-radius: " + BORDER_RADIUS + ";" +
+        "-fx-border-color: #1595e4;" +
+        "-fx-border-width: " + BORDER_WIDTH + ";" +
+        "-fx-text-fill: #333333;";
+
     private String difficulty;
+
     private Image homeBackground;
     private Image arenaSprite;
 
@@ -41,105 +83,207 @@ public class HomeView extends View implements IHomeView {
 
     @Override
     protected void loadSprites() {
-        this.homeBackground = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/home_background.jpg"));
-        this.arenaSprite = new Image(HomeView.class.getResourceAsStream("/jroyale/images/ui/ui_arena_sprite.png"));
+        this.homeBackground = new Image(
+            HomeView.class.getResourceAsStream(
+                "/jroyale/images/ui/home_background.jpg"
+            )
+        );
+
+        this.arenaSprite = new Image(
+            HomeView.class.getResourceAsStream(
+                "/jroyale/images/ui/ui_arena_sprite.png"
+            )
+        );
     }
 
     private void buildUI() {
-        gui.renderScreenImage(homeBackground, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gui.getCanvasWidth(), gui.getCanvasHeight(), false, 1);
-        
-        double width = gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
-        double height = arenaSprite.getHeight() / arenaSprite.getWidth() * width;
-        gui.renderScreenImage(arenaSprite, gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X, gui.getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y, width, height, false, 1);
+        renderBackground();
+        renderArena();
+        renderLogo();
 
-        width = gui.getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
-        height = LOGO.getHeight() / LOGO.getWidth() * width;
-        gui.renderScreenImage(LOGO, gui.getCanvasWidth() * NORMALIZED_LOGO_X, gui.getCanvasHeight() * NORMALIZED_LOGO_Y, width, height, false, 1);
-        
-        Button playButton = new Button("Gioca Partita");
-        FontManager fontManager = FontManager.getInstance();
-        Font font = fontManager.getBoldFont(fontManager.getBoldFontSize(NORMALIZED_PLAYBUTTON_TEXT_HEIGHT * gui.getCanvasHeight()));
-        playButton.setFont(font);
-        playButton.setStyle(
-            "-fx-background-color: #FFD700;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-border-color: #B8860B;" +
-            "-fx-border-width: 2;" +
-            "-fx-text-fill: #333333;"
+        createPlayButton();
+        createDifficultyBox();
+    }
+
+    private void renderBackground() {
+        gui.renderScreenImage(
+            homeBackground,
+            gui.getCanvasWidth() / 2,
+            gui.getCanvasHeight() / 2,
+            gui.getCanvasWidth(),
+            gui.getCanvasHeight(),
+            false,
+            RENDER_LAYER
         );
-        playButton.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            playButton.setLayoutX(NORMALIZED_PLAYBUTTON_X * gui.getCanvasWidth() - newVal.getWidth()/2);
-            playButton.setLayoutY(NORMALIZED_PLAYBUTTON_Y * gui.getCanvasHeight() - newVal.getHeight()/2);
-        });
-        
+    }
+
+    private void renderArena() {
+        double width =
+            gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_WIDTH;
+
+        double height =
+            arenaSprite.getHeight()
+            / arenaSprite.getWidth()
+            * width;
+
+        gui.renderScreenImage(
+            arenaSprite,
+            gui.getCanvasWidth() * NORMALIZED_ARENA_SPRITE_X,
+            gui.getCanvasHeight() * NORMALIZED_ARENA_SPRITE_Y,
+            width,
+            height,
+            false,
+            RENDER_LAYER
+        );
+    }
+
+    private void renderLogo() {
+        double width =
+            gui.getCanvasWidth() * NORMALIZED_LOGO_WIDTH;
+
+        double height =
+            LOGO.getHeight()
+            / LOGO.getWidth()
+            * width;
+
+        gui.renderScreenImage(
+            LOGO,
+            gui.getCanvasWidth() * NORMALIZED_LOGO_X,
+            gui.getCanvasHeight() * NORMALIZED_LOGO_Y,
+            width,
+            height,
+            false,
+            RENDER_LAYER
+        );
+    }
+
+    private void createPlayButton() {
+        Button playButton = new Button(PLAY_BUTTON_TEXT);
+
+        FontManager fontManager = FontManager.getInstance();
+
+        Font font = fontManager.getBoldFont(
+            fontManager.getBoldFontSize(
+                NORMALIZED_PLAY_BUTTON_TEXT_HEIGHT
+                * gui.getCanvasHeight()
+            )
+        );
+
+        playButton.setFont(font);
+        playButton.setStyle(PLAY_BUTTON_STYLE);
+
+        playButton.layoutBoundsProperty().addListener(
+            (obs, oldVal, newVal) -> {
+                playButton.setLayoutX(
+                    NORMALIZED_PLAY_BUTTON_X * gui.getCanvasWidth()
+                    - newVal.getWidth() / 2
+                );
+
+                playButton.setLayoutY(
+                    NORMALIZED_PLAY_BUTTON_Y * gui.getCanvasHeight()
+                    - newVal.getHeight() / 2
+                );
+            }
+        );
+
         playButton.setOnAction(e -> {
             gui.resetNodes();
             ControllerForView.getInstance().initGameView();
         });
-        
+
         gui.addToRoot(playButton);
+    }
 
+    private void createDifficultyBox() {
         ComboBox<String> difficultyBox = new ComboBox<>();
-        difficultyBox.getItems().addAll("Basic", "Standard", "Expert", "Master");
 
-        if (difficulty == null) setConfigDifficulty();
+        difficultyBox.getItems().addAll(
+            DIFFICULTY_BASIC,
+            DIFFICULTY_STANDARD,
+            DIFFICULTY_EXPERT,
+            DIFFICULTY_MASTER
+        );
+
+        if (difficulty == null) {
+            setConfigDifficulty();
+        }
 
         difficultyBox.setValue(difficulty);
 
-        difficultyBox.setStyle(
-            "-fx-background-color: #0095ff;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-border-color: #1595e4;" +
-            "-fx-border-width: 2;" +
-            "-fx-font-family: '" + fontManager.getBoldFont(0).getFamily() + "';" +
-            "-fx-font-size: " + (int) fontManager.getBoldFontSize(NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT * gui.getCanvasHeight()) + "px;" + 
-            "-fx-text-fill: #333333;"
-        );
+        FontManager fontManager = FontManager.getInstance();
 
-        difficultyBox.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            difficultyBox.setLayoutX(NORMALIZED_DIFFICULTY_BOX_X * gui.getCanvasWidth() - newVal.getWidth()/2);
-            difficultyBox.setLayoutY(NORMALIZED_DIFFICULTY_BOX_Y * gui.getCanvasHeight() - newVal.getHeight()/2); 
-        });
+        String style =
+            DIFFICULTY_BOX_BASE_STYLE +
+            "-fx-font-family: '" +
+            fontManager.getBoldFont(0).getFamily() +
+            "';" +
+            "-fx-font-size: " +
+            (int) fontManager.getBoldFontSize(
+                NORMALIZED_DIFFICULTY_BOX_TEXT_HEIGHT
+                * gui.getCanvasHeight()
+            ) +
+            "px;";
+
+        difficultyBox.setStyle(style);
+
+        difficultyBox.layoutBoundsProperty().addListener(
+            (obs, oldVal, newVal) -> {
+                difficultyBox.setLayoutX(
+                    NORMALIZED_DIFFICULTY_BOX_X * gui.getCanvasWidth()
+                    - newVal.getWidth() / 2
+                );
+
+                difficultyBox.setLayoutY(
+                    NORMALIZED_DIFFICULTY_BOX_Y * gui.getCanvasHeight()
+                    - newVal.getHeight() / 2
+                );
+            }
+        );
 
         difficultyBox.setOnAction(e -> {
             difficulty = difficultyBox.getValue();
             Config.getInstance().setDifficulty(difficulty);
         });
+
         difficultyBox.setFocusTraversable(false);
 
         gui.addToRoot(difficultyBox);
     }
 
     private void setConfigDifficulty() {
-        String confDifficulty = Config.getInstance().getDifficulty();
-        if (confDifficulty == null) {
-            confDifficulty = "STANDARD";
-            Config.getInstance().setDifficulty(confDifficulty);
-            difficulty = "Standard";
-            return;
-        } 
+        String configDifficulty =
+            Config.getInstance().getDifficulty();
 
-        switch (confDifficulty.strip().toUpperCase()) {
+        if (configDifficulty == null) {
+            Config.getInstance().setDifficulty(
+                DEFAULT_CONFIG_DIFFICULTY
+            );
+
+            difficulty = DEFAULT_UI_DIFFICULTY;
+            return;
+        }
+
+        switch (configDifficulty.strip().toUpperCase()) {
             case "BASIC":
-                difficulty = "Basic";
+                difficulty = DIFFICULTY_BASIC;
                 break;
+
             case "STANDARD":
-                difficulty = "Standard";
+                difficulty = DIFFICULTY_STANDARD;
                 break;
+
             case "EXPERT":
-                difficulty = "Expert";
+                difficulty = DIFFICULTY_EXPERT;
                 break;
+
             case "MASTER":
-                difficulty = "Master";
+                difficulty = DIFFICULTY_MASTER;
                 break;
-        
+
             default:
-                difficulty = "Standard";
+                difficulty = DEFAULT_UI_DIFFICULTY;
                 break;
         }
-        
     }
 
     @Override
@@ -168,6 +312,7 @@ public class HomeView extends View implements IHomeView {
     }
 
     // static methods
+
     public static IHomeView getInstance() {
         if (instance == null) {
             instance = new HomeView();
@@ -180,5 +325,4 @@ public class HomeView extends View implements IHomeView {
     public IMainGUI getGUI() {
         return gui;
     }
-    
 }

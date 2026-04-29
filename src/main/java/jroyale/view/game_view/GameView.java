@@ -1,13 +1,9 @@
 package jroyale.view.game_view;
 
-import javafx.scene.control.Button;
-import javafx.scene.text.Font;
 import jroyale.controller.ControllerForView;
-import jroyale.controller.GameEngine;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
 import jroyale.view.MainGUI;
 import jroyale.view.View;
