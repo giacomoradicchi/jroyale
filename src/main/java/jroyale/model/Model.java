@@ -243,6 +243,10 @@ public class Model implements IModel {
     @Override
     public void addTroop(Troop troop) {
         addEntity(troop);
+
+        // notify AI that player has dropped a troop
+        if (troop.getSide() == Side.PLAYER)
+            AIAgent.getInstance().handlePlayerCardDropped();
     }
 
     @Override
@@ -422,6 +426,7 @@ public class Model implements IModel {
     }
 
     private void addEntity(Entity e) {
+
         int i = (int) Math.floor(e.getY());
         int j = (int) Math.floor(e.getX());
 
