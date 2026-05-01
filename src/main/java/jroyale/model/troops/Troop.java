@@ -1,10 +1,10 @@
 package jroyale.model.troops; 
 
 import jroyale.model.ArenaData;
-import jroyale.model.CollisionManager;
-import jroyale.model.EnemyTargetSelector;
 import jroyale.model.Entity;
 import jroyale.model.FrameManager;
+import jroyale.model.ICollisionManager;
+import jroyale.model.IEnemyTargetSelector;
 import jroyale.model.Model;
 import jroyale.model.TowerTargetSelector;
 import jroyale.model.towers.Tower;
@@ -222,7 +222,7 @@ public abstract class Troop extends Entity {
 
     protected boolean selectClosestEnemy() {
 
-        Troop closestEnemy = EnemyTargetSelector.getInstance().getClosestEnemyInVisionRange(this);
+        Troop closestEnemy = IEnemyTargetSelector.getInstance().getClosestEnemyInVisionRange(this);
 
         
 
@@ -299,7 +299,7 @@ public abstract class Troop extends Entity {
             
 
         // idle time terminated: decide wheather attack the troop or move toward the target based on collision.
-        if (target != null && CollisionManager.getInstance().checkNextCollision(this, target)
+        if (target != null && ICollisionManager.getInstance().checkNextCollision(this, target)
         && target.getHitPoints() > 0) {
             shouldAttack = true;
         } else {
@@ -336,7 +336,7 @@ public abstract class Troop extends Entity {
     }
 
     private void handleCollisions() {
-        for (Entity other : CollisionManager.getInstance().getCollidingEntitiesWith(this)) {
+        for (Entity other : ICollisionManager.getInstance().getCollidingEntitiesWith(this)) {
             if (other == target && state == State.MOVE) {
                 shouldAttack = true;
 

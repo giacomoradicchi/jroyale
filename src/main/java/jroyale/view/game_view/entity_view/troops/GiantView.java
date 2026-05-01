@@ -8,7 +8,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
 import jroyale.view.game_view.entity_view.EntityView;
@@ -53,6 +53,8 @@ public class GiantView extends TroopView {
     private static final int PLAYER_ATTACK_BASE_INDEX = 0;
     private static final int OPPONENT_ATTACK_BASE_INDEX = 90;
 
+    private final IGameView gameView = IGameView.getInstance();
+
     private GiantView() {
         super();
     }
@@ -79,7 +81,7 @@ public class GiantView extends TroopView {
 
         Image image = animationBuffer.get(key).getFrame(currentFrame);
 
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         double canvasHeight = gui.getCanvasHeight();
         double scale = getImageScale();

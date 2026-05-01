@@ -82,11 +82,11 @@ public class GameEngine implements IGameEngine {
     @Override
     public void start(Stage stage) {
         // saving instances to avoid redundace
-        controllerForView = ControllerForView.getInstance();
-        controllerForModel = ControllerForModel.getInstance();
+        controllerForView = IControllerForView.getInstance();
+        controllerForModel = IControllerForModel.getInstance();
         
-        controllerForView.openWindow(stage);
         controllerForView.initView();
+        controllerForView.openWindow(stage);
     } 
 
     @Override

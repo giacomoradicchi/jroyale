@@ -8,7 +8,6 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -66,6 +65,8 @@ public class ValkyrieView extends TroopView {
     private static final int OPPONENT_MOVE_BASE_INDEX = 81;
     private static final int PLAYER_ATTACK_BASE_INDEX = 271;
     private static final int OPPONENT_ATTACK_BASE_INDEX = 163;
+
+    private final IGameView gameView = IGameView.getInstance();
 
     private ValkyrieView() {}
 
@@ -175,8 +176,7 @@ public class ValkyrieView extends TroopView {
             flipped = FLIPPED;
         }
 
-        IGameView view = GameView.getInstance();
-        IMainGUI gui = view.getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         gui.renderWorldImage(
             image,

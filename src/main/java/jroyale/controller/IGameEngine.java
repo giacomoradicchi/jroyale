@@ -13,4 +13,9 @@ public interface IGameEngine {
     public void stop();
 
     public void resume();
+
+    // static methods
+    public static IGameEngine getInstance() {
+        return GameEngine.getInstance();
+    }
 }

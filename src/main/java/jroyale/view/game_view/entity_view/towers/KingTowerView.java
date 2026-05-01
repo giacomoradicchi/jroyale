@@ -5,7 +5,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.entity_view.EntityView;
 
 public class KingTowerView extends TowerView {
@@ -27,6 +27,8 @@ public class KingTowerView extends TowerView {
     private static final String RELATIVE_PATH_TO_PLAYER_IMAGE = "player/king_tower.png";
     private static final String RELATIVE_PATH_TO_OPPONENT_IMAGE = "opponent/king_tower.png";
 
+    private final IGameView gameView = IGameView.getInstance();
+
     private KingTowerView() {}
 
     // instance methods
@@ -47,7 +49,7 @@ public class KingTowerView extends TowerView {
     ) {
         Image img = side == Side.PLAYER ? playerTowerImage : opponentTowerImage;
 
-        GameView.getInstance().getGUI().renderWorldImage(
+        gameView.getGUI().renderWorldImage(
             img,
             centreX,
             centreY + Y_OFFSET,

@@ -3,7 +3,6 @@ package jroyale.view.game_view.ui;
 import javafx.scene.paint.Color;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
 public class TimeLeftRenderer {
@@ -27,7 +26,7 @@ public class TimeLeftRenderer {
         
         String timeLeft = fromSecToTimeString(secondsLeft + 1); // adding + 1 so it will be displayed values starting from 1 instead of 0
 
-        IGameView view = GameView.getInstance();
+        IGameView view = IGameView.getInstance();
         IMainGUI gui = view.getGUI();
 
         double canvasWidth = gui.getCanvasWidth();

@@ -11,24 +11,24 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
+import jroyale.view.IView;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.entity_view.troops.GiantView;
 import jroyale.view.game_view.entity_view.troops.MiniPekkaView;
 import jroyale.view.game_view.entity_view.troops.PekkaView;
 import jroyale.view.game_view.entity_view.troops.SkeletonView;
 import jroyale.view.game_view.entity_view.troops.ValkyrieView;
-import jroyale.view.home_view.HomeView;
 import jroyale.view.home_view.IHomeView;
 
 public class ControllerForView implements IControllerForView {
 
     private static ControllerForView instance;
 
-    private IHomeView homeView;
-    private IGameView gameView;
+    private final IHomeView homeView = IView.getHomeInstance();
+    private final IGameView gameView = IView.getGameInstance();
 
-    private IControllerForModel controllerForModel;
+    private IControllerForModel controllerForModel = IControllerForModel.getInstance();
+    private IGameEngine gameEngine = IGameEngine.getInstance();
 
     private int lastSelectedColumnIndex = -1;
     private int lastSelectedRowIndex = -1;
@@ -50,11 +50,7 @@ public class ControllerForView implements IControllerForView {
     private static final Color  GAME_OVER_TEXT_COLOR = Color.ALICEBLUE;
     private static final Color  GAME_OVER_STROKE_COLOR = Color.BLACK;
 
-    private ControllerForView() {
-        gameView = GameView.getInstance();
-        homeView = HomeView.getInstance();
-        controllerForModel = ControllerForModel.getInstance();
-    }
+    private ControllerForView() {}
 
     // private methods
     private void initTroopsFramesPerDirection() {
@@ -83,12 +79,14 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void startGameLoop() {
         gameView.getGUI().setView(gameView);
-        GameEngine.getInstance().startGameLoop();
+        gameEngine.startGameLoop();
     }
 
     @Override
     public void initView() {
         initTroopsFramesPerDirection();
+        gameView.setController(instance);
+        homeView.setController(instance);
     }
 
     @Override
@@ -151,7 +149,7 @@ public class ControllerForView implements IControllerForView {
         });
         
         playButton.setOnAction(e -> {
-            GameEngine.getInstance().goToHome();
+            gameEngine.goToHome();
         });
         
         gui.addToRoot(playButton);

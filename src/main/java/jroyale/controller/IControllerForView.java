@@ -62,4 +62,8 @@ public interface IControllerForView {
     
     public int getAvailableDeckCards();
 
+    // static methods
+    public static IControllerForView getInstance() {
+        return ControllerForView.getInstance();
+    }
 }

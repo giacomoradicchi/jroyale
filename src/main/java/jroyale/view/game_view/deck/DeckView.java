@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import jroyale.utils.Enums.EntityType;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.controller.binders.EntityViewBinder;
 import jroyale.utils.ImageUtils;
 
@@ -53,6 +53,8 @@ public class DeckView {
     private static final Color PLAYER_FILL_PROGRESS = Color.rgb(161, 60, 161); 
     private static final Color PLAYER_FILL_LIGHT = Color.rgb(255, 106, 255);
 
+    private final IGameView gameView = IGameView.getInstance();
+
     private DeckView() {} // private methods
 
     public void init(int numCards) {
@@ -63,7 +65,7 @@ public class DeckView {
         initCardsView();
 
         for (int i = 0; i < numCards; i++) {
-            GameView.getInstance().getGUI().addToRoot(cards[i]);
+            gameView.getGUI().addToRoot(cards[i]);
         }
         
     }
@@ -108,7 +110,7 @@ public class DeckView {
     }
 
     private void renderElixirDrop(double dropCenterX, double dropCenterY, double dropWidth, double dropHeight, byte elixir, boolean monochrome, double alpha) {
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         gui.renderScreenImage(
             ELIXIR_DROP_IMAGE, 
@@ -144,7 +146,7 @@ public class DeckView {
 
     private void renderElixirBar(byte elixirLeft, double elixirChargeTimeProgress, byte maxElixir, double alpha) {
 
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
         // elixir
         final double CANVAS_WIDTH = gui.getCanvasWidth();
         final double CANVAS_HEIGHT = gui.getCanvasHeight();
@@ -212,7 +214,7 @@ public class DeckView {
 
     private void renderBackDeck(double alpha) {
 
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         final double CANVAS_WIDTH = gui.getCanvasWidth();
         final double CANVAS_HEIGHT = gui.getCanvasHeight();
@@ -233,7 +235,7 @@ public class DeckView {
 
     private void initCardsView() {
 
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         final double CANVAS_WIDTH = gui.getCanvasWidth();
         final double CANVAS_HEIGHT = gui.getCanvasHeight();
@@ -273,7 +275,7 @@ public class DeckView {
     public void setSelectedCard(CardView card) {
         selectedCardIndex = getSelectedCardIndex(card);
 
-        GameView.getInstance().setSelectedCard(
+        gameView.setSelectedCard(
             selectedCardIndex
         );
     } 

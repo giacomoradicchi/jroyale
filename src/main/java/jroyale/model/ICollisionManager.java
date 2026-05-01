@@ -14,4 +14,8 @@ public interface ICollisionManager {
     
     public Point fixEntityInsideReachableTile(Entity e, double shiftX, double shiftY);
 
+    // static methods
+    public static ICollisionManager getInstance() {
+        return CollisionManager.getInstance();
+    }
 }

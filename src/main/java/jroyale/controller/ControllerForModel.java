@@ -5,7 +5,6 @@ import java.util.List;
 import jroyale.controller.binders.CardBinder;
 import jroyale.model.Entity;
 import jroyale.model.IModel;
-import jroyale.model.Model;
 import jroyale.model.cards.Card;
 import jroyale.model.cards.CardStats;
 import jroyale.model.troops.Giant;
@@ -21,7 +20,7 @@ import jroyale.utils.Enums.EntityType;
 public class ControllerForModel implements IControllerForModel{
 
     private static ControllerForModel instance = null;
-    private final IModel model = Model.getInstance();
+    private final IModel model = IModel.getInstance();
 
     private ControllerForModel() {}
 

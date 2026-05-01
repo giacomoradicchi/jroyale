@@ -149,7 +149,7 @@ public abstract class Entity implements Comparable<Entity>{
             if point (posX + shiftX, posY + shiftY) is inside map, collisionManager's method
             will return the same point. otherwise it will fix it inside map.  
             */ 
-            CollisionManager.getInstance().fixEntityInsideReachableTile(this, shiftX, shiftY)
+            ICollisionManager.getInstance().fixEntityInsideReachableTile(this, shiftX, shiftY)
         ); 
         
     }
