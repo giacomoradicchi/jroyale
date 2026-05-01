@@ -12,4 +12,8 @@ public interface IEnemyTargetSelector {
 
     public boolean isEntityInMeleeRange(Entity entity, Troop troop);
 
+    // static methods
+    public static IEnemyTargetSelector getInstance() {
+        return EnemyTargetSelector.getInstance();
+    }
 }

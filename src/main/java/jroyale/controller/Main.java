@@ -9,7 +9,7 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        GameEngine.getInstance().start(stage);
+        IGameEngine.getInstance().start(stage);
     }
 
     public static void main(String[] args) {

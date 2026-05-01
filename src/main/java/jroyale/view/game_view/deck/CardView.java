@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import jroyale.utils.Enums.EntityType;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.utils.Point;
 
 public class CardView extends StackPane {
@@ -30,6 +30,8 @@ public class CardView extends StackPane {
     private final static double RESET_TRANSLATE = 0.0;
     private final static double MIN_PROGRESS = 0.0;
     private final static double MAX_PROGRESS = 1.0;
+
+    private final IGameView gameView = IGameView.getInstance();
 
     public CardView(double x, double y, double width, double height) {
         this.startingPos = new Point(x, y);
@@ -61,7 +63,7 @@ public class CardView extends StackPane {
             this.setScaleX(SCALE_ON_CLICK);
             this.setScaleY(SCALE_ON_CLICK);
 
-            GameView.getInstance().processOnMousePressed(e.getSceneX(), e.getSceneY());
+            gameView.processOnMousePressed(e.getSceneX(), e.getSceneY());
             e.consume();
         });
 
@@ -69,12 +71,12 @@ public class CardView extends StackPane {
             this.setLayoutX(e.getSceneX() - dragOffset.getX());
             this.setLayoutY(e.getSceneY() - dragOffset.getY());
             
-            GameView.getInstance().processOnMouseDragged(e.getSceneX(), e.getSceneY());
+            gameView.processOnMouseDragged(e.getSceneX(), e.getSceneY());
             e.consume();
         });
 
         this.setOnMouseReleased(e -> {
-            GameView.getInstance().processOnMouseReleased();
+            gameView.processOnMouseReleased();
 
             // reset scale
             this.setScaleX(SCALE_DEFAULT);
@@ -121,7 +123,7 @@ public class CardView extends StackPane {
         double centerX = getTopLeftX() + getWidth() / CENTER_DIVISOR;
         double centerY = getTopLeftY() + getHeight() / CENTER_DIVISOR;
 
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
         
         // ensure progress is within bounds
         double currentProgress = Math.max(MIN_PROGRESS, progress);

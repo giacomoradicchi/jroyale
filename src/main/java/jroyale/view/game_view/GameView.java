@@ -1,11 +1,9 @@
 package jroyale.view.game_view;
 
-import jroyale.controller.ControllerForView;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
-import jroyale.view.MainGUI;
 import jroyale.view.View;
 import jroyale.view.game_view.arena.ArenaView;
 import jroyale.view.game_view.deck.DeckView;
@@ -28,7 +26,7 @@ public class GameView extends View implements IGameView {
     private final IMainGUI gui;
 
     private GameView() {
-        this.gui = MainGUI.getInstance();
+        this.gui = IMainGUI.getInstance();
     }
 
     // instance methods
@@ -53,17 +51,17 @@ public class GameView extends View implements IGameView {
 
     private void buildUI() {
         ArenaView.getInstance().init(
-            ControllerForView.getInstance().getNumRowsArena(),
-            ControllerForView.getInstance().getNumColsArena()
+            controllerForView.getNumRowsArena(),
+            controllerForView.getNumColsArena()
         );
         
-        DeckView.getInstance().init(ControllerForView.getInstance().getAvailableDeckCards());
+        DeckView.getInstance().init(controllerForView.getAvailableDeckCards());
     }
 
     @Override
     protected void onLoadFinished() {
         buildUI();
-        ControllerForView.getInstance().startGameLoop();
+        controllerForView.startGameLoop();
     }
 
     @Override
@@ -165,12 +163,12 @@ public class GameView extends View implements IGameView {
 
     @Override
     public void setSelectedCard(int cardIndex) {
-        ControllerForView.getInstance().setSelectedPlayerCard(cardIndex);
+        controllerForView.setSelectedPlayerCard(cardIndex);
     }
 
     @Override
     public void processOnMousePressed(double x, double y) {
-        ControllerForView.getInstance().handleMouseSelectedTile(
+        controllerForView.handleMouseSelectedTile(
             getRowFromMouseY(y),
             getColFromMouseX(x)
         );
@@ -178,7 +176,7 @@ public class GameView extends View implements IGameView {
 
     @Override
     public void processOnMouseDragged(double x, double y) {
-        ControllerForView.getInstance().handleMouseSelectedTile(
+        controllerForView.handleMouseSelectedTile(
             getRowFromMouseY(y),
             getColFromMouseX(x)
         );
@@ -186,9 +184,9 @@ public class GameView extends View implements IGameView {
 
     @Override
     public void processOnMouseReleased() {
-        ControllerForView.getInstance().dropSelectedPlayerCardOnLastMousePos();
+        controllerForView.dropSelectedPlayerCardOnLastMousePos();
 
-        ControllerForView.getInstance().handleMouseReleased();
+        controllerForView.handleMouseReleased();
     }
 
     // static methods

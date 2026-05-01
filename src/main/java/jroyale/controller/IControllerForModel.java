@@ -60,4 +60,9 @@ public interface IControllerForModel {
 
     public double getPlayerElixirChargeTimeProgress();
 
+    // static methods
+    public static IControllerForModel getInstance() {
+        return ControllerForModel.getInstance();
+    }
+
 } 

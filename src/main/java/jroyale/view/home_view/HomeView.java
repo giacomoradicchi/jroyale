@@ -4,11 +4,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
-import jroyale.controller.ControllerForView;
 import jroyale.utils.Config;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
-import jroyale.view.MainGUI;
 import jroyale.view.View;
 
 public class HomeView extends View implements IHomeView {
@@ -78,7 +76,7 @@ public class HomeView extends View implements IHomeView {
     private final IMainGUI gui;
 
     private HomeView() {
-        this.gui = MainGUI.getInstance();
+        this.gui = IMainGUI.getInstance();
     }
 
     @Override
@@ -188,7 +186,7 @@ public class HomeView extends View implements IHomeView {
 
         playButton.setOnAction(e -> {
             gui.resetNodes();
-            ControllerForView.getInstance().initGameView();
+            controllerForView.initGameView();
         });
 
         gui.addToRoot(playButton);
@@ -311,6 +309,11 @@ public class HomeView extends View implements IHomeView {
         // empty
     }
 
+    @Override
+    public IMainGUI getGUI() {
+        return gui;
+    }
+
     // static methods
 
     public static IHomeView getInstance() {
@@ -319,10 +322,5 @@ public class HomeView extends View implements IHomeView {
         }
 
         return instance;
-    }
-
-    @Override
-    public IMainGUI getGUI() {
-        return gui;
     }
 }

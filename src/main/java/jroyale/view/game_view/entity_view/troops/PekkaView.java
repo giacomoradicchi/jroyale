@@ -7,7 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
 import jroyale.view.game_view.entity_view.EntityView;
@@ -46,6 +46,8 @@ public class PekkaView extends TroopView {
     private static final int OPPONENT_MOVE_BASE_INDEX = 135;
     private static final int PLAYER_ATTACK_BASE_INDEX = 333;
     private static final int OPPONENT_ATTACK_BASE_INDEX = 270;
+
+    private final IGameView gameView = IGameView.getInstance();
 
     private PekkaView() {}
 
@@ -139,7 +141,7 @@ public class PekkaView extends TroopView {
             flipped = FLIPPED;
         }
 
-        GameView.getInstance().getGUI().renderWorldImage(
+        gameView.getGUI().renderWorldImage(
             image,
             centreX + SHIFT_X,
             centreY + SHIFT_Y,

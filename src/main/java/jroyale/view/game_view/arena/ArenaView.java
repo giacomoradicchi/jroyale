@@ -3,7 +3,7 @@ package jroyale.view.game_view.arena;
 import java.awt.geom.Rectangle2D;
 import javafx.scene.image.Image;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 
 public class ArenaView {
 
@@ -33,6 +33,8 @@ public class ArenaView {
     private double globalShiftY;
     private double dx, dy;
     private int rows, cols;
+
+    private final IGameView gameView = IGameView.getInstance();
 
     private ArenaView() {}
 
@@ -73,7 +75,7 @@ public class ArenaView {
     }
 
     private void calculateMapBoundingBox() {
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         double canvasWidth = gui.getCanvasWidth();
         double canvasHeight = gui.getCanvasHeight();
@@ -100,7 +102,7 @@ public class ArenaView {
     } 
 
     public void renderArena(boolean debugMode) {
-        IMainGUI gui = GameView.getInstance().getGUI();
+        IMainGUI gui = gameView.getGUI();
 
         double canvasWidth = gui.getCanvasWidth();
         double canvasHeight = gui.getCanvasHeight();

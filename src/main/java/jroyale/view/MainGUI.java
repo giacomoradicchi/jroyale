@@ -459,7 +459,7 @@ public class MainGUI implements IMainGUI {
         gc.restore();
     }
 
-    // static
+    // static methods
     public static IMainGUI getInstance() {
         if (instance == null) instance = new MainGUI();
         return instance;

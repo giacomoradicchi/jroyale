@@ -7,7 +7,6 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
-import jroyale.view.game_view.GameView;
 import jroyale.view.game_view.IGameView;
 
 public abstract class EntityView {
@@ -36,9 +35,8 @@ public abstract class EntityView {
     private static final Color ENEMY_FILL_LIGHT = Color.rgb(255, 100, 100);
     private static final Color ENEMY_FILL_DARK = Color.rgb(150, 50, 50);
 
+    private final IGameView gameView = IGameView.getInstance();
     
-    public abstract EntityType getType();
-
     public void render(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side) {
         renderShadow(centreX, centreY, shadowRadius);
         renderEntity(centreX, centreY, angleDirection, currentFrame, state, side); 
@@ -49,14 +47,13 @@ public abstract class EntityView {
 
     private void renderHealth(int currentHealth, int maxHealth, Side side, double centerX, double centerY) {
         
-        IGameView view = GameView.getInstance();
-        IMainGUI gui = view.getGUI();
+        IMainGUI gui = gameView.getGUI();
 
-        double rectWidth  = view.getDx() * HEALTH_BAR_WIDTH_MULTIPLIER;
-        double rectHeight = view.getDy() * HEALTH_BAR_HEIGHT_MULTIPLIER;
+        double rectWidth  = gameView.getDx() * HEALTH_BAR_WIDTH_MULTIPLIER;
+        double rectHeight = gameView.getDy() * HEALTH_BAR_HEIGHT_MULTIPLIER;
 
         // Offset the bar above the entity's center
-        double shiftY = -view.getDy() * HEALTH_BAR_VERTICAL_OFFSET_MULTIPLIER;
+        double shiftY = -gameView.getDy() * HEALTH_BAR_VERTICAL_OFFSET_MULTIPLIER;
 
         Color cFill, cStroke;
         Color cFillDark;
@@ -91,7 +88,7 @@ public abstract class EntityView {
     }
 
     private void renderShadow(double centreX, double centreY, double shadowRadius) {
-        GameView.getInstance().getGUI().renderWorldShadow(centreX, centreY, shadowRadius);
+        gameView.getGUI().renderWorldShadow(centreX, centreY, shadowRadius);
     }
 
     protected double getImageScale() {
@@ -106,11 +103,11 @@ public abstract class EntityView {
         -> scale = (ht * dy) / hr
          */
 
-        return getHeightInTiles() * GameView.getInstance().getDy() / getSpritesHeight();
+        return getHeightInTiles() * gameView.getDy() / getSpritesHeight();
     }
 
     private double getHeightInPixels() {    // height in pixel of troop (based on map proportion)
-        return getHeightInTiles() * GameView.getInstance().getDy();
+        return getHeightInTiles() * gameView.getDy();
     }
 
     // abstract methods
@@ -122,4 +119,7 @@ public abstract class EntityView {
     protected abstract double getSpritesHeight(); // height in pixel of the original sprites (unscaled) excluding transparent pixel not in bounds 
 
     protected abstract double getHeightInTiles();
+
+    public abstract EntityType getType();
+
 }

@@ -81,4 +81,9 @@ public interface IModel {
     public Tower getOpponentLeftTower();
 
     public Tower getOpponentRightTower();
+
+    // static methods
+    public static IModel getInstance() {
+        return Model.getInstance();
+    }
 }

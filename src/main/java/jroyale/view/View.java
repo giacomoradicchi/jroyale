@@ -2,6 +2,7 @@ package jroyale.view;
 
 import javafx.concurrent.Task;
 import javafx.scene.image.Image;
+import jroyale.controller.IControllerForView;
 
 public abstract class View implements IView {
 
@@ -13,7 +14,12 @@ public abstract class View implements IView {
 
     protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
 
-    
+    protected IControllerForView controllerForView;
+
+    @Override
+    public void setController(IControllerForView controller) {
+        controllerForView = controller;
+    }
 
     @Override
     public void init() {

@@ -59,4 +59,9 @@ public interface IMainGUI {
     public void fillPoint(double centreX, double centreY, int size, Color color);
     
     public void fillScreenCircularProgress(double centreX, double centreY, double radius, double progress);
+
+    // static methods
+    public static IMainGUI getInstance() {
+        return MainGUI.getInstance();
+    }
 }

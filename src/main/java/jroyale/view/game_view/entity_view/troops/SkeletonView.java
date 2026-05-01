@@ -7,7 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
 
@@ -42,6 +42,8 @@ public abstract class SkeletonView extends TroopView {
     private static final int OPPONENT_MOVE_BASE_INDEX = -1;
     private static final int PLAYER_ATTACK_BASE_INDEX = 81;
     private static final int OPPONENT_ATTACK_BASE_INDEX = -1;
+
+    private final IGameView gameView = IGameView.getInstance();
 
     // instance methods
 
@@ -102,7 +104,7 @@ public abstract class SkeletonView extends TroopView {
             flipped = FLIPPED;
         }
 
-        GameView.getInstance().getGUI().renderWorldImage(
+        gameView.getGUI().renderWorldImage(
             image,
             centreX + SHIFT_X,
             centreY + SHIFT_Y,

@@ -40,4 +40,7 @@ public interface IGameView extends IView {
 
     public void setSelectedCard(int cardIndex);
 
+    public static IGameView getInstance() {
+        return GameView.getInstance();
+    }
 }

@@ -2,8 +2,8 @@ package jroyale.model.troops;
 
 import java.util.Map;
 
-import jroyale.model.EnemyTargetSelector;
 import jroyale.model.Entity;
+import jroyale.model.IEnemyTargetSelector;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -50,7 +50,7 @@ public class Valkyrie extends MixedAttackerTroop{
         super.attackTarget();
 
         // then attack also sourrounding enemies
-        for (Entity enemy : EnemyTargetSelector.getInstance().getTroopsInMeleeRange(this)) {
+        for (Entity enemy : IEnemyTargetSelector.getInstance().getTroopsInMeleeRange(this)) {
             enemy.setDamage(getDamage());
         }
     }

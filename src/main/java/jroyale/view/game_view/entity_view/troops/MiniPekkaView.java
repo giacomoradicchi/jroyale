@@ -7,7 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
-import jroyale.view.game_view.GameView;
+import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
 import jroyale.view.game_view.entity_view.EntityView;
@@ -44,6 +44,8 @@ public class MiniPekkaView extends TroopView {
     private static final int PLAYER_ATTACK_BASE_INDEX = 0;
     private static final int OPPONENT_ATTACK_BASE_INDEX = 225;
 
+    private final IGameView gameView = IGameView.getInstance();
+
     private MiniPekkaView() {
         super();
     }
@@ -73,7 +75,7 @@ public class MiniPekkaView extends TroopView {
             flipped = FLIPPED;
         }
 
-        GameView.getInstance().getGUI().renderWorldImage(
+        gameView.getGUI().renderWorldImage(
             image,
             centreX,
             centreY,
