@@ -314,7 +314,7 @@ public class AIAgent {
     }
 
     private void handleRightDefence() {
-        deck.selectCard(getSthocasticCardIndex(selectLeftDefenceCard()));
+        deck.selectCard(getSthocasticCardIndex(selectRightDefenceCard()));
         
         if (deck.isSelectedCardDroppable()) {
             deck.dropSelectedCard(DEFENCE_DROP_ROW, DEFENCE_DROP_COL_RIGHT, Side.OPPONENT);
@@ -385,7 +385,7 @@ public class AIAgent {
                 (double) rawCardIndex
             ),
             0,  
-            1
+            Deck.AVAILABLE_CARDS_SIZE-1
         );
     }
 
@@ -398,6 +398,8 @@ public class AIAgent {
     }
 
     private double getLeftRawIntention() {
+        if (deck.getElixir() == Deck.getMaxElixir()) return 1; // max value (attack)
+
         calculateTotalLeftHitPoints();
 
         for (int feature = 0; feature < FEATURES_AMOUNT; feature++) {
@@ -419,6 +421,8 @@ public class AIAgent {
     }
 
     private double getRightRawIntention() {
+        if (deck.getElixir() == Deck.getMaxElixir()) return 1; // max value (attack)
+
         calculateTotalRightHitPoints();
 
         for (int feature = 0; feature < FEATURES_AMOUNT; feature++) {
