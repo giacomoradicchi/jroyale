@@ -24,14 +24,14 @@ public class AIAgent {
     */                             
 
     private static final long MIN_IDLE_TIME = 1_000_000_000L;                 // in nanosec
-    private static final long MAX_IDLE_TIME = 3_000_000_000L;               // in nanosec
+    private static final long MAX_IDLE_TIME = 10_000_000_000L;               // in nanosec
     private static final double MAX_POLYNOMIAL_DEGREE = 1.75;               // max polinomial degree of proactivity function
     private static final double MIN_POLYNOMIAL_DEGREE = 0.25;               // max polinomial degree of proactivity function
     private static final double MAX_NOISE_STDEV = 0.2;                      // the higher the greater noise
     private static final double NEUTRAL_INTENTION = 0.5;          
-    private static final double DEFENCE_DECISION_THRESHOLD = 0.45;          // it'll defend if intention <= defence threshold
-    private static final double ATTACK_DECISION_THRESHOLD = 0.55;           // it'll attack if intention >= attack threshold
-    private static final double TOWER_WEIGHT = 0.3;
+    private static final double DEFENCE_DECISION_THRESHOLD = 0.4;          // it'll defend if intention <= defence threshold
+    private static final double ATTACK_DECISION_THRESHOLD = 0.8;           // it'll attack if intention >= attack threshold
+    private static final double TOWER_WEIGHT = 0.0;
     private static final int DEFENCE_DROP_ROW = 5;
     private static final int DEFENCE_DROP_COL_RIGHT = 13;
     private static final int DEFENCE_DROP_COL_LEFT = 5;
@@ -39,8 +39,7 @@ public class AIAgent {
     private static final int ATTACK_DROP_COL = 10;
     private static final int ATTACK_CARD_INDEX = 2;                         // TODO: remove when handleAttack will be modified
     private static final int FALLBACK_CARD_INDEX = 0;
-    private static final double MIN_ELIXIR_COST = 1.0;                      
-    private static final int DEFENCE_SIDE_FACTOR_COUNT = 3;
+    private static final double MIN_ELIXIR_COST = 1.0;
     private static final double NORMALIZE_WAIT_AFTER_OTHER_SIDE_TIME = 0.5; // defines what fraction of idle time to wait after one side has completed a move.
     private static final int TROOP_INDEX = 0;
     private static final int TOWER_INDEX = 1;
@@ -174,6 +173,7 @@ public class AIAgent {
         setDeck(deck);
         setIntelligence(difficulty); 
         this.random = new Random();
+        hasWaitedPlayer = false;
     }
 
     public void setDeck(Deck deck) {
@@ -191,7 +191,6 @@ public class AIAgent {
             resetLeftToIdle();
             resetRightToIdle();
             hasWaitedPlayer = true;
-            System.out.println("ciao");
         }
     }
 
@@ -279,60 +278,55 @@ public class AIAgent {
     private void handleLeftAttack() {
         // TODO: left attack logic
 
-        // update intention
-        System.out.println("ATTACK LEFT");
+        deck.selectCard(ATTACK_CARD_INDEX);
+        if (deck.isSelectedCardDroppable()) {
+            deck.dropSelectedCard(ATTACK_DROP_ROW, ATTACK_DROP_COL, Side.OPPONENT);
+            makeRightWait();
+        }
 
-        // reset time
         resetPlayerWait();
         resetLeftToIdle();
-        makeRightWait();
     }
 
     private void handleRightAttack() {
         // TODO: right attack logic
 
-        // update intention
-        System.out.println("ATTACK RIGHT");
+        deck.selectCard(ATTACK_CARD_INDEX);
+        if (deck.isSelectedCardDroppable()) {
+            deck.dropSelectedCard(ATTACK_DROP_ROW, ATTACK_DROP_COL, Side.OPPONENT);
+            makeLeftWait();
+        }
 
         resetPlayerWait();
-        makeLeftWait();
         resetRightToIdle();
     }
 
     private void handleLeftDefence() {
-        deck.selectCard(selectLeftDefenceCard());
-
-        // update intention
+        deck.selectCard(getSthocasticCardIndex(selectLeftDefenceCard()));
         
         if (deck.isSelectedCardDroppable()) {
             deck.dropSelectedCard(DEFENCE_DROP_ROW, DEFENCE_DROP_COL_LEFT, Side.OPPONENT);
-            System.out.println("DEFENCE LEFT");
             makeRightWait();
         }
             
-
         resetPlayerWait();
         resetLeftToIdle();
     }
 
     private void handleRightDefence() {
-        deck.selectCard(selectRightDefenceCard());
-
-        // update intention
+        deck.selectCard(getSthocasticCardIndex(selectLeftDefenceCard()));
         
         if (deck.isSelectedCardDroppable()) {
             deck.dropSelectedCard(DEFENCE_DROP_ROW, DEFENCE_DROP_COL_RIGHT, Side.OPPONENT);
-            System.out.println("DEFENCE RIGHT");
             makeLeftWait();
         }
             
-
         resetPlayerWait();
         resetRightToIdle();
     }
 
     //-------------------------------
-    // DECISION METHODS (FOR IDLE)
+    // DECISION METHODS
     //-------------------------------
 
     private void decideNextLeftAction() {
@@ -376,8 +370,19 @@ public class AIAgent {
             addNoise(
                 proactivityFunction(
                     rawIntention, 
-                    difficulty.getProactivity()
+                    getDegreeFromProactivity(difficulty.getProactivity())
                 )
+            ),
+            0,  
+            1
+        );
+    }
+
+    private int getSthocasticCardIndex(int rawCardIndex) {
+        // camp so the intention will stay between 0 and 1
+        return (int) Math.clamp(
+            addNoise(
+                (double) rawCardIndex
             ),
             0,  
             1
@@ -435,6 +440,9 @@ public class AIAgent {
     }
 
     private void calculateTotalLeftHitPoints() {
+        // reset previous values
+        resetLeftHitPoints();
+
         double mapHeight = model.getTileSize() * model.getRowsCount();
         double mapWidth = model.getTileSize() * model.getColsCount();
 
@@ -443,7 +451,9 @@ public class AIAgent {
             if (e.getX() > mapWidth/2) continue;    // skip entities on right side of the map
 
             if (e instanceof Troop) {
-                double positionWeight = e.getY() / mapHeight; 
+                // the closer the player troops are to their side of the map (bottom, so high Y), the higher the positionWeight
+                // (it is reasonable to attack if defence is well structured)
+                double positionWeight = (mapHeight - e.getY()) / mapHeight;
                 totalLeftHitPoints[PLAYER_INDEX][TROOP_INDEX] += e.getHitPoints() * positionWeight;
             } else if (e instanceof Tower) {
                 totalLeftHitPoints[PLAYER_INDEX][TOWER_INDEX] += e.getHitPoints();
@@ -455,7 +465,10 @@ public class AIAgent {
             if (e.getX() > mapWidth/2) continue;    // skip entities on right side of the map
 
             if (e instanceof Troop) {
-                double positionWeight = e.getY() / mapHeight; 
+                // the closer the opponent troops are to their side of the map (top, so low Y), the higher the positionWeight
+                // (it is reasonable to attack if defence is well structured)
+                
+                double positionWeight = e.getY() / mapHeight;
                 totalLeftHitPoints[AI_INDEX][TROOP_INDEX] += e.getHitPoints() * positionWeight;
             } else if (e instanceof Tower) {
                 totalLeftHitPoints[AI_INDEX][TOWER_INDEX] += e.getHitPoints();
@@ -464,15 +477,20 @@ public class AIAgent {
     }
 
     private void calculateTotalRightHitPoints() {
+        // reset previous values
+        resetRightHitPoints();
+
         double mapHeight = model.getTileSize() * model.getRowsCount();
         double mapWidth = model.getTileSize() * model.getColsCount();
-
+        
         // calculating player hitpoints
         for (Entity e : Model.getInstance().getPlayerEntities()) {
             if (e.getX() < mapWidth/2) continue;    // skip entities on left side of the map
 
             if (e instanceof Troop) {
-                double positionWeight = e.getY() / mapHeight; 
+                // the closer the player troops are to opponent side of the map (top, so low Y), the higher the positionWeight
+                // (this means that troops are more dangerous when they're closer to opponent towers
+                double positionWeight = (mapHeight - e.getY()) / mapHeight;
                 totalRightHitPoints[PLAYER_INDEX][TROOP_INDEX] += e.getHitPoints() * positionWeight;
             } else if (e instanceof Tower) {
                 totalRightHitPoints[PLAYER_INDEX][TOWER_INDEX] += e.getHitPoints();
@@ -484,6 +502,8 @@ public class AIAgent {
             if (e.getX() < mapWidth/2) continue;    // skip entities on left side of the map
 
             if (e instanceof Troop) {
+                // the closer the opponent troops are to player side of the map (bottom, so high Y), the higher the positionWeight
+                // (this means that troops are more dangerous when they're closer to player towers)
                 double positionWeight = e.getY() / mapHeight; 
                 totalRightHitPoints[AI_INDEX][TROOP_INDEX] += e.getHitPoints() * positionWeight;
             } else if (e instanceof Tower) {
@@ -625,219 +645,24 @@ public class AIAgent {
         rightIdleAccumulator = Math.max(0, rightIdleAccumulator - waitAfterOtherSideTime);
     }
 
-
-    /* private void handleAttack() {
-        // TODO: attack logic
-        deck.selectCard(ATTACK_CARD_INDEX);
-        if (deck.isSelectedCardDroppable())
-            deck.dropSelectedCard(ATTACK_DROP_ROW, ATTACK_DROP_COL, Side.OPPONENT);
-        action = AgentAction.IDLE;
-    }
-
-    private void handleDefence() {
-        boolean shouldDefendOnRight = shouldDefendOnRight();
-        deck.selectCard(selectDefenceCard(shouldDefendOnRight));
-
-        int col = shouldDefendOnRight ? DEFENCE_DROP_COL_RIGHT : DEFENCE_DROP_COL_LEFT;
-
-        if (deck.isSelectedCardDroppable())
-            deck.dropSelectedCard(DEFENCE_DROP_ROW, col, Side.OPPONENT);
-
-        action = AgentAction.IDLE;
-    }
-
-    private int selectDefenceCard(boolean rightSide) {
-        IModel model = Model.getInstance();
-
-        // 1. detecting all troop types on left side of the field
-        HashMap<EntityType, Double> troopSetWeighted = new HashMap<>();
-
-        double midMap = model.getTileSize() * model.getColsCount() / 2;
-        double heightMap = model.getTileSize() * model.getRowsCount();
-
-        for (Entity e : model.getPlayerEntities()) {
-            if (!(e instanceof Troop)               // is not a troop
-            || (!rightSide && e.getX() >= midMap)   // troop is on right side but it should be in left one
-            || ( rightSide && e.getX() <  midMap)   // troop is on left side but it should be in right one
-            ) continue;
-
-            // calculating weight based on Y position
-            EntityType type = e.getType();
-            double weight = 1 - e.getY()/heightMap; // weight is higher if player troop is closer to opponent towers
-
-            if (troopSetWeighted.getOrDefault(type, 0.0) < weight) // put or replace previous key if weight value is higher 
-                troopSetWeighted.put(type, weight);
-        }
-
-        ArrayList<Integer> cardIndexes = new ArrayList<>(); // getting indexes of the only cards that can defend
-        for (int i = 0; i < Deck.AVAILABLE_CARDS_SIZE; i++) {
-            if (deck.getCurrentCard(i).getType().canDefend()) {
-                cardIndexes.add(i);
-            }
-        }
-
-        if (cardIndexes.isEmpty()) return FALLBACK_CARD_INDEX; 
-
-        // 2. calculating card scores
-        HashMap<Integer, Double> cardScores = new HashMap<>();
-        for (int cardIndex : cardIndexes) {
-            double cardScore = 0;
-            Card defenceCard = deck.getCurrentCard(cardIndex);
-            for (EntityType playerType : troopSetWeighted.keySet()) {
-                Map<EntityType, Double> defenceScoreForType = DEFENCE_SCORE.get(playerType);
-                if (defenceScoreForType == null) continue;
-
-                EntityType cardType = defenceCard.getType();
-                double weight = troopSetWeighted.get(playerType);
-                double defenceScore = defenceScoreForType.getOrDefault(cardType, 0.0) * weight;
-                double elixirCost = Math.max(MIN_ELIXIR_COST, defenceCard.getCardStats().getElixirCost());  // avoid division by 0
-                double elixirScore = Math.min(1.0, deck.getElixir()/elixirCost); // elixirScore has to be in [0, 1]
-                cardScore += (defenceScore + elixirScore)/2; // total score is the mean between defenceScore and elixirScore
-            }
-            
-            cardScores.put(cardIndex, cardScore);
-        }
-
-        // 3. extracting maximum score
-        int bestCardIndex = cardIndexes.getFirst();
-        double bestScore = cardScores.get(bestCardIndex);
-        for (int i = 1; i < cardIndexes.size(); i++) {
-            int cardIndex = cardIndexes.get(i);
-            double score = cardScores.get(cardIndex);
-            if (score > bestScore) {
-                bestCardIndex = cardIndex;
-                bestScore = score;
-            }
-        }
-
-        return bestCardIndex;
-    }
-
-    private boolean shouldDefendOnRight() {
-
-        // 0 -> should defend on left
-        // 1 -> should defend on right
-
-        double AIPresenceRight;         // from 0 to 1. 0 -> AI is mainly on the right, so it should defend on left. 1 -> viceversa
-        double AITowerHealthRight;      // from 0 to 1. 0 -> right tower has more hitpoints than the left one, so it should defend on left. 1 -> viceversa
-        double playerPresenceRight;     // from 0 to 1. 0 -> there's more player (enemy) troops in the left, so we should defend on left. 1 -> viceversa
-
-        // 1. decision based on AI hit points
-        int leftAIHitPoints = 0;
-        int rightAIHitPoints = 0;
-
-        IModel model = Model.getInstance();
-        for (Entity e : model.getOpponentEntities()) {
-            if (e.getX() < model.getTileSize() * model.getColsCount() / 2) { // left side of the field
-                leftAIHitPoints += e.getHitPoints();
-            } else {
-                rightAIHitPoints += e.getHitPoints();
-            }
-        }
-
-        if (leftAIHitPoints == 0 && rightAIHitPoints == 0) {
-            AIPresenceRight = NEUTRAL_PROBABILITY;
-        } else {
-            AIPresenceRight = (double) leftAIHitPoints / (leftAIHitPoints + rightAIHitPoints);
-        }
-
-        // 2. decision based on tower health
-        int leftAITowerHitPoints = model.getOpponentLeftTower().getHitPoints();
-        int rightAITowerHitPoints = model.getOpponentRightTower().getHitPoints();
-        int totalAITowerHitPoints = leftAITowerHitPoints + rightAITowerHitPoints;
-        
-        if (totalAITowerHitPoints == 0) {
-            AITowerHealthRight = NEUTRAL_PROBABILITY;
-        } else {
-            AITowerHealthRight = (double) leftAITowerHitPoints / totalAITowerHitPoints;
-        }
-
-        // 3. decision based on player weighted hit points
-        double leftPlayerHitPoints = 0;
-        double rightPlayerHitPoints = 0;
-        double mapHeight = model.getTileSize() * model.getRowsCount();
-
-        for (Entity e : model.getPlayerEntities()) {
-            double weight = (1 - e.getY()/mapHeight); // the closer to ai towers, the higher the weight
-
-            if (e.getX() < model.getTileSize() * model.getColsCount() / 2) { // left side of the field
-                leftPlayerHitPoints += e.getDamage() * weight;
-            } else {
-                rightPlayerHitPoints += e.getDamage() * weight;
-            }
-        }
-
-        playerPresenceRight = rightPlayerHitPoints / (leftPlayerHitPoints + rightPlayerHitPoints);
-
-        // 4. final mean:
-        double shouldDefendOnRight = (AIPresenceRight + AITowerHealthRight + playerPresenceRight)/DEFENCE_SIDE_FACTOR_COUNT;
-
-        return shouldDefendOnRight > NEUTRAL_PROBABILITY;
-    }
-
-    private void handleIdle(long elapsed) {
-        idleAccumulator += elapsed;
-
-        if (idleAccumulator >= idleTime) { // AI will attack / defend next time
-            decideNextAction();     
-            resetIdleAccumulator();
+    private void resetLeftHitPoints() {
+        for (int feature = 0; feature < FEATURES_AMOUNT; feature++) {
+            totalLeftHitPoints[AI_INDEX][feature] = 0;
+            totalLeftHitPoints[PLAYER_INDEX][feature] = 0;
         }
     }
 
-    private void decideNextAction() {
-
-        // AI will decide wheather attack or not based on health and aggressivity.
-        // his intention will be modified by some gaussian noise, whose stddev changes 
-        // based on AI difficulty.
-
-
-        double[] totalPlayerHitPoints = getTotalPlayerHitPoints();
-        double[] totalAIHitPoints = getTotalAIHitPoints();
-
-        double[] attackProbabilities = new double[totalAIHitPoints.length]; 
-
-        for (int i = 0; i < totalAIHitPoints.length; i++) {
-            double totalHitPoints = totalAIHitPoints[i] + totalPlayerHitPoints[i];
-            if (totalHitPoints > 0) {
-                // if player_entities-entities ratio is high, intention value is higher (so it will probably attack)
-                // otherwise intention value is lower (so it will probably defend)
-                attackProbabilities[i] = (double) totalAIHitPoints[i] / totalHitPoints;
-            } else {
-                attackProbabilities[i] = NEUTRAL_PROBABILITY;
-            }
+    private void resetRightHitPoints() {
+        for (int feature = 0; feature < FEATURES_AMOUNT; feature++) {
+            totalRightHitPoints[AI_INDEX][feature] = 0;
+            totalRightHitPoints[PLAYER_INDEX][feature] = 0;
         }
-
-        double attackProbability = attackProbabilities[0] * (1-TOWER_WEIGHT) + attackProbabilities[1] * TOWER_WEIGHT;
-
-        double proactivity = difficulty.getProactivity();
-
-        double intention = proactivityFunction(attackProbability, getDegreeFromProactivity(proactivity));
-
-        
-        // adding little noise:
-        double noiseStdev = (1 - difficulty.getIntelligence()) * MAX_NOISE_STDEV;
-        double noise = noiseStdev * random.nextGaussian();
-        intention += noise;
-
-        // intention must stay between 0 and 1
-        intention = Math.clamp(intention, 0, 1);
-
-        //System.out.println("Attack Probability: " + attackProbability + ", proactivity: " + proactivity + ", intention: " + intention);
-
-        System.out.print("intention: " + intention + ". ");
-        if (intention <= DEFENCE_DECISION_THRESHOLD) {
-            action = AgentAction.DEFEND;
-            System.out.println("defence");
-        } else if (intention >= ATTACK_DECISION_THRESHOLD) {
-            action = AgentAction.ATTACK;
-            System.out.println("attack");
-        } else {
-            System.out.println("idle");
-        }
-        
-        // otherwise, it stays in IDLE.
     }
- */
+
+    //-----------------------------
+    // AI FUNCTIONS
+    //-----------------------------
+
     private double proactivityFunction(double x, double degree) {
         // this function was built for x in [0, 1]
 
@@ -863,48 +688,6 @@ public class AIAgent {
         return MIN_POLYNOMIAL_DEGREE * (1 - proactivity) + MAX_POLYNOMIAL_DEGREE * proactivity;
     }
 
-    private double[] getTotalPlayerHitPoints() {
-        double[] totalHitPoints = new double[2];
-
-        // 0: total player troop hitpoints
-        // 1: total player tower hitpoints
-
-        IModel model = Model.getInstance();
-        double mapHeight = model.getTileSize() * model.getRowsCount();
-
-        for (Entity e : Model.getInstance().getPlayerEntities()) {
-            if (e instanceof Troop) {
-                double positionWeight = e.getY() / mapHeight; // the more is closer to AI map side, the higher the weight
-                totalHitPoints[0] += e.getHitPoints() * positionWeight;
-            } else if (e instanceof Tower) {
-                totalHitPoints[1] += e.getHitPoints();
-            }
-        }
-
-        return totalHitPoints;
-    }
-
-    private double[] getTotalAIHitPoints() {
-        double[] totalHitPoints = new double[2];
-
-        // 0: total AI troop hitpoints
-        // 1: total AI tower hitpoints
-
-        IModel model = Model.getInstance();
-        double mapHeight = model.getTileSize() * model.getRowsCount();
-        
-        for (Entity e : Model.getInstance().getOpponentEntities()) {
-            if (e instanceof Troop) {
-                double positionWeight = 1 - e.getY() / mapHeight; // AI can attack when most of its troops are in its side
-                totalHitPoints[0] += e.getHitPoints() * positionWeight;
-            } else if (e instanceof Tower) {
-                totalHitPoints[1] += e.getHitPoints();
-            }
-        }
-
-        return totalHitPoints;
-    }
-
     private long getIdleTime() {
         // the smarter the AI is the shorter the idle time.
         double intelligenceValue = difficulty.getIntelligence();
@@ -926,63 +709,5 @@ public class AIAgent {
 
         return instance;
     }
-
-
-    //----------------------
-    // OLD METHODS (COPIED)
-    //---------------------
-    // TODO: REMOVE THEM
-    //---------------------
-
-
-    /* 
-    private double[] getTotalPlayerHitPoints() {
-        double[] totalHitPoints = new double[2];
-
-        // 0: total player troop hitpoints
-        // 1: total player tower hitpoints
-
-        double mapHeight = model.getTileSize() * model.getRowsCount();
-
-        for (Entity e : Model.getInstance().getPlayerEntities()) {
-            if (e instanceof Troop) {
-                double positionWeight = e.getY() / mapHeight; // the more is closer to AI map side, the higher the weight
-                totalHitPoints[0] += e.getHitPoints() * positionWeight;
-            } else if (e instanceof Tower) {
-                totalHitPoints[1] += e.getHitPoints();
-            }
-        }
-
-        return totalHitPoints;
-    }
-
-    private double[] getTotalAIHitPoints() {
-        double[] totalHitPoints = new double[2];
-
-        // 0: total AI troop hitpoints
-        // 1: total AI tower hitpoints
-
-        double mapHeight = model.getTileSize() * model.getRowsCount();
-        
-        for (Entity e : Model.getInstance().getOpponentEntities()) {
-            if (e instanceof Troop) {
-                double positionWeight = 1 - e.getY() / mapHeight; // AI can attack when most of its troops are in its side
-                totalHitPoints[0] += e.getHitPoints() * positionWeight;
-            } else if (e instanceof Tower) {
-                totalHitPoints[1] += e.getHitPoints();
-            }
-        }
-
-        return totalHitPoints;
-    } 
-        
-    
-    
-    
-    
-    
-    
-    */
-
 
 }   
