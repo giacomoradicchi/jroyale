@@ -69,6 +69,7 @@ public class MainGUI implements IMainGUI {
 
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
+        stage.setResizable(false);
 
         if (!stage.isShowing()) stage.show();
         handleMouseEvents();
