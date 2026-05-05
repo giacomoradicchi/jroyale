@@ -87,7 +87,7 @@ public class GameEngine implements IGameEngine {
         
         controllerForView.initView();
         controllerForView.openWindow(stage);
-    } 
+    }
 
     @Override
     public void goToHome() {

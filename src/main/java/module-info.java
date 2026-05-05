@@ -3,6 +3,7 @@ module jroyale {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.desktop;
+    requires javafx.media;
 
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
@@ -11,6 +12,7 @@ module jroyale {
     opens jroyale.controller to javafx.fxml;
     opens jroyale.utils to com.fasterxml.jackson.databind;
     opens jroyale.model.cards to com.fasterxml.jackson.databind;
+    opens jroyale.view to javafx.media;
 
     exports jroyale.controller;
 }
