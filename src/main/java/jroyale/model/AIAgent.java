@@ -207,7 +207,7 @@ public class AIAgent {
 
     }
 
-    private boolean shouldHandleLeftFirst() {  
+    private boolean shouldHandleLeftFirst() {
         // assuming that it should first defend and then attack.
 
         // left should defend and right shouldn't (left has to be handled first)

@@ -10,9 +10,9 @@ public abstract class Entity implements Comparable<Entity>{
 
     private int currentI, currentJ; // current location in map[i][j] tile
     private boolean animationCompleted; // turns true when currentFrame goes back to start (N-1 -> 0).
-    private int hitPoints;
+    protected int hitPoints;
     private final int MAX_HIT_POINTS; 
-    private int damage;
+    protected int damage;
 
 
     private static final double DEFAULT_COLLISION_RADIUS = 0.5; 
