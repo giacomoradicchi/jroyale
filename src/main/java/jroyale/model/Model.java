@@ -115,7 +115,7 @@ public class Model implements IModel {
         gameOver = false;
         accumulator = INITIAL_ACCUMULATOR;
         lastTimeStamp = INITIAL_TIMESTAMP;
-        TowerTargetSelector.getInstance().reset();
+        ITowerTargetSelector.getInstance().reset();
         map = new Tile[MAP_ROWS][MAP_COLS];
         playerDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
         opponentDroppableTiles = new boolean[MAP_ROWS][MAP_COLS];
@@ -503,7 +503,7 @@ public class Model implements IModel {
 
     private void addTower(Tower tower) {
         addEntity(tower);
-        TowerTargetSelector.getInstance().addTower(tower);
+        ITowerTargetSelector.getInstance().addTower(tower);
     }
 
     private void initReachableTiles() {
@@ -550,8 +550,8 @@ public class Model implements IModel {
         }
     }
 
-    private void initAIAgent(Deck deck) {
-        AIAgent.getInstance().init(Config.getInstance().getDifficulty(), deck);
+    private void initAIAgent(Deck AIDeck) {
+        AIAgent.getInstance().init(Config.getInstance().getDifficulty(), AIDeck);
     }
 
     @Override

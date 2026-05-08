@@ -5,8 +5,8 @@ import jroyale.model.Entity;
 import jroyale.model.FrameManager;
 import jroyale.model.ICollisionManager;
 import jroyale.model.IEnemyTargetSelector;
+import jroyale.model.ITowerTargetSelector;
 import jroyale.model.Model;
-import jroyale.model.TowerTargetSelector;
 import jroyale.model.towers.Tower;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
@@ -236,7 +236,7 @@ public abstract class Troop extends Entity {
     }
 
     protected boolean selectClosestTower() {
-        Tower possibleTargetTower = TowerTargetSelector.getInstance().getClosestEnemyTower(this);
+        Tower possibleTargetTower = ITowerTargetSelector.getInstance().getClosestEnemyTower(this);
         
         if (possibleTargetTower == null) return false;
 
@@ -499,7 +499,7 @@ public abstract class Troop extends Entity {
     }
 
     private void initTarget() {
-        target = TowerTargetSelector.getInstance().getClosestEnemyTower(this);
+        target = ITowerTargetSelector.getInstance().getClosestEnemyTower(this);
     }
 
     private void initDirectionBuffer() {
