@@ -128,20 +128,6 @@ public abstract class Entity implements Comparable<Entity>{
         return DEFAULT_SPEED;
     }
 
-    // setters
-
-    public void setPosition(Point pos) {
-        position.setPoint(pos);
-    }
-
-    public void setX(double x) {
-        position.setX(x);
-    }
-
-    public void setY(double y) {
-        position.setY(y);
-    }
-
     public void shiftPosition(double shiftX, double shiftY) {
 
         position.setPoint(
