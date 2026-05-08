@@ -3,6 +3,7 @@ package jroyale.model;
 import jroyale.model.towers.Tower;
 
 public interface ITowerTargetSelector {
+
     public void addTower(Tower tower);
     
     public void removeTower(Tower tower);

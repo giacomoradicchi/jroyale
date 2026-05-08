@@ -123,7 +123,7 @@ public class Deck {
         // replacing selected card with a random card on the deck which is not inside available card array.
         replaceCard();
 
-        selectedCard.dropCardIntoModel(rowIndex, columnIndex, side);
+        selectedCard.dropCard(rowIndex, columnIndex, side);
 
         // reset selected card
         selectedCard = null;
