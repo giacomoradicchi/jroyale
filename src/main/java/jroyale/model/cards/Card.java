@@ -28,6 +28,6 @@ public abstract class Card {
 
     // abstract methods
 
-    public abstract void dropCardIntoModel(int rowIndex, int columnIndex, Side side);
+    public abstract void dropCard(int rowIndex, int columnIndex, Side side);
 
 }
