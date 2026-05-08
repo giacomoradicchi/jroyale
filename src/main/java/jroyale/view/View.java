@@ -60,7 +60,7 @@ public abstract class View implements IView {
         });
     }
 
-    protected void renderStartupScreen() {
+    private void renderStartupScreen() {
         startSound.play();
 
         IMainGUI gui = getGUI();
@@ -95,7 +95,7 @@ public abstract class View implements IView {
         timer.play();                       // starts timer
     }
 
-    protected void renderLoadingScreen() {
+    private void renderLoadingScreen() {
         IMainGUI gui = getGUI();
         double height = gui.getCanvasHeight();
         double width = LOADING_BACKGROUND.getWidth() * height / LOADING_BACKGROUND.getHeight(); 

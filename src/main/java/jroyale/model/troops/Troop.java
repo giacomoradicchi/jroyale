@@ -83,8 +83,6 @@ public abstract class Troop extends Entity {
     protected FrameManager frameManager;
     protected MeleeRange melee;
     protected double loadTime;
-    protected int hitPoints;
-    protected int damage;
     protected Entity target;
     protected Point speed;
     protected Point direction; // it's just a normalised speed. I define a variable direction just to not create an instance of a point each time.
@@ -209,7 +207,7 @@ public abstract class Troop extends Entity {
         return direction;
     }
 
-    protected void slideAlong(Entity other, double turning_speed) {
+    private void slideAlong(Entity other, double turning_speed) {
 
         if (other != target)
             setTangentSpeed(
@@ -386,10 +384,10 @@ public abstract class Troop extends Entity {
         );
             
 
-        if (state == State.MOVE) 
+        if (state == State.MOVE)
             slideAlong(other, thisMoveWeight / SLIDE_TURNING_REDUCTION);
 
-        if (other instanceof Troop) 
+        if (other instanceof Troop)
             ((Troop) other).slideAlong(this, otherMoveWeight / SLIDE_TURNING_REDUCTION);
     }
 
