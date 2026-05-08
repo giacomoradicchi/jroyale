@@ -1,7 +1,7 @@
 package jroyale.model.towers;
 
 import jroyale.model.Entity;
-import jroyale.model.TowerTargetSelector;
+import jroyale.model.ITowerTargetSelector;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
@@ -26,7 +26,7 @@ public abstract class Tower extends Entity {
 
     @Override
     public void onDelete() {
-        TowerTargetSelector.getInstance().removeTower(this);
+        ITowerTargetSelector.getInstance().removeTower(this);
     }
 
     @Override

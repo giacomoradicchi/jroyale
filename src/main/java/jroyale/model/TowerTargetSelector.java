@@ -7,7 +7,7 @@ import jroyale.model.towers.Tower;
 import jroyale.utils.Point;
 import jroyale.utils.Enums.Side;
 
-public class TowerTargetSelector {
+public class TowerTargetSelector implements ITowerTargetSelector {
 
     private static TowerTargetSelector instance = null;
     
@@ -61,12 +61,10 @@ public class TowerTargetSelector {
     }
 
     // static methods
-    public static TowerTargetSelector getInstance() {
+    public static ITowerTargetSelector getInstance() {
         if (instance == null) {
             instance = new TowerTargetSelector();
         }
         return instance;
     }
-
-
 }
