@@ -255,9 +255,13 @@ public class Model implements IModel {
     }
 
     @Override
-    public void dropPlayerCard(int row, int col) {
-        if (playerDeck.isSelectedCardDroppable()) 
+    public boolean dropPlayerCard(int row, int col) {
+        if (playerDeck.isSelectedCardDroppable()) {
             playerDeck.dropSelectedCard(row, col, Side.PLAYER);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

@@ -40,7 +40,7 @@ public interface IModel {
 
     public void setSelectedCard(int cardIndex);
 
-    public void dropPlayerCard(int row, int col);
+    public boolean dropPlayerCard(int row, int col);
 
     public List<Entity> getEntitiesOrderedByPosY(); // necessary to enable depth in rendering
 

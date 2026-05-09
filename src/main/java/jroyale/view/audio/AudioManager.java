@@ -16,8 +16,13 @@ public class AudioManager implements IAudioManager {
         START_SOUND(true, "/jroyale/sfx/supercell_jingle.wav"),
         LOADING_SOUND(true, "/jroyale/sfx/scroll_loading_01.wav"),
 
-        // ui
+        // ux menu
         MENU_CLICK(true, "/jroyale/sfx/menu_click_06.wav"),
+        MENU_STARTGAME(true, "/jroyale/sfx/attack_button_01.wav"),
+
+        // ux game
+        GAME_SPELL_NOT_READY(true, "/jroyale/sfx/spell_not_ready_01.wav"),
+        GAME_SPELL_CAST(true, "/jroyale/sfx/spellcast01.wav"),
 
         // music
         MENU_MUSIC(false, "/jroyale/sfx/long_audios/menu_03.wav"), 

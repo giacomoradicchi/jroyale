@@ -62,6 +62,8 @@ public interface IControllerForView {
     
     public int getAvailableDeckCards();
 
+    public void playNotDroppedSound();
+
     // static methods
     public static IControllerForView getInstance() {
         return ControllerForView.getInstance();

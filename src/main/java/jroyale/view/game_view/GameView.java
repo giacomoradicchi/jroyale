@@ -258,6 +258,11 @@ public class GameView extends View implements IGameView {
         controllerForView.handleMouseReleased();
     }
 
+    @Override
+    public void playNotDroppedSound() {
+        audioManager.play(AudioType.GAME_SPELL_NOT_READY);
+    }
+
     // static methods
 
     public static IGameView getInstance() {

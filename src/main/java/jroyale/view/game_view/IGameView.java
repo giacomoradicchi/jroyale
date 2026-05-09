@@ -46,6 +46,8 @@ public interface IGameView extends IView {
 
     public void setSelectedCard(int cardIndex);
 
+    public void playNotDroppedSound();
+
     public static IGameView getInstance() {
         return GameView.getInstance();
     }

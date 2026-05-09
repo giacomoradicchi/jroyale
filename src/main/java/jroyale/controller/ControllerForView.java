@@ -303,6 +303,11 @@ public class ControllerForView implements IControllerForView {
         gameView.stopDragPlacementPreview();
     }
 
+    @Override
+    public void playNotDroppedSound() {
+        gameView.playNotDroppedSound();
+    }
+
     private void resetLastSelectedTile() {
         lastSelectedColumnIndex = -1;
         lastSelectedRowIndex = -1;
