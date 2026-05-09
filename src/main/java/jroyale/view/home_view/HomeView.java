@@ -8,6 +8,7 @@ import jroyale.utils.Config;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
 import jroyale.view.View;
+import jroyale.view.audio.AudioManager.AudioType;
 
 public class HomeView extends View implements IHomeView {
 
@@ -95,6 +96,9 @@ public class HomeView extends View implements IHomeView {
     }
 
     private void buildUI() {
+        audioManager.loop(AudioType.MENU_MUSIC);
+        audioManager.play(AudioType.MENU_MUSIC);
+
         renderBackground();
         renderArena();
         renderLogo();
@@ -186,6 +190,7 @@ public class HomeView extends View implements IHomeView {
 
         playButton.setOnAction(e -> {
             gui.resetNodes();
+            audioManager.stop(AudioType.MENU_MUSIC);
             controllerForView.initGameView();
         });
 
@@ -238,8 +243,13 @@ public class HomeView extends View implements IHomeView {
             }
         );
 
+        difficultyBox.setOnMouseClicked(e -> {
+            audioManager.play(AudioType.MENU_CLICK);
+        });
+
         difficultyBox.setOnAction(e -> {
             difficulty = difficultyBox.getValue();
+            audioManager.play(AudioType.MENU_CLICK);
             Config.getInstance().setDifficulty(difficulty);
         });
 

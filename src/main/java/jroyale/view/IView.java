@@ -1,6 +1,7 @@
 package jroyale.view;
 
 import jroyale.controller.IControllerForView;
+import jroyale.view.audio.IAudioManager;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.home_view.IHomeView;
 
@@ -28,5 +29,9 @@ public interface IView {
 
     public static IHomeView getHomeInstance() {
         return IHomeView.getInstance();
+    }
+
+    public static void loadAllAudio() {
+        IAudioManager.getInstance().loadAllAudio();
     }
 }

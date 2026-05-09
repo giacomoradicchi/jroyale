@@ -5,6 +5,7 @@ import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
 import jroyale.view.View;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.arena.ArenaView;
 import jroyale.view.game_view.deck.DeckView;
 import jroyale.view.game_view.entity_view.EntityView;
@@ -56,6 +57,7 @@ public class GameView extends View implements IGameView {
         );
         
         DeckView.getInstance().init(controllerForView.getAvailableDeckCards());
+        audioManager.loop(AudioType.GAME_MUSIC_2MIN);
     }
 
     @Override

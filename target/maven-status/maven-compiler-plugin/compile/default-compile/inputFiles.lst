@@ -46,6 +46,7 @@
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/model/cards/SkeletonCard.java
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/view/audio/IAudioManager.java
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/model/troops/Troop.java
+/Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/model/ITowerTargetSelector.java
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/utils/Point.java
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/model/cards/Deck.java
 /Users/giacomo/Documents/Ingegneria/II_Anno/Interfacce_Grafiche/progetto/jroyale/src/main/java/jroyale/controller/Main.java

@@ -9,7 +9,7 @@ public class Audio {
 
     private AudioPlayer player;
 
-    public interface AudioPlayer {
+    private interface AudioPlayer {
 
         public void play();
 
@@ -18,10 +18,13 @@ public class Audio {
         public void setVolume(double volume);
 
         public Duration getDuration();
+
+        public boolean isPlaying();
         
+        public void loop();
     }
 
-    public class FastAudioPlayer implements AudioPlayer { // for short audios that have to be played fast (loads it in RAM)
+    private class FastAudioPlayer implements AudioPlayer { // for short audios that have to be played fast (loads it in RAM)
 
         private AudioClip sound;
         private Duration duration; // AudioClip doesn't have duration method
@@ -29,7 +32,14 @@ public class Audio {
         public FastAudioPlayer(String URL) {
             this.sound = new AudioClip(URL);
             MediaPlayer tempPlayer = new MediaPlayer(new Media(URL));
-            this.duration = tempPlayer.getTotalDuration();
+            tempPlayer.setOnReady(() -> {
+                Duration duration = tempPlayer.getTotalDuration();
+                if (duration == null) {
+                    this.duration = Duration.UNKNOWN;
+                } else {
+                    this.duration = tempPlayer.getTotalDuration();
+                }
+            });
         }
 
         @Override
@@ -51,9 +61,19 @@ public class Audio {
         public Duration getDuration() {
             return duration;
         }
+
+        @Override
+        public boolean isPlaying() {
+            return sound.isPlaying();
+        }
+
+        @Override
+        public void loop() {
+            throw new IllegalAccessError("cannot loop Fast Audios");
+        }
     }
 
-    public class LargeAudioPlayer implements AudioPlayer { // for long duration audios (i.e. background music)
+    private class LargeAudioPlayer implements AudioPlayer { // for long duration audios (i.e. background music)
 
         private MediaPlayer sound;
 
@@ -81,6 +101,16 @@ public class Audio {
             return sound.getTotalDuration();
         }
 
+        @Override
+        public boolean isPlaying() {
+            return sound.getCurrentTime().toMillis() < sound.getTotalDuration().toMillis();
+        }
+
+        @Override
+        public void loop() {
+            sound.setCycleCount(MediaPlayer.INDEFINITE);
+        }
+
     }
 
     public Audio(String audioName, boolean fastPlayback) {
@@ -90,8 +120,28 @@ public class Audio {
         else this.player = new LargeAudioPlayer(URL);
     }
 
-    public AudioPlayer getPlayer() {
-        return player;
+    public void play() {
+        player.play();
+    }
+
+    public void stop() {
+        player.stop();
+    }
+
+    public void setVolume(double volume) {
+        player.setVolume(volume);
+    }
+
+    public Duration getDuration() {
+        return player.getDuration();
+    }
+
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
+
+    public void loop() {
+        player.loop();
     }
 
 }

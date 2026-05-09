@@ -69,6 +69,7 @@ jroyale/model/troops/Pekka.class
 jroyale/view/game_view/entity_view/troops/SkeletonArmyView.class
 jroyale/view/game_view/entity_view/towers/ArcherTowerView.class
 jroyale/model/AIAgent.class
+jroyale/model/ITowerTargetSelector.class
 jroyale/view/game_view/arena/ArenaView.class
 jroyale/utils/GameData.class
 jroyale/view/game_view/animations/AnimationKey.class

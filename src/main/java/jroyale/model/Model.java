@@ -73,7 +73,7 @@ public class Model implements IModel {
     }
 
     private void init(long maxTimeNanoSec) {
-        this.maxTimeNanoSec = maxTimeNanoSec;
+        this.maxTimeNanoSec = maxTimeNanoSec; // adding +1 sec because time will be counted from maxTimeNanoSec included to 1 instead of maxTimeNanoSec-1 to 0
 
         initReachableTiles();
 
@@ -187,7 +187,7 @@ public class Model implements IModel {
     }
 
     private boolean isTimeExceeded() {
-        return accumulator >= maxTimeNanoSec;
+        return getTimeLeftSec() == 0;
     }
 
     @Override
@@ -222,7 +222,7 @@ public class Model implements IModel {
 
     @Override
     public int getTimeLeftSec() {
-        return (int) Math.max(ZERO_VALUE, (maxTimeNanoSec - accumulator) / NANOS_PER_SECOND);
+        return (int) Math.ceil(Math.max(ZERO_VALUE, (double) (maxTimeNanoSec - accumulator) / NANOS_PER_SECOND));
     }
 
     @Override
