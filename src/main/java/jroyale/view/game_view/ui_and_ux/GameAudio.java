@@ -11,7 +11,6 @@ public class GameAudio {
     private static final int RUNNING_OUT_TIME_DANGER_LIMIT_IN_SEC = 30;
 
     private int currentSecondsLeft;
-    private AudioType currentAudio;
     private IAudioManager audioManager = IAudioManager.getInstance();
 
     private GameAudio() {}
@@ -22,18 +21,18 @@ public class GameAudio {
         // new second to handle
         currentSecondsLeft = secondsLeft;
 
-        if (currentSecondsLeft > RUNNING_OUT_TIME_LIMIT_IN_SEC && currentAudio != AudioType.GAME_MUSIC_2MIN) {
-            switchAudio(AudioType.GAME_MUSIC_2MIN);
+        if (currentSecondsLeft > RUNNING_OUT_TIME_LIMIT_IN_SEC && audioManager.getCurrentAudio() != AudioType.GAME_MUSIC_2MIN) {
+            audioManager.switchCurrentAudio(AudioType.GAME_MUSIC_2MIN);
         }
 
         switch (currentSecondsLeft) {
             case RUNNING_OUT_TIME_LIMIT_IN_SEC:
                 audioManager.play(AudioType.GAME_MUSIC_60SEC_WARN);
-                switchAudio(AudioType.GAME_MUSIC_60SEC);
+                audioManager.switchCurrentAudio(AudioType.GAME_MUSIC_60SEC);
                 break;
             
             case RUNNING_OUT_TIME_DANGER_LIMIT_IN_SEC:
-                switchAudio(AudioType.GAME_MUSIC_30SEC);
+                audioManager.switchCurrentAudio(AudioType.GAME_MUSIC_30SEC);
 
             // count down 
             case 10:
@@ -70,17 +69,6 @@ public class GameAudio {
             default:
                 break;
         }
-    }
-
-    private void switchAudio(AudioType type) {
-        audioManager.stop(currentAudio);
-        currentAudio = type;
-        audioManager.play(currentAudio);
-    }
-
-    public void stopCurrentGameAudio() {
-        audioManager.stop(currentAudio);
-        currentAudio = null;
     }
 
     // static methods

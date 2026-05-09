@@ -24,7 +24,7 @@ public abstract class View implements IView {
     private static final Color STARTUP_FILL_COLOR = Color.WHITE;
     private static final double ALPHA = 1.0;
     private static final double STARTUP_TIME = 2;
-    private static final long MIN_DURATION_MS_FOR_LOADING_SCREEN_FALLBACK = 2500;
+    private static final long MIN_DURATION_MS_FOR_LOADING_SCREEN = 2500;
 
     protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
 
@@ -104,7 +104,6 @@ public abstract class View implements IView {
         audioManager.play(AudioType.LOADING_SOUND);
 
         renderLoadingScreen();
-        long minDurationMs = getMinDurationOfLoadingScreenInMillis();
 
         Task<Void> task = new Task<>() {
             @Override
@@ -115,23 +114,14 @@ public abstract class View implements IView {
 
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 
-                if (elapsedTime < minDurationMs) {
-                    Thread.sleep(minDurationMs - elapsedTime);
+                if (elapsedTime < MIN_DURATION_MS_FOR_LOADING_SCREEN) {
+                    Thread.sleep(MIN_DURATION_MS_FOR_LOADING_SCREEN - elapsedTime);
                 }
                 return null;
             }
         };
         new Thread(task, "sprite-loading-thread").start();
         return task;
-    }
-
-    private long getMinDurationOfLoadingScreenInMillis() {
-        Duration loadingSoundDuration = audioManager.getDuration(AudioType.LOADING_SOUND);
-
-        if (loadingSoundDuration != null && loadingSoundDuration != Duration.UNKNOWN) 
-            return (long) loadingSoundDuration.toMillis();
-
-        return MIN_DURATION_MS_FOR_LOADING_SCREEN_FALLBACK;
     }
 
     // since it runs on another thread, it is prohibited to execute JavaFX methods in here. 

@@ -13,7 +13,11 @@ public interface IAudioManager {
 
     public Duration getDuration(AudioType audio);
 
-    public boolean isAudioPlaying(AudioType type);
+    public void switchCurrentAudio(AudioType audio);
+
+    public void stopCurrentAudio();
+
+    public AudioType getCurrentAudio();
 
     public void loop(AudioType type);
      

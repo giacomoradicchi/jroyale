@@ -16,6 +16,8 @@ public interface IGameView extends IView {
 
     public void stopCurrentAudio();
 
+    public void handleGameOver(int result); // +1: player has won, 0: draw, -1: opponent has won
+
     public double getWorldMapTopLeftCornerX();
 
     public double getWorldMapTopLeftCornerY();

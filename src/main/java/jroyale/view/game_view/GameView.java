@@ -1,8 +1,11 @@
 package jroyale.view.game_view;
 
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
 import jroyale.view.View;
 import jroyale.view.audio.AudioManager.AudioType;
@@ -25,14 +28,22 @@ public class GameView extends View implements IGameView {
     
     private static IGameView instance = null;
 
+    private static final double GAME_OVER_FONT_SIZE  = 50;
+    private static final double GAME_OVER_STROKE_WIDTH  = 3;
+    private static final double GAME_OVER_ALPHA  = 1;
+    private static final Color  GAME_OVER_TEXT_COLOR = Color.ALICEBLUE;
+    private static final Color  GAME_OVER_STROKE_COLOR = Color.BLACK;
+    private static final String WIN_TEXT = "Vittoria!";
+    private static final String LOSS_TEXT = "Sconfitta...";
+    private static final String DRAW_TEXT = "Pareggio!";
+
     private final IMainGUI gui;
-    private final GameAudio gameAudio;
 
     private int secondsLeft;
+    private boolean scrollResultPlayed;
 
     private GameView() {
         this.gui = IMainGUI.getInstance();
-        this.gameAudio = GameAudio.getInstance();
     }
 
     // instance methods
@@ -77,7 +88,7 @@ public class GameView extends View implements IGameView {
 
         ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
-        gameAudio.handleGameAudio(secondsLeft);
+        GameAudio.getInstance().handleGameAudio(secondsLeft);
     }
 
     @Override
@@ -87,7 +98,7 @@ public class GameView extends View implements IGameView {
 
     @Override
     public void stopCurrentAudio() {
-        gameAudio.stopCurrentGameAudio();
+        audioManager.stopCurrentAudio();
     }
 
     @Override
@@ -182,6 +193,46 @@ public class GameView extends View implements IGameView {
     @Override
     public void setSelectedCard(int cardIndex) {
         controllerForView.setSelectedPlayerCard(cardIndex);
+    }
+
+    @Override
+    public void handleGameOver(int result) {
+        playScrollAudio(result);
+        renderGameOver(result);
+    }
+
+    private void playScrollAudio(int result) {
+        if (!scrollResultPlayed) {
+            setScrollAudio(result);
+            scrollResultPlayed = true;
+        }
+    }
+
+    private void setScrollAudio(int result) {
+        AudioType scrollAudio;
+
+        if (result > 0)         scrollAudio = AudioType.SCROLL_WIN;
+        else if (result < 0)    scrollAudio = AudioType.SCROLL_LOSE;
+        else                    scrollAudio = AudioType.SCROLL_DRAW;
+
+        audioManager.stopCurrentAudio();
+        audioManager.play(scrollAudio);
+    }
+
+    private void renderGameOver(int result) {
+        String gameOverText = getGameOverText(result);
+        Font gameOverFont = FontManager.getInstance().getBoldFont(GAME_OVER_FONT_SIZE);
+
+        gui.fillScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_TEXT_COLOR, GAME_OVER_ALPHA);
+        gui.strokeScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_STROKE_COLOR, GAME_OVER_STROKE_WIDTH, GAME_OVER_ALPHA);
+    
+    }
+
+    private String getGameOverText(int result) {
+        if (result > 0) return WIN_TEXT;
+        if (result < 0) return LOSS_TEXT;
+
+        return DRAW_TEXT;
     }
 
     @Override
