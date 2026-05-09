@@ -155,6 +155,21 @@ public abstract class SkeletonView extends TroopView {
         return EntityType.SKELETONS;
     }
 
+    @Override
+    public void playMoveAudio(int currentFrame) {
+        // empty
+    }
+
+    @Override
+    public void playAttackAudio(int currentFrame) {
+        // empty
+    }
+
+    @Override
+    public void playDeployAudio(int currentFrame) {
+        // empty
+    }
+
     // static methods
 
     public static void setNumFramesPerDirection(

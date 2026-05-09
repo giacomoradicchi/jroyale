@@ -32,6 +32,8 @@ public interface IControllerForView {
 
     public void renderEntity(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side, EntityType type);
 
+    public void handleAudioEffect(int currentFrame, State state, EntityType type);
+
     public void fillPoint(double centreX, double centreY, int size, Color color);
 
     public double logicToGraphicX(double logicX);

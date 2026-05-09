@@ -3,6 +3,7 @@ package jroyale.view.audio;
 import java.util.EnumMap;
 import java.util.Map;
 import javafx.util.Duration;
+import jroyale.model.troops.MiniPekka;
 
 public class AudioManager implements IAudioManager {
 
@@ -23,6 +24,11 @@ public class AudioManager implements IAudioManager {
         // ux game
         GAME_SPELL_NOT_READY(true, "/jroyale/sfx/spell_not_ready_01.wav"),
         GAME_SPELL_CAST(true, "/jroyale/sfx/spellcast01.wav"),
+
+        // sfx troops
+        MINIPEKKA_MOVE(true, "/jroyale/sfx/mini_pekka/minipekka_step_03.wav"),
+        MINIPEKKA_ATTACK(true, "/jroyale/sfx/mini_pekka/mini_pekka_atk_12.wav"),
+        MINIPEKKA_HIT(true, "/jroyale/sfx/mini_pekka/mini_pekka_hit_03.wav"),
 
         // music
         MENU_MUSIC(false, "/jroyale/sfx/long_audios/menu_03.wav"), 
@@ -78,6 +84,12 @@ public class AudioManager implements IAudioManager {
     public void stop(AudioType type) {
         Audio audio = audioBinder.get(type);
         if (audio != null) audio.stop();    
+    }
+
+    @Override
+    public void setVolume(AudioType type, double volume) {
+        Audio audio = audioBinder.get(type);
+        if (audio != null) audio.setVolume(volume);  
     }
 
     @Override

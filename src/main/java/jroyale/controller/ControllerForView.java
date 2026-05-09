@@ -201,6 +201,11 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
+    public void handleAudioEffect(int currentFrame, State state, EntityType type) {
+        gameView.handleAudioEffect(currentFrame, state, EntityViewBinder.getInstance().getViewInstance(type));
+    }
+
+    @Override
     public void renderTimeLeft() {
         double alpha = getAlphaBasedGameOver();
 

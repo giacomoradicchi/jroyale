@@ -7,6 +7,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
+import jroyale.view.audio.IAudioManager;
 import jroyale.view.game_view.IGameView;
 
 public abstract class EntityView {
@@ -36,10 +37,13 @@ public abstract class EntityView {
     private static final Color ENEMY_FILL_DARK = Color.rgb(150, 50, 50);
 
     private final IGameView gameView = IGameView.getInstance();
+    protected final IAudioManager audioManager = IAudioManager.getInstance();
+
+    protected int currentFrame;
     
     public void render(double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side) {
         renderShadow(centreX, centreY, shadowRadius);
-        renderEntity(centreX, centreY, angleDirection, currentFrame, state, side); 
+        renderEntity(centreX, centreY, angleDirection, currentFrame, state, side);
 
         if (currentHealth < maxHealth)
             renderHealth(currentHealth, maxHealth, side, centreX, centreY - getHeightInPixels() / 2);
@@ -110,6 +114,20 @@ public abstract class EntityView {
         return getHeightInTiles() * gameView.getDy();
     }
 
+    public void handleAudioEffect(int currentFrame, State state) {
+        switch (state) {
+            case State.MOVE:
+                playMoveAudio(currentFrame);
+                break;
+            case State.ATTACK:
+                playAttackAudio(currentFrame);
+                break;
+        
+            default:
+                break;
+        }
+    }
+
     // abstract methods
 
     public abstract Image getSpellIcon();
@@ -121,5 +139,11 @@ public abstract class EntityView {
     protected abstract double getHeightInTiles();
 
     public abstract EntityType getType();
+
+    public abstract void playMoveAudio(int currentFrame);
+
+    public abstract void playAttackAudio(int currentFrame);
+
+    public abstract void playDeployAudio(int currentFrame);
 
 }

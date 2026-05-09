@@ -263,6 +263,11 @@ public class GameView extends View implements IGameView {
         audioManager.play(AudioType.GAME_SPELL_NOT_READY);
     }
 
+    @Override
+    public void handleAudioEffect(int currentFrame, State state, EntityView entityView) {
+        entityView.handleAudioEffect(currentFrame, state);
+    }
+
     // static methods
 
     public static IGameView getInstance() {

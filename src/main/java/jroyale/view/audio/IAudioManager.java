@@ -11,6 +11,8 @@ public interface IAudioManager {
 
     public void stop(AudioType audio);
 
+    public void setVolume(AudioType audio, double volume);
+
     public Duration getDuration(AudioType audio);
 
     public void switchCurrentAudio(AudioType audio);

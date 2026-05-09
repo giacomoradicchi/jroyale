@@ -149,8 +149,8 @@ public abstract class Troop extends Entity {
 
     @Override
     public void update(long elapsed) {
-        frameManager.updateFrame(elapsed);
         
+        updateFrame(elapsed);
         updateState();
         updateSpeed(elapsed);
 
@@ -170,6 +170,13 @@ public abstract class Troop extends Entity {
 
         updateTarget();
         handleCollisions();
+    }
+
+    private void updateFrame(long elapsed) {
+        // isCurrentAnimationIndexChanged will be true only when goToNextFrame() method will be called
+
+        isCurrentAnimationIndexChanged = false;
+        frameManager.updateFrame(elapsed);
     }
 
     private void updateState() {
