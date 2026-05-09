@@ -48,6 +48,14 @@ public class GameEngine implements IGameEngine {
                         e.getSide(),
                         e.getType()
                     );
+
+                    if (e.isCurrentAnimationIndexChanged()) {
+                        controllerForView.handleAudioEffect(
+                            e.getCurrentAnimationIndex(), 
+                            e.getState(), 
+                            e.getType()
+                        );
+                    }
                 }   
                 
                 controllerForView.renderPlayerDeck(

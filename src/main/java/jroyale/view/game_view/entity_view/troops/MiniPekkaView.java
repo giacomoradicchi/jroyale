@@ -7,6 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -35,6 +36,9 @@ public class MiniPekkaView extends TroopView {
 
     private static final int NOT_FLIPPED = 0;
     private static final int FLIPPED = 1;
+    private static final int HIT_FRAME = 7;
+    private static final double VOLUME_SFX = 0.5;
+    private static final double VOLUME_WALK_SFX = 0.25;
 
     // sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 0;
@@ -48,6 +52,10 @@ public class MiniPekkaView extends TroopView {
 
     private MiniPekkaView() {
         super();
+        
+        audioManager.setVolume(AudioType.MINIPEKKA_ATTACK, VOLUME_SFX);
+        audioManager.setVolume(AudioType.MINIPEKKA_HIT, VOLUME_SFX);
+        audioManager.setVolume(AudioType.MINIPEKKA_MOVE, VOLUME_WALK_SFX);
     }
 
     @Override
@@ -161,6 +169,26 @@ public class MiniPekkaView extends TroopView {
     @Override
     public EntityType getType() {
         return EntityType.MINIPEKKA;
+    }
+
+    @Override
+    public void playMoveAudio(int currentFrame) {
+        if (currentFrame == 0 || currentFrame == 6)
+            audioManager.play(AudioType.MINIPEKKA_MOVE);
+    }
+
+    @Override
+    public void playAttackAudio(int currentFrame) {
+        if (currentFrame == 0)
+            audioManager.play(AudioType.MINIPEKKA_ATTACK);
+
+        if (currentFrame == HIT_FRAME)
+            audioManager.play(AudioType.MINIPEKKA_HIT);
+    }
+
+    @Override
+    public void playDeployAudio(int currentFrame) {
+        // empty
     }
 
     // static methods

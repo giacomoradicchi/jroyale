@@ -38,6 +38,8 @@ public abstract class Entity implements Comparable<Entity>{
     protected State state; // defines wheather a troop is walking, attacking, etc.
 
     protected static final Point NO_DIRECTION = new Point(0, 0);
+
+    protected boolean isCurrentAnimationIndexChanged = false;
     
 
     public Entity(double x, double y, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
@@ -191,6 +193,12 @@ public abstract class Entity implements Comparable<Entity>{
         if (currentAnimationIndex == START_FRAME_INDEX) {
             animationCompleted = true;
         }
+
+        isCurrentAnimationIndexChanged = true;
+    }
+
+    public boolean isCurrentAnimationIndexChanged() {
+        return isCurrentAnimationIndexChanged;
     }
 
     //

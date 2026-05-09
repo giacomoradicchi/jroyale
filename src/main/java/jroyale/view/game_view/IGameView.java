@@ -48,6 +48,8 @@ public interface IGameView extends IView {
 
     public void playNotDroppedSound();
 
+    public void handleAudioEffect(int currentFrame, State state, EntityView entityView);
+
     public static IGameView getInstance() {
         return GameView.getInstance();
     }

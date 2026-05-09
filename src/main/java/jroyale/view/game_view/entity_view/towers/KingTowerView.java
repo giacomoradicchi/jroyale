@@ -110,6 +110,21 @@ public class KingTowerView extends TowerView {
         return ImageUtils.enhanceOpacity(temp);
     }
 
+    @Override
+    public void playMoveAudio(int currentFrame) {
+        // empty
+    }
+
+    @Override
+    public void playAttackAudio(int currentFrame) {
+        // empty
+    }
+
+    @Override
+    public void playDeployAudio(int currentFrame) {
+        // empty
+    }
+
     // static methods
 
     public static EntityView getInstance() {
