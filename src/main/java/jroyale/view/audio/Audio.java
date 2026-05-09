@@ -27,19 +27,9 @@ public class Audio {
     private class FastAudioPlayer implements AudioPlayer { // for short audios that have to be played fast (loads it in RAM)
 
         private AudioClip sound;
-        private Duration duration; // AudioClip doesn't have duration method
 
         public FastAudioPlayer(String URL) {
             this.sound = new AudioClip(URL);
-            MediaPlayer tempPlayer = new MediaPlayer(new Media(URL));
-            tempPlayer.setOnReady(() -> {
-                Duration duration = tempPlayer.getTotalDuration();
-                if (duration == null) {
-                    this.duration = Duration.UNKNOWN;
-                } else {
-                    this.duration = tempPlayer.getTotalDuration();
-                }
-            });
         }
 
         @Override
@@ -59,7 +49,7 @@ public class Audio {
 
         @Override
         public Duration getDuration() {
-            return duration;
+            throw new IllegalAccessError("Fast Audios doesn't have duration method");
         }
 
         @Override

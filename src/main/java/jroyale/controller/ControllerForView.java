@@ -44,11 +44,6 @@ public class ControllerForView implements IControllerForView {
     private static final double NORMALIZED_PLAYBUTTON_X = 0.5;
     private static final double NORMALIZED_PLAYBUTTON_Y = 0.85;
     private static final double NORMALIZED_PLAYBUTTON_TEXT_HEIGHT  = 0.05;
-    private static final double GAME_OVER_FONT_SIZE  = 50;
-    private static final double GAME_OVER_STROKE_WIDTH  = 3;
-    private static final double GAME_OVER_ALPHA  = 1;
-    private static final Color  GAME_OVER_TEXT_COLOR = Color.ALICEBLUE;
-    private static final Color  GAME_OVER_STROKE_COLOR = Color.BLACK;
 
     private ControllerForView() {}
 
@@ -215,26 +210,21 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void handleGameOver() {
         gameView.stopCurrentAudio();
-        IMainGUI gui = gameView.getGUI();
-        String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
-        Font gameOverFont = FontManager.getInstance().getBoldFont(GAME_OVER_FONT_SIZE);
-
-        gui.fillScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_TEXT_COLOR, GAME_OVER_ALPHA);
-        gui.strokeScreenTextFromCenter(gameOverText, gui.getCanvasWidth()/2, gui.getCanvasHeight()/2, gameOverFont, GAME_OVER_STROKE_COLOR, GAME_OVER_STROKE_WIDTH, GAME_OVER_ALPHA);
+        gameView.handleGameOver(getResult());
     }
 
-    private String getGameOverText(String winText, String tieText, String lossText) {
+    private int getResult() {
         boolean playerKingTowerDestroyed = controllerForModel.isPlayerKingTowerDestroyed();
         boolean opponentKingTowerDestroyed = controllerForModel.isOpponentKingTowerDestroyed();
 
         // 1) edge case: both towers get destroyed at the same time
-        if (playerKingTowerDestroyed && opponentKingTowerDestroyed) return tieText;
+        if (playerKingTowerDestroyed && opponentKingTowerDestroyed) return 0;
         
         // 2) opponent tower is still standing while player one is destroyed 
-        if (playerKingTowerDestroyed) return lossText;
+        if (playerKingTowerDestroyed) return -1;
         
         // 3) player tower is still standing while opponent one is destroyed
-        if (opponentKingTowerDestroyed) return winText;
+        if (opponentKingTowerDestroyed) return +1;
 
         // 4) both towers are still standing
         
@@ -247,13 +237,13 @@ public class ControllerForView implements IControllerForView {
         if (controllerForModel.isOpponentRightTowerDestroyed()) opponentTowerCount++;
 
         // 4.1) player has more destroyed towers than opponent → loss
-        if (playerTowerCount > opponentTowerCount) return lossText;
+        if (playerTowerCount > opponentTowerCount) return -1;
 
         // 4.2) opponent has more destroyed towers than player → win
-        if (playerTowerCount < opponentTowerCount) return winText;
+        if (playerTowerCount < opponentTowerCount) return +1;
         
         // 4.3) player has the same amount of destroyed towers as opponent (tie)
-        return tieText;
+        return 0;
     }
 
     @Override
