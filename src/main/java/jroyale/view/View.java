@@ -1,13 +1,5 @@
 package jroyale.view;
 
-import java.io.File;
-
-import javafx.application.Application;
-import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.stage.Stage;
-import java.io.File;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,6 +8,8 @@ import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import jroyale.controller.IControllerForView;
+import jroyale.view.audio.IAudioManager;
+import jroyale.view.audio.AudioManager.AudioType;
 
 public abstract class View implements IView {
 
@@ -30,15 +24,14 @@ public abstract class View implements IView {
     private static final Color STARTUP_FILL_COLOR = Color.WHITE;
     private static final double ALPHA = 1.0;
     private static final double STARTUP_TIME = 2;
+    private static final long MIN_DURATION_MS_FOR_LOADING_SCREEN_FALLBACK = 2500;
 
     protected static final Image LOGO = new Image(MainGUI.class.getResourceAsStream("/jroyale/images/ui/jroyale_logo.png"));
 
     protected IControllerForView controllerForView;
 
     private static boolean isFirstTime = true;
-    private AudioClip startSound = new AudioClip(getClass().getResource("/jroyale/sfx/supercell_jingle.mp3").toExternalForm());
-    private AudioClip loadingSound = new AudioClip(getClass().getResource("/jroyale/sfx/scroll_loading_01.mp3").toExternalForm());
-    private MediaPlayer loadingPlayer = new MediaPlayer(new Media(loadingSound.getSource()));
+    protected IAudioManager audioManager = IAudioManager.getInstance();
 
     @Override
     public void setController(IControllerForView controller) {
@@ -61,7 +54,7 @@ public abstract class View implements IView {
     }
 
     private void renderStartupScreen() {
-        startSound.play();
+        audioManager.play(AudioType.START_SOUND);
 
         IMainGUI gui = getGUI();
         double height = gui.getCanvasHeight();
@@ -108,11 +101,10 @@ public abstract class View implements IView {
 
     private Task<Void> loadAsync() {
         
-        loadingSound.play();
+        audioManager.play(AudioType.LOADING_SOUND);
 
         renderLoadingScreen();
-
-        final long MIN_DURATION_MS = (long) (loadingPlayer.getTotalDuration().toSeconds() * 1000); // from seconds to ms
+        long minDurationMs = getMinDurationOfLoadingScreenInMillis();
 
         Task<Void> task = new Task<>() {
             @Override
@@ -122,15 +114,24 @@ public abstract class View implements IView {
                 loadSprites();
 
                 long elapsedTime = System.currentTimeMillis() - startTime;
-
-                if (elapsedTime < MIN_DURATION_MS) {
-                    Thread.sleep(MIN_DURATION_MS - elapsedTime);
+                
+                if (elapsedTime < minDurationMs) {
+                    Thread.sleep(minDurationMs - elapsedTime);
                 }
                 return null;
             }
         };
         new Thread(task, "sprite-loading-thread").start();
         return task;
+    }
+
+    private long getMinDurationOfLoadingScreenInMillis() {
+        Duration loadingSoundDuration = audioManager.getDuration(AudioType.LOADING_SOUND);
+
+        if (loadingSoundDuration != null && loadingSoundDuration != Duration.UNKNOWN) 
+            return (long) loadingSoundDuration.toMillis();
+
+        return MIN_DURATION_MS_FOR_LOADING_SCREEN_FALLBACK;
     }
 
     // since it runs on another thread, it is prohibited to execute JavaFX methods in here. 

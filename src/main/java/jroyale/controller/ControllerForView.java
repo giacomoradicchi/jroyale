@@ -85,6 +85,7 @@ public class ControllerForView implements IControllerForView {
     @Override
     public void initView() {
         initTroopsFramesPerDirection();
+        IView.loadAllAudio();
         gameView.setController(instance);
         homeView.setController(instance);
     }

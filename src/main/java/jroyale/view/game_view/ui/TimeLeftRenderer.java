@@ -3,6 +3,8 @@ package jroyale.view.game_view.ui;
 import javafx.scene.paint.Color;
 import jroyale.view.FontManager;
 import jroyale.view.IMainGUI;
+import jroyale.view.audio.IAudioManager;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 
 public class TimeLeftRenderer {
@@ -18,13 +20,21 @@ public class TimeLeftRenderer {
     private static final double NORMALIZED_LINE_WIDTH = 0.01;
     private static final double ALPHA_BACKGROUND = 0.5;
 
+    private int currentSecondsLeft;
+    private IAudioManager audioManager = IAudioManager.getInstance();
+
     private TimeLeftRenderer() {}
 
     public void renderTimeLeft(int secondsLeft, double alpha) {
         
-        if (secondsLeft < 0) secondsLeft = 0;
+        if (secondsLeft <= 0) return;
+
+        if (currentSecondsLeft != secondsLeft) {
+            currentSecondsLeft = secondsLeft;
+            handleSoundEffects();
+        }
         
-        String timeLeft = fromSecToTimeString(secondsLeft + 1); // adding + 1 so it will be displayed values starting from 1 instead of 0
+        String timeLeft = fromSecToTimeString(secondsLeft);
 
         IGameView view = IGameView.getInstance();
         IMainGUI gui = view.getGUI();
@@ -46,7 +56,7 @@ public class TimeLeftRenderer {
         gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
         gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
-        if (secondsLeft >= TIME_EXCEEDING_LIMIT_IN_SEC) return;
+        if (secondsLeft > TIME_EXCEEDING_LIMIT_IN_SEC) return;
 
         centerX = view.getScreenMapTopLeftCornerX() + view.getScreenMapWidth()/2;
         centerY = view.getScreenMapTopLeftCornerY() + view.getScreenMapHeight()/2;
@@ -55,6 +65,52 @@ public class TimeLeftRenderer {
         gui.strokeScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextStrokeColor(), lineWidth, alpha);
         gui.fillScreenTextFromCenter(timeLeft, centerX, centerY, FontManager.getInstance().getBoldFont(textSize), getTextFillColor(secondsLeft), alpha);
         
+    }
+
+    private void handleSoundEffects() {
+
+        if (currentSecondsLeft > RUNNING_OUT_TIME_LIMIT_IN_SEC) {
+            audioManager.play(AudioType.GAME_MUSIC_2MIN);
+        } else {
+            audioManager.stop(AudioType.GAME_MUSIC_2MIN);
+        }
+
+        switch (currentSecondsLeft) {
+            // count down 
+            case 10:
+                audioManager.play(AudioType.COUNT_10);
+                break;
+            case 9:
+                audioManager.play(AudioType.COUNT_9);
+                break;
+            case 8:
+                audioManager.play(AudioType.COUNT_8);
+                break;
+            case 7:
+                audioManager.play(AudioType.COUNT_7);
+                break;
+            case 6:
+                audioManager.play(AudioType.COUNT_6);
+                break;
+            case 5:
+                audioManager.play(AudioType.COUNT_5);
+                break;
+            case 4:
+                audioManager.play(AudioType.COUNT_4);
+                break;
+            case 3:
+                audioManager.play(AudioType.COUNT_3);
+                break;
+            case 2:
+                audioManager.play(AudioType.COUNT_2);
+                break;
+            case 1:
+                audioManager.play(AudioType.COUNT_1);
+                break;
+        
+            default:
+                break;
+        }
     }
 
     private Color getTextFillColor(int secondsLeft) {
