@@ -79,6 +79,7 @@ public class Audio {
 
         public LargeAudioPlayer(String URL) {
             this.sound = new MediaPlayer(new Media(URL));
+            this.sound.setOnEndOfMedia(() -> sound.stop()); // starts from 0 when is completed
         }
 
         @Override

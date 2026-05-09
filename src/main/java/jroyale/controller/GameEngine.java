@@ -23,7 +23,7 @@ public class GameEngine implements IGameEngine {
                 if (!controllerForModel.isGameOver())
                     controllerForModel.updateModel(now);
 
-                controllerForView.updateGameView(now);
+                controllerForView.updateGameView(now, controllerForModel.getTimeLeftSec());
                 
                 // rendering
                 controllerForView.renderArena();
@@ -60,10 +60,10 @@ public class GameEngine implements IGameEngine {
                     controllerForModel.getMaxElixir()
                 );
 
-                controllerForView.renderTimeLeft(controllerForModel.getTimeLeftSec());
+                controllerForView.renderTimeLeft();
                 
                 if (controllerForModel.isGameOver()) {
-                    controllerForView.renderGameOver();
+                    controllerForView.handleGameOver();
                 } 
             }
         };

@@ -20,6 +20,9 @@ public class AudioManager implements IAudioManager {
         // music
         MENU_MUSIC(false, "/jroyale/sfx/long_audios/menu_03.mp3"), 
         GAME_MUSIC_2MIN(false, "/jroyale/sfx/long_audios/2min_loop_battle_01.mp3"),
+        GAME_MUSIC_60SEC_WARN(false, "/jroyale/sfx/long_audios/60_sec_warn_02_v2.mp3"),
+        GAME_MUSIC_60SEC(false, "/jroyale/sfx/long_audios/60_sec_music_loop_01.mp3"),
+        GAME_MUSIC_30SEC(false, "/jroyale/sfx/long_audios/30_sec_music_loop_01.mp3"),
 
         // counting audios
         COUNT_10(true, "/jroyale/sfx/counters/10_cd_02.mp3"),

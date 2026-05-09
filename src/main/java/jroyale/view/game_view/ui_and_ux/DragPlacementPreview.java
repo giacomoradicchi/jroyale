@@ -1,4 +1,4 @@
-package jroyale.view.game_view.ui;
+package jroyale.view.game_view.ui_and_ux;
 
 import javafx.scene.paint.Color;
 import jroyale.view.IMainGUI;
