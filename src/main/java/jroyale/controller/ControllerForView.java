@@ -105,7 +105,9 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void updateGameView(long now) {
+    public void updateGameView(long now, int timeLeft) {
+
+        gameView.updateTimeLeft(timeLeft);
         gameView.update(now);
 
         if (!controllerForModel.isGameOver()) return;
@@ -204,14 +206,15 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void renderTimeLeft(int secondsLeft) {
+    public void renderTimeLeft() {
         double alpha = getAlphaBasedGameOver();
 
-        if (alpha > 0) gameView.renderTimeLeft(secondsLeft, alpha);
+        if (alpha > 0) gameView.renderTimeLeft(alpha);
     }
 
     @Override
-    public void renderGameOver() {
+    public void handleGameOver() {
+        gameView.stopCurrentAudio();
         IMainGUI gui = gameView.getGUI();
         String gameOverText = getGameOverText("Vittoria!", "Pareggio!", "Sconfitta...");
         Font gameOverFont = FontManager.getInstance().getBoldFont(GAME_OVER_FONT_SIZE);

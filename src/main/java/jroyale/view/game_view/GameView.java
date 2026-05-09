@@ -17,17 +17,22 @@ import jroyale.view.game_view.entity_view.troops.PekkaView;
 import jroyale.view.game_view.entity_view.troops.SingleSkeletonView;
 import jroyale.view.game_view.entity_view.troops.SkeletonArmyView;
 import jroyale.view.game_view.entity_view.troops.ValkyrieView;
-import jroyale.view.game_view.ui.DragPlacementPreview;
-import jroyale.view.game_view.ui.TimeLeftRenderer;
+import jroyale.view.game_view.ui_and_ux.DragPlacementPreview;
+import jroyale.view.game_view.ui_and_ux.GameAudio;
+import jroyale.view.game_view.ui_and_ux.TimeLeftRenderer;
 
 public class GameView extends View implements IGameView {
     
     private static IGameView instance = null;
 
     private final IMainGUI gui;
+    private final GameAudio gameAudio;
+
+    private int secondsLeft;
 
     private GameView() {
         this.gui = IMainGUI.getInstance();
+        this.gameAudio = GameAudio.getInstance();
     }
 
     // instance methods
@@ -72,6 +77,17 @@ public class GameView extends View implements IGameView {
 
         ArenaView.getInstance().update();
         DragPlacementPreview.getInstance().update(now);
+        gameAudio.handleGameAudio(secondsLeft);
+    }
+
+    @Override
+    public void updateTimeLeft(int secondsLeft) {
+        this.secondsLeft = secondsLeft;
+    }
+
+    @Override
+    public void stopCurrentAudio() {
+        gameAudio.stopCurrentGameAudio();
     }
 
     @Override
@@ -125,7 +141,7 @@ public class GameView extends View implements IGameView {
     }
 
     @Override
-    public void renderTimeLeft(int secondsLeft, double alpha) {
+    public void renderTimeLeft(double alpha) {
         TimeLeftRenderer.getInstance().renderTimeLeft(secondsLeft, alpha);
     }
 

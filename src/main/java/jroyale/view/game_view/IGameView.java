@@ -12,6 +12,10 @@ public interface IGameView extends IView {
 
     public double getDy();
 
+    public void updateTimeLeft(int timeLeft);
+
+    public void stopCurrentAudio();
+
     public double getWorldMapTopLeftCornerX();
 
     public double getWorldMapTopLeftCornerY();
@@ -28,7 +32,7 @@ public interface IGameView extends IView {
 
     public void renderEntity(EntityView entity, double centreX, double centreY, int currentHealth, int maxHealth, double shadowRadius, double angleDirection, int currentFrame, State state, Side side);
 
-    public void renderTimeLeft(int secondsLeft, double alpha);
+    public void renderTimeLeft(double alpha);
 
     public void startDragPlacementPreview();
 
