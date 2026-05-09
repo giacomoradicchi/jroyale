@@ -136,7 +136,9 @@ public class ControllerForModel implements IControllerForModel{
 
     @Override
     public void dropSelectedPlayerCard(int row, int col) {
-        model.dropPlayerCard(row, col);
+        boolean cardDropped = model.dropPlayerCard(row, col);
+        if (!cardDropped)
+            IControllerForView.getInstance().playNotDroppedSound();
     }
 
     @Override
