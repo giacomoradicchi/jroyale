@@ -121,7 +121,7 @@ public class KingTowerView extends TowerView {
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
+    public void playDeployAudio() {
         // empty
     }
 

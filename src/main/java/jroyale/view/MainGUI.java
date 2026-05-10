@@ -15,6 +15,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import jroyale.view.audio.IAudioManager;
 
 public class MainGUI implements IMainGUI {
 
@@ -70,6 +71,9 @@ public class MainGUI implements IMainGUI {
         stage.setScene(new Scene(root));
         stage.setTitle("JRoyale");
         stage.setResizable(false);
+        stage.setOnCloseRequest(e -> {
+            IAudioManager.getInstance().shutdown();
+        });
 
         if (!stage.isShowing()) stage.show();
         handleMouseEvents();

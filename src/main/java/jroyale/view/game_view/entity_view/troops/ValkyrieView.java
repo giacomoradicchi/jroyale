@@ -8,6 +8,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -44,6 +45,14 @@ public class ValkyrieView extends TroopView {
     private static final double ALPHA_THRESHOLD = 0.5;
     private static final double HEIGHT_IN_TILES = 2;
 
+    // audio time
+    private static final int HIT_FRAME = 4;
+    private static final int FIRST_STEP = 3;
+    private static final int SECOND_STEP = 10;
+    private static final double VOLUME_SFX = 0.75;
+    private static final double VOLUME_WALK_SFX = 0.5;
+    private static final int NUM_ATTACKS_SOUNDS = 7;
+
     // render layer depth
     private static final int RENDER_LAYER = 1;
 
@@ -68,7 +77,21 @@ public class ValkyrieView extends TroopView {
 
     private final IGameView gameView = IGameView.getInstance();
 
-    private ValkyrieView() {}
+    private ValkyrieView() {
+        super();
+
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_1, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_2, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_3, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_4, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_5, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_6, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_ATTACK_7, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_HIT, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_DEPLOY, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_DEPLOY_END, VOLUME_SFX);
+        audioManager.setVolume(AudioType.VALKYRIE_MOVE, VOLUME_WALK_SFX);
+    }
 
     @Override
     protected Image getRawSpellIcon() {
@@ -214,17 +237,51 @@ public class ValkyrieView extends TroopView {
 
     @Override
     public void playMoveAudio(int currentFrame) {
-        // empty
+        if (currentFrame == FIRST_STEP || currentFrame == SECOND_STEP)
+            audioManager.play(AudioType.VALKYRIE_MOVE);
     }
 
     @Override
     public void playAttackAudio(int currentFrame) {
-        // empty
+        if (currentFrame == START_ATTACK) {
+            int randomAttack = (int) Math.floor(Math.random() * NUM_ATTACKS_SOUNDS);
+            switch (randomAttack) {
+                case 0:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_1);
+                    break;
+                case 1:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_2);
+                    break;
+                case 2:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_3);
+                    break;
+                case 3:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_4);
+                    break;
+                case 4:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_5);
+                    break;
+                case 5:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_6);
+                    break;
+                case 6:
+                    audioManager.play(AudioType.VALKYRIE_ATTACK_7);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+            
+
+        if (currentFrame == HIT_FRAME)
+            audioManager.play(AudioType.VALKYRIE_HIT);
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
-        // empty
+    public void playDeployAudio() {
+        audioManager.play(AudioType.VALKYRIE_DEPLOY);
+        audioManager.play(AudioType.VALKYRIE_DEPLOY_END);
     }
 
     // static methods

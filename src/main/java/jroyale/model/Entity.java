@@ -40,6 +40,7 @@ public abstract class Entity implements Comparable<Entity>{
     protected static final Point NO_DIRECTION = new Point(0, 0);
 
     protected boolean isCurrentAnimationIndexChanged = false;
+    private boolean isEntityNew = true;
     
 
     public Entity(double x, double y, double mass, double collisionRadius, int hitPoints, int damage, Side side) {
@@ -199,6 +200,12 @@ public abstract class Entity implements Comparable<Entity>{
 
     public boolean isCurrentAnimationIndexChanged() {
         return isCurrentAnimationIndexChanged;
+    }
+
+    public boolean isEntityNew() { // as soon as this method is called it won't be new no more
+        boolean temp = isEntityNew;
+        isEntityNew = false;
+        return temp;
     }
 
     //

@@ -8,6 +8,7 @@ import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
 import jroyale.view.IMainGUI;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -33,6 +34,14 @@ public class GiantView extends TroopView {
     private static final double HEIGHT_IN_TILES = 3.2;
     private static final double NORMALIZED_SHIFT_Y = -0.03;
 
+    // audio time
+    private static final int HIT_FRAME = 7;
+    private static final int FIRST_STEP = 5;
+    private static final int SECOND_STEP = 13;
+    private static final double VOLUME_SFX = 0.75;
+    private static final double VOLUME_WALK_SFX = 0.5;
+    private static final int NUM_ATTACKS_SOUNDS = 3;
+
     // render layer depth
     private static final int RENDER_LAYER = 1;
 
@@ -57,6 +66,13 @@ public class GiantView extends TroopView {
 
     private GiantView() {
         super();
+
+        audioManager.setVolume(AudioType.GIANT_ATTACK_1, VOLUME_SFX);
+        audioManager.setVolume(AudioType.GIANT_ATTACK_2, VOLUME_SFX);
+        audioManager.setVolume(AudioType.GIANT_ATTACK_3, VOLUME_SFX);
+        audioManager.setVolume(AudioType.GIANT_DEPLOY, VOLUME_SFX);
+        audioManager.setVolume(AudioType.GIANT_HIT, VOLUME_SFX);
+        audioManager.setVolume(AudioType.GIANT_MOVE, VOLUME_WALK_SFX);
     }
 
     @Override
@@ -213,17 +229,38 @@ public class GiantView extends TroopView {
 
     @Override
     public void playMoveAudio(int currentFrame) {
-        // empty
+        if (currentFrame == FIRST_STEP || currentFrame == SECOND_STEP)
+            audioManager.play(AudioType.GIANT_MOVE);
     }
 
     @Override
     public void playAttackAudio(int currentFrame) {
-        // empty
+        if (currentFrame == START_ATTACK) {
+            int randomAttack = (int) Math.floor(Math.random() * NUM_ATTACKS_SOUNDS);
+            switch (randomAttack) {
+                case 0:
+                    audioManager.play(AudioType.GIANT_ATTACK_1);
+                    break;
+                case 1:
+                    audioManager.play(AudioType.GIANT_ATTACK_2);
+                    break;
+                case 2:
+                    audioManager.play(AudioType.GIANT_ATTACK_3);
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+            
+
+        if (currentFrame == HIT_FRAME)
+            audioManager.play(AudioType.GIANT_HIT);
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
-        // empty
+    public void playDeployAudio() {
+        audioManager.play(AudioType.GIANT_DEPLOY);
     }
 
     // static methods
