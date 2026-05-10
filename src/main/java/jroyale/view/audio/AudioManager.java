@@ -2,8 +2,10 @@ package jroyale.view.audio;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javafx.util.Duration;
-import jroyale.model.troops.MiniPekka;
 
 public class AudioManager implements IAudioManager {
 
@@ -12,6 +14,9 @@ public class AudioManager implements IAudioManager {
     private static Map<AudioType, Audio> audioBinder = new EnumMap<>(AudioType.class); 
 
     private AudioType currentAudio;
+
+    // audio thread pool
+    private final ExecutorService audioExecutor = Executors.newCachedThreadPool();
 
     public enum AudioType {
         START_SOUND(true, "/jroyale/sfx/supercell_jingle.wav"),
@@ -29,6 +34,37 @@ public class AudioManager implements IAudioManager {
         MINIPEKKA_MOVE(true, "/jroyale/sfx/mini_pekka/minipekka_step_03.wav"),
         MINIPEKKA_ATTACK(true, "/jroyale/sfx/mini_pekka/mini_pekka_atk_12.wav"),
         MINIPEKKA_HIT(true, "/jroyale/sfx/mini_pekka/mini_pekka_hit_03.wav"),
+        MINIPEKKA_DEPLOY(true, "/jroyale/sfx/mini_pekka/minipekka_deploy_01.wav"),
+        MINIPEKKA_DEPLOY_END(true, "/jroyale/sfx/mini_pekka/mini_pekka_deploy_end_06.wav"),
+
+        GIANT_MOVE(true, "/jroyale/sfx/Giant/demon_step_01.wav"),
+        GIANT_ATTACK_1(true, "/jroyale/sfx/Giant/giant_attack_swing_01.wav"),
+        GIANT_ATTACK_2(true, "/jroyale/sfx/Giant/giant_attack_swing_02.wav"),
+        GIANT_ATTACK_3(true, "/jroyale/sfx/Giant/giant_attack_swing_03.wav"),
+        GIANT_HIT(true, "/jroyale/sfx/Giant/giant_hit_01.wav"),
+        GIANT_DEPLOY(true, "/jroyale/sfx/Giant/giant_deploy_01.wav"),
+
+        PEKKA_MOVE(true, "/jroyale/sfx/PEKKA/pekka_footstep_02.wav"),
+        PEKKA_ATTACK(true, "/jroyale/sfx/PEKKA/pekka_atk_01.wav"),
+        PEKKA_HIT(true, "/jroyale/sfx/PEKKA/pekka_attack_hit_03.wav"),
+        PEKKA_DEPLOY(true, "/jroyale/sfx/PEKKA/pekka_deploy_01.wav"),
+        PEKKA_DEPLOY_END(true, "/jroyale/sfx/PEKKA/pekka_deploy_end_03.wav"),
+
+        SEKELTONS_MOVE(true, "/jroyale/sfx/Skeletons/skeleton_step_02.wav"),
+        SEKELTONS_ATTACK(true, "/jroyale/sfx/Skeletons/skeleton_atk_03.wav"),
+        SEKELTONS_DEPLOY(true, "/jroyale/sfx/Skeletons/skeleton_deploy_03.wav"),
+
+        VALKYRIE_MOVE(true, "/jroyale/sfx/Valkyrie/valk_step_02.wav"),
+        VALKYRIE_ATTACK_1(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_04.wav"),
+        VALKYRIE_ATTACK_2(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_05.wav"),
+        VALKYRIE_ATTACK_3(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_06.wav"),
+        VALKYRIE_ATTACK_4(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_07.wav"),
+        VALKYRIE_ATTACK_5(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_08.wav"),
+        VALKYRIE_ATTACK_6(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_09.wav"),
+        VALKYRIE_ATTACK_7(true, "/jroyale/sfx/Valkyrie/valkyrie_atk_10.wav"),
+        VALKYRIE_HIT(true, "/jroyale/sfx/Valkyrie/valkyrie_hit_01.wav"),
+        VALKYRIE_DEPLOY(true, "/jroyale/sfx/Valkyrie/valkyrie_deploy_02.wav"),
+        VALKYRIE_DEPLOY_END(true, "/jroyale/sfx/Valkyrie/valkyrie_deploy_end_02.wav"),
 
         // music
         MENU_MUSIC(false, "/jroyale/sfx/long_audios/menu_03.wav"), 
@@ -77,19 +113,28 @@ public class AudioManager implements IAudioManager {
     @Override
     public void play(AudioType type) {
         Audio audio = audioBinder.get(type);
-        if (audio != null) audio.play();
+        if (audio != null) 
+            audioExecutor.submit(() -> {
+                audio.play();
+            });
     }
 
     @Override
     public void stop(AudioType type) {
         Audio audio = audioBinder.get(type);
-        if (audio != null) audio.stop();    
+        if (audio != null) 
+            audioExecutor.submit(() -> {
+                audio.stop();
+            });
     }
 
     @Override
     public void setVolume(AudioType type, double volume) {
         Audio audio = audioBinder.get(type);
-        if (audio != null) audio.setVolume(volume);  
+        if (audio != null)
+            audioExecutor.submit(() -> {
+                audio.setVolume(volume);
+            });
     }
 
     @Override
@@ -128,9 +173,17 @@ public class AudioManager implements IAudioManager {
     @Override
     public void loop(AudioType type) {
         Audio audio = audioBinder.get(type);
-        if (audio != null) audio.loop();
+        if (audio != null) 
+            audioExecutor.submit(() -> {
+                audio.loop();
+            });
     }
     
+    @Override
+    public void shutdown() {
+        audioExecutor.shutdown();
+    }
+
     // static methods
     public static IAudioManager getInstance() {
         if (instance == null) {

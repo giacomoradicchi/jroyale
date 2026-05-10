@@ -264,8 +264,8 @@ public class GameView extends View implements IGameView {
     }
 
     @Override
-    public void handleAudioEffect(int currentFrame, State state, EntityView entityView) {
-        entityView.handleAudioEffect(currentFrame, state);
+    public void handleAudioEffect(int currentFrame, State state, boolean isNew, EntityView entityView) {
+        entityView.handleAudioEffect(currentFrame, state, isNew);
     }
 
     // static methods

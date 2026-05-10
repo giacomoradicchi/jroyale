@@ -22,6 +22,8 @@ public interface IAudioManager {
     public AudioType getCurrentAudio();
 
     public void loop(AudioType type);
+
+    public void shutdown();
      
     // static methods
     public static IAudioManager getInstance() {

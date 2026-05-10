@@ -36,6 +36,9 @@ public abstract class EntityView {
     private static final Color ENEMY_FILL_LIGHT = Color.rgb(255, 100, 100);
     private static final Color ENEMY_FILL_DARK = Color.rgb(150, 50, 50);
 
+    protected static final int FIRST_STEP = 0;
+    protected static final int START_ATTACK = 0;
+
     private final IGameView gameView = IGameView.getInstance();
     protected final IAudioManager audioManager = IAudioManager.getInstance();
 
@@ -114,7 +117,7 @@ public abstract class EntityView {
         return getHeightInTiles() * gameView.getDy();
     }
 
-    public void handleAudioEffect(int currentFrame, State state) {
+    public void handleAudioEffect(int currentFrame, State state, boolean isNew) {
         switch (state) {
             case State.MOVE:
                 playMoveAudio(currentFrame);
@@ -126,6 +129,8 @@ public abstract class EntityView {
             default:
                 break;
         }
+
+        if (isNew) playDeployAudio();
     }
 
     // abstract methods
@@ -144,6 +149,6 @@ public abstract class EntityView {
 
     public abstract void playAttackAudio(int currentFrame);
 
-    public abstract void playDeployAudio(int currentFrame);
+    public abstract void playDeployAudio();
 
 }

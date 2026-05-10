@@ -37,6 +37,7 @@ public class MiniPekkaView extends TroopView {
     private static final int NOT_FLIPPED = 0;
     private static final int FLIPPED = 1;
     private static final int HIT_FRAME = 7;
+    private static final int SECOND_STEP = 6;
     private static final double VOLUME_SFX = 0.5;
     private static final double VOLUME_WALK_SFX = 0.25;
 
@@ -55,6 +56,8 @@ public class MiniPekkaView extends TroopView {
         
         audioManager.setVolume(AudioType.MINIPEKKA_ATTACK, VOLUME_SFX);
         audioManager.setVolume(AudioType.MINIPEKKA_HIT, VOLUME_SFX);
+        audioManager.setVolume(AudioType.MINIPEKKA_DEPLOY, VOLUME_SFX);
+        audioManager.setVolume(AudioType.MINIPEKKA_DEPLOY_END, VOLUME_SFX);
         audioManager.setVolume(AudioType.MINIPEKKA_MOVE, VOLUME_WALK_SFX);
     }
 
@@ -173,13 +176,13 @@ public class MiniPekkaView extends TroopView {
 
     @Override
     public void playMoveAudio(int currentFrame) {
-        if (currentFrame == 0 || currentFrame == 6)
+        if (currentFrame == FIRST_STEP || currentFrame == SECOND_STEP)
             audioManager.play(AudioType.MINIPEKKA_MOVE);
     }
 
     @Override
     public void playAttackAudio(int currentFrame) {
-        if (currentFrame == 0)
+        if (currentFrame == START_ATTACK)
             audioManager.play(AudioType.MINIPEKKA_ATTACK);
 
         if (currentFrame == HIT_FRAME)
@@ -187,8 +190,9 @@ public class MiniPekkaView extends TroopView {
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
-        // empty
+    public void playDeployAudio() {
+        audioManager.play(AudioType.MINIPEKKA_DEPLOY);
+        audioManager.play(AudioType.MINIPEKKA_DEPLOY_END);
     }
 
     // static methods

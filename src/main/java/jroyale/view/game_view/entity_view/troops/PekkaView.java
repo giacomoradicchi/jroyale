@@ -7,6 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -39,6 +40,13 @@ public class PekkaView extends TroopView {
     private static final int NOT_FLIPPED = 0;
     private static final int FLIPPED = 1;
 
+    // audio time
+    private static final int HIT_FRAME = 5;
+    private static final int FIRST_STEP = 4;
+    private static final int SECOND_STEP = 11;
+    private static final double VOLUME_SFX = 0.5;
+    private static final double VOLUME_WALK_SFX = 0.3;
+
     // sprite sheet base indices for different states and sides
     private static final int PLAYER_IDLE_BASE_INDEX = 126;
     private static final int OPPONENT_IDLE_BASE_INDEX = 261;
@@ -49,7 +57,15 @@ public class PekkaView extends TroopView {
 
     private final IGameView gameView = IGameView.getInstance();
 
-    private PekkaView() {}
+    private PekkaView() {
+        super();
+
+        audioManager.setVolume(AudioType.PEKKA_ATTACK, VOLUME_SFX);
+        audioManager.setVolume(AudioType.PEKKA_HIT, VOLUME_SFX);
+        audioManager.setVolume(AudioType.PEKKA_DEPLOY, VOLUME_SFX);
+        audioManager.setVolume(AudioType.PEKKA_DEPLOY_END, VOLUME_SFX);
+        audioManager.setVolume(AudioType.PEKKA_MOVE, VOLUME_WALK_SFX);
+    }
 
     @Override
     protected Image getRawSpellIcon() {
@@ -164,17 +180,24 @@ public class PekkaView extends TroopView {
 
     @Override
     public void playMoveAudio(int currentFrame) {
-        // empty
+        if (currentFrame == FIRST_STEP || currentFrame == SECOND_STEP)
+            audioManager.play(AudioType.PEKKA_MOVE);
     }
 
     @Override
     public void playAttackAudio(int currentFrame) {
-        // empty
+        if (currentFrame == START_ATTACK) {
+            audioManager.play(AudioType.PEKKA_ATTACK);
+        }
+            
+        if (currentFrame == HIT_FRAME)
+            audioManager.play(AudioType.PEKKA_HIT);
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
-        // empty
+    public void playDeployAudio() {
+        audioManager.play(AudioType.PEKKA_DEPLOY);
+        audioManager.play(AudioType.PEKKA_DEPLOY_END);
     }
 
     // static methods

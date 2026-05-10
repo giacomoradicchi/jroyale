@@ -49,10 +49,12 @@ public class GameEngine implements IGameEngine {
                         e.getType()
                     );
 
-                    if (e.isCurrentAnimationIndexChanged()) {
+                    boolean isNew = e.isEntityNew();
+                    if (!controllerForModel.isGameOver() && (e.isCurrentAnimationIndexChanged() || isNew)) {
                         controllerForView.handleAudioEffect(
                             e.getCurrentAnimationIndex(), 
                             e.getState(), 
+                            isNew,
                             e.getType()
                         );
                     }

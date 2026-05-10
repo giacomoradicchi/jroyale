@@ -201,8 +201,8 @@ public class ControllerForView implements IControllerForView {
     }
 
     @Override
-    public void handleAudioEffect(int currentFrame, State state, EntityType type) {
-        gameView.handleAudioEffect(currentFrame, state, EntityViewBinder.getInstance().getViewInstance(type));
+    public void handleAudioEffect(int currentFrame, State state, boolean isNew, EntityType type) {
+        gameView.handleAudioEffect(currentFrame, state, isNew, EntityViewBinder.getInstance().getViewInstance(type));
     }
 
     @Override

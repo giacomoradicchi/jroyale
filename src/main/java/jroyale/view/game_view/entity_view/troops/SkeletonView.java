@@ -7,6 +7,7 @@ import jroyale.utils.ImageUtils;
 import jroyale.utils.Enums.EntityType;
 import jroyale.utils.Enums.Side;
 import jroyale.utils.Enums.State;
+import jroyale.view.audio.AudioManager.AudioType;
 import jroyale.view.game_view.IGameView;
 import jroyale.view.game_view.animations.AnimationKey;
 import jroyale.view.game_view.animations.Direction;
@@ -30,6 +31,11 @@ public abstract class SkeletonView extends TroopView {
     private static final int NOT_FLIPPED = 0;
     private static final int FLIPPED = 1;
 
+    // audio time
+    private static final int HIT_FRAME = 2;
+    private static final double VOLUME_SFX = 0.5;
+    private static final double VOLUME_WALK_SFX = 0.3;
+
     // sprite sheet base indices for different states and sides
     //
     // skeleton has the same pngs for both player and opponent,
@@ -44,6 +50,14 @@ public abstract class SkeletonView extends TroopView {
     private static final int OPPONENT_ATTACK_BASE_INDEX = -1;
 
     private final IGameView gameView = IGameView.getInstance();
+
+    protected SkeletonView() {
+        super();
+
+        audioManager.setVolume(AudioType.SEKELTONS_DEPLOY, VOLUME_SFX);
+        audioManager.setVolume(AudioType.SEKELTONS_ATTACK, VOLUME_SFX);
+        audioManager.setVolume(AudioType.SEKELTONS_MOVE, VOLUME_WALK_SFX);
+    }
 
     // instance methods
 
@@ -155,19 +169,20 @@ public abstract class SkeletonView extends TroopView {
         return EntityType.SKELETONS;
     }
 
-    @Override
+   @Override
     public void playMoveAudio(int currentFrame) {
         // empty
     }
 
     @Override
-    public void playAttackAudio(int currentFrame) {
-        // empty
+    public void playAttackAudio(int currentFrame) {    
+        if (currentFrame == HIT_FRAME)
+            audioManager.play(AudioType.SEKELTONS_ATTACK);
     }
 
     @Override
-    public void playDeployAudio(int currentFrame) {
-        // empty
+    public void playDeployAudio() {
+        audioManager.play(AudioType.SEKELTONS_DEPLOY);
     }
 
     // static methods
