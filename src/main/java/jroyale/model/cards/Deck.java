@@ -43,7 +43,7 @@ public class Deck {
     private long accumulator; // it will increase for each frame by elapsed
     private static final double DEFAULT_ELISIR_CHARGE_TIME_SEC = 3;
     private static final double DEFAULT_ELISIR_CHARGE_TIME_NANOSEC = DEFAULT_ELISIR_CHARGE_TIME_SEC * NANOS_IN_SECOND;
-    private static double chargeTimeSpeed = DEFAULT_SPEED;
+    private static double chargeTimeSpeed = 1/DEFAULT_SPEED;
 
     public Deck(Card[] deckCards) {
         int numCards = deckCards.length;

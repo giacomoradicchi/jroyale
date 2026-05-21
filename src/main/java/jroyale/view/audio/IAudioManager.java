@@ -23,6 +23,8 @@ public interface IAudioManager {
 
     public void loop(AudioType type);
 
+    public void resetCurrentAudio();
+
     public void shutdown();
      
     // static methods
