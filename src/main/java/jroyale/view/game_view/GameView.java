@@ -73,7 +73,9 @@ public class GameView extends View implements IGameView {
         );
         
         DeckView.getInstance().init(controllerForView.getAvailableDeckCards());
+        audioManager.resetCurrentAudio();
         audioManager.loop(AudioType.GAME_MUSIC_2MIN);
+        scrollResultPlayed = false;
     }
 
     @Override

@@ -178,6 +178,11 @@ public class AudioManager implements IAudioManager {
                 audio.loop();
             });
     }
+
+    @Override
+    public void resetCurrentAudio() {
+        this.currentAudio = null;
+    }
     
     @Override
     public void shutdown() {
