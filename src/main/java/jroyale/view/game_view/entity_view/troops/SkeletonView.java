@@ -33,8 +33,9 @@ public abstract class SkeletonView extends TroopView {
 
     // audio time
     private static final int HIT_FRAME = 2;
-    private static final double VOLUME_SFX = 0.5;
-    private static final double VOLUME_WALK_SFX = 0.3;
+    private static final double VOLUME_SFX = 0.75;
+    private static final double VOLUME_WALK_SFX = 0.4;
+    private static final int SECOND_STEP = 4;
 
     // sprite sheet base indices for different states and sides
     //
@@ -171,7 +172,8 @@ public abstract class SkeletonView extends TroopView {
 
    @Override
     public void playMoveAudio(int currentFrame) {
-        // empty
+        if (currentFrame == FIRST_STEP || currentFrame == SECOND_STEP)
+            audioManager.play(AudioType.SEKELTONS_MOVE);
     }
 
     @Override

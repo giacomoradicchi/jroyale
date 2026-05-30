@@ -109,7 +109,7 @@ public class Audio {
         
         if (fastPlayback) player = new FastAudioPlayer(URL);
         else this.player = new LargeAudioPlayer(URL);
-    }
+    } 
 
     public void play() {
         player.play();

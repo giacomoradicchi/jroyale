@@ -96,15 +96,15 @@ public class HomeView extends View implements IHomeView {
     }
 
     private void buildUI() {
-        audioManager.loop(AudioType.MENU_MUSIC);
-        audioManager.play(AudioType.MENU_MUSIC);
-
         renderBackground();
         renderArena();
         renderLogo();
 
         createPlayButton();
         createDifficultyBox();
+
+        audioManager.loop(AudioType.MENU_MUSIC);
+        audioManager.play(AudioType.MENU_MUSIC);
     }
 
     private void renderBackground() {

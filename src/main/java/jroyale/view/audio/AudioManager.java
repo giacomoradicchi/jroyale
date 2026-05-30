@@ -15,6 +15,10 @@ public class AudioManager implements IAudioManager {
 
     private AudioType currentAudio;
 
+    private static final Map<AudioType, Long> lastPlayTime = new EnumMap<>(AudioType.class);
+    private static final long COOLDOWN_MS = 100; // non risuonare lo stesso audio per 100ms
+
+
     // audio thread pool
     private final ExecutorService audioExecutor = Executors.newCachedThreadPool();
 
@@ -113,11 +117,19 @@ public class AudioManager implements IAudioManager {
     @Override
     public void play(AudioType type) {
         Audio audio = audioBinder.get(type);
-        if (audio != null) 
-            audioExecutor.submit(() -> {
-                audio.play();
-            });
-    }
+        if (audio == null) return;
+
+        long now = System.currentTimeMillis();
+        Long last = lastPlayTime.get(type);
+
+        // if not found or it's too early, skip
+        if (last != null && (now - last) < COOLDOWN_MS) return; 
+
+        // otherwise, add it to lastPlayTime list and play
+        lastPlayTime.put(type, now);
+
+        audioExecutor.submit(() -> audio.play());
+    }  
 
     @Override
     public void stop(AudioType type) {
@@ -125,7 +137,7 @@ public class AudioManager implements IAudioManager {
         if (audio != null) 
             audioExecutor.submit(() -> {
                 audio.stop();
-            });
+            }); 
     }
 
     @Override
