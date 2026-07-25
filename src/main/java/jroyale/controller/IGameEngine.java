@@ -4,7 +4,7 @@ import javafx.stage.Stage;
 
 public interface IGameEngine {
 
-    public void start(Stage stage);
+    public void start(@SuppressWarnings("exports") Stage stage);
 
     public void startGameLoop();
 

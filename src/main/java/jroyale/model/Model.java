@@ -470,6 +470,12 @@ public class Model implements IModel {
                 int finalJ = offsetJ + j;
                 if (0 <= finalI && finalI < MAP_ROWS && 0 <= finalJ && finalJ < MAP_COLS && reachableTiles[finalI][finalJ]) 
                     map[finalI][finalJ].removeEntity(e);
+
+                if (e instanceof Tower && e.getSide() == Side.PLAYER)
+                    playerDroppableTiles[finalI][finalJ] = reachableTiles[finalI][finalJ];
+
+                if (e instanceof Tower && e.getSide() == Side.OPPONENT)
+                    opponentDroppableTiles[finalI][finalJ] = reachableTiles[finalI][finalJ];
             }
         }
     }
