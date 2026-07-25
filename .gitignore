@@ -9,3 +9,4 @@ target/
 
 # ignore audio (too heavy)
 og-sfx/
+src/main/resources/jroyale/sfx
