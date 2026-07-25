@@ -3,3 +3,6 @@
 
 #ignore jar (too heavy)
 *.jar
+
+# ignore maven generated files
+target/
