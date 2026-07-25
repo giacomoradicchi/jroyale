@@ -6,3 +6,6 @@
 
 # ignore maven generated files
 target/
+
+# ignore audio (too heavy)
+og-sfx/
