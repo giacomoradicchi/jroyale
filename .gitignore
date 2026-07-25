@@ -1,5 +1,5 @@
 # ignore macos files
-.DS_Store
+*.DS_Store
 
 #ignore jar (too heavy)
 *.jar
